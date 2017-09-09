@@ -9,21 +9,37 @@ module.exports = {
       },
       email: {
         type: Sequelize.STRING,
+        allowNull:false,
+        validate: {
+          notEmpty:true,
+        },
       },
       password: {
         type: Sequelize.STRING,
+        allowNull:false,
+        validate: {
+          notEmpty:true,
+        },
       },
       name: {
         type: Sequelize.STRING,
+        allowNull:false,
+        validate: {
+          notEmpty:true,
+        },
       },
       age: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DATEONLY,
       },
       photo: {
         type: Sequelize.STRING,
+        allowNull:true,
+        defaultValue:null,
       },
       gender: {
         type: Sequelize.STRING,
+        allowNull:true,
+        defaultValue:null,
       },
       createdAt: {
         allowNull: false,
