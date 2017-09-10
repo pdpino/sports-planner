@@ -9,7 +9,7 @@ module.exports = {
         photo: faker.image.player(),
         email: faker.internet.email(),
         gender: NULL,
-        password: faker.inernet.password(),
+        password: faker.internet.password(),
         age: faker.date.past();
         createdAt: new Date(),
         updatedAt: new Date(),

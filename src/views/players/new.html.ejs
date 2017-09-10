@@ -1,0 +1,42 @@
+<h1>Nueva iniciativa</h1>
+<div>
+  <% if (locals.errors) { %>
+    <div class="errors">
+      Necesitas arreglar los siguiente errores:
+      <ul>
+        <% errors.forEach(error => { %>
+          <li><%= error.message %></li>
+        <% }); %>
+      </ul>
+    </div>
+  <% } %>
+  <form action="<%= createInitiativePath %>" method="post">
+    <div>
+      <label for="title">E-Mail</label>
+      <input type="text" name="email" value="<%= player.email %>" />
+    </div>
+    <div>
+      <label for="Name">password</label>
+      <textarea type="password" name="nombre"><%= player.password %></textarea>
+    </div>
+    <div>
+      <label for="Name">Nombre</label>
+      <textarea type="text" name="nombre"><%= player.name %></textarea>
+    </div>
+    <div>
+      <label for="bday">Cumpleaños</label>
+      <input type="date" name="bday" value="<%= player.age %>" />
+    </div>
+    <div>
+      <label for="photo">Photo</label>
+      <input type="text" name="photo" value="<%= player.photo %>" />
+    </div>
+    <div>
+      <label for="gender">Gener</label>
+      <input type="text" name="gender" value="<%= player.gender %>" />
+    </div>
+    <div>
+      <input type="submit" name="create" value="Crea Iniciativa" />
+    </div>
+  </form>
+</div>
