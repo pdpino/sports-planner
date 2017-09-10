@@ -5,13 +5,14 @@ module.exports = function definesport(sequelize, DataTypes) {
       allowNull: false,
       validate: {
         notEmpty: true,
-      },
+      }
     },
     logo: DataTypes.STRING,
     isIndividual: DataTypes.BOOLEAN,
   });
   sport.associate = function associate(models) {
-    // associations can be defined here
+    //sport.belongsToMany(models.player,{ through: plays });
   };
+
   return sport;
 };
