@@ -1,0 +1,17 @@
+<h1>Partidos en jugamos</h1>
+
+<a href="<%= newMatchPath %>"> Crear nuevo partido </a>
+
+<ul>
+  <% matches.forEach((match) => { %>
+    <li>
+      <a href="<%= matchPath(match) %>">
+        <%= match.id %>
+      </a>
+      <p>
+        Fecha: <%= match.date %>
+        <br>
+      </p>
+    </li>
+  <% }) %>
+</ul>

@@ -1,0 +1,35 @@
+<h1><%= match.isNewRecord ? 'Nuevo Partido' : 'Editar Partido' %></h1>
+<div>
+  <% if (locals.errors) { %>
+    <div class="errors">
+      Necesitas arreglar los siguiente errores:
+      <ul>
+        <% errors.forEach(error => { %>
+          <li><%= error.message %></li>
+        <% }); %>
+      </ul>
+    </div>
+  <% } %>
+  <form action="<%= submitMatchPath %>" method="post">
+    <% if(!match.isNewRecord) { %>
+      <div>
+        <input type="hidden" name="_method" value="patch" />
+      </div>
+    <% } %>
+    <div>
+      <label for="isPublic">Público?</label>
+      <input type="checkbox" name="isPublic" <%= match.isPublic ? 'checked' : '' %> ></input>
+    </div>
+    <div>
+      <label for="date">Fecha y Hora</label>
+      <input type="datetime-local" name="date" value="<%= match.date%>"></input>
+    </div>
+    <div>
+      <% if(match.isNewRecord) { %>
+        <input type="submit" name="create" value="Crear" />
+      <% } else { %>
+        <input type="submit" name="update" value="Guardar" />
+      <% } %>
+    </div>
+  </form>
+</div>

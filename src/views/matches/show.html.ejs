@@ -1,0 +1,18 @@
+<h1><%= match.id %></h1>
+<p>
+  Fecha: <%= match.date%>
+  <br>
+</p>
+<a href="<%= editMatchPath %>">Editar</a>
+<form action="<%= deleteMatchPath %>" method="post">
+  <div>
+    <input type="hidden" name="_method" value="delete" />
+  </div>
+  <div>
+    <input type="submit" name="delete" value="Eliminar" />
+  </div>
+</form>
+
+<br>
+
+<a href="<%= matchesPath %>">Volver a todos los partidos</a>
