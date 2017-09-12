@@ -3,9 +3,9 @@
 <ul>
   <% sports.forEach((sport) => { %>
     <li>
-      <!-- <a href="<%=  %>"> -->
+      <a href="<%= sportPath(sport) %>">
         <%= sport.name %>
-      <!-- </a> -->
+      </a>
     </li>
   <% }) %>
 </ul>
