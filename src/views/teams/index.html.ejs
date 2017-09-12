@@ -1,0 +1,18 @@
+<h1>Equipos en jugamos</h1>
+
+<a href="<%= newTeamPath %>"> Crear nuevo equipo </a>
+
+<ul>
+  <% teams.forEach((team) => { %>
+    <li>
+      <a href="<%= teamPath(team) %>">
+        <%= team.name %>
+      </a>
+      <p>
+        Logo: <%= team.logo %>
+        <br>
+        Deporte: None (for now)
+      </p>
+    </li>
+  <% }) %>
+</ul>

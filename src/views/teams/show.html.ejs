@@ -1,0 +1,19 @@
+<h1><%= team.name %></h1>
+<p>
+  Logo: <%= team.logo %>
+  <br>
+  Deporte: None (for now)
+</p>
+<a href="<%= editTeamPath %>">Editar</a>
+<form action="<%= deleteTeamPath %>" method="post">
+  <div>
+    <input type="hidden" name="_method" value="delete" />
+  </div>
+  <div>
+    <input type="submit" name="delete" value="Eliminar" />
+  </div>
+</form>
+
+<br>
+
+<a href="<%= teamsPath %>">Volver a todos los equipos</a>
