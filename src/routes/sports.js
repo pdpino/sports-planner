@@ -2,20 +2,71 @@ const KoaRouter = require('koa-router');
 
 const router = new KoaRouter();
 
+/**Fix the parameters passed by the sports/_form.html.ejs */
+function fixUpdateParams(body){
+  /* checkbox input passes 'on' when checked and null when not-checked. Pass this to boolean */
+  body.isIndividual = Boolean(body.isIndividual);
+}
+
 router.get('sports', '/', async (ctx) => {
   const sports = await ctx.orm.sport.findAll();
   await ctx.render('sports/index', {
     sports,
     sportPath: sport => ctx.router.url('sport', { id: sport.id }),
+    newSportPath: ctx.router.url('sportNew'),
   });
+});
+
+router.get('sportNew', '/new', async (ctx) => {
+  const sport = ctx.orm.sport.build();
+  await ctx.render('sports/new', {
+    sport,
+    submitSportPath: ctx.router.url('sportCreate'),
+  });
+});
+
+router.get('sportEdit', '/:id/edit', async (ctx) => {
+  const sport = await ctx.orm.sport.findById(ctx.params.id);
+  await ctx.render('sports/edit', {
+    sport,
+    submitSportPath: ctx.router.url('sportUpdate', sport.id),
+  });
+});
+
+router.post('sportCreate', '/', async (ctx) => {
+  fixUpdateParams(ctx.request.body);
+  try {
+    const sport = await ctx.orm.sport.create(ctx.request.body);
+    ctx.redirect(ctx.router.url('sport', { id: sport.id }));
+  } catch (validationError) {
+    await ctx.render('sports/new', {
+      sport: ctx.orm.sport.build(ctx.request.body),
+      errors: validationError.errors,
+      submitSportPath: ctx.router.url('sportCreate'),
+    });
+  }
+});
+
+router.patch('sportUpdate', '/:id', async (ctx) => {
+  fixUpdateParams(ctx.request.body);
+  const sport = await ctx.orm.sport.findById(ctx.params.id);
+  try {
+    await sport.update(ctx.request.body);
+    ctx.redirect(ctx.router.url('sport', { id: sport.id }));
+  } catch (validationError) {
+    await ctx.render('sports/edit', {
+      sport,
+      errors: validationError.errors,
+      sumbitSportPath: ctx.router.url('sportUpdate', sport.id),
+    });
+  }
 });
 
 router.get('sport', '/:id', async (ctx) => {
   const sport = await ctx.orm.sport.findById(ctx.params.id);
   await ctx.render('sports/show', {
     sport,
-    // initiatives,
-    // ongInitiativesPath: ctx.router.url('ongInitiatives', ong.id),
+    editSportPath: sport => ctx.router.url('sportEdit', sport.id),
   });
 });
 

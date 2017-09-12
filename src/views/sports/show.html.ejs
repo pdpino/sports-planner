@@ -1,3 +1,4 @@
 <h1><%= sport.name %></h1>
 <p>Logo: <%= sport.logo %></p>
 <p>Es un deporte <%= (sport.isIndividual) ? 'individual' : 'colectivo' %>.</p>
+<a href="<%= editSportPath(sport) %>">Editar</a>
