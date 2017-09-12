@@ -1,0 +1,18 @@
+<h1>Players en Jugamos</h1>
+
+<ul>
+  <% players.forEach((player) => { %>
+    <li>
+      <!-- <a href="<%=  %>"> -->
+
+        <%= player.email %><form action=<%= player.id %>>
+            <input type="submit" value="Go To"/>
+        </form>
+      <!-- </a> -->
+    </li>
+  <% }) %>
+</ul>
+
+<form action=<%= createPlayerPath%>>
+    <input type="submit" value="Crear"/>
+</form>

@@ -12,16 +12,16 @@ module.exports = function defineplayer(sequelize, DataTypes) {
       allowNull:false,
       validate: {
         notEmpty:true,
-      }
+      },
     },
     name: {
       type:DataTypes.STRING,
       allowNull:false,
       validate: {
         notEmpty:true,
-      }
+      },
     },
-    age: DataTypes.INTEGER,
+    age: DataTypes.DATEONLY,
     photo: DataTypes.STRING,
     gender: DataTypes.STRING,
   });
