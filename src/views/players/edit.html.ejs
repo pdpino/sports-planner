@@ -10,7 +10,7 @@
       </ul>
     </div>
   <% } %>
-  <form action="<%= createPlayerPath%>" method="post">
+  <form action="<%= updatePlayerPath%>" method="post">
     <div>
       <label for="title">E-Mail</label>
       <input type="text" name="email" value="<%= player.email %>" />
@@ -36,12 +36,22 @@
       <input type="text" name="gender" value="<%= player.gender %>" />
     </div>
     <div>
-      <input type="submit" name="create" value="Registrarse" />
+      <input type="submit" name="create" value="Guardar Cambios" />
     </div>
   </form>
 </div>
 
 
-<form action=<%= playersPath %>>
+
+<form action="<%= deletePlayerPath %>" method="post">
+  <div>
+    <input type="hidden" name="_method" value="delete" />
+  </div>
+  <div>
+    <input type="submit" name="delete" value="Eliminar" />
+  </div>
+</form>
+
+<form action=<%= cancelPlayerPath %>>
     <input type="submit" value="Cancelar"/>
 </form>

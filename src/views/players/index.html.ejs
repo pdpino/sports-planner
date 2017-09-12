@@ -4,8 +4,15 @@
   <% players.forEach((player) => { %>
     <li>
       <!-- <a href="<%=  %>"> -->
-        <%= player.email %>
+
+        <%= player.email %><form action=<%= player.id %>>
+            <input type="submit" value="Go To"/>
+        </form>
       <!-- </a> -->
     </li>
   <% }) %>
 </ul>
+
+<form action=<%= createPlayerPath%>>
+    <input type="submit" value="Crear"/>
+</form>

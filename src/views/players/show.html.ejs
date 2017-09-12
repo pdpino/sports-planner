@@ -1,1 +1,13 @@
-<h1>player.name</h1>
+<h1><%= player.name %></h1>
+<img src=<%= player.photo %>><br>
+
+<a>E-mail: <%= player.email %></a><br>
+
+<a>birthday: <%= player.age %> </a><br>
+<form action=<%= editPlayerPath%>>
+    <input type="submit" value="Edit" />
+</form>
+
+<form action=<%= cancelPlayerPath%>>
+    <input type="submit" value="Volver" />
+</form>

@@ -1,23 +1,22 @@
 const faker = require('faker');
 
 module.exports = {
+
   up(queryInterface, Sequelize) {
     const playersData = [];
     for (let i = 0; i < 10; i += 1) {
-      playerData.push({
+      playersData.push({
         name: faker.name.findName(),
-        photo: faker.image.player(),
+        photo: faker.image.avatar(),
         email: faker.internet.email(),
-        gender: NULL,
+        gender: null,
         password: faker.internet.password(),
-        age: faker.date.past();
+        age: faker.date.past(),
         createdAt: new Date(),
         updatedAt: new Date(),
       });
     }
     return queryInterface.bulkInsert('players', playersData);
-  },
-
   },
 
   down(queryInterface, Sequelize) {
