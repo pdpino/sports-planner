@@ -1,4 +1,16 @@
 <h1><%= sport.name %></h1>
 <p>Logo: <%= sport.logo %></p>
 <p>Es un deporte <%= (sport.isIndividual) ? 'individual' : 'colectivo' %>.</p>
-<a href="<%= editSportPath(sport) %>">Editar</a>
+<a href="<%= editSportPath %>">Editar</a>
+<form action="<%= deleteSportPath %>" method="post">
+  <div>
+    <input type="hidden" name="_method" value="delete" />
+  </div>
+  <div>
+    <input type="submit" name="delete" value="Eliminar" />
+  </div>
+</form>
+
+<br>
+
+<a href="<%= sportsPath %>">Volver a todos los deportes</a>

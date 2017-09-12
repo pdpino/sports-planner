@@ -2,7 +2,7 @@ const KoaRouter = require('koa-router');
 
 const router = new KoaRouter();
 
-/**Fix the parameters passed by the sports/_form.html.ejs */
+/**Fix the parameters passed by the sports/_form.html.ejs (used when creating and when editing a sport)*/
 function fixUpdateParams(body){
   /* checkbox input passes 'on' when checked and null when not-checked. Pass this to boolean */
   body.isIndividual = Boolean(body.isIndividual);
@@ -66,8 +66,16 @@ router.get('sport', '/:id', async (ctx) => {
   const sport = await ctx.orm.sport.findById(ctx.params.id);
   await ctx.render('sports/show', {
     sport,
-    editSportPath: sport => ctx.router.url('sportEdit', sport.id),
+    sportsPath: ctx.router.url('sports'),
+    editSportPath: ctx.router.url('sportEdit', sport.id),
+    deleteSportPath: ctx.router.url('sportDelete', sport.id),
   });
+});
+
+router.delete('sportDelete', '/:id', async (ctx) => {
+  const sport = await ctx.orm.sport.findById(ctx.params.id);
+  await sport.destroy(); // {force: true});
+  ctx.redirect(ctx.router.url('sports'));
 });
 
 module.exports = router;
