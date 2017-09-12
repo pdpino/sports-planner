@@ -7,7 +7,10 @@ router.get('teams', '/', async (ctx) => {
   await ctx.render('teams/index', {
     teams,
     sports: ctx.state.sports,
-    getTeamSport: (team) => team.sportId, // TODO: get name (team) => sport.name,
+    getTeamSport: (team) => {
+      const matchSports = ctx.state.sports.filter(sport => sport.id === team.sportId); // OPTIMIZE ?
+      return (matchSports[0]) ? matchSports[0].name : team.sportId; // avoid internal server error
+    },
     teamPath: team => ctx.router.url('team', { id: team.id }),
     newTeamPath: ctx.router.url('teamNew'),
   });
