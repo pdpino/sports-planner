@@ -4,9 +4,9 @@ const router = new KoaRouter();
 
 router.get('teams', '/', async (ctx) => {
   const teams = await ctx.orm.team.findAll();
-  const sports = await ctx.orm.sport.findAll();
   await ctx.render('teams/index', {
     teams,
+    sports: ctx.state.sports,
     getTeamSport: (team) => team.sportId, // TODO: get name (team) => sport.name,
     teamPath: team => ctx.router.url('team', { id: team.id }),
     newTeamPath: ctx.router.url('teamNew'),
@@ -17,6 +17,7 @@ router.get('teamNew', '/new', async (ctx) => {
   const team = ctx.orm.team.build();
   await ctx.render('teams/new', {
     team,
+    sports: ctx.state.sports,
     submitTeamPath: ctx.router.url('teamCreate'),
   });
 });
@@ -25,6 +26,7 @@ router.get('teamEdit', '/:id/edit', async (ctx) => {
   const team = await ctx.orm.team.findById(ctx.params.id);
   await ctx.render('teams/edit', {
     team,
+    sports: ctx.state.sports,
     submitTeamPath: ctx.router.url('teamUpdate', team.id),
   });
 });
@@ -37,6 +39,7 @@ router.post('teamCreate', '/', async (ctx) => {
     await ctx.render('teams/new', {
       team: ctx.orm.team.build(ctx.request.body),
       errors: validationError.errors,
+      sports: ctx.state.sports,
       submitTeamPath: ctx.router.url('teamCreate'),
     });
   }
@@ -51,6 +54,7 @@ router.patch('teamUpdate', '/:id', async (ctx) => {
     await ctx.render('teams/edit', {
       team,
       errors: validationError.errors,
+      sports: ctx.state.sports,
       sumbitTeamPath: ctx.router.url('teamUpdate', team.id),
     });
   }
@@ -58,7 +62,7 @@ router.patch('teamUpdate', '/:id', async (ctx) => {
 
 router.get('team', '/:id', async (ctx) => {
   const team = await ctx.orm.team.findById(ctx.params.id);
-  const sport = await ctx.orm.sport.findById(team.sportId);
+  const sport = await ctx.orm.sport.findById(team.sportId); // REVIEW: get sport from ctx.state.sport?
   await ctx.render('teams/show', {
     team,
     sport: sport.name,
@@ -70,7 +74,7 @@ router.get('team', '/:id', async (ctx) => {
 
 router.delete('teamDelete', '/:id', async (ctx) => {
   const team = await ctx.orm.team.findById(ctx.params.id);
-  await team.destroy(); // {force: true});
+  await team.destroy();
   ctx.redirect(ctx.router.url('teams'));
 });
 
