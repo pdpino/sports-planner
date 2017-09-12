@@ -14,6 +14,15 @@ module.exports = {
       logo: {
         type: Sequelize.STRING,
       },
+      sportId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'sports',
+          key: 'id',
+        },
+        // onDelete: 'cascade',
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

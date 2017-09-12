@@ -24,9 +24,9 @@
       <label for="logo">Logo</label> <!-- TODO: subir imagen -->
       <input type="text" name="logo" value="<%= team.logo %>"></input>
     </div>
-    <div> <!-- TODO: agregar editar deporte, cuando relación esté lista -->
-      <label for="sport">Deporte</label>
-      <input type="text" name="sport" value="<%= //team.sport %>"></input>
+    <div>
+      <label for="sportId">Deporte</label>
+      <input type="number" name="sportId" value="<%= team.sportId %>"></input>
     </div>
     <div>
       <% if(team.isNewRecord) { %>

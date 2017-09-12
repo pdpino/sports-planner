@@ -13,18 +13,21 @@ module.exports = {
     const teams = [{
         name: 'Team1',
         logo: "",
+        sportId: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         name: 'Team23',
         logo: "",
+        sportId: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         name: 'Team45',
         logo: "",
+        sportId: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
       }];

@@ -4,8 +4,10 @@ const router = new KoaRouter();
 
 router.get('teams', '/', async (ctx) => {
   const teams = await ctx.orm.team.findAll();
+  const sports = await ctx.orm.sport.findAll();
   await ctx.render('teams/index', {
     teams,
+    getTeamSport: (team) => team.sportId, // TODO: get name (team) => sport.name,
     teamPath: team => ctx.router.url('team', { id: team.id }),
     newTeamPath: ctx.router.url('teamNew'),
   });
@@ -56,8 +58,10 @@ router.patch('teamUpdate', '/:id', async (ctx) => {
 
 router.get('team', '/:id', async (ctx) => {
   const team = await ctx.orm.team.findById(ctx.params.id);
+  const sport = await ctx.orm.sport.findById(team.sportId);
   await ctx.render('teams/show', {
     team,
+    sport: sport.name,
     teamsPath: ctx.router.url('teams'),
     editTeamPath: ctx.router.url('teamEdit', team.id),
     deleteTeamPath: ctx.router.url('teamDelete', team.id),
