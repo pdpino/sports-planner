@@ -1,9 +1,8 @@
-console.log(process.env.DB_PASSWORD);
 const config = {
   default: {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
-    dialect: process.env.DB_DIALECT,
+    dialect: process.env.DB_DIALECT || 'postgres',
     database: process.env.DB_NAME,
     host: process.env.DB_HOST || '127.0.0.1',
   },
