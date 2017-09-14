@@ -5,7 +5,8 @@
     <li>
       <!-- <a href="<%=  %>"> -->
 
-        <%= player.email %><form action=<%= player.id %>>
+        <%= player.email %>
+        <form action=<%= playerPath(player) %>>
             <input type="submit" value="Go To"/>
         </form>
       <!-- </a> -->
@@ -13,6 +14,6 @@
   <% }) %>
 </ul>
 
-<form action=<%= createPlayerPath %>>
+<form action=<%= newPlayerPath %>>
     <input type="submit" value="Crear"/>
 </form>

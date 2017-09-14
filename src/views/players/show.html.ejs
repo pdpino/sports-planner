@@ -4,10 +4,19 @@
 <a>E-mail: <%= player.email %></a><br>
 
 <a>birthday: <%= player.age %> </a><br>
+
+Deportes que practica:
+<ul>
+  <% playSports.forEach((sport) => { %>
+    <li>
+      <%= sport.name %>
+    </li>
+  <% }) %>
+</ul>
 <form action=<%= editPlayerPath %>>
     <input type="submit" value="Edit" />
 </form>
 
-<form action=<%= cancelPlayerPath %>>
+<form action=<%= playersPath %>>
     <input type="submit" value="Volver" />
 </form>
