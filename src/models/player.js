@@ -33,7 +33,7 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     gender: DataTypes.STRING,
   });
   player.associate = function associate(models) {
-    // player.belongsToMany(models.sport, { through: models.plays });
+    player.belongsToMany(models.sport, { through: models.plays });
   };
   return player;
 };
