@@ -10,31 +10,28 @@ router.get('players', '/', async (ctx) => {
    });
 });
 
-
 router.post('playerCreate', '/new', async (ctx) => {
   try {
-    const player = await ctx.orm.player.build(ctx.request.body);
-    player.save().then(() => {});
+    const player = await ctx.orm.player.create(ctx.request.body);
     ctx.redirect(ctx.router.url('players'));
   } catch (validationError) {
     await ctx.render('players/new', {
-      player:ctx.orm.player.build(ctx.request.body),
+      player: ctx.orm.player.build(ctx.request.body),
       errors: validationError.errors,
       createPlayerPath: ctx.router.url('playerCreate'),
+      playersPath : ctx.router.url('players'),
     });
   }
 });
 
 router.get('playerNew', '/new', async (ctx) => {
-  const player= ctx.orm.player.build(ctx.request.body);
+  const player = ctx.orm.player.build(ctx.request.body);
   await ctx.render('players/new', {
     player,
     createPlayerPath: ctx.router.url('playerCreate'),
     playersPath : ctx.router.url('players'),
   });
 });
-
-
 
 router.get('playerShow', '/:id', async (ctx) => {
   const player= await ctx.orm.player.findById(ctx.params.id);
