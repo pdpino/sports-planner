@@ -1,4 +1,8 @@
-# Template
+# Jugamos
+
+Go to https://young-meadow-27744.herokuapp.com/ and enjoy the app!
+
+# About the Template
 
 Template built with [koa](http://koajs.com/) for IIC2513 - Tecnologías y Aplicaciones Web, Pontificia Universidad Católica de Chile.
 
