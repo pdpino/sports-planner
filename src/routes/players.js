@@ -1,5 +1,5 @@
 const KoaRouter = require('koa-router');
-
+const playerTeamsRouter = require('./playerTeams');
 const router = new KoaRouter();
 
 router.get('players', '/', async (ctx) => {
@@ -39,12 +39,15 @@ router.get('playerNew', '/new', async (ctx) => {
 
 router.get('playerShow', '/:id', async (ctx) => {
   const player= await ctx.orm.player.findById(ctx.params.id);
-  const Playerteams = await player.getTeams();
+  const memberofTeams = await player.getTeams();
   await ctx.render('players/show', {
     player,
-    Playerteams,
+    memberofTeams,
     editPlayerPath: ctx.router.url('playerEdit',player.id),
     cancelPlayerPath: ctx.router.url('players'),
+    editPlayerTeamPath: (team) => ctx.router.url('playerTeamEdit', { playerId: player.id, id: team.id } ),
+createPlayerTeamsPath: ctx.router.url('playerTeamNew', { playerId: player.id } ),
+playersPath: ctx.router.url('players'),
    });
 });
 
@@ -94,53 +97,15 @@ router.delete('playerDelete', '/:id', async (ctx) => {
 
 
 
-router.post('PlayeraddTeam', '/:id', async (ctx) => {
-     console.log("YESSSSSSS");
-   const player = await ctx.orm.player.findById(ctx.params.id);
-   const team = await ctx.orm.team.findById(ctx.request.body.selectedteamid);
-   await player.addTeam(team,{through:{isCaptain: true}});
-   player.save().then(() => {});
-   ctx.redirect(ctx.router.url('players'));
- });
-
- router.get('playerTeams', '/:id/edit/teams', async (ctx) => {
-   const player= await ctx.orm.player.findById(ctx.params.id);
-   const Playerteams = await player.getTeams();
-   const teams = await ctx.orm.team.findAll();
-   await ctx.render('players/teams', {
-     player,
-     Playerteams,
-     teams,
-     editPlayerPath: ctx.router.url('playerEdit',player.id),
-     cancelPlayerPath: ctx.router.url('players'),
-     PlayeraddTeamPath: ctx.router.url('PlayeraddTeam',player.id),
-     deletePlayerteamPath:  ctx.router.url('deletePlayerteamPath',player.id),
-     gotodeletePlayerPath:  ctx.router.url('deletePlayerTeams',player.id)
-    });
- });
-
- router.get('deleteplayerTeams', '/:id/edit/teams/deleteteams', async (ctx) => {
-   const player= await ctx.orm.player.findById(ctx.params.id);
-   const Playerteams = await player.getTeams();
-   const teams = await ctx.orm.team.findAll();
-   await ctx.render('players/deleteteams', {
-     player,
-     Playerteams,
-     teams,
-     editPlayerPath: ctx.router.url('playerEdit',player.id),
-     cancelPlayerPath: ctx.router.url('players'),
-     PlayeraddTeamPath: ctx.router.url('PlayeraddTeam',player.id),
-     deletePlayerteamPath:  ctx.router.url('deletePlayerteamPath',player.id),
-     gotodeletePlayerPath:  ctx.router.url('deletePlayerTeams',player.id)
-    });
- });
-
- router.post('deletePlayerteamPath', '/:id', async (ctx) => {
-   console.log("NOPPPP");
-    const player = await ctx.orm.player.findById(ctx.params.id);
-    const team = await ctx.orm.team.findById(ctx.request.body.teamid);
-    await player.removeTeam(team);
-    ctx.redirect(ctx.router.url('players'));
-  });
+  router.use(
+ '/:playerId/teams',
+ async (ctx, next) => {
+   ctx.state.teams = await ctx.orm.teams.findAll();
+   ctx.state.player = await ctx.orm.player.findById(ctx.params.playerId);
+   ctx.state.memberofTeams = await ctx.state.player.getTeams();
+   await next();
+ },
+ playerTeamsRouter.routes(),
+);
 
 module.exports = router;

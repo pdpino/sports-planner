@@ -19,19 +19,25 @@
 </form>
 
 <div>
-  <% if(Playerteams.length > 0) { %>
-    <h4>Equipos al que pertenece:</h4>
+  <% if(memberofTeams.length > 0) { %>
+    <h4>Deportes que practica:</h4>
     <ul>
-      <% Playerteams.forEach((team) => { %>
+      <% memberofTeams.forEach((team) => { %>
         <li>
-          <%= team.name %> <form action="/teams/<%= team.id %>">
-            <input type="submit" value="Go to"/>
+          <%= team.name %>
+          <form action=<%= editPlayerTeamPath(team) %>>
+              <input type="submit" value="Editar" />
+          </form>
         </li>
       <% }) %>
     </ul>
   <% } else { %>
-    <%= player.name %> no pertenece a ningun equipo.
+    <%= player.name %> no pertenece a ningún equipo.
   <% } %>
+  <form action=<%= createPlayerTeamsPath %>>
+      <input type="submit" value="Añadir Equipo" />
+  </form>
+
 </div>
 
 <script type="text/javascript">
