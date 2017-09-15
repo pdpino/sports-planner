@@ -41,18 +41,6 @@
       <input type="text" name="gender" value="<%= player.gender %>" />
     </div>
     <div>
-      <label for="playSports">Deportes que practica</label>
-      <br>
-      <% sports.forEach((sport) => { %>
-        <input type="checkbox" name="playSports" value="<%= sport.id %>"
-          <%= doesPlayerPlay(sport, playSports) ? 'checked' : '' %> >
-          <%= sport.name %> <br>
-          <!-- TODO: when showing existing player his/her sports must be checked -->
-        </input>
-      <% }) %>
-    </div>
-
-    <div>
       <% if(player.isNewRecord) { %>
         <input type="submit" name="create" value="Registrarse" />
       <% } else { %>

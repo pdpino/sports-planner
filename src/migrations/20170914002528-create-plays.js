@@ -1,16 +1,14 @@
 module.exports = {
   up(queryInterface, Sequelize) {
     return queryInterface.createTable('plays', {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER,
-      },
-      position: {
-        type: Sequelize.STRING,
-      },
+      // id: {
+      //   allowNull: false,
+      //   autoIncrement: true,
+      //   primaryKey: true,
+      //   type: Sequelize.INTEGER,
+      // },
       sportId: {
+        primaryKey: true,
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -21,6 +19,7 @@ module.exports = {
         onDelete: 'cascade',
       },
       playerId: {
+        primaryKey: true,
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -29,6 +28,9 @@ module.exports = {
         },
         onUpdate: 'cascade',
         onDelete: 'cascade',
+      },
+      position: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
