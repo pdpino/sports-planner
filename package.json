@@ -4,6 +4,10 @@
   "main": "index.js",
   "repository": "https://github.com/IIC2513-2017-2/kame-house",
   "license": "MIT",
+  "engines": {
+    "node": "8.4.0",
+    "npm": "5.3.0",
+  },
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
