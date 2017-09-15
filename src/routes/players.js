@@ -46,8 +46,8 @@ router.get('playerShow', '/:id', async (ctx) => {
     editPlayerPath: ctx.router.url('playerEdit',player.id),
     cancelPlayerPath: ctx.router.url('players'),
     editPlayerTeamPath: (team) => ctx.router.url('playerTeamEdit', { playerId: player.id, id: team.id } ),
-createPlayerTeamsPath: ctx.router.url('playerTeamNew', { playerId: player.id } ),
-playersPath: ctx.router.url('players'),
+    createPlayerTeamsPath: ctx.router.url('playerTeamNew', { playerId: player.id } ),
+    playersPath: ctx.router.url('players'),
    });
 });
 
