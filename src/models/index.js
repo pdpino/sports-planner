@@ -7,9 +7,10 @@ const basename = path.basename(module.filename);
 
 const db = {};
 
-console.log("RUNNING IN : ", process.env.NODE_ENV || 'development', config);
+let sequelizeConfig = (config.use_env_variable) ? process.env[config.use_env_variable] : config;
+// HACK: choose the configuration, useful for heroku
 
-const sequelize = new Sequelize(config);
+const sequelize = new Sequelize(sequelizeConfig);
 
 fs
   .readdirSync(__dirname)
