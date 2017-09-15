@@ -24,7 +24,7 @@ router.patch('playerSportsUpdate', '/', async (ctx) => {
     ctx.redirect(ctx.router.url('playerShow', { id: ctx.state.player.id }));
   } catch (validationError) {
     const sports = await ctx.orm.sport.findAll();
-    await ctx.render('players/editSports', {
+    await ctx.render('playerSports/edit', {
       player: ctx.state.player,
       sports,
       playSports: ctx.request.body.playSports,
@@ -39,7 +39,7 @@ router.patch('playerSportsUpdate', '/', async (ctx) => {
 router.get('playerSportsEdit', '/edit', async (ctx) => {
   const sports = await ctx.orm.sport.findAll();
   const playSports = await ctx.state.player.getSports();
-  await ctx.render('players/editSports', {
+  await ctx.render('playerSports/edit', {
     player: ctx.state.player,
     sports,
     playSports,
