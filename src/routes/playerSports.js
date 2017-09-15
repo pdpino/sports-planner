@@ -54,6 +54,7 @@ router.get('playerSportEdit', '/:id/edit', async (ctx) => {
     player: ctx.state.player,
     playSport,
     submitPlayerSportPath: ctx.router.url('playerSportUpdate', { playerId: ctx.state.player.id, id: playSport.id }),
+    deletePlayerSportPath: ctx.router.url('playerSportDelete', { playerId: ctx.state.player.id, id: playSport.id }),
     cancelPath: ctx.router.url('playerShow', ctx.state.player.id)
   });
 });
@@ -74,5 +75,11 @@ router.patch('playerSportUpdate', '/:id', async (ctx) => {
     });
   }
 });
+
+router.delete('playerSportDelete', '/:id', async (ctx) => {
+   await ctx.state.player.removeSport(ctx.params.id);
+   ctx.redirect(ctx.router.url('playerShow', ctx.state.player.id));
+ });
+
 
 module.exports = router;

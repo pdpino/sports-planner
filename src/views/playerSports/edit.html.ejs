@@ -27,7 +27,15 @@
   </form>
 </div>
 
+<form action="<%= deletePlayerSportPath %>" method="post">
+  <div>
+    <input type="hidden" name="_method" value="delete" />
+  </div>
+  <div>
+    <input type="submit" name="delete" value="Eliminar" />
+  </div>
+</form>
 
 <form action=<%= cancelPath %>>
-    <input type="submit" value="Cancelar"/>
+  <input type="submit" value="Cancelar"/>
 </form>
