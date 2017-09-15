@@ -22,6 +22,7 @@ router.get('teamNew', '/new', async (ctx) => {
     team,
     sports: ctx.state.sports,
     submitTeamPath: ctx.router.url('teamCreate'),
+    cancelPath: ctx.router.url('teams'),
   });
 });
 
@@ -35,6 +36,7 @@ router.post('teamCreate', '/', async (ctx) => {
       errors: validationError.errors,
       sports: ctx.state.sports,
       submitTeamPath: ctx.router.url('teamCreate'),
+      cancelPath: ctx.router.url('teams'),
     });
   }
 });
@@ -45,6 +47,7 @@ router.get('teamEdit', '/:id/edit', async (ctx) => {
     team,
     sports: ctx.state.sports,
     submitTeamPath: ctx.router.url('teamUpdate', team.id),
+    cancelPath: ctx.router.url('team', { id: ctx.params.id }),
   });
 });
 
@@ -58,7 +61,8 @@ router.patch('teamUpdate', '/:id', async (ctx) => {
       team,
       errors: validationError.errors,
       sports: ctx.state.sports,
-      sumbitTeamPath: ctx.router.url('teamUpdate', team.id),
+      submitTeamPath: ctx.router.url('teamUpdate', team.id),
+      cancelPath: ctx.router.url('team', { id: ctx.params.id }),
     });
   }
 });
