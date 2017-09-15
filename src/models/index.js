@@ -7,9 +7,9 @@ const basename = path.basename(module.filename);
 
 const db = {};
 
-const sequelize = new Sequelize(config);
+console.log("RUNNING IN : ", process.env.NODE_ENV || 'development', config);
 
-console.log("RUNNING IN : ", process.env.NODE_ENV || 'development');
+const sequelize = new Sequelize(config);
 
 fs
   .readdirSync(__dirname)
