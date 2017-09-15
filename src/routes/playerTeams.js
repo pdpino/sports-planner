@@ -11,20 +11,20 @@ function playerismember(searchedTeam, memberofTeams){
 function getTeamsNotMember(allTeams, memberofTeams){
   // OPTIMIZE ???
   return allTeams.filter( (anyTeam) => {
-    return !doesPlayerPlay(anyTeam, memberofTeams);
+    return !playerismember(anyTeam, memberofTeams);
   });
 }
 
 /** Return the team played by player, searching with teamId **/
 async function findPlayerTeamById(player, teamId){
   const memberofTeams = await player.getTeams( { where: { id: teamId } } );
-  return (plamemberofTeams.length == 1) ? memberofTeams[0] : null;
+  return (memberofTeams.length == 1) ? memberofTeams[0] : null;
 }
 
 router.get('playerTeamNew', '/new', async (ctx) => {
-  await ctx.render('playerTeam/new', {
+  await ctx.render('playerTeams/new', {
     player: ctx.state.player,
-    TeamsNotPlayed: getTeamsNotMember(ctx.state.teams, ctx.state.playerTeams),
+    teamsNotPlayed: getTeamsNotMember(ctx.state.teams, ctx.state.memberofTeams),
     submitPlayerTeamPath: ctx.router.url('playerTeamCreate', { playerId: ctx.state.player.id }),
     cancelPath: ctx.router.url('playerShow', ctx.state.player.id)
   });

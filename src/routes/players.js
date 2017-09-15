@@ -100,7 +100,7 @@ router.delete('playerDelete', '/:id', async (ctx) => {
   router.use(
  '/:playerId/teams',
  async (ctx, next) => {
-   ctx.state.teams = await ctx.orm.teams.findAll();
+   ctx.state.teams= await ctx.orm.team.findAll();
    ctx.state.player = await ctx.orm.player.findById(ctx.params.playerId);
    ctx.state.memberofTeams = await ctx.state.player.getTeams();
    await next();
