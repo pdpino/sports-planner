@@ -65,9 +65,11 @@ router.patch('teamUpdate', '/:id', async (ctx) => {
 
 router.get('team', '/:id', async (ctx) => {
   const team = await ctx.orm.team.findById(ctx.params.id);
-  const sport = await ctx.orm.sport.findById(team.sportId); // REVIEW: get sport from ctx.state.sport?
+  const sport = await ctx.orm.sport.findById(team.sportId);
+  const TeamPlayers = await team.getPlayers(); // REVIEW: get sport from ctx.state.sport?
   await ctx.render('teams/show', {
     team,
+    TeamPlayers,
     sport: sport.name,
     teamsPath: ctx.router.url('teams'),
     editTeamPath: ctx.router.url('teamEdit', team.id),

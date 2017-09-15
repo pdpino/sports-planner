@@ -13,7 +13,7 @@ router.get('players', '/', async (ctx) => {
 
 router.post('playerCreate', '/new', async (ctx) => {
   try {
-    const player = await ctx.orm.player.build(ctx.request.body);
+    const player = await ctx.orm.player.build(ctx.request.bod);
     player.save().then(() => {});
     ctx.redirect(ctx.router.url('players'));
   } catch (validationError) {
@@ -26,11 +26,12 @@ router.post('playerCreate', '/new', async (ctx) => {
 });
 
 router.get('playerNew', '/new', async (ctx) => {
-  const player= ctx.orm.player.build(ctx.request.body);
+  const player= ctx.orm.player.build();
   await ctx.render('players/new', {
     player,
     createPlayerPath: ctx.router.url('playerCreate'),
     playersPath : ctx.router.url('players'),
+    submitPlayerPath: ctx.router.url('playerCreate'),
   });
 });
 
@@ -38,25 +39,32 @@ router.get('playerNew', '/new', async (ctx) => {
 
 router.get('playerShow', '/:id', async (ctx) => {
   const player= await ctx.orm.player.findById(ctx.params.id);
+  const Playerteams = await player.getTeams();
   await ctx.render('players/show', {
     player,
+    Playerteams,
     editPlayerPath: ctx.router.url('playerEdit',player.id),
     cancelPlayerPath: ctx.router.url('players'),
    });
 });
 
 router.patch('playerUpdate', '/:id', async (ctx) => {
-  fixUpdateParams(ctx.request.body);
+
   const player = await ctx.orm.player.findById(ctx.params.id);
   try {
     await player.update(ctx.request.body);
+    player.save().then(() => {});
     ctx.redirect(ctx.router.url('players'));
   } catch (validationError) {
     await ctx.render('players/edit', {
       player,
       teams: await ctx.orm.team.findAll(),
       errors: validationError.errors,
-      updatePlayerPath: ctx.router.url('playerUpdate', player.id),
+      updatePlayerPath: ctx.router.url('playerUpdate',player.id),
+      deletePlayerPath: ctx.router.url('playerDelete', player.id),
+      cancelPlayerPath: ctx.router.url('playerShow',player.id),
+      editPlayerTeamsPath: ctx.router.url('playerTeams',player.id),
+
 
     });
   }
@@ -65,13 +73,16 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
 router.get('playerEdit', '/:id/edit', async (ctx) => {
   const player = await ctx.orm.player.findById(ctx.params.id);
   const teams = await ctx.orm.team.findAll();
+  const Playerteams = await player.getTeams();
   await ctx.render('players/edit', {
     player,
     teams,
+    Playerteams,
     updatePlayerPath: ctx.router.url('playerUpdate',player.id),
     deletePlayerPath: ctx.router.url('playerDelete', player.id),
     cancelPlayerPath: ctx.router.url('playerShow',player.id),
-    PlayeraddTeamPath: ctx.router.url('PlayeraddTeam',player.id),
+    editPlayerTeamsPath: ctx.router.url('playerTeams',player.id),
+    submitPlayerPath: ctx.router.url('playerUpdate',player.id),
   });
 });
 
@@ -81,8 +92,10 @@ router.delete('playerDelete', '/:id', async (ctx) => {
    ctx.redirect(ctx.router.url('players'));
  });
 
-router.post('PlayeraddTeam', '/:id', async (ctx) => {
 
+
+router.post('PlayeraddTeam', '/:id', async (ctx) => {
+     console.log("YESSSSSSS");
    const player = await ctx.orm.player.findById(ctx.params.id);
    const team = await ctx.orm.team.findById(ctx.request.body.selectedteamid);
    await player.addTeam(team,{through:{isCaptain: true}});
@@ -90,5 +103,44 @@ router.post('PlayeraddTeam', '/:id', async (ctx) => {
    ctx.redirect(ctx.router.url('players'));
  });
 
+ router.get('playerTeams', '/:id/edit/teams', async (ctx) => {
+   const player= await ctx.orm.player.findById(ctx.params.id);
+   const Playerteams = await player.getTeams();
+   const teams = await ctx.orm.team.findAll();
+   await ctx.render('players/teams', {
+     player,
+     Playerteams,
+     teams,
+     editPlayerPath: ctx.router.url('playerEdit',player.id),
+     cancelPlayerPath: ctx.router.url('players'),
+     PlayeraddTeamPath: ctx.router.url('PlayeraddTeam',player.id),
+     deletePlayerteamPath:  ctx.router.url('deletePlayerteamPath',player.id),
+     gotodeletePlayerPath:  ctx.router.url('deletePlayerTeams',player.id)
+    });
+ });
+
+ router.get('deleteplayerTeams', '/:id/edit/teams/deleteteams', async (ctx) => {
+   const player= await ctx.orm.player.findById(ctx.params.id);
+   const Playerteams = await player.getTeams();
+   const teams = await ctx.orm.team.findAll();
+   await ctx.render('players/deleteteams', {
+     player,
+     Playerteams,
+     teams,
+     editPlayerPath: ctx.router.url('playerEdit',player.id),
+     cancelPlayerPath: ctx.router.url('players'),
+     PlayeraddTeamPath: ctx.router.url('PlayeraddTeam',player.id),
+     deletePlayerteamPath:  ctx.router.url('deletePlayerteamPath',player.id),
+     gotodeletePlayerPath:  ctx.router.url('deletePlayerTeams',player.id)
+    });
+ });
+
+ router.post('deletePlayerteamPath', '/:id', async (ctx) => {
+   console.log("NOPPPP");
+    const player = await ctx.orm.player.findById(ctx.params.id);
+    const team = await ctx.orm.team.findById(ctx.request.body.teamid);
+    await player.removeTeam(team);
+    ctx.redirect(ctx.router.url('players'));
+  });
 
 module.exports = router;

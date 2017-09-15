@@ -12,9 +12,27 @@
     <input type="submit" value="Edit" />
 </form>
 
+
+
 <form action=<%= cancelPlayerPath%>>
     <input type="submit" value="Volver" />
 </form>
+
+<div>
+  <% if(Playerteams.length > 0) { %>
+    <h4>Equipos al que pertenece:</h4>
+    <ul>
+      <% Playerteams.forEach((team) => { %>
+        <li>
+          <%= team.name %> <form action="/teams/<%= team.id %>">
+            <input type="submit" value="Go to"/>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <%= player.name %> no pertenece a ningun equipo.
+  <% } %>
+</div>
 
 <script type="text/javascript">
 
