@@ -25,14 +25,6 @@ router.get('sportNew', '/new', async (ctx) => {
   });
 });
 
-router.get('sportEdit', '/:id/edit', async (ctx) => {
-  const sport = await ctx.orm.sport.findById(ctx.params.id);
-  await ctx.render('sports/edit', {
-    sport,
-    submitSportPath: ctx.router.url('sportUpdate', sport.id),
-  });
-});
-
 router.post('sportCreate', '/', async (ctx) => {
   fixUpdateParams(ctx.request.body);
   try {
@@ -45,6 +37,14 @@ router.post('sportCreate', '/', async (ctx) => {
       submitSportPath: ctx.router.url('sportCreate'),
     });
   }
+});
+
+router.get('sportEdit', '/:id/edit', async (ctx) => {
+  const sport = await ctx.orm.sport.findById(ctx.params.id);
+  await ctx.render('sports/edit', {
+    sport,
+    submitSportPath: ctx.router.url('sportUpdate', sport.id),
+  });
 });
 
 router.patch('sportUpdate', '/:id', async (ctx) => {

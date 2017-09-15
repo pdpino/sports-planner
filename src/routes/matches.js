@@ -25,14 +25,6 @@ router.get('matchNew', '/new', async (ctx) => {
   });
 });
 
-router.get('matchEdit', '/:id/edit', async (ctx) => {
-  const match = await ctx.orm.match.findById(ctx.params.id);
-  await ctx.render('matches/edit', {
-    match,
-    submitMatchPath: ctx.router.url('matchUpdate', match.id),
-  });
-});
-
 router.post('matchCreate', '/', async (ctx) => {
   fixUpdateParams(ctx.request.body);
   try {
@@ -45,6 +37,14 @@ router.post('matchCreate', '/', async (ctx) => {
       submitMatchPath: ctx.router.url('matchCreate'),
     });
   }
+});
+
+router.get('matchEdit', '/:id/edit', async (ctx) => {
+  const match = await ctx.orm.match.findById(ctx.params.id);
+  await ctx.render('matches/edit', {
+    match,
+    submitMatchPath: ctx.router.url('matchUpdate', match.id),
+  });
 });
 
 router.patch('matchUpdate', '/:id', async (ctx) => {

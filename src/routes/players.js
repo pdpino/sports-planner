@@ -12,6 +12,15 @@ router.get('players', '/', async (ctx) => {
    });
 });
 
+router.get('playerNew', '/new', async (ctx) => {
+  const player = ctx.orm.player.build(ctx.request.body);
+  await ctx.render('players/new', {
+    player,
+    submitPlayerPath: ctx.router.url('playerCreate'),
+    cancelPath : ctx.router.url('players'),
+  });
+});
+
 router.post('playerCreate', '/', async (ctx) => {
   try {
     const player = await ctx.orm.player.create(ctx.request.body);
@@ -27,12 +36,13 @@ router.post('playerCreate', '/', async (ctx) => {
   }
 });
 
-router.get('playerNew', '/new', async (ctx) => {
-  const player = ctx.orm.player.build(ctx.request.body);
-  await ctx.render('players/new', {
+router.get('playerEdit', '/:id/edit', async (ctx) => {
+  const player = await ctx.orm.player.findById(ctx.params.id);
+  await ctx.render('players/edit', {
     player,
-    submitPlayerPath: ctx.router.url('playerCreate'),
-    cancelPath : ctx.router.url('players'),
+    submitPlayerPath: ctx.router.url('playerUpdate', player.id),
+    deletePlayerPath: ctx.router.url('playerDelete', player.id),
+    cancelPath: ctx.router.url('player', { id: player.id }),
   });
 });
 
@@ -51,16 +61,6 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
       cancelPath: ctx.router.url('player', { id: player.id }),
     });
   }
-});
-
-router.get('playerEdit', '/:id/edit', async (ctx) => {
-  const player = await ctx.orm.player.findById(ctx.params.id);
-  await ctx.render('players/edit', {
-    player,
-    submitPlayerPath: ctx.router.url('playerUpdate', player.id),
-    deletePlayerPath: ctx.router.url('playerDelete', player.id),
-    cancelPath: ctx.router.url('player', { id: player.id }),
-  });
 });
 
 router.get('player', '/:id', async (ctx) => {

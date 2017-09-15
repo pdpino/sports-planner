@@ -25,15 +25,6 @@ router.get('teamNew', '/new', async (ctx) => {
   });
 });
 
-router.get('teamEdit', '/:id/edit', async (ctx) => {
-  const team = await ctx.orm.team.findById(ctx.params.id);
-  await ctx.render('teams/edit', {
-    team,
-    sports: ctx.state.sports,
-    submitTeamPath: ctx.router.url('teamUpdate', team.id),
-  });
-});
-
 router.post('teamCreate', '/', async (ctx) => {
   try {
     const team = await ctx.orm.team.create(ctx.request.body);
@@ -46,6 +37,15 @@ router.post('teamCreate', '/', async (ctx) => {
       submitTeamPath: ctx.router.url('teamCreate'),
     });
   }
+});
+
+router.get('teamEdit', '/:id/edit', async (ctx) => {
+  const team = await ctx.orm.team.findById(ctx.params.id);
+  await ctx.render('teams/edit', {
+    team,
+    sports: ctx.state.sports,
+    submitTeamPath: ctx.router.url('teamUpdate', team.id),
+  });
 });
 
 router.patch('teamUpdate', '/:id', async (ctx) => {
@@ -80,6 +80,5 @@ router.delete('teamDelete', '/:id', async (ctx) => {
   await team.destroy();
   ctx.redirect(ctx.router.url('teams'));
 });
-
 
 module.exports = router;
