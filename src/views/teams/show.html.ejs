@@ -4,7 +4,11 @@
   <br>
   Deporte: <%= sport %>
 </p>
-<a href="<%= editTeamPath %>">Editar</a>
+
+<form action=<%= editTeamPath %>>
+    <input type="submit" value="Editar"/>
+</form>
+
 <form action="<%= deleteTeamPath %>" method="post">
   <div>
     <input type="hidden" name="_method" value="delete" />
@@ -14,6 +18,8 @@
   </div>
 </form>
 
-<br>
+<br />
 
-<a href="<%= teamsPath %>">Volver a todos los equipos</a>
+<form action=<%= teamsPath %>>
+    <input type="submit" value="Volver a todos los equipos"/>
+</form>
