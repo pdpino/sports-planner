@@ -71,7 +71,7 @@ router.get('playerShow', '/:id', async (ctx) => {
     playSports,
     editPlayerPath: ctx.router.url('playerEdit', player.id),
     editPlayerSportPath: (sport) => ctx.router.url('playerSportEdit', { playerId: player.id, id: sport.id } ),
-    createPlayerSportsPath: ctx.router.url('playerSportsNew', { playerId: player.id } ),
+    createPlayerSportsPath: ctx.router.url('playerSportNew', { playerId: player.id } ),
     playersPath: ctx.router.url('players'),
    });
 });
@@ -85,6 +85,7 @@ router.delete('playerDelete', '/:id', async (ctx) => {
 router.use(
  '/:playerId/sports',
  async (ctx, next) => {
+   ctx.state.sports = await ctx.orm.sport.findAll();
    ctx.state.player = await ctx.orm.player.findById(ctx.params.playerId);
    ctx.state.playSports = await ctx.state.player.getSports();
    await next();

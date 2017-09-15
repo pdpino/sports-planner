@@ -1,11 +1,34 @@
-<h3>Agregar deporte</h3>
+<h1>Agregar deporte</h1>
 
+<% if(sportsNotPlayed.length > 0) { %>
+  <form action="<%= submitPlayerSportPath %>" method="post">
+    <div>
+      <label for="sportId">Elegir deporte</label>
+      <% sportsNotPlayed.forEach( (sport) => { %>
+        <div>
+          <input type="radio" name="sportId" value="<%= sport.id %>"/> <%= sport.name %>
+        </div>
+      <% }) %>
+    </div>
 
-<p>
-  Seleccionar de lista
-</p>
+    <div>
+      <label for="position">Posición:</label>
+      <input type="text" name="position" />
+    </div>
 
+    <div>
+      <input type="submit" name="create" value="Añadir" />
+    </div>
 
-<p>
-  Añadir posicion
-</p>
+  </form>
+<% } else { %>
+  <div>
+    <strong>
+      No quedan deportes para agregar!
+    </strong>
+  </div>
+<% } %>
+
+<form action="<%= cancelPath %>" method="get">
+    <input type="submit" value="Cancelar"/>
+</form>
