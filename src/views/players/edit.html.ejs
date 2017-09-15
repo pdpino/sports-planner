@@ -32,12 +32,13 @@
       <input type="text" name="photo" value="<%= player.photo %>" />
     </div>
     <div>
-      <label for="gender">Genero</label>
+      <label for="gender">Género</label>
       <input type="text" name="gender" value="<%= player.gender %>" />
     </div>
     <div>
       <input type="submit" name="create" value="Guardar Cambios" />
     </div>
+
 
 
   </form>
@@ -60,9 +61,9 @@
 
 <form action="<%= PlayeraddTeamPath %>" method="post">
   <div>
-    <select>
+    <select name="selectedteamid">
       <% teams.forEach((team) => { %>
-      <option value="<%= team.id %>"><%= team.name %></option>
+      <option name="teamid" value="<%= team.id %>"><%= team.name %></option>
         <% }) %>
     </select>
     <input type="submit" name="add" value="Agregar Equipo" />

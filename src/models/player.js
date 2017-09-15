@@ -26,7 +26,7 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     gender: DataTypes.STRING,
   });
   player.associate = function associate(models) {
-    player.belongsToMany(models.team,{ through: "isMember"});
+    player.belongsToMany(models.team,{ through: models.isMember});
   };
   return player;
 };

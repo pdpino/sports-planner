@@ -1,9 +1,13 @@
+
+
 <h1><%= player.name %></h1>
 <img src=<%= player.photo %>><br>
 
 <a>E-mail: <%= player.email %></a><br>
 
-<a>birthday: <%= player.age %> </a><br>
+
+<p id="playerage"></p><br>
+
 <form action=<%= editPlayerPath%>>
     <input type="submit" value="Edit" />
 </form>
@@ -11,3 +15,17 @@
 <form action=<%= cancelPlayerPath%>>
     <input type="submit" value="Volver" />
 </form>
+
+<script type="text/javascript">
+
+  const today= new Date();
+  var bday= <%= player.age%>;
+  const year= bday.substring(0,4);
+  const month= bday.substring(5,7);
+  const day=bday.substring(8,10);
+
+  var datebday= new Date(year, month-1, day);
+  const diff=  today - datebday;
+  const age= Math.floor (diff/(1000*60*60*24*365.25));
+  document.getElementById("playerage").innerHTML="Age: " +age.toString();
+</script>

@@ -54,6 +54,7 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
   } catch (validationError) {
     await ctx.render('players/edit', {
       player,
+      teams: await ctx.orm.team.findAll(),
       errors: validationError.errors,
       updatePlayerPath: ctx.router.url('playerUpdate', player.id),
 
@@ -63,9 +64,10 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
 
 router.get('playerEdit', '/:id/edit', async (ctx) => {
   const player = await ctx.orm.player.findById(ctx.params.id);
+  const teams = await ctx.orm.team.findAll();
   await ctx.render('players/edit', {
     player,
-    teams: ctx.state.teams,
+    teams,
     updatePlayerPath: ctx.router.url('playerUpdate',player.id),
     deletePlayerPath: ctx.router.url('playerDelete', player.id),
     cancelPlayerPath: ctx.router.url('playerShow',player.id),
@@ -79,10 +81,13 @@ router.delete('playerDelete', '/:id', async (ctx) => {
    ctx.redirect(ctx.router.url('players'));
  });
 
-router.patch('PlayeraddTeam', '/:id', async (ctx) => {
+router.post('PlayeraddTeam', '/:id', async (ctx) => {
+
    const player = await ctx.orm.player.findById(ctx.params.id);
-   const team = await ctx.orm.team.findById(ctx.request.body);
-   player.addteam(team,{through:{isCaptain: true}});
+   const team = await ctx.orm.team.findById(ctx.request.body.selectedteamid);
+   await player.addTeam(team,{through:{isCaptain: true}});
+   player.save().then(() => {});
+   ctx.redirect(ctx.router.url('players'));
  });
 
 
