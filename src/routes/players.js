@@ -65,9 +65,11 @@ router.get('playerEdit', '/:id/edit', async (ctx) => {
   const player = await ctx.orm.player.findById(ctx.params.id);
   await ctx.render('players/edit', {
     player,
+    teams: ctx.state.teams,
     updatePlayerPath: ctx.router.url('playerUpdate',player.id),
     deletePlayerPath: ctx.router.url('playerDelete', player.id),
-    cancelPlayerPath: ctx.router.url('playerShow',player.id)
+    cancelPlayerPath: ctx.router.url('playerShow',player.id),
+    PlayeraddTeamPath: ctx.router.url('PlayeraddTeam',player.id),
   });
 });
 
@@ -76,5 +78,12 @@ router.delete('playerDelete', '/:id', async (ctx) => {
    await player.destroy();
    ctx.redirect(ctx.router.url('players'));
  });
+
+router.patch('PlayeraddTeam', '/:id', async (ctx) => {
+   const player = await ctx.orm.player.findById(ctx.params.id);
+   const team = await ctx.orm.team.findById(ctx.request.body);
+   player.addteam(team,{through:{isCaptain: true}});
+ });
+
 
 module.exports = router;

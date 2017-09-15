@@ -38,6 +38,8 @@
     <div>
       <input type="submit" name="create" value="Guardar Cambios" />
     </div>
+
+
   </form>
 </div>
 
@@ -54,4 +56,15 @@
 
 <form action=<%= cancelPlayerPath %>>
     <input type="submit" value="Cancelar"/>
+</form>
+
+<form action="<%= PlayeraddTeamPath %>" method="post">
+  <div>
+    <select>
+      <% teams.forEach((team) => { %>
+      <option value="<%= team.id %>"><%= team.name %></option>
+        <% }) %>
+    </select>
+    <input type="submit" name="add" value="Agregar Equipo" />
+  </div>
 </form>
