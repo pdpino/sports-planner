@@ -1,6 +1,8 @@
 <h1>Partidos en jugamos</h1>
 
-<a href="<%= newMatchPath %>"> Crear nuevo partido </a>
+<form action=<%= newMatchPath %>>
+    <input type="submit" value="Crear partido"/>
+</form>
 
 <ul>
   <% matches.forEach((match) => { %>
