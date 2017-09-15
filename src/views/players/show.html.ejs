@@ -21,14 +21,17 @@
       <% playSports.forEach((sport) => { %>
         <li>
           <%= sport.name %> -- Posición (es): <%= sport.plays.position %>
+          <form action=<%= editPlayerSportPath(sport) %>>
+              <input type="submit" value="Editar" />
+          </form>
         </li>
       <% }) %>
     </ul>
   <% } else { %>
     <%= player.name %> no practica ningún deporte actualmente.
   <% } %>
-  <form action=<%= editPlayerSportsPath %>>
-      <input type="submit" value="Editar Deportes que practica" />
+  <form action=<%= createPlayerSportsPath %>>
+      <input type="submit" value="Añadir deporte" />
   </form>
 
 </div>

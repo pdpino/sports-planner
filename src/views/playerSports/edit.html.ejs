@@ -1,4 +1,4 @@
-<h1> Editar deportes que practico %></h1>
+<h1> Editar deporte que practico %></h1>
 <div>
   <% if (locals.errors) { %>
     <div class="errors">
@@ -11,33 +11,14 @@
     </div>
   <% } %>
 
-  <form action="<%= submitPlayerSportsPath %>" method="post">
+  <%= playSport.name %>
+  <form action="<%= submitPlayerSportPath %>" method="post">
     <div>
       <input type="hidden" name="_method" value="patch" />
     </div>
     <div>
-      <label for="playSports">Deportes que practica</label>
-      <br>
-      <% playSports.forEach((sport) => { %>
-        <div>
-          <input type="checkbox" name="playSports" value="<%= sport.id %>" checked > <%= sport.name %> </input>
-          --
-          <label for="playSportsPosition">Posicion:</label>
-          <input type="text" name="playSportsPosition" value="<%= sport.plays.position %>" > </input>
-        </div>
-      <% }) %>
-
-      <% sports.forEach((sport) => { %>
-        <% if(!doesPlayerPlay(sport, playSports)) { %>
-        <div>
-          <input type="checkbox" name="playSports" value="<%= sport.id %>" > <%= sport.name %> </input>
-          --
-          <label for="playSportsPosition">Posicion:</label>
-          <input type="text" name="playSportsPosition" value=""> </input>
-
-        </div>
-        <% } %>
-      <% }) %>
+      <label for="position">Posición: </label>
+      <input type="text" name="position" value="<%= playSport.plays.position %>"/>
     </div>
 
     <div>
