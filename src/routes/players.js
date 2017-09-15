@@ -7,7 +7,7 @@ router.get('players', '/', async (ctx) => {
   const players = await ctx.orm.player.findAll();
   await ctx.render('players/index', {
     players,
-    playerPath: player => ctx.router.url('playerShow', { id: player.id }),
+    playerPath: player => ctx.router.url('player', { id: player.id }),
     newPlayerPath: ctx.router.url('playerNew'),
    });
 });
@@ -40,7 +40,7 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
   const player = await ctx.orm.player.findById(ctx.params.id);
   try {
     await player.update(ctx.request.body);
-    ctx.redirect(ctx.router.url('playerShow', { id: player.id }));
+    ctx.redirect(ctx.router.url('player', { id: player.id }));
   } catch (validationError) {
     const sports = await ctx.orm.sport.findAll();
     await ctx.render('players/edit', {
@@ -48,7 +48,7 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
       errors: validationError.errors,
       submitPlayerPath: ctx.router.url('playerUpdate', player.id),
       deletePlayerPath: ctx.router.url('playerDelete', player.id),
-      cancelPath: ctx.router.url('playerShow', player.id),
+      cancelPath: ctx.router.url('player', { id: player.id }),
     });
   }
 });
@@ -59,11 +59,11 @@ router.get('playerEdit', '/:id/edit', async (ctx) => {
     player,
     submitPlayerPath: ctx.router.url('playerUpdate', player.id),
     deletePlayerPath: ctx.router.url('playerDelete', player.id),
-    cancelPath: ctx.router.url('playerShow', player.id)
+    cancelPath: ctx.router.url('player', { id: player.id }),
   });
 });
 
-router.get('playerShow', '/:id', async (ctx) => {
+router.get('player', '/:id', async (ctx) => {
   const player = await ctx.orm.player.findById(ctx.params.id);
   const playSports = await player.getSports();
   await ctx.render('players/show', {
