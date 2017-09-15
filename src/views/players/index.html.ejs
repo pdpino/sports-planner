@@ -5,14 +5,15 @@
     <li>
       <!-- <a href="<%=  %>"> -->
 
-        <%= player.email %><form action=<%= player.id %>>
-            <input type="submit" value="Go To"/>
+        <%= player.email %>
+        <form action=<%= playerPath(player) %>>
+            <input type="submit" value="Ver perfil"/>
         </form>
       <!-- </a> -->
     </li>
   <% }) %>
 </ul>
 
-<form action=<%= createPlayerPath%>>
+<form action=<%= newPlayerPath %>>
     <input type="submit" value="Crear"/>
 </form>

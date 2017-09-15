@@ -4,7 +4,7 @@ const router = new KoaRouter();
 
 /**Fix the parameters passed by the matches/_form.html.ejs (used when creating and when editing a match)*/
 function fixUpdateParams(body){
-  /* checkbox input passes 'on' when checked and null when not-checked. Pass this to boolean */
+  /* checkbox input passes 'on' when checked and null when not-checked. Parse this to boolean */
   body.isPublic = Boolean(body.isPublic);
 }
 
@@ -57,7 +57,7 @@ router.patch('matchUpdate', '/:id', async (ctx) => {
     await ctx.render('matches/edit', {
       match,
       errors: validationError.errors,
-      sumbitMatchPath: ctx.router.url('matchUpdate', match.id),
+      submitMatchPath: ctx.router.url('matchUpdate', match.id),
     });
   }
 });

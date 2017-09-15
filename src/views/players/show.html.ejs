@@ -1,13 +1,43 @@
 <h1><%= player.name %></h1>
-<img src=<%= player.photo %>><br>
 
-<a>E-mail: <%= player.email %></a><br>
+<div>
+  <h4>Información personal</h4>
+  <img src=<%= player.photo %> > <br>
 
-<a>birthday: <%= player.age %> </a><br>
-<form action=<%= editPlayerPath%>>
-    <input type="submit" value="Edit" />
-</form>
+  <a>E-mail: <%= player.email %></a><br>
 
-<form action=<%= cancelPlayerPath%>>
+  <a>birthday: <%= player.age %> </a><br>
+  <form action=<%= editPlayerPath %>>
+      <input type="submit" value="Editar Información personal" />
+  </form>
+</div>
+
+<br />
+
+<div>
+  <% if(playSports.length > 0) { %>
+    <h4>Deportes que practica:</h4>
+    <ul>
+      <% playSports.forEach((sport) => { %>
+        <li>
+          <%= sport.name %> -- Posición (es): <%= sport.plays.position %>
+          <form action=<%= editPlayerSportPath(sport) %>>
+              <input type="submit" value="Editar" />
+          </form>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <%= player.name %> no practica ningún deporte actualmente.
+  <% } %>
+  <form action=<%= createPlayerSportsPath %>>
+      <input type="submit" value="Añadir deporte" />
+  </form>
+
+</div>
+
+<br />
+
+<form action=<%= playersPath %>>
     <input type="submit" value="Volver" />
 </form>
