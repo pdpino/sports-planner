@@ -1,5 +1,21 @@
-<h1>Hello world</h1>
+<h1>Jugamos</h1>
+
 <p>
-  App web version
-  <%= appVersion %>
+  Organiza encuentros deportivos con tus amigos!
 </p>
+
+<form action="<%= sportsPath %>" method="get">
+    <input type="submit" value="Ver deportes"/>
+</form>
+
+<form action="<%= playersPath %>" method="get">
+    <input type="submit" value="Ver jugadores"/>
+</form>
+
+<form action="<%= teamsPath %>" method="get">
+    <input type="submit" value="Ver equipos"/>
+</form>
+
+<form action="<%= matchesPath %>" method="get">
+    <input type="submit" value="Ver partidos"/>
+</form>
