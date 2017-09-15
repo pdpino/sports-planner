@@ -4,7 +4,7 @@ const router = new KoaRouter();
 
 /**Fix the parameters passed by the sports/_form.html.ejs (used when creating and when editing a sport)*/
 function fixUpdateParams(body){
-  /* checkbox input passes 'on' when checked and null when not-checked. Pass this to boolean */
+  /* checkbox input passes 'on' when checked and null when not-checked. Parse this to boolean */
   body.isIndividual = Boolean(body.isIndividual);
 }
 
