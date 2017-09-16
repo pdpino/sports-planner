@@ -22,14 +22,7 @@ router.get('matchNew', '/new', async (ctx) => {
   await ctx.render('matches/new', {
     match,
     submitMatchPath: ctx.router.url('matchCreate'),
-  });
-});
-
-router.get('matchEdit', '/:id/edit', async (ctx) => {
-  const match = await ctx.orm.match.findById(ctx.params.id);
-  await ctx.render('matches/edit', {
-    match,
-    submitMatchPath: ctx.router.url('matchUpdate', match.id),
+    cancelPath: ctx.router.url('matches'),
   });
 });
 
@@ -43,8 +36,18 @@ router.post('matchCreate', '/', async (ctx) => {
       match: ctx.orm.match.build(ctx.request.body),
       errors: validationError.errors,
       submitMatchPath: ctx.router.url('matchCreate'),
+      cancelPath: ctx.router.url('matches'),
     });
   }
+});
+
+router.get('matchEdit', '/:id/edit', async (ctx) => {
+  const match = await ctx.orm.match.findById(ctx.params.id);
+  await ctx.render('matches/edit', {
+    match,
+    submitMatchPath: ctx.router.url('matchUpdate', match.id),
+    cancelPath: ctx.router.url('match', { id: ctx.params.id }),
+  });
 });
 
 router.patch('matchUpdate', '/:id', async (ctx) => {
@@ -58,6 +61,7 @@ router.patch('matchUpdate', '/:id', async (ctx) => {
       match,
       errors: validationError.errors,
       submitMatchPath: ctx.router.url('matchUpdate', match.id),
+      cancelPath: ctx.router.url('match', { id: ctx.params.id }),
     });
   }
 });

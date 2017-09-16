@@ -1,5 +1,9 @@
 <h1>Players en Jugamos</h1>
 
+<form action=<%= newPlayerPath %>>
+    <input type="submit" value="Crear Jugador"/>
+</form>
+
 <ul>
   <% players.forEach((player) => { %>
     <li>
@@ -13,7 +17,3 @@
     </li>
   <% }) %>
 </ul>
-
-<form action=<%= newPlayerPath %>>
-    <input type="submit" value="Crear"/>
-</form>

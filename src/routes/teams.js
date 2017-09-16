@@ -22,15 +22,7 @@ router.get('teamNew', '/new', async (ctx) => {
     team,
     sports: ctx.state.sports,
     submitTeamPath: ctx.router.url('teamCreate'),
-  });
-});
-
-router.get('teamEdit', '/:id/edit', async (ctx) => {
-  const team = await ctx.orm.team.findById(ctx.params.id);
-  await ctx.render('teams/edit', {
-    team,
-    sports: ctx.state.sports,
-    submitTeamPath: ctx.router.url('teamUpdate', team.id),
+    cancelPath: ctx.router.url('teams'),
   });
 });
 
@@ -44,8 +36,19 @@ router.post('teamCreate', '/', async (ctx) => {
       errors: validationError.errors,
       sports: ctx.state.sports,
       submitTeamPath: ctx.router.url('teamCreate'),
+      cancelPath: ctx.router.url('teams'),
     });
   }
+});
+
+router.get('teamEdit', '/:id/edit', async (ctx) => {
+  const team = await ctx.orm.team.findById(ctx.params.id);
+  await ctx.render('teams/edit', {
+    team,
+    sports: ctx.state.sports,
+    submitTeamPath: ctx.router.url('teamUpdate', team.id),
+    cancelPath: ctx.router.url('team', { id: ctx.params.id }),
+  });
 });
 
 router.patch('teamUpdate', '/:id', async (ctx) => {
@@ -58,7 +61,8 @@ router.patch('teamUpdate', '/:id', async (ctx) => {
       team,
       errors: validationError.errors,
       sports: ctx.state.sports,
-      sumbitTeamPath: ctx.router.url('teamUpdate', team.id),
+      submitTeamPath: ctx.router.url('teamUpdate', team.id),
+      cancelPath: ctx.router.url('team', { id: ctx.params.id }),
     });
   }
 });
@@ -82,6 +86,5 @@ router.delete('teamDelete', '/:id', async (ctx) => {
   await team.destroy();
   ctx.redirect(ctx.router.url('teams'));
 });
-
 
 module.exports = router;
