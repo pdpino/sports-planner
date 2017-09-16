@@ -4,7 +4,7 @@ module.exports = {
         email: 'admin@admin.jugamos.com',
         name: 'Admin',
         password: 'ADMIN', // really safe
-        isAdmin: true;
+        isAdmin: true,
         photo: null,
         gender: null,
         birthday: new Date(),
@@ -14,6 +14,6 @@ module.exports = {
   },
 
   down(queryInterface, Sequelize) {
-
+    // TODO !!
   },
 };
