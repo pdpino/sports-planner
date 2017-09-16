@@ -36,10 +36,14 @@
       <label for="photo">Photo</label>
       <input type="text" name="photo" value="<%= player.photo %>" />
     </div>
-    <div>
-      <label for="gender">Genero</label>
-      <input type="text" name="gender" value="<%= player.gender %>" />
-    </div>
+    <label for="gender">Género</label>
+    <% genders.forEach( (gender) => { %>
+      <div>
+        <input type="radio" name="gender" value="<%= gender %>"
+        <%= (player.gender == gender) ? 'checked' : '' %>/>
+        <%= gender %>
+      </div>
+    <% }) %>
     <div>
       <% if(player.isNewRecord) { %>
         <input type="submit" name="create" value="Registrarse" />

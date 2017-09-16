@@ -25,12 +25,21 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     },
     age: {
       type: DataTypes.DATEONLY,
+      allowNull: false,
       validate: {
+        notEmpty: true,
         isDate: true,
       },
     },
     photo: DataTypes.STRING,
-    gender: DataTypes.STRING,
+    gender: {
+      type: DataTypes.ENUM,
+      values: ['masculino', 'femenino'], // HACK: copied in migration (and probably in routes/players)
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
   });
   player.associate = function associate(models) {
     player.belongsToMany(models.sport, { through: models.plays });

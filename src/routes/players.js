@@ -4,9 +4,16 @@ const playerTeamsRouter = require('./playerTeams');
 
 const router = new KoaRouter();
 
+// HACK: this is copied from models.players
+// (how to access those values using models.player? look up the docs)
+const genders = ["masculino", "femenino"];
+
 /** Calculate the age of the player given his birthday**/
 function calculateAge(birthday){
+  // OPTIMIZE this function? dates can be substracted
   const today = new Date();
+
+  console.log("TYPE OF birthday", typeof(birthday));
 
   const year = birthday.substring(0,4);
   const month = birthday.substring(5,7);
@@ -14,7 +21,7 @@ function calculateAge(birthday){
 
   const dateBirthday = new Date(year, month-1, day);
   const diff =  today - dateBirthday;
-  const age = Math.floor (diff/(1000*60*60*24*365.25));
+  const age = Math.floor(diff/(1000*60*60*24*365.25));
   return age;
 }
 
@@ -31,6 +38,7 @@ router.get('playerNew', '/new', async (ctx) => {
   const player = ctx.orm.player.build(ctx.request.body);
   await ctx.render('players/new', {
     player,
+    genders,
     submitPlayerPath: ctx.router.url('playerCreate'),
     cancelPath : ctx.router.url('players'),
   });
@@ -43,6 +51,7 @@ router.post('playerCreate', '/', async (ctx) => {
   } catch (validationError) {
     await ctx.render('players/new', {
       player: ctx.orm.player.build(ctx.request.body),
+      genders,
       errors: validationError.errors,
       submitPlayerPath: ctx.router.url('playerCreate'),
       cancelPath: ctx.router.url('players'),
@@ -54,6 +63,7 @@ router.get('playerEdit', '/:id/edit', async (ctx) => {
   const player = await ctx.orm.player.findById(ctx.params.id);
   await ctx.render('players/edit', {
     player,
+    genders,
     submitPlayerPath: ctx.router.url('playerUpdate', player.id),
     deletePlayerPath: ctx.router.url('playerDelete', player.id),
     cancelPath: ctx.router.url('player', { id: player.id }),
@@ -68,6 +78,7 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
   } catch (validationError) {
     await ctx.render('players/edit', {
       player,
+      genders,
       errors: validationError.errors,
       submitPlayerPath: ctx.router.url('playerUpdate', player.id),
       deletePlayerPath: ctx.router.url('playerDelete', player.id),
