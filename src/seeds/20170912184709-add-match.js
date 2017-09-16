@@ -6,12 +6,12 @@ module.exports = {
     for (let i = 0; i < 10; i += 1) {
       matchesData.push({
         isPublic:faker.random.boolean(),
-        date: faker.date.soon(),
+        date: faker.date.past(),
         createdAt: new Date(),
         updatedAt: new Date(),
       });
     }
-    return queryInterface.bulkInsert('players', playersData);
+    return queryInterface.bulkInsert('matches', matchesData);
   },
 
   down(queryInterface, Sequelize) {
