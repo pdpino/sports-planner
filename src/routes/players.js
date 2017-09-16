@@ -25,6 +25,12 @@ function calculateAge(birthday){
   return age;
 }
 
+/** Fix the submit (new/edit) params **/
+function fixSubmitParams(params){
+  /** HACK: Avoids null value reaching the model, ugly error message (the notEmpty msg should be used) **/
+  params.gender = params.gender || '';
+}
+
 router.get('players', '/', async (ctx) => {
   const players = await ctx.orm.player.findAll();
   await ctx.render('players/index', {
@@ -45,6 +51,7 @@ router.get('playerNew', '/new', async (ctx) => {
 });
 
 router.post('playerCreate', '/', async (ctx) => {
+  fixSubmitParams(ctx.request.body);
   try {
     const player = await ctx.orm.player.create(ctx.request.body);
     ctx.redirect(ctx.router.url('players'));
@@ -71,6 +78,7 @@ router.get('playerEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('playerUpdate', '/:id', async (ctx) => {
+  fixSubmitParams(ctx.request.body);
   const player = await ctx.orm.player.findById(ctx.params.id);
   try {
     await player.update(ctx.request.body);

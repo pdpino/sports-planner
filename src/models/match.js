@@ -3,7 +3,9 @@ module.exports = function definematch(sequelize, DataTypes) {
     isPublic: {
       type:DataTypes.BOOLEAN,
     },
-    date: DataTypes.DATE,
+    date: {
+      type: DataTypes.DATE,
+    },
   });
   match.associate = function associate(models) {
     // associations can be defined here
