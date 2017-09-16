@@ -9,7 +9,7 @@ module.exports = {
         name: faker.name.findName(),
         photo: faker.image.avatar(),
         email: faker.internet.email(),
-        gender: null,
+        gender: "masculino",
         password: faker.internet.password(),
         birthday: faker.date.past(),
         createdAt: new Date(),
