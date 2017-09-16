@@ -83,11 +83,12 @@ router.get('team', '/:id', async (ctx) => {
     teamsPath: ctx.router.url('teams'),
     editTeamPath: ctx.router.url('teamEdit', team.id),
     deleteTeamPath: ctx.router.url('teamDelete', team.id),
-    editteamMemberPath: (player) => ctx.router.url('teamMemberEdit', {
+    getPlayerPath: (player) => ctx.router.url('player', player.id),
+    editTeamMemberPath: (player) => ctx.router.url('teamMemberEdit', {
       teamId: team.id,
       id: player.id
     }),
-    newteamMemberPath: ctx.router.url('teamMemberNew', { teamId: team.id } ),
+    newTeamMemberPath: ctx.router.url('teamMemberNew', { teamId: team.id } ),
     playersPath: ctx.router.url('teams'),
   });
 });

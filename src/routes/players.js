@@ -98,6 +98,8 @@ router.get('player', '/:id', async (ctx) => {
     playerSports,
     playerTeams,
     editPlayerPath: ctx.router.url('playerEdit', player.id),
+    getSportPath: (sport) => ctx.router.url('sport', sport.id),
+    getTeamPath: (team) => ctx.router.url('team', team.id),
     newPlayerTeamPath: ctx.router.url('playerTeamNew', { playerId: player.id } ),
     editPlayerTeamPath: (team) => ctx.router.url('playerTeamEdit', {
       playerId: player.id,
