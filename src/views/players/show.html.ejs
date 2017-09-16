@@ -38,6 +38,44 @@
 
 <br />
 
+<div>
+  <% if(memberofTeams.length > 0) { %>
+    <h4>Deportes que practica:</h4>
+    <ul>
+      <% memberofTeams.forEach((team) => { %>
+        <li>
+          <%= team.name %>
+          <form action=<%= editPlayerTeamPath(team) %>>
+              <input type="submit" value="Editar" />
+          </form>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <%= player.name %> no pertenece a ningún equipo.
+  <% } %>
+  <form action=<%= createPlayerTeamsPath %>>
+      <input type="submit" value="Añadir Equipo" />
+  </form>
+
+</div>
+
+<br />
+
 <form action=<%= playersPath %>>
     <input type="submit" value="Volver" />
 </form>
+
+<script type="text/javascript">
+  // TODO: pasar esto a router
+  const today= new Date();
+  var bday= <%= player.age%>;
+  const year= bday.substring(0,4);
+  const month= bday.substring(5,7);
+  const day=bday.substring(8,10);
+
+  var datebday= new Date(year, month-1, day);
+  const diff=  today - datebday;
+  const age= Math.floor (diff/(1000*60*60*24*365.25));
+  document.getElementById("playerage").innerHTML="Age: " +age.toString();
+</script>
