@@ -1,0 +1,29 @@
+<h1>Agregar Equipo</h1>
+
+<% if(teamsNotPlayed.length > 0) { %>
+  <form action="<%= submitPlayerTeamPath %>" method="post">
+    <div>
+      <label for="teamId">Elegir deporte</label>
+      <% teamsNotPlayed.forEach( (team) => { %>
+        <div>
+          <input type="radio" name="teamId" value="<%= team.id %>"/> <%= team.name %>
+        </div>
+      <% }) %>
+    </div>
+
+    <div>
+      <input type="submit" name="create" value="Añadir" />
+    </div>
+
+  </form>
+<% } else { %>
+  <div>
+    <strong>
+      No quedan equipos para agregar!
+    </strong>
+  </div>
+<% } %>
+
+<form action="<%= cancelPath %>" method="get">
+    <input type="submit" value="Cancelar"/>
+</form>

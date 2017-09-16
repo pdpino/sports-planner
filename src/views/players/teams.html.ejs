@@ -1,0 +1,29 @@
+<h1>Equipos de Jugador</h1>
+<div>
+  <% if (locals.errors) { %>
+    <div class="errors">
+      Necesitas arreglar los siguiente errores:
+      <ul>
+        <% errors.forEach(error => { %>
+          <li><%= error.message %></li>
+        <% }); %>
+      </ul>
+    </div>
+  <% } %>
+  <div>
+
+
+  <form action="<%= PlayeraddTeamPath %>" method="post">
+    <div>
+      <select name="selectedteamid">
+        <% teams.forEach((team) => { %>
+        <option name="teamid" value="<%= team.id %>"><%= team.name %></option>
+          <% }) %>
+      </select>
+      <input type="submit" name="add" value="Agregar Equipo" />
+    </div>
+  </form>
+
+  <form action=<%= gotodeletePlayerPath%>>
+      <input type="submit" value="Eliminar Equipos" />
+  </form>
