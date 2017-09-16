@@ -24,7 +24,7 @@ router.get('players', '/', async (ctx) => {
     players,
     playerPath: player => ctx.router.url('player', { id: player.id }),
     newPlayerPath: ctx.router.url('playerNew'),
-   });
+  });
 });
 
 router.get('playerNew', '/new', async (ctx) => {
@@ -41,7 +41,6 @@ router.post('playerCreate', '/', async (ctx) => {
     const player = await ctx.orm.player.create(ctx.request.body);
     ctx.redirect(ctx.router.url('players'));
   } catch (validationError) {
-    const sports = await ctx.orm.sport.findAll();
     await ctx.render('players/new', {
       player: ctx.orm.player.build(ctx.request.body),
       errors: validationError.errors,
@@ -53,16 +52,11 @@ router.post('playerCreate', '/', async (ctx) => {
 
 router.get('playerEdit', '/:id/edit', async (ctx) => {
   const player = await ctx.orm.player.findById(ctx.params.id);
-  const teams = await ctx.orm.team.findAll();
-  const Playerteams = await player.getTeams();
   await ctx.render('players/edit', {
     player,
-    teams,
-    Playerteams,
     submitPlayerPath: ctx.router.url('playerUpdate', player.id),
     deletePlayerPath: ctx.router.url('playerDelete', player.id),
     cancelPath: ctx.router.url('player', { id: player.id }),
-    editPlayerTeamsPath: ctx.router.url('playerTeams',player.id),
   });
 });
 
@@ -72,41 +66,37 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
     await player.update(ctx.request.body);
     ctx.redirect(ctx.router.url('player', { id: player.id }));
   } catch (validationError) {
-    const sports = await ctx.orm.sport.findAll();
     await ctx.render('players/edit', {
       player,
-      teams: await ctx.orm.team.findAll(),
       errors: validationError.errors,
       submitPlayerPath: ctx.router.url('playerUpdate', player.id),
       deletePlayerPath: ctx.router.url('playerDelete', player.id),
       cancelPath: ctx.router.url('player', { id: player.id }),
-      editPlayerTeamsPath: ctx.router.url('playerTeams',player.id),
     });
   }
 });
 
 router.get('player', '/:id', async (ctx) => {
   const player = await ctx.orm.player.findById(ctx.params.id);
-  const playSports = await player.getSports();
-  const memberOfTeams = await player.getTeams();
+  const playerSports = await player.getSports();
+  const playerTeams = await player.getTeams();
   const playerAge = calculateAge(player.age);
   await ctx.render('players/show', {
     player,
     playerAge,
-    playSports,
-    memberOfTeams,
+    playerSports,
+    playerTeams,
     editPlayerPath: ctx.router.url('playerEdit', player.id),
-    cancelPlayerPath: ctx.router.url('players'),
+    newPlayerTeamPath: ctx.router.url('playerTeamNew', { playerId: player.id } ),
     editPlayerTeamPath: (team) => ctx.router.url('playerTeamEdit', {
       playerId: player.id,
       id: team.id
     }),
+    newPlayerSportPath: ctx.router.url('playerSportNew', { playerId: player.id } ),
     editPlayerSportPath: (sport) => ctx.router.url('playerSportEdit', {
       playerId: player.id,
       id: sport.id }
     ),
-    newPlayerTeamsPath: ctx.router.url('playerTeamNew', { playerId: player.id } ),
-    newPlayerSportPath: ctx.router.url('playerSportNew', { playerId: player.id } ),
     playersPath: ctx.router.url('players'),
   });
 });
@@ -122,7 +112,7 @@ router.use(
   async (ctx, next) => {
     ctx.state.teams = await ctx.orm.team.findAll();
     ctx.state.player = await ctx.orm.player.findById(ctx.params.playerId);
-    ctx.state.memberOfTeams = await ctx.state.player.getTeams();
+    ctx.state.playerTeams = await ctx.state.player.getTeams();
     await next();
   },
   playerTeamsRouter.routes(),
@@ -133,7 +123,7 @@ router.use(
   async (ctx, next) => {
     ctx.state.sports = await ctx.orm.sport.findAll();
     ctx.state.player = await ctx.orm.player.findById(ctx.params.playerId);
-    ctx.state.playSports = await ctx.state.player.getSports();
+    ctx.state.playerSports = await ctx.state.player.getSports();
     await next();
   },
   playerSportsRouter.routes(),

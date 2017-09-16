@@ -1,16 +1,22 @@
 <h1>Agregar Equipo</h1>
 
-<% if(teamsNotPlayed.length > 0) { %>
+<% if(joinableTeams.length > 0) { %>
   <form action="<%= submitPlayerTeamPath %>" method="post">
     <div>
       <label for="teamId">Elegir deporte</label>
-      <% teamsNotPlayed.forEach( (team) => { %>
+      <% joinableTeams.forEach( (team) => { %>
         <div>
           <input type="radio" name="teamId" value="<%= team.id %>"/> <%= team.name %>
         </div>
       <% }) %>
     </div>
 
+    <br />
+    
+    <div>
+      <label for="isCaptain"></label>
+      <input type="checkbox" name="isCaptain" /> Capitán
+    </div>
     <div>
       <input type="submit" name="create" value="Añadir" />
     </div>

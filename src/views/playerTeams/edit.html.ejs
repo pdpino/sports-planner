@@ -11,13 +11,15 @@
     </div>
   <% } %>
 
-  <%= memberOfTeam.name %>
+  <%= playerTeam.name %>
   <form action="<%= submitPlayerTeamPath %>" method="post">
     <div>
       <input type="hidden" name="_method" value="patch" />
     </div>
-
-
+    <div>
+      <label for="isCaptain"></label>
+      <input type="checkbox" name="isCaptain" <%= (playerTeam.isMember.isCaptain) ? 'checked' : '' %> /> Capitán
+    </div>
     <div>
       <input type="submit" name="update" value="Guardar Cambios" />
     </div>
