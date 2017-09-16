@@ -16,7 +16,7 @@ const config = {
   },
   production: {
     extend: 'default',
-    database: 'iic2513template_production',
+    use_env_variable: 'DATABASE_URL',
   },
 };
 
