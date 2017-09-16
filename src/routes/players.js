@@ -92,18 +92,21 @@ router.get('player', '/:id', async (ctx) => {
   const playerAge = calculateAge(player.age);
   await ctx.render('players/show', {
     player,
-    playSports,
     playerAge,
+    playSports,
     memberOfTeams,
-    editPlayerPath: ctx.router.url('playerEdit',player.id),
+    editPlayerPath: ctx.router.url('playerEdit', player.id),
     cancelPlayerPath: ctx.router.url('players'),
-    editPlayerTeamPath: (team) => ctx.router.url('playerTeamEdit', { playerId: player.id, id: team.id } ),
+    editPlayerTeamPath: (team) => ctx.router.url('playerTeamEdit', {
+      playerId: player.id,
+      id: team.id
+    }),
     editPlayerSportPath: (sport) => ctx.router.url('playerSportEdit', {
       playerId: player.id,
       id: sport.id }
     ),
     newPlayerTeamsPath: ctx.router.url('playerTeamNew', { playerId: player.id } ),
-    newPlayerSportsPath: ctx.router.url('playerSportNew', { playerId: player.id } ),
+    newPlayerSportPath: ctx.router.url('playerSportNew', { playerId: player.id } ),
     playersPath: ctx.router.url('players'),
   });
 });
