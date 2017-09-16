@@ -4,9 +4,16 @@ const playerTeamsRouter = require('./playerTeams');
 
 const router = new KoaRouter();
 
+// HACK: this is copied from models.players
+// (how to access those values using models.player? look up the docs)
+const genders = ["masculino", "femenino"];
+
 /** Calculate the age of the player given his birthday**/
 function calculateAge(birthday){
+  // OPTIMIZE this function? dates can be substracted
   const today = new Date();
+
+  console.log("TYPE OF birthday", typeof(birthday));
 
   const year = birthday.substring(0,4);
   const month = birthday.substring(5,7);
@@ -14,8 +21,14 @@ function calculateAge(birthday){
 
   const dateBirthday = new Date(year, month-1, day);
   const diff =  today - dateBirthday;
-  const age = Math.floor (diff/(1000*60*60*24*365.25));
+  const age = Math.floor(diff/(1000*60*60*24*365.25));
   return age;
+}
+
+/** Fix the submit (new/edit) params **/
+function fixSubmitParams(params){
+  /** HACK: Avoids null value reaching the model, ugly error message (the notEmpty msg should be used) **/
+  params.gender = params.gender || '';
 }
 
 router.get('players', '/', async (ctx) => {
@@ -31,18 +44,21 @@ router.get('playerNew', '/new', async (ctx) => {
   const player = ctx.orm.player.build(ctx.request.body);
   await ctx.render('players/new', {
     player,
+    genders,
     submitPlayerPath: ctx.router.url('playerCreate'),
     cancelPath : ctx.router.url('players'),
   });
 });
 
 router.post('playerCreate', '/', async (ctx) => {
+  fixSubmitParams(ctx.request.body);
   try {
     const player = await ctx.orm.player.create(ctx.request.body);
     ctx.redirect(ctx.router.url('players'));
   } catch (validationError) {
     await ctx.render('players/new', {
       player: ctx.orm.player.build(ctx.request.body),
+      genders,
       errors: validationError.errors,
       submitPlayerPath: ctx.router.url('playerCreate'),
       cancelPath: ctx.router.url('players'),
@@ -54,6 +70,7 @@ router.get('playerEdit', '/:id/edit', async (ctx) => {
   const player = await ctx.orm.player.findById(ctx.params.id);
   await ctx.render('players/edit', {
     player,
+    genders,
     submitPlayerPath: ctx.router.url('playerUpdate', player.id),
     deletePlayerPath: ctx.router.url('playerDelete', player.id),
     cancelPath: ctx.router.url('player', { id: player.id }),
@@ -61,6 +78,7 @@ router.get('playerEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('playerUpdate', '/:id', async (ctx) => {
+  fixSubmitParams(ctx.request.body);
   const player = await ctx.orm.player.findById(ctx.params.id);
   try {
     await player.update(ctx.request.body);
@@ -68,6 +86,7 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
   } catch (validationError) {
     await ctx.render('players/edit', {
       player,
+      genders,
       errors: validationError.errors,
       submitPlayerPath: ctx.router.url('playerUpdate', player.id),
       deletePlayerPath: ctx.router.url('playerDelete', player.id),
@@ -80,13 +99,15 @@ router.get('player', '/:id', async (ctx) => {
   const player = await ctx.orm.player.findById(ctx.params.id);
   const playerSports = await player.getSports();
   const playerTeams = await player.getTeams();
-  const playerAge = calculateAge(player.age);
+  const playerAge = calculateAge(player.birthday);
   await ctx.render('players/show', {
     player,
     playerAge,
     playerSports,
     playerTeams,
     editPlayerPath: ctx.router.url('playerEdit', player.id),
+    getSportPath: (sport) => ctx.router.url('sport', sport.id),
+    getTeamPath: (team) => ctx.router.url('team', team.id),
     newPlayerTeamPath: ctx.router.url('playerTeamNew', { playerId: player.id } ),
     editPlayerTeamPath: (team) => ctx.router.url('playerTeamEdit', {
       playerId: player.id,

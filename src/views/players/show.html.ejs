@@ -8,7 +8,7 @@
 
   <br>
 
-  <p> Cumpleaños: <%= player.age %> </p>
+  <p> Cumpleaños: <%= player.birthday %> </p>
 
   <br>
 
@@ -27,7 +27,10 @@
     <ul>
       <% playerSports.forEach((sport) => { %>
         <li>
-          <%= sport.name %> -- Posición (es): <%= sport.plays.position %>
+          <a href="<%= getSportPath(sport) %>">
+            <%= sport.name %>
+          </a>
+          -- Posición (es): <%= sport.plays.position %>
           <form action="<%= editPlayerSportPath(sport) %>">
               <input type="submit" value="Editar deporte" />
           </form>
@@ -51,7 +54,10 @@
     <ul>
       <% playerTeams.forEach((team) => { %>
         <li>
-          <%= team.name %> <%= (team.isMember.isCaptain) ? '-- Capitán del equipo' : '' %>
+          <a href="<%= getTeamPath(team) %>">
+            <%= team.name %>
+          </a>
+          <%= (team.isMember.isCaptain) ? '-- Capitán del equipo' : '' %>
           <form action="<%= editPlayerTeamPath(team) %>">
               <input type="submit" value="Editar" />
           </form>

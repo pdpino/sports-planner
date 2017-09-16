@@ -1,12 +1,6 @@
 module.exports = {
   up(queryInterface, Sequelize) {
     return queryInterface.createTable('isMembers', {
-      // id: {
-      //   allowNull: false,
-      //   autoIncrement: true,
-      //   primaryKey: true,
-      //   type: Sequelize.INTEGER,
-      // },
       playerId: {
         primaryKey: true,
         type: Sequelize.INTEGER,

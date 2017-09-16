@@ -4,7 +4,9 @@ module.exports = function definesport(sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        notEmpty: true,
+        notEmpty: {
+          msg: "Debes ingresar un nombre"
+        },
       }
     },
     logo: DataTypes.STRING,

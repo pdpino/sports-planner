@@ -24,8 +24,11 @@
     <ul>
       <% teamMembers.forEach((teamMember) => { %>
         <li>
-          <%= teamMember.name %> <%= (teamMember.isMember.isCaptain ? '-- capitán del equipo' : '' )%>
-          <form action=<%= editteamMemberPath(teamMember) %>>
+          <a href="<%= getPlayerPath(teamMember) %>">
+            <%= teamMember.name %>
+          </a>
+          <%= (teamMember.isMember.isCaptain ? '-- capitán del equipo' : '' )%>
+          <form action=<%= editTeamMemberPath(teamMember) %>>
               <input type="submit" value="Editar" />
           </form>
         </li>
@@ -34,7 +37,7 @@
   <% } else { %>
     <%= team.name %> no tiene jugadores.
   <% } %>
-  <form action=<%= newteamMemberPath %>>
+  <form action=<%= newTeamMemberPath %>>
       <input type="submit" value="Añadir Jugador" />
   </form>
 </div>

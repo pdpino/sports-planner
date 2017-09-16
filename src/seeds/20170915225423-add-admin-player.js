@@ -7,7 +7,7 @@ module.exports = {
         isAdmin: true;
         photo: null,
         gender: null,
-        age: new Date();
+        birthday: new Date();
         createdAt: new Date(),
         updatedAt: new Date(),
       }], {});

@@ -22,24 +22,28 @@
     </div>
     <div>
       <label for="password">password</label>
-      <input type="text" name="password" value="<%= player.password %>" />
+      <input type="password" name="password" value="<%= player.password %>" />
     </div>
     <div>
       <label for="name">Nombre</label>
       <input type="text" name="name" value="<%= player.name %>" />
     </div>
     <div>
-      <label for="age">Cumpleaños</label>
-      <input type="date" name="age" value="<%= player.age %>" />
+      <label for="birthday">Cumpleaños</label>
+      <input type="date" name="birthday" value="<%= player.birthday %>" />
     </div>
     <div>
       <label for="photo">Photo</label>
       <input type="text" name="photo" value="<%= player.photo %>" />
     </div>
-    <div>
-      <label for="gender">Genero</label>
-      <input type="text" name="gender" value="<%= player.gender %>" />
-    </div>
+    <label for="gender">Género</label>
+    <% genders.forEach( (gender) => { %>
+      <div>
+        <input type="radio" name="gender" value="<%= gender %>"
+        <%= (player.gender == gender) ? 'checked' : '' %>/>
+        <%= gender %>
+      </div>
+    <% }) %>
     <div>
       <% if(player.isNewRecord) { %>
         <input type="submit" name="create" value="Registrarse" />
