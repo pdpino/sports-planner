@@ -17,6 +17,7 @@ function getSportsNotPlayed(allSports, playSports){
 
 /** Return the sport played by player, searching with sportId **/
 async function findPlayerSportById(player, sportId){
+  // OPTIMIZE? use a model function?
   const playSports = await player.getSports( { where: { id: sportId } } );
   return (playSports.length == 1) ? playSports[0] : null;
 }

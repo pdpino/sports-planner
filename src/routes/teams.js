@@ -1,4 +1,5 @@
 const KoaRouter = require('koa-router');
+const playerTeamsRouter = require('./teamPlayers');
 
 const router = new KoaRouter();
 
@@ -7,7 +8,7 @@ router.get('teams', '/', async (ctx) => {
   await ctx.render('teams/index', {
     teams,
     sports: ctx.state.sports,
-    getTeamSport: (team) => {
+    getTeamSport: (team) => { // FIXME
       const matchSports = ctx.state.sports.filter(sport => sport.id === team.sportId); // OPTIMIZE ?
       return (matchSports[0]) ? matchSports[0].name : team.sportId; // avoid internal server error
     },
@@ -70,14 +71,20 @@ router.patch('teamUpdate', '/:id', async (ctx) => {
 router.get('team', '/:id', async (ctx) => {
   const team = await ctx.orm.team.findById(ctx.params.id);
   const sport = await ctx.orm.sport.findById(team.sportId);
-  const TeamPlayers = await team.getPlayers(); // REVIEW: get sport from ctx.state.sport?
+  const memberOfTeams = await team.getPlayers(); // FIXME: change name?
   await ctx.render('teams/show', {
     team,
-    TeamPlayers,
+    memberOfTeams,
     sport: sport.name,
     teamsPath: ctx.router.url('teams'),
     editTeamPath: ctx.router.url('teamEdit', team.id),
     deleteTeamPath: ctx.router.url('teamDelete', team.id),
+    editTeamPlayerPath: (player) => ctx.router.url('teamPlayerEdit', {
+      teamId: team.id,
+      id: player.id
+    }),
+    newTeamPlayerPath: ctx.router.url('teamPlayerNew', { teamId: team.id } ),
+    playersPath: ctx.router.url('teams'),
   });
 });
 
@@ -86,5 +93,16 @@ router.delete('teamDelete', '/:id', async (ctx) => {
   await team.destroy();
   ctx.redirect(ctx.router.url('teams'));
 });
+
+router.use(
+  '/:teamId/teams',
+  async (ctx, next) => {
+    ctx.state.players = await ctx.orm.player.findAll();
+    ctx.state.team = await ctx.orm.team.findById(ctx.params.teamId);
+    ctx.state.memberOfTeams = await ctx.state.team.getPlayers(); // FIXME: change name
+    await next();
+  },
+  playerTeamsRouter.routes(),
+);
 
 module.exports = router;

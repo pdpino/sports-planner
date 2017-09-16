@@ -31,8 +31,6 @@ router.get('playerTeamNew', '/new', async (ctx) => {
 });
 
 router.post('playerTeamCreate', '/', async (ctx) => {
-  console.log("CREATING");
-  const playTeams = await findPlayerTeamById(ctx.state.player, ctx.params.id);
   try {
     await ctx.state.player.addTeam(ctx.request.body.teamId, { through: { position: ctx.request.body.position }});
     ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));
