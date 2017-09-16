@@ -4,9 +4,16 @@
   <h4>Información personal</h4>
   <img src=<%= player.photo %> > <br>
 
-  <a>E-mail: <%= player.email %></a><br>
+  <p> E-mail: <%= player.email %> </p>
 
-  <a>birthday: <%= player.age %> </a><br>
+  <br>
+
+  <p> Cumpleaños: <%= player.age %> </p>
+
+  <br>
+
+  <p> Edad: <%= playerAge %> </p>
+
   <form action=<%= editPlayerPath %>>
       <input type="submit" value="Editar Información personal" />
   </form>
@@ -65,17 +72,3 @@
 <form action=<%= playersPath %>>
     <input type="submit" value="Volver" />
 </form>
-
-<script type="text/javascript">
-  // TODO: pasar esto a router
-  const today= new Date();
-  var bday= <%= player.age%>;
-  const year= bday.substring(0,4);
-  const month= bday.substring(5,7);
-  const day=bday.substring(8,10);
-
-  var datebday= new Date(year, month-1, day);
-  const diff=  today - datebday;
-  const age= Math.floor (diff/(1000*60*60*24*365.25));
-  document.getElementById("playerage").innerHTML="Age: " +age.toString();
-</script>
