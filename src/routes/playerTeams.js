@@ -26,7 +26,7 @@ router.get('playerTeamNew', '/new', async (ctx) => {
     player: ctx.state.player,
     teamsNotPlayed: getTeamsNotMember(ctx.state.teams, ctx.state.memberOfTeams),
     submitPlayerTeamPath: ctx.router.url('playerTeamCreate', { playerId: ctx.state.player.id }),
-    cancelPath: ctx.router.url('playerShow', ctx.state.player.id)
+    cancelPath: ctx.router.url('player', ctx.state.player.id)
   });
 });
 
@@ -35,7 +35,7 @@ router.post('playerTeamCreate', '/', async (ctx) => {
   const playTeams = await findPlayerTeamById(ctx.state.player, ctx.params.id);
   try {
     await ctx.state.player.addTeam(ctx.request.body.teamId, { through: { position: ctx.request.body.position }});
-    ctx.redirect(ctx.router.url('playerShow', { id: ctx.state.player.id }));
+    ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));
   } catch (validationError) {
     console.log("###### validation error when creating player-team: ", validationError); // DEBUG
     await ctx.render('playerTeams/new', {
@@ -43,7 +43,7 @@ router.post('playerTeamCreate', '/', async (ctx) => {
       teamsNotPlayed: getTeamsNotMember(ctx.state.teams, ctx.state.memberOfTeams),
       errors: validationError.errors,
       submitPlayerTeamPath: ctx.router.url('playerTeamCreate', { playerId: ctx.state.player.id }),
-      cancelPath: ctx.router.url('playerShow', ctx.state.player.id)
+      cancelPath: ctx.router.url('player', ctx.state.player.id)
     });
   }
 });
@@ -61,7 +61,7 @@ router.get('playerTeamEdit', '/:id/edit', async (ctx) => {
       playerId: ctx.state.player.id,
       id: memberOfTeam.id
     }),
-    cancelPath: ctx.router.url('playerShow', ctx.state.player.id)
+    cancelPath: ctx.router.url('player', ctx.state.player.id)
   });
 });
 
@@ -69,7 +69,7 @@ router.patch('playerTeamUpdate', '/:id', async (ctx) => {
   const memberOfTeam = await findPlayerTeamById(ctx.state.player, ctx.params.id);
   try {
     await ctx.state.player.addTeam(memberOfTeam, { through: { position: ctx.request.body.position }});
-    ctx.redirect(ctx.router.url('playerShow', { id: ctx.state.player.id }));
+    ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));
   } catch (validationError) {
     console.log("###### validation error when updating player-team: ", validationError); // DEBUG
     await ctx.render('playerTeams/edit', {
@@ -77,14 +77,14 @@ router.patch('playerTeamUpdate', '/:id', async (ctx) => {
       memberOfTeam,
       errors: validationError.errors,
       submitPlayerTeamPath: ctx.router.url('playerTeamUpdate', { playerId: ctx.state.player.id, id: memberOfTeam.id }),
-      cancelPath: ctx.router.url('playerShow', ctx.state.player.id)
+      cancelPath: ctx.router.url('player', ctx.state.player.id)
     });
   }
 });
 
 router.delete('playerTeamDelete', '/:id', async (ctx) => {
    await ctx.state.player.removeTeam(ctx.params.id);
-   ctx.redirect(ctx.router.url('playerShow', ctx.state.player.id));
+   ctx.redirect(ctx.router.url('player', ctx.state.player.id));
  });
 
 
