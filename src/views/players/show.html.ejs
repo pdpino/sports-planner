@@ -35,7 +35,7 @@
       <% }) %>
     </ul>
   <% } else { %>
-    <%= player.name %> no practica ningún deporte actualmente.
+    No practica ningún deporte.
   <% } %>
   <form action=<%= createPlayerSportsPath %>>
       <input type="submit" value="Añadir deporte" />
@@ -47,7 +47,7 @@
 
 <div>
   <% if(memberofTeams.length > 0) { %>
-    <h4>Deportes que practica:</h4>
+    <h4> Equipos a los que pertenece: </h4>
     <ul>
       <% memberofTeams.forEach((team) => { %>
         <li>
@@ -59,7 +59,7 @@
       <% }) %>
     </ul>
   <% } else { %>
-    <%= player.name %> no pertenece a ningún equipo.
+    No pertenece a ningún equipo.
   <% } %>
   <form action=<%= createPlayerTeamsPath %>>
       <input type="submit" value="Añadir Equipo" />
