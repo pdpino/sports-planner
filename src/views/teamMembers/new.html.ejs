@@ -1,7 +1,7 @@
 <h1>Agregar Jugadores</h1>
 
 <% if(playersNotInTeam.length > 0) { %>
-  <form action="<%= submitTeamPlayerPath %>" method="post">
+  <form action="<%= submitteamMemberPath %>" method="post">
     <div>
       <label for="playerId">Elegir Jugadores</label>
       <% playersNotInTeam.forEach( (player) => { %>

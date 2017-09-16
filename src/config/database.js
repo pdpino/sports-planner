@@ -8,7 +8,7 @@ const config = {
   },
   development: {
     extend: 'default',
-    database: process.env.DB_NAME, //'iic2513template_dev', // TODO: create different dbs for development, test, production
+    database: process.env.DB_NAME, //'iic2513template_dev', production
   },
   test: {
     extend: 'default',

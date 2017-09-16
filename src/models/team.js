@@ -12,7 +12,7 @@ module.exports = function defineteam(sequelize, DataTypes) {
   team.associate = function associate(models) {
     // associations can be defined here
     team.belongsTo(models.sport);
-    team.belongsToMany(models.player,{ through: models.isMember});
+    team.belongsToMany(models.player, { through: models.isMember });
   };
   return team;
 };

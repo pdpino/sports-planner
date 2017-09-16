@@ -1,5 +1,5 @@
 const KoaRouter = require('koa-router');
-const playerTeamsRouter = require('./teamPlayers');
+const teamMembersRouter = require('./teamMembers');
 
 const router = new KoaRouter();
 
@@ -83,11 +83,11 @@ router.get('team', '/:id', async (ctx) => {
     teamsPath: ctx.router.url('teams'),
     editTeamPath: ctx.router.url('teamEdit', team.id),
     deleteTeamPath: ctx.router.url('teamDelete', team.id),
-    editTeamPlayerPath: (player) => ctx.router.url('teamPlayerEdit', {
+    editteamMemberPath: (player) => ctx.router.url('teamMemberEdit', {
       teamId: team.id,
       id: player.id
     }),
-    newTeamPlayerPath: ctx.router.url('teamPlayerNew', { teamId: team.id } ),
+    newteamMemberPath: ctx.router.url('teamMemberNew', { teamId: team.id } ),
     playersPath: ctx.router.url('teams'),
   });
 });
@@ -99,14 +99,14 @@ router.delete('teamDelete', '/:id', async (ctx) => {
 });
 
 router.use(
-  '/:teamId/teams',
+  '/:teamId/players',
   async (ctx, next) => {
     ctx.state.team = await ctx.orm.team.findById(ctx.params.teamId);
     ctx.state.teamMembers = await ctx.state.team.getPlayers();
-    ctx.state.players = await ctx.orm.player.findAll(); // CHGME: no escalable?
+    ctx.state.players = await ctx.orm.player.findAll();
     await next();
   },
-  playerTeamsRouter.routes(),
+  teamMembersRouter.routes(),
 );
 
 module.exports = router;

@@ -28,20 +28,19 @@ function fixSubmitParams(params){
 }
 
 
-router.get('teamPlayerNew', '/new', async (ctx) => {
-  await ctx.render('teamPlayers/new', {
+router.get('teamMemberNew', '/new', async (ctx) => {
+  await ctx.render('teamMembers/new', {
     team: ctx.state.team,
     playersNotInTeam: getInvitablePlayers(ctx.state.players, ctx.state.teamMembers),
-    submitTeamPlayerPath: ctx.router.url('teamPlayerCreate', {
+    submitteamMemberPath: ctx.router.url('teamMemberCreate', {
       teamId: ctx.state.team.id
     }),
     cancelPath: ctx.router.url('team', ctx.state.team.id)
   });
 });
 
-router.post('teamPlayerCreate', '/', async (ctx) => {
+router.post('teamMemberCreate', '/', async (ctx) => {
   fixSubmitParams(ctx.request.body);
-  console.log("CREATING: ", ctx.request.body.isCaptain, ctx.request.body.playerId);
   try {
     await ctx.state.team.addPlayer(ctx.request.body.playerId, {
       through: { isCaptain: ctx.request.body.isCaptain }
@@ -49,11 +48,11 @@ router.post('teamPlayerCreate', '/', async (ctx) => {
     ctx.redirect(ctx.router.url('team', { id: ctx.state.team.id }));
   } catch (validationError) {
     console.log("###### validation error when creating team-player: ", validationError); // DEBUG
-    await ctx.render('teamPlayers/new', {
+    await ctx.render('teamMembers/new', {
       team: ctx.state.team,
       errors: validationError.errors,
       playersNotInTeam: getInvitablePlayers(ctx.state.players, ctx.state.teamMembers),
-      submitTeamPlayerPath: ctx.router.url('teamPlayerCreate', {
+      submitteamMemberPath: ctx.router.url('teamMemberCreate', {
         teamId: ctx.state.team.id
       }),
       cancelPath: ctx.router.url('team', ctx.state.team.id)
@@ -61,16 +60,16 @@ router.post('teamPlayerCreate', '/', async (ctx) => {
   }
 });
 
-router.get('teamPlayerEdit', '/:id/edit', async (ctx) => {
+router.get('teamMemberEdit', '/:id/edit', async (ctx) => {
   const teamMember = await findTeamMemberById(ctx.state.team, ctx.params.id);
-  await ctx.render('teamPlayers/edit', {
+  await ctx.render('teamMembers/edit', {
     team: ctx.state.team,
     teamMember,
-    submitTeamPlayerPath: ctx.router.url('teamPlayerUpdate', {
+    submitteamMemberPath: ctx.router.url('teamMemberUpdate', {
       teamId: ctx.state.team.id,
       id: teamMember.id
     }),
-    deleteTeamPlayerPath: ctx.router.url('teamPlayerDelete', {
+    deleteteamMemberPath: ctx.router.url('teamMemberDelete', {
       teamId: ctx.state.team.id,
       id: teamMember.id
     }),
@@ -78,10 +77,9 @@ router.get('teamPlayerEdit', '/:id/edit', async (ctx) => {
   });
 });
 
-router.patch('teamPlayerUpdate', '/:id', async (ctx) => {
+router.patch('teamMemberUpdate', '/:id', async (ctx) => {
   fixSubmitParams(ctx.request.body);
   const teamMember = await findTeamMemberById(ctx.state.team, ctx.params.id);
-  console.log("UPDATING: ", ctx.request.body.isCaptain, teamMember);
   try {
     await ctx.state.team.addPlayer(teamMember, {
       through: { isCaptain: ctx.request.body.isCaptain }
@@ -89,15 +87,15 @@ router.patch('teamPlayerUpdate', '/:id', async (ctx) => {
     ctx.redirect(ctx.router.url('team', { id: ctx.state.team.id }));
   } catch (validationError) {
     console.log("###### validation error when updating team-player: ", validationError); // DEBUG
-    await ctx.render('teamPlayers/edit', {
+    await ctx.render('teamMembers/edit', {
       team: ctx.state.team,
       teamMember,
       errors: validationError.errors,
-      submitTeamPlayerPath: ctx.router.url('teamPlayerUpdate', {
+      submitteamMemberPath: ctx.router.url('teamMemberUpdate', {
         teamId: ctx.state.team.id,
         id: teamMember.id
       }),
-      deleteTeamPlayerPath: ctx.router.url('teamPlayerDelete', {
+      deleteteamMemberPath: ctx.router.url('teamMemberDelete', {
         teamId: ctx.state.team.id,
         id: teamMember.id
       }),
@@ -106,7 +104,7 @@ router.patch('teamPlayerUpdate', '/:id', async (ctx) => {
   }
 });
 
-router.delete('teamPlayerDelete', '/:id', async (ctx) => {
+router.delete('teamMemberDelete', '/:id', async (ctx) => {
    await ctx.state.team.removePlayer(ctx.params.id);
    ctx.redirect(ctx.router.url('team', ctx.state.team.id));
  });
