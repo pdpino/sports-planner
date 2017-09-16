@@ -1,6 +1,6 @@
 module.exports = function defineisMember(sequelize, DataTypes) {
   const isMember = sequelize.define('isMember', {
-    isCaptain:{
+    isCaptain: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     }

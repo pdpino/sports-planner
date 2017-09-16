@@ -3,15 +3,19 @@ const playerTeamsRouter = require('./teamPlayers');
 
 const router = new KoaRouter();
 
+/** Finds the name of the sportId, given all the sports **/
+function findSportName(sportId, allSports){
+  // OPTIMIZE? use a model function?
+  const sportsFound = allSports.filter(sport => sport.id == sportId);
+  return (sportsFound[0]) ? sportsFound[0].name : null;
+}
+
 router.get('teams', '/', async (ctx) => {
   const teams = await ctx.orm.team.findAll();
   await ctx.render('teams/index', {
     teams,
     sports: ctx.state.sports,
-    getTeamSport: (team) => { // FIXME
-      const matchSports = ctx.state.sports.filter(sport => sport.id === team.sportId); // OPTIMIZE ?
-      return (matchSports[0]) ? matchSports[0].name : team.sportId; // avoid internal server error
-    },
+    getTeamSport: (team) => findSportName(team.sportId, ctx.state.sports),
     teamPath: team => ctx.router.url('team', { id: team.id }),
     newTeamPath: ctx.router.url('teamNew'),
   });
@@ -71,10 +75,10 @@ router.patch('teamUpdate', '/:id', async (ctx) => {
 router.get('team', '/:id', async (ctx) => {
   const team = await ctx.orm.team.findById(ctx.params.id);
   const sport = await ctx.orm.sport.findById(team.sportId);
-  const memberOfTeams = await team.getPlayers(); // FIXME: change name?
+  const teamMembers = await team.getPlayers();
   await ctx.render('teams/show', {
     team,
-    memberOfTeams,
+    teamMembers,
     sport: sport.name,
     teamsPath: ctx.router.url('teams'),
     editTeamPath: ctx.router.url('teamEdit', team.id),
@@ -97,9 +101,9 @@ router.delete('teamDelete', '/:id', async (ctx) => {
 router.use(
   '/:teamId/teams',
   async (ctx, next) => {
-    ctx.state.players = await ctx.orm.player.findAll();
     ctx.state.team = await ctx.orm.team.findById(ctx.params.teamId);
-    ctx.state.memberOfTeams = await ctx.state.team.getPlayers(); // FIXME: change name
+    ctx.state.teamMembers = await ctx.state.team.getPlayers();
+    ctx.state.players = await ctx.orm.player.findAll(); // CHGME: no escalable?
     await next();
   },
   playerTeamsRouter.routes(),

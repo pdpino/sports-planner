@@ -19,13 +19,13 @@
 </form>
 
 <div>
-  <% if(memberOfTeams.length > 0) { %>
+  <% if(teamMembers.length > 0) { %>
     <h4>Jugadores:</h4>
     <ul>
-      <% memberOfTeams.forEach((player) => { %>
+      <% teamMembers.forEach((teamMember) => { %>
         <li>
-          <%= player.name %>
-          <form action=<%= editTeamPlayerPath(player) %>>
+          <%= teamMember.name %> <%= (teamMember.isMember.isCaptain ? '-- capitán del equipo' : '' )%>
+          <form action=<%= editTeamPlayerPath(teamMember) %>>
               <input type="submit" value="Editar" />
           </form>
         </li>

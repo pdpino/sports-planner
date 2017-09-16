@@ -1,14 +1,21 @@
 <h1>Agregar Jugadores</h1>
 
-<% if(teamsNotPlayed.length > 0) { %>
+<% if(playersNotInTeam.length > 0) { %>
   <form action="<%= submitTeamPlayerPath %>" method="post">
     <div>
       <label for="playerId">Elegir Jugadores</label>
-      <% teamsNotPlayed.forEach( (player) => { %>
+      <% playersNotInTeam.forEach( (player) => { %>
         <div>
           <input type="radio" name="playerId" value="<%= player.id %>"/> <%= player.name %>
         </div>
       <% }) %>
+    </div>
+
+    <br />
+
+    <div>
+      <label for="isCaptain"></label>
+      <input type="checkbox" name="isCaptain" /> Capitán?
     </div>
 
     <div>

@@ -112,33 +112,31 @@ router.get('player', '/:id', async (ctx) => {
 });
 
 router.delete('playerDelete', '/:id', async (ctx) => {
-   const player = await ctx.orm.player.findById(ctx.params.id);
-   await player.destroy();
-   ctx.redirect(ctx.router.url('players'));
- });
+  const player = await ctx.orm.player.findById(ctx.params.id);
+  await player.destroy();
+  ctx.redirect(ctx.router.url('players'));
+});
 
-
-
-  router.use(
- '/:playerId/teams',
- async (ctx, next) => {
-   ctx.state.teams= await ctx.orm.team.findAll();
-   ctx.state.player = await ctx.orm.player.findById(ctx.params.playerId);
-   ctx.state.memberOfTeams = await ctx.state.player.getTeams();
-   await next();
- },
- playerTeamsRouter.routes(),
+router.use(
+  '/:playerId/teams',
+  async (ctx, next) => {
+    ctx.state.teams = await ctx.orm.team.findAll();
+    ctx.state.player = await ctx.orm.player.findById(ctx.params.playerId);
+    ctx.state.memberOfTeams = await ctx.state.player.getTeams();
+    await next();
+  },
+  playerTeamsRouter.routes(),
 );
 
 router.use(
- '/:playerId/sports',
- async (ctx, next) => {
-   ctx.state.sports = await ctx.orm.sport.findAll();
-   ctx.state.player = await ctx.orm.player.findById(ctx.params.playerId);
-   ctx.state.playSports = await ctx.state.player.getSports();
-   await next();
- },
- playerSportsRouter.routes(),
+  '/:playerId/sports',
+  async (ctx, next) => {
+    ctx.state.sports = await ctx.orm.sport.findAll();
+    ctx.state.player = await ctx.orm.player.findById(ctx.params.playerId);
+    ctx.state.playSports = await ctx.state.player.getSports();
+    await next();
+  },
+  playerSportsRouter.routes(),
 );
 
 module.exports = router;

@@ -3,7 +3,7 @@ const KoaRouter = require('koa-router');
 const router = new KoaRouter();
 
 /**Fix the parameters passed by the matches/_form.html.ejs (used when creating and when editing a match)*/
-function fixUpdateParams(body){
+function fixSubmitParams(body){
   /* checkbox input passes 'on' when checked and null when not-checked. Parse this to boolean */
   body.isPublic = Boolean(body.isPublic);
 }
@@ -27,7 +27,7 @@ router.get('matchNew', '/new', async (ctx) => {
 });
 
 router.post('matchCreate', '/', async (ctx) => {
-  fixUpdateParams(ctx.request.body);
+  fixSubmitParams(ctx.request.body);
   try {
     const match = await ctx.orm.match.create(ctx.request.body);
     ctx.redirect(ctx.router.url('match', match.id ));
@@ -51,7 +51,7 @@ router.get('matchEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('matchUpdate', '/:id', async (ctx) => {
-  fixUpdateParams(ctx.request.body);
+  fixSubmitParams(ctx.request.body);
   const match = await ctx.orm.match.findById(ctx.params.id);
   try {
     await match.update(ctx.request.body);
