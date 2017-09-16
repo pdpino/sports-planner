@@ -23,12 +23,13 @@ module.exports = function defineplayer(sequelize, DataTypes) {
         notEmpty: true,
       },
     },
-    age: {
+    birthday: {
       type: DataTypes.DATEONLY,
       allowNull: false,
       validate: {
         notEmpty: true,
         isDate: true,
+        isBefore: String(new Date()), // today
       },
     },
     photo: DataTypes.STRING,

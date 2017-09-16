@@ -91,7 +91,7 @@ router.get('player', '/:id', async (ctx) => {
   const player = await ctx.orm.player.findById(ctx.params.id);
   const playerSports = await player.getSports();
   const playerTeams = await player.getTeams();
-  const playerAge = calculateAge(player.age);
+  const playerAge = calculateAge(player.birthday);
   await ctx.render('players/show', {
     player,
     playerAge,

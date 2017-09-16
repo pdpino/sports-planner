@@ -11,7 +11,7 @@ module.exports = {
         email: faker.internet.email(),
         gender: null,
         password: faker.internet.password(),
-        age: faker.date.past(),
+        birthday: faker.date.past(),
         createdAt: new Date(),
         updatedAt: new Date(),
       });
