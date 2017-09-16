@@ -1,4 +1,4 @@
-<h1> Editar equipo que practico %></h1>
+<h1> Editar Jugadores del equipo %></h1>
 <div>
   <% if (locals.errors) { %>
     <div class="errors">
@@ -11,14 +11,14 @@
     </div>
   <% } %>
 
-  <%= playerTeam.name %>
-  <form action="<%= submitPlayerTeamPath %>" method="post">
+  <%= teamMember.name %>
+  <form action="<%= submitteamMemberPath %>" method="post">
     <div>
       <input type="hidden" name="_method" value="patch" />
     </div>
     <div>
       <label for="isCaptain"></label>
-      <input type="checkbox" name="isCaptain" <%= (playerTeam.isMember.isCaptain) ? 'checked' : '' %> /> Capitán
+      <input type="checkbox" name="isCaptain" <%= (teamMember.isMember.isCaptain) ? 'checked' : '' %> /> Capitán
     </div>
     <div>
       <input type="submit" name="update" value="Guardar Cambios" />
@@ -26,7 +26,7 @@
   </form>
 </div>
 
-<form action="<%= deletePlayerTeamPath %>" method="post">
+<form action="<%= deleteteamMemberPath %>" method="post">
   <div>
     <input type="hidden" name="_method" value="delete" />
   </div>

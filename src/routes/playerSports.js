@@ -2,36 +2,36 @@ const KoaRouter = require('koa-router');
 
 const router = new KoaRouter();
 
-/** Boolean if searchedSport is in playSports **/
-function doesPlayerPlay(searchedSport, playSports){
-  return Boolean(playSports.find((sport) => sport.id == searchedSport.id));
+/** Boolean if searchedSport is in playerSports **/
+function doesPlayerPlay(searchedSport, playerSports){
+  return Boolean(playerSports.find((sport) => sport.id == searchedSport.id));
 }
 
-/** Return the difference between allSports and playSports **/
-function getSportsNotPlayed(allSports, playSports){
+/** Return the difference between allSports and playerSports **/
+function getSportsNotPlayed(allSports, playerSports){
   // OPTIMIZE ???
   return allSports.filter( (anySport) => {
-    return !doesPlayerPlay(anySport, playSports);
+    return !doesPlayerPlay(anySport, playerSports);
   });
 }
 
 /** Return the sport played by player, searching with sportId **/
 async function findPlayerSportById(player, sportId){
-  const playSports = await player.getSports( { where: { id: sportId } } );
-  return (playSports.length == 1) ? playSports[0] : null;
+  // OPTIMIZE? use a model function?
+  const playerSports = await player.getSports( { where: { id: sportId } } );
+  return (playerSports.length == 1) ? playerSports[0] : null;
 }
 
 router.get('playerSportNew', '/new', async (ctx) => {
   await ctx.render('playerSports/new', {
     player: ctx.state.player,
-    sportsNotPlayed: getSportsNotPlayed(ctx.state.sports, ctx.state.playSports),
+    sportsNotPlayed: getSportsNotPlayed(ctx.state.sports, ctx.state.playerSports),
     submitPlayerSportPath: ctx.router.url('playerSportCreate', { playerId: ctx.state.player.id }),
     cancelPath: ctx.router.url('player', { id: ctx.state.player.id })
   });
 });
 
 router.post('playerSportCreate', '/', async (ctx) => {
-  console.log("CREATING");
   const playSport = await findPlayerSportById(ctx.state.player, ctx.params.id);
   try {
     await ctx.state.player.addSport(ctx.request.body.sportId, { through: { position: ctx.request.body.position }});
@@ -40,7 +40,7 @@ router.post('playerSportCreate', '/', async (ctx) => {
     console.log("###### validation error when creating player-sport: ", validationError); // DEBUG
     await ctx.render('playerSports/new', {
       player: ctx.state.player,
-      sportsNotPlayed: getSportsNotPlayed(ctx.state.sports, ctx.state.playSports),
+      sportsNotPlayed: getSportsNotPlayed(ctx.state.sports, ctx.state.playerSports),
       errors: validationError.errors,
       submitPlayerSportPath: ctx.router.url('playerSportCreate', { playerId: ctx.state.player.id }),
       cancelPath: ctx.router.url('player', { id: ctx.state.player.id })

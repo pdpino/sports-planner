@@ -11,12 +11,12 @@
     </div>
   <% } %>
   <div>
-    <% if(TeamPlayers.length > 0) { %>
+    <% if(teamMembers.length > 0) { %>
       <h4>Equipos al que pertenece:</h4>
       <ul>
         <% Playerteams.forEach((team) => { %>
           <li>
-            <%= team.name %><form action="<%= deleteTeamPlayerPath %>" method="post>
+            <%= team.name %><form action="<%= deleteteamMemberPath %>" method="post>
               <input type="hidden" name="playerid" value= "<%= player.id %>"/>
               <input type="submit" name="deleteteam" value="delete"/>
             </form>

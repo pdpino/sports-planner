@@ -12,7 +12,7 @@ router.use(
   '/',
   async (ctx, next) => {
     ctx.state.homePath = "/";
-    // HACK: ctx.router.url('home') not working (return '//' and page goes to about:blank)
+    // HACK: ctx.router.url('home') not working (returns '//' and page goes to about:blank)
     // path hardcoded
     await next();
   },

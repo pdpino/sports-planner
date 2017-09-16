@@ -22,13 +22,13 @@
 <br />
 
 <div>
-  <% if(playSports.length > 0) { %>
+  <% if(playerSports.length > 0) { %>
     <h4>Deportes que practica:</h4>
     <ul>
-      <% playSports.forEach((sport) => { %>
+      <% playerSports.forEach((sport) => { %>
         <li>
           <%= sport.name %> -- Posición (es): <%= sport.plays.position %>
-          <form action=<%= editPlayerSportPath(sport) %>>
+          <form action="<%= editPlayerSportPath(sport) %>">
               <input type="submit" value="Editar deporte" />
           </form>
         </li>
@@ -37,7 +37,7 @@
   <% } else { %>
     No practica ningún deporte.
   <% } %>
-  <form action=<%= newPlayerSportPath %>>
+  <form action="<%= newPlayerSportPath %>">
       <input type="submit" value="Añadir deporte" />
   </form>
 
@@ -46,12 +46,12 @@
 <br />
 
 <div>
-  <% if(memberOfTeams.length > 0) { %>
+  <% if(playerTeams.length > 0) { %>
     <h4> Equipos a los que pertenece: </h4>
     <ul>
-      <% memberOfTeams.forEach((team) => { %>
+      <% playerTeams.forEach((team) => { %>
         <li>
-          <%= team.name %>
+          <%= team.name %> <%= (team.isMember.isCaptain) ? '-- Capitán del equipo' : '' %>
           <form action="<%= editPlayerTeamPath(team) %>">
               <input type="submit" value="Editar" />
           </form>
@@ -61,7 +61,7 @@
   <% } else { %>
     No pertenece a ningún equipo.
   <% } %>
-  <form action="<%= newPlayerTeamsPath %>">
+  <form action="<%= newPlayerTeamPath %>">
       <input type="submit" value="Añadir Equipo" />
   </form>
 
@@ -69,6 +69,6 @@
 
 <br />
 
-<form action=<%= playersPath %>>
+<form action="<%= playersPath %>">
     <input type="submit" value="Volver" />
 </form>
