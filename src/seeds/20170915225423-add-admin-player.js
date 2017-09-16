@@ -1,13 +1,13 @@
 module.exports = {
   up(queryInterface, Sequelize) {
     return queryInterface.bulkInsert('players', [{
-        email: 'admin@admin.jugamos.com'
+        email: 'admin@admin.jugamos.com',
         name: 'Admin',
         password: 'ADMIN', // really safe
         isAdmin: true;
         photo: null,
         gender: null,
-        birthday: new Date();
+        birthday: new Date(),
         createdAt: new Date(),
         updatedAt: new Date(),
       }], {});
