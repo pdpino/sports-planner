@@ -14,7 +14,7 @@
 
   <p> Edad: <%= playerAge %> </p>
 
-  <form action=<%= editPlayerPath %>>
+  <form action="<%= editPlayerPath %>">
       <input type="submit" value="Editar Información personal" />
   </form>
 </div>
@@ -29,7 +29,7 @@
         <li>
           <%= sport.name %> -- Posición (es): <%= sport.plays.position %>
           <form action=<%= editPlayerSportPath(sport) %>>
-              <input type="submit" value="Editar" />
+              <input type="submit" value="Editar deporte" />
           </form>
         </li>
       <% }) %>
@@ -37,7 +37,7 @@
   <% } else { %>
     No practica ningún deporte.
   <% } %>
-  <form action=<%= createPlayerSportsPath %>>
+  <form action=<%= newPlayerSportPath %>>
       <input type="submit" value="Añadir deporte" />
   </form>
 
@@ -46,13 +46,13 @@
 <br />
 
 <div>
-  <% if(memberofTeams.length > 0) { %>
+  <% if(memberOfTeams.length > 0) { %>
     <h4> Equipos a los que pertenece: </h4>
     <ul>
-      <% memberofTeams.forEach((team) => { %>
+      <% memberOfTeams.forEach((team) => { %>
         <li>
           <%= team.name %>
-          <form action=<%= editPlayerTeamPath(team) %>>
+          <form action="<%= editPlayerTeamPath(team) %>">
               <input type="submit" value="Editar" />
           </form>
         </li>
@@ -61,7 +61,7 @@
   <% } else { %>
     No pertenece a ningún equipo.
   <% } %>
-  <form action=<%= createPlayerTeamsPath %>>
+  <form action="<%= newPlayerTeamsPath %>">
       <input type="submit" value="Añadir Equipo" />
   </form>
 

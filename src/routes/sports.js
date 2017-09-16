@@ -22,14 +22,7 @@ router.get('sportNew', '/new', async (ctx) => {
   await ctx.render('sports/new', {
     sport,
     submitSportPath: ctx.router.url('sportCreate'),
-  });
-});
-
-router.get('sportEdit', '/:id/edit', async (ctx) => {
-  const sport = await ctx.orm.sport.findById(ctx.params.id);
-  await ctx.render('sports/edit', {
-    sport,
-    submitSportPath: ctx.router.url('sportUpdate', sport.id),
+    cancelPath: ctx.router.url('sports'),
   });
 });
 
@@ -43,8 +36,18 @@ router.post('sportCreate', '/', async (ctx) => {
       sport: ctx.orm.sport.build(ctx.request.body),
       errors: validationError.errors,
       submitSportPath: ctx.router.url('sportCreate'),
+      cancelPath: ctx.router.url('sports'),
     });
   }
+});
+
+router.get('sportEdit', '/:id/edit', async (ctx) => {
+  const sport = await ctx.orm.sport.findById(ctx.params.id);
+  await ctx.render('sports/edit', {
+    sport,
+    submitSportPath: ctx.router.url('sportUpdate', sport.id),
+    cancelPath: ctx.router.url('sport', { id: ctx.params.id }),
+  });
 });
 
 router.patch('sportUpdate', '/:id', async (ctx) => {
@@ -57,7 +60,8 @@ router.patch('sportUpdate', '/:id', async (ctx) => {
     await ctx.render('sports/edit', {
       sport,
       errors: validationError.errors,
-      sumbitSportPath: ctx.router.url('sportUpdate', sport.id),
+      submitSportPath: ctx.router.url('sportUpdate', sport.id),
+      cancelPath: ctx.router.url('sport', { id: ctx.params.id }),
     });
   }
 });

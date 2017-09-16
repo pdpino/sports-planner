@@ -1,6 +1,8 @@
 <h1>Equipos en jugamos</h1>
 
-<a href="<%= newTeamPath %>"> Crear nuevo equipo </a>
+<form action=<%= newTeamPath %>>
+    <input type="submit" value="Crear Equipo"/>
+</form>
 
 <ul>
   <% teams.forEach((team) => { %>

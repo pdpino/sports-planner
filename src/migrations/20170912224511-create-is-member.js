@@ -1,12 +1,12 @@
 module.exports = {
   up(queryInterface, Sequelize) {
     return queryInterface.createTable('isMembers', {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER,
-      },
+      // id: {
+      //   allowNull: false,
+      //   autoIncrement: true,
+      //   primaryKey: true,
+      //   type: Sequelize.INTEGER,
+      // },
       playerId: {
         primaryKey: true,
         type: Sequelize.INTEGER,
@@ -28,10 +28,10 @@ module.exports = {
         },
         onUpdate: 'cascade',
         onDelete: 'cascade',
-},
+      },
       isCaptain: {
         type: Sequelize.BOOLEAN,
-        defaultValue:false,
+        defaultValue: false,
       },
       createdAt: {
         allowNull: false,
