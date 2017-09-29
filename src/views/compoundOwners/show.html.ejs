@@ -1,0 +1,25 @@
+<h1><%= compoundOwner.firstName %> <%= compoundOwner.lastName %></h1>
+
+<div>
+  <h4>Información personal</h4>
+  <img src=<%= compoundOwner.photo %> > <br>
+
+  <p> E-mail: <%= compoundOwner.email %> </p>
+
+  <br>
+
+
+  <p> Teléfono: <%= compoundOwner.phone %> </p>
+
+  <form action="<%= editcompoundOwnerPath %>">
+      <input type="submit" value="Editar Información personal" />
+  </form>
+</div>
+
+
+
+<br />
+
+<form action="<%= compoundOwnersPath %>">
+    <input type="submit" value="Volver" />
+</form>

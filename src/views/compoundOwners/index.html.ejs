@@ -1,0 +1,16 @@
+<h1>Compound Owners en Jugamos</h1>
+
+<form action=<%= newcompoundOwnerPath %>>
+    <input type="submit" value="Crear Dueño de recinto"/>
+</form>
+
+<ul>
+  <% compoundOwners.forEach((compoundOwner) => { %>
+    <li>
+        <%= compoundOwner.email %>
+        <form action=<%= compoundOwnerPath(compoundOwner) %>>
+            <input type="submit" value="Ver perfil"/>
+        </form>
+    </li>
+  <% }) %>
+</ul>
