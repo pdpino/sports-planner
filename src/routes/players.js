@@ -25,6 +25,7 @@ function calculateAge(birthday){
   return age;
 }
 
+/** Extract the User parameters from a params object (such as request.body) **/
 function getUserParams(params){
   return {
     email: params.email,
@@ -35,6 +36,7 @@ function getUserParams(params){
   };
 }
 
+/** Extract the Player parameters from a params object (such as request.body) **/
 function getPlayerParams(params){
   return {
     gender: params.gender || '', // HACK: Avoids null value reaching the model, ugly error message (the notEmpty msg should be used)
@@ -42,9 +44,12 @@ function getPlayerParams(params){
   };
 }
 
-/** TODO (se usa solo en vistas0) **/
+/*
+ * Merge a player and a user object important attributes
+ * This method is only used to render a view
+ **/
 function mergePlayerUser(user, player){
-  const playerFull = { //HACK: can't use assign because dataValues property.
+  return { //HACK: can't use assign because orm objects have the dataValue property
     id: player.id,
     gender: player.gender,
     birthday: player.birthday,
@@ -55,20 +60,14 @@ function mergePlayerUser(user, player){
     lastName: user.lastName,
     password: user.password,
   };
-  return playerFull;
 }
 
 
 router.get('players', '/', async (ctx) => {
-  // const users = await ctx.orm.user.findAll(); // TODO: filter only players
   const players = await ctx.orm.player.findAll();
-  // players.forEach( async (player) => {
-  //   const user = await player.getUser(); // REVIEW: avoid DB query
-  //   Object.assign(player, user);
-  // });
   for(let i = 0; i < players.length; i++){
-    const user = await players[i].getUser(); // REVIEW: avoid DB query
-    players[i]=mergePlayerUser(user,players[i]);
+    const user = await players[i].getUser(); // REVIEW: avoid DB query?
+    players[i] = mergePlayerUser(user, players[i]);
   }
   await ctx.render('players/index', {
     players,
