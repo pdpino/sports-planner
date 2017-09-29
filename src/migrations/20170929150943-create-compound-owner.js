@@ -1,19 +1,14 @@
 module.exports = {
   up(queryInterface, Sequelize) {
-    return queryInterface.createTable('players', {
+    return queryInterface.createTable('compoundOwners', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      birthday: {
-        type: Sequelize.DATEONLY,
-        allowNull: false,
-      },
-      gender: {
+      phone: {
         type: Sequelize.STRING,
-        allowNull: false,
       },
       createdAt: {
         allowNull: false,
@@ -26,6 +21,6 @@ module.exports = {
     });
   },
   down(queryInterface, Sequelize) {
-    return queryInterface.dropTable('players');
+    return queryInterface.dropTable('compoundOwners');
   },
 };

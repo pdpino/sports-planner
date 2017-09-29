@@ -1,36 +1,5 @@
 module.exports = function defineplayer(sequelize, DataTypes) {
   const player = sequelize.define('player', {
-    email: {
-      type: DataTypes.STRING,
-      unique: true, // REVIEW: add custom validator?
-      allowNull: false,
-      validate: {
-        notEmpty: {
-          msg: "Debes poner un email"
-        },
-        isEmail: {
-          msg: "El email no es válido"
-        },
-      }
-    },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: {
-          msg: "Debes poner una contraseña"
-        },
-      },
-    },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: {
-          msg: "Debes poner un nombre"
-        },
-      },
-    },
     birthday: {
       type: DataTypes.DATEONLY,
       allowNull: false,
@@ -47,7 +16,6 @@ module.exports = function defineplayer(sequelize, DataTypes) {
         },
       },
     },
-    photo: DataTypes.STRING,
     gender: {
       type: DataTypes.ENUM,
       values: ['masculino', 'femenino'], // HACK: copied in migration (and probably in routes/players)
