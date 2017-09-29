@@ -42,11 +42,21 @@ function getPlayerParams(params){
   };
 }
 
+/** TODO (se usa solo en vistas0) **/
 function mergePlayerUser(user, player){
-  const playerFull = {};
-  Object.assign(playerFull, user, player);
+  const playerFull = { //HACK: can't use assign because dataValues property.
+    id: player.id,
+    email: user.email,
+    gender: player.gender,
+    photo: user.photo,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    password: user.password,
+    birthday: player.birthday
+  };
   return playerFull;
 }
+
 
 router.get('players', '/', async (ctx) => {
   // const users = await ctx.orm.user.findAll(); // TODO: filter only players
@@ -57,9 +67,8 @@ router.get('players', '/', async (ctx) => {
   // });
   for(let i = 0; i < players.length; i++){
     const user = await players[i].getUser(); // REVIEW: avoid DB query
-    Object.assign(players[i], user);
+    players[i]=mergePlayerUser(user,players[i]);
   }
-  console.log(players);
   await ctx.render('players/index', {
     players,
     playerPath: player => ctx.router.url('player', { id: player.id }),
