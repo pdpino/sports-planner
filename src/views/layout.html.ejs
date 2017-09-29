@@ -11,6 +11,19 @@
         <input type="submit" value="Home"/>
     </form>
 
+    <div id="user-bar">
+      <% if (currentUser) { %>
+        <span class="name"> Hola <%= currentUser.firstName %></span>
+        <form action="<%= destroySessionPath %>" method="post">
+          <input type="hidden" name="_method" value="delete" />
+          <input type="submit" value="Salir" />
+        </form>
+      <% } else { %>
+        <span class="name">Hola Invitado</span>
+        <a href="<%= newSessionPath %>">Inicia Sesión</a>
+      <% } %>
+    </div>
+
     <%- body %>
   </body>
 

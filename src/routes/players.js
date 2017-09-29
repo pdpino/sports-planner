@@ -46,13 +46,14 @@ function getPlayerParams(params){
 function mergePlayerUser(user, player){
   const playerFull = { //HACK: can't use assign because dataValues property.
     id: player.id,
-    email: user.email,
     gender: player.gender,
+    birthday: player.birthday,
+    isNewRecord: player.isNewRecord,
+    email: user.email,
     photo: user.photo,
     firstName: user.firstName,
     lastName: user.lastName,
     password: user.password,
-    birthday: player.birthday
   };
   return playerFull;
 }

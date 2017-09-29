@@ -3,9 +3,8 @@ const KoaRouter = require('koa-router');
 
 const router = new KoaRouter();
 
-router.get('home', '/', async (ctx) => {
+router.get('home', '', async (ctx) => {
   await ctx.render('index', {
-    // appVersion: pkg.version,
     sportsPath: ctx.router.url('sports'),
     teamsPath: ctx.router.url('teams'),
     playersPath: ctx.router.url('players'),

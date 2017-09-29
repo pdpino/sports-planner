@@ -21,6 +21,7 @@
     "nodemon": "^1.11.0"
   },
   "dependencies": {
+    "bcrypt": "^1.0.3",
     "faker": "^4.1.0",
     "koa": "^2.3.0",
     "koa-body": "^2.3.0",
