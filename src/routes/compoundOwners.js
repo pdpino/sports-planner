@@ -12,7 +12,7 @@ function getUserParams(params){
   };
 }
 
-function getcompoundOwnerParams(params){
+function getCompoundOwnerParams(params){
   return {
     phone: params.phone
   };
@@ -21,8 +21,8 @@ function getcompoundOwnerParams(params){
 
 
 /** TODO (se usa solo en vistas0) **/
-function mergecompoundOwnerUser(user, compoundOwner){
-  const compoundOwnerFull = { //HACK: can't use assign because dataValues property.
+function mergeCompoundOwnerUser(user, compoundOwner){
+  return { //HACK: can't use assign because dataValues property.
     id: compoundOwner.id,
     email: user.email,
     phone: compoundOwner.phone,
@@ -32,20 +32,14 @@ function mergecompoundOwnerUser(user, compoundOwner){
     password: user.password,
     isNewRecord: compoundOwner.isNewRecord,
   };
-  return compoundOwnerFull;
 }
 
 
 router.get('compoundOwners', '/', async (ctx) => {
-  // const users = await ctx.orm.user.findAll(); // TODO: filter only compoundOwners
   const compoundOwners = await ctx.orm.compoundOwner.findAll();
-  // compoundOwners.forEach( async (compoundOwner) => {
-  //   const user = await compoundOwner.getUser(); // REVIEW: avoid DB query
-  //   Object.assign(compoundOwner, user);
-  // });
   for(let i = 0; i < compoundOwners.length; i++){
     const user = await compoundOwners[i].getUser(); // REVIEW: avoid DB query
-    compoundOwners[i]=mergecompoundOwnerUser(user,compoundOwners[i]);
+    compoundOwners[i]=mergeCompoundOwnerUser(user,compoundOwners[i]);
   }
   await ctx.render('compoundOwners/index', {
     compoundOwners,
@@ -58,7 +52,7 @@ router.get('compoundOwnerNew', '/new', async (ctx) => {
   const user = ctx.orm.user.build(ctx.request.body);
   const compoundOwner = ctx.orm.compoundOwner.build(ctx.request.body);
   await ctx.render('compoundOwners/new', {
-    compoundOwner: mergecompoundOwnerUser(user, compoundOwner),
+    compoundOwner: mergeCompoundOwnerUser(user, compoundOwner),
     submitcompoundOwnerPath: ctx.router.url('compoundOwnerCreate'),
     cancelPath : ctx.router.url('compoundOwners'),
   });
@@ -66,7 +60,7 @@ router.get('compoundOwnerNew', '/new', async (ctx) => {
 
 router.post('compoundOwnerCreate', '/', async (ctx) => {
   const userParams = getUserParams(ctx.request.body);
-  const compoundOwnerParams = getcompoundOwnerParams(ctx.request.body);
+  const compoundOwnerParams = getCompoundOwnerParams(ctx.request.body);
   try {
     const user = await ctx.orm.user.create(userParams);
     compoundOwnerParams.userId = user.id;
@@ -87,7 +81,7 @@ router.get('compoundOwnerEdit', '/:id/edit', async (ctx) => {
   const compoundOwner = await ctx.orm.compoundOwner.findById(ctx.params.id);
   const user = await ctx.orm.user.findById(compoundOwner.userId);
   await ctx.render('compoundOwners/edit', {
-    compoundOwner: mergecompoundOwnerUser(user, compoundOwner),
+    compoundOwner: mergeCompoundOwnerUser(user, compoundOwner),
     submitcompoundOwnerPath: ctx.router.url('compoundOwnerUpdate', compoundOwner.id),
     deletecompoundOwnerPath: ctx.router.url('compoundOwnerDelete', compoundOwner.id),
     cancelPath: ctx.router.url('compoundOwner', { id: compoundOwner.id }),
@@ -98,14 +92,14 @@ router.patch('compoundOwnerUpdate', '/:id', async (ctx) => {
   const compoundOwner = await ctx.orm.compoundOwner.findById(ctx.params.id);
   const user = await ctx.orm.user.findById(compoundOwner.userId);
   const userParams = getUserParams(ctx.request.body);
-  const compoundOwnerParams = getcompoundOwnerParams(ctx.request.body);
+  const compoundOwnerParams = getCompoundOwnerParams(ctx.request.body);
   try {
     await user.update(userParams);
     await compoundOwner.update(compoundOwnerParams);
     ctx.redirect(ctx.router.url('compoundOwner', { id: compoundOwner.id }));
   } catch (validationError) {
     await ctx.render('compoundOwners/edit', {
-      compoundOwner: mergecompoundOwnerUser(user, compoundOwner),
+      compoundOwner: mergeCompoundOwnerUser(user, compoundOwner),
       errors: validationError.errors,
       submitcompoundOwnerPath: ctx.router.url('compoundOwnerUpdate', compoundOwner.id),
       deletecompoundOwnerPath: ctx.router.url('compoundOwnerDelete', compoundOwner.id),
@@ -118,7 +112,7 @@ router.get('compoundOwner', '/:id', async (ctx) => {
   const compoundOwner = await ctx.orm.compoundOwner.findById(ctx.params.id);
   const user = await compoundOwner.getUser();
   await ctx.render('compoundOwners/show', {
-    compoundOwner: mergecompoundOwnerUser(user, compoundOwner),
+    compoundOwner: mergeCompoundOwnerUser(user, compoundOwner),
     editcompoundOwnerPath: ctx.router.url('compoundOwnerEdit', compoundOwner.id),
     compoundOwnersPath: ctx.router.url('compoundOwners'),
   });
