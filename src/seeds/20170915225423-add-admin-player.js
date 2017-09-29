@@ -6,7 +6,7 @@ module.exports = {
         password: 'ADMIN', // really safe
         isAdmin: true,
         photo: null,
-        gender: null,
+        gender: "masculino",
         birthday: new Date(),
         createdAt: new Date(),
         updatedAt: new Date(),
