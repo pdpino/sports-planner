@@ -3,7 +3,7 @@ module.exports = function definecompoundOwner(sequelize, DataTypes) {
     phone: DataTypes.STRING,
   });
   compoundOwner.associate = function associate(models) {
-    // associations can be defined here
+    compoundOwner.belongsTo(models.user);
   };
   return compoundOwner;
 };

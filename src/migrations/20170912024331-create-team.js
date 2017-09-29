@@ -21,7 +21,8 @@ module.exports = {
           model: 'sports',
           key: 'id',
         },
-        // onDelete: 'cascade',
+        onUpdate: 'cascade',
+        onDelete: 'cascade',
       },
       createdAt: {
         allowNull: false,
