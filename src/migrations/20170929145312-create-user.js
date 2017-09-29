@@ -9,7 +9,7 @@ module.exports = {
       },
       role: {
         type: Sequelize.STRING,
-        defaultValue: true,
+        allowNull: false,
       },
       email: {
         type: Sequelize.STRING,

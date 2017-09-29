@@ -1,6 +1,5 @@
 module.exports = function defineuser(sequelize, DataTypes) {
   const user = sequelize.define('user', {
-    isPlayer: DataTypes.BOOLEAN,
     email: {
       type: DataTypes.STRING,
       unique: true, // REVIEW: add custom validator?
@@ -38,6 +37,16 @@ module.exports = function defineuser(sequelize, DataTypes) {
       validate: {
         notEmpty: {
           msg: "Debes poner un apellido"
+        },
+      },
+    },
+    role: {
+      type: DataTypes.ENUM,
+      values: ['admin', 'player', 'owner'], // HACK: copied in migration (and probably in routes/users)
+      allowNull: false, // REVIEW: Add message
+      validate: {
+        notEmpty: {
+          msg: "No se ha ingresado un rol"
         },
       },
     },

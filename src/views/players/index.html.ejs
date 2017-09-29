@@ -7,13 +7,10 @@
 <ul>
   <% players.forEach((player) => { %>
     <li>
-      <!-- <a href="<%=  %>"> -->
-
         <%= player.email %>
         <form action=<%= playerPath(player) %>>
             <input type="submit" value="Ver perfil"/>
         </form>
-      <!-- </a> -->
     </li>
   <% }) %>
 </ul>

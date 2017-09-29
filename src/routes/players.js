@@ -25,14 +25,41 @@ function calculateAge(birthday){
   return age;
 }
 
-/** Fix the submit (new/edit) params **/
-function fixSubmitParams(params){
-  /** HACK: Avoids null value reaching the model, ugly error message (the notEmpty msg should be used) **/
-  params.gender = params.gender || '';
+function getUserParams(params){
+  return {
+    email: params.email,
+    password: params.password,
+    firstName: params.firstName,
+    lastName: params.lastName,
+    role: 'player',
+  };
+}
+
+function getPlayerParams(params){
+  return {
+    gender: params.gender || '', // HACK: Avoids null value reaching the model, ugly error message (the notEmpty msg should be used)
+    birthday: params.birthday,
+  };
+}
+
+function mergePlayerUser(user, player){
+  const playerFull = {};
+  Object.assign(playerFull, user, player);
+  return playerFull;
 }
 
 router.get('players', '/', async (ctx) => {
+  // const users = await ctx.orm.user.findAll(); // TODO: filter only players
   const players = await ctx.orm.player.findAll();
+  // players.forEach( async (player) => {
+  //   const user = await player.getUser(); // REVIEW: avoid DB query
+  //   Object.assign(player, user);
+  // });
+  for(let i = 0; i < players.length; i++){
+    const user = await players[i].getUser(); // REVIEW: avoid DB query
+    Object.assign(players[i], user);
+  }
+  console.log(players);
   await ctx.render('players/index', {
     players,
     playerPath: player => ctx.router.url('player', { id: player.id }),
@@ -41,9 +68,10 @@ router.get('players', '/', async (ctx) => {
 });
 
 router.get('playerNew', '/new', async (ctx) => {
+  const user = ctx.orm.user.build(ctx.request.body);
   const player = ctx.orm.player.build(ctx.request.body);
   await ctx.render('players/new', {
-    player,
+    player: mergePlayerUser(user, player),
     genders,
     submitPlayerPath: ctx.router.url('playerCreate'),
     cancelPath : ctx.router.url('players'),
@@ -51,9 +79,12 @@ router.get('playerNew', '/new', async (ctx) => {
 });
 
 router.post('playerCreate', '/', async (ctx) => {
-  fixSubmitParams(ctx.request.body);
+  const userParams = getUserParams(ctx.request.body);
+  const playerParams = getPlayerParams(ctx.request.body);
   try {
-    const player = await ctx.orm.player.create(ctx.request.body);
+    const user = await ctx.orm.user.create(userParams);
+    playerParams.userId = user.id;
+    const player = await ctx.orm.player.create(playerParams);
     ctx.redirect(ctx.router.url('players'));
   } catch (validationError) {
     await ctx.render('players/new', {
@@ -68,8 +99,9 @@ router.post('playerCreate', '/', async (ctx) => {
 
 router.get('playerEdit', '/:id/edit', async (ctx) => {
   const player = await ctx.orm.player.findById(ctx.params.id);
+  const user = await ctx.orm.user.findById(player.userId);
   await ctx.render('players/edit', {
-    player,
+    player: mergePlayerUser(user, player),
     genders,
     submitPlayerPath: ctx.router.url('playerUpdate', player.id),
     deletePlayerPath: ctx.router.url('playerDelete', player.id),
@@ -78,14 +110,17 @@ router.get('playerEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('playerUpdate', '/:id', async (ctx) => {
-  fixSubmitParams(ctx.request.body);
   const player = await ctx.orm.player.findById(ctx.params.id);
+  const user = await ctx.orm.user.findById(player.userId);
+  const userParams = getUserParams(ctx.request.body);
+  const playerParams = getPlayerParams(ctx.request.body);
   try {
-    await player.update(ctx.request.body);
+    await user.update(userParams);
+    await player.update(playerParams);
     ctx.redirect(ctx.router.url('player', { id: player.id }));
   } catch (validationError) {
     await ctx.render('players/edit', {
-      player,
+      player: mergePlayerUser(user, player),
       genders,
       errors: validationError.errors,
       submitPlayerPath: ctx.router.url('playerUpdate', player.id),
@@ -97,11 +132,12 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
 
 router.get('player', '/:id', async (ctx) => {
   const player = await ctx.orm.player.findById(ctx.params.id);
+  const user = await player.getUser();
   const playerSports = await player.getSports();
   const playerTeams = await player.getTeams();
   const playerAge = calculateAge(player.birthday);
   await ctx.render('players/show', {
-    player,
+    player: mergePlayerUser(user, player),
     playerAge,
     playerSports,
     playerTeams,
@@ -124,7 +160,8 @@ router.get('player', '/:id', async (ctx) => {
 
 router.delete('playerDelete', '/:id', async (ctx) => {
   const player = await ctx.orm.player.findById(ctx.params.id);
-  await player.destroy();
+  const user = await ctx.orm.user.findById(player.userId);
+  await user.destroy(); // NOTE: player.destroy() is not neccesary beause onDelete: cascade
   ctx.redirect(ctx.router.url('players'));
 });
 
