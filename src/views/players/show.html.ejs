@@ -1,4 +1,4 @@
-<h1><%= player.name %></h1>
+<h1><%= player.firstName %> <%= player.lastName %></h1>
 
 <div>
   <h4>Información personal</h4>
@@ -14,12 +14,18 @@
 
   <p> Edad: <%= playerAge %> </p>
 
+  <br>
+
+  <p> Género: <%= player.gender %> </p>
+
   <form action="<%= editPlayerPath %>">
       <input type="submit" value="Editar Información personal" />
   </form>
 </div>
 
 <br />
+
+
 
 <div>
   <% if(playerSports.length > 0) { %>

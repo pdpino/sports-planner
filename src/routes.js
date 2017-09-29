@@ -6,6 +6,7 @@ const players = require('./routes/players');
 const teams = require('./routes/teams');
 const matches = require('./routes/matches');
 const session = require('./routes/session');
+const compoundOwners = require('./routes/compoundOwners');
 
 const router = new KoaRouter();
 
@@ -31,8 +32,10 @@ router.use(
   },
   teams.routes(),
 );
+
 router.use('/players', players.routes());
 router.use('/matches', matches.routes());
+router.use('/compoundOwners', compoundOwners.routes());
 router.use('/session', session.routes());
 
 module.exports = router;
