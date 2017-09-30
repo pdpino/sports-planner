@@ -75,12 +75,16 @@ function is_logged_in(ctx){
   return Boolean(ctx.session.userId);
 }
 
+/** If the user doesn't have modify permissions it will be redirected to home **/
 function require_modify_permission(ctx, user){
   if(!has_modify_permission(ctx, user)){
     console.log("NOTICE: YOU DON'T HAVE MODIFY PERMISSION");
     // TODO: send message to the user
     ctx.redirect('/');
+
+    return false; // Require failed
   }
+  return true; // Require passed
 }
 
 /** If can't signup, redirect to somewhere **/
@@ -89,7 +93,10 @@ function require_no_signup(ctx){
     console.log("NOTICE: can't signup if you are already logged in");
     // TODO: show message to the user
     ctx.redirect('/');
+    return false; // Require failed
   }
+
+  return true; // Require passed
 }
 
 router.get('players', '/', async (ctx) => {
@@ -106,7 +113,7 @@ router.get('players', '/', async (ctx) => {
 });
 
 router.get('playerNew', '/new', async (ctx) => {
-  require_no_signup(ctx);
+  if (!require_no_signup(ctx)) return;
 
   const user = ctx.orm.user.build(ctx.request.body);
   const player = ctx.orm.player.build(ctx.request.body);
@@ -119,7 +126,7 @@ router.get('playerNew', '/new', async (ctx) => {
 });
 
 router.post('playerCreate', '/', async (ctx) => {
-  require_no_signup(ctx);
+  if (!require_no_signup(ctx)) return;
 
   const userParams = getUserParams(ctx.request.body);
   const playerParams = getPlayerParams(ctx.request.body);
@@ -143,7 +150,7 @@ router.get('playerEdit', '/:id/edit', async (ctx) => {
   const player = await ctx.orm.player.findById(ctx.params.id);
   const user = await ctx.orm.user.findById(player.userId);
 
-  require_modify_permission(ctx, user);
+  if (!require_modify_permission(ctx, user)) return;
 
   await ctx.render('players/edit', {
     player: mergePlayerUser(user, player),
@@ -158,7 +165,7 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
   const player = await ctx.orm.player.findById(ctx.params.id);
   const user = await ctx.orm.user.findById(player.userId);
 
-  require_modify_permission(ctx, user);
+  if (!require_modify_permission(ctx, user)) return;
 
   const userParams = getUserParams(ctx.request.body);
   const playerParams = getPlayerParams(ctx.request.body);
@@ -212,7 +219,7 @@ router.delete('playerDelete', '/:id', async (ctx) => {
   const player = await ctx.orm.player.findById(ctx.params.id);
   const user = await ctx.orm.user.findById(player.userId);
 
-  require_modify_permission(ctx, user);
+  if (!require_modify_permission(ctx, user)) return;
 
   await user.destroy(); // NOTE: player.destroy() is not neccesary beause onDelete: cascade
   ctx.redirect(ctx.router.url('players'));
@@ -221,8 +228,13 @@ router.delete('playerDelete', '/:id', async (ctx) => {
 router.use(
   '/:playerId/teams',
   async (ctx, next) => {
+    const player = await ctx.orm.player.findById(ctx.params.playerId);
+    const user = await player.getUser();
+
+    if (!require_modify_permission(ctx, user)) return;
+
     ctx.state.teams = await ctx.orm.team.findAll();
-    ctx.state.player = await ctx.orm.player.findById(ctx.params.playerId);
+    ctx.state.player = player;
     ctx.state.playerTeams = await ctx.state.player.getTeams();
     await next();
   },
@@ -232,8 +244,13 @@ router.use(
 router.use(
   '/:playerId/sports',
   async (ctx, next) => {
+    const player = await ctx.orm.player.findById(ctx.params.playerId);
+    const user = await player.getUser();
+
+    if (!require_modify_permission(ctx, user)) return;
+
     ctx.state.sports = await ctx.orm.sport.findAll();
-    ctx.state.player = await ctx.orm.player.findById(ctx.params.playerId);
+    ctx.state.player = player;
     ctx.state.playerSports = await ctx.state.player.getSports();
     await next();
   },

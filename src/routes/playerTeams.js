@@ -50,6 +50,11 @@ router.post('playerTeamCreate', '/', async (ctx) => {
 
 router.get('playerTeamEdit', '/:id/edit', async (ctx) => {
   const playerTeam = await findPlayerTeamById(ctx.state.player, ctx.params.id);
+  if (!playerTeam){
+    console.log("WARNING: passed to playerTeamEdit and didn't find any playerTeam"); // DEBUG
+    // REVIEW: notify the user?
+    return ctx.redirect('/'); // HACK: can't use 'home' url
+  }
   await ctx.render('playerTeams/edit', {
     player: ctx.state.player,
     playerTeam,

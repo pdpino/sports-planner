@@ -2,19 +2,13 @@
 
 <div>
   <h4>Información personal</h4>
-  <img src=<%= player.photo %> > <br>
-
+  <img src=<%= player.photo %> >
+  
   <p> E-mail: <%= player.email %> </p>
-
-  <br>
 
   <p> Cumpleaños: <%= player.birthday %> </p>
 
-  <br>
-
   <p> Edad: <%= playerAge %> </p>
-
-  <br>
 
   <p> Género: <%= player.gender %> </p>
 
@@ -24,10 +18,6 @@
     </form>
   <% } %>
 </div>
-
-<br />
-
-
 
 <div>
   <% if(playerSports.length > 0) { %>
@@ -39,22 +29,27 @@
             <%= sport.name %>
           </a>
           -- Posición (es): <%= sport.plays.position %>
-          <form action="<%= editPlayerSportPath(sport) %>">
-              <input type="submit" value="Editar deporte" />
-          </form>
+
+          <% if(hasModifyPermission) { %>
+            <form action="<%= editPlayerSportPath(sport) %>">
+                <input type="submit" value="Editar deporte" />
+            </form>
+          <% } %>
+
         </li>
       <% }) %>
     </ul>
   <% } else { %>
     No practica ningún deporte.
   <% } %>
-  <form action="<%= newPlayerSportPath %>">
-      <input type="submit" value="Añadir deporte" />
-  </form>
+
+  <% if(hasModifyPermission) { %>
+    <form action="<%= newPlayerSportPath %>">
+        <input type="submit" value="Añadir deporte" />
+    </form>
+  <% } %>
 
 </div>
-
-<br />
 
 <div>
   <% if(playerTeams.length > 0) { %>
@@ -66,18 +61,25 @@
             <%= team.name %>
           </a>
           <%= (team.isMember.isCaptain) ? '-- Capitán del equipo' : '' %>
-          <form action="<%= editPlayerTeamPath(team) %>">
-              <input type="submit" value="Editar" />
-          </form>
+
+          <% if(hasModifyPermission) { %>
+            <form action="<%= editPlayerTeamPath(team) %>">
+                <input type="submit" value="Editar" />
+            </form>
+          <% } %>
+
         </li>
       <% }) %>
     </ul>
   <% } else { %>
     No pertenece a ningún equipo.
   <% } %>
-  <form action="<%= newPlayerTeamPath %>">
-      <input type="submit" value="Añadir Equipo" />
-  </form>
+
+  <% if(hasModifyPermission) { %>
+    <form action="<%= newPlayerTeamPath %>">
+        <input type="submit" value="Añadir Equipo" />
+    </form>
+  <% } %>
 
 </div>
 
