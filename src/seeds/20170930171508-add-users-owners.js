@@ -1,15 +1,16 @@
 const faker = require('faker');
+const bcrypt = require('bcrypt');
 
 module.exports = {
   up(queryInterface, Sequelize) {
     const userOwners = [];
-    const nOwners = 10;
+    const nOwners = 5;
 
     for (let i = 0; i < nOwners; i ++) {
       userOwners.push({
         role: 'owner',
         email: faker.internet.email(),
-        password: 'owner', // Hardcode it to login later // Can also use faker.internet.password(),
+        password: bcrypt.hashSync('owner', 10), // Hardcode it to login later // Can also use faker.internet.password(),
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
         photo: faker.image.avatar(),

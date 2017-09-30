@@ -3,10 +3,10 @@ const faker = require('faker');
 module.exports = {
   up(queryInterface, Sequelize) {
     const owners = [];
-    const nOwners = 10;
-    const startingId = 12;
+    const nOwners = 5;
+    const startingId = 7;
       // 1 is the admin
-      // 1-11 are the players
+      // 2-6 are the players
 
     for (let i = 0; i < nOwners; i ++) {
       owners.push({

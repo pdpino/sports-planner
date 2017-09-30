@@ -1,15 +1,16 @@
 const faker = require('faker');
+const bcrypt = require('bcrypt');
 
 module.exports = {
   up(queryInterface, Sequelize) {
     const userPlayers = [];
-    const nPlayers = 10;
+    const nPlayers = 5;
 
     for (let i = 0; i < nPlayers; i ++) {
       userPlayers.push({
         role: 'player',
         email: faker.internet.email(),
-        password: 'player', // faker.internet.password(),
+        password: bcrypt.hashSync('player', 10), // faker.internet.password(),
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
         photo: faker.image.avatar(),

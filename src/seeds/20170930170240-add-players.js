@@ -3,7 +3,7 @@ const faker = require('faker');
 module.exports = {
   up(queryInterface, Sequelize) {
     const players = [];
-    const nPlayers = 10;
+    const nPlayers = 5;
 
     for (let i = 0; i < nPlayers; i ++) {
       players.push({
@@ -15,7 +15,7 @@ module.exports = {
         updatedAt: new Date(),
       });
     }
-    
+
     return queryInterface.bulkInsert('players', players);
   },
 

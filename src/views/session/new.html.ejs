@@ -3,14 +3,9 @@
   <% if (locals.notice) { %>
     <div className="notice"><%= notice %></div>
   <% } %>
-  <% if (locals.errors) { %>
+  <% if (locals.error) { %>
     <div class="errors">
-      Necesitas arreglar los siguiente errores:
-      <ul>
-        <% errors.forEach(error => { %>
-          <li><%= error.message %></li>
-        <% }); %>
-      </ul>
+      <%= error %>
     </div>
   <% } %>
   <form action="<%= createSessionPath %>" method="post">
