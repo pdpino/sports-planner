@@ -2,19 +2,26 @@ const faker = require('faker');
 
 module.exports = {
   up(queryInterface, Sequelize) {
-    const players = [];
-    const nPlayers = 5;
-
-    for (let i = 0; i < nPlayers; i ++) {
-      players.push({
-        gender: (Math.random < 0.5) ? "masculino" : "femenino",
+    let id = 2; // HACK: starting id hardcoded
+      // 1 is admin
+    const players = [
+      {
+        // Juan perez
+        gender: "masculino",
         birthday: faker.date.past(),
-        userId: i + 2,
-        // HACK: Assume that users have been created with sequential IDs (starting from 2, 1 is the admin) // If there is no user with that ID it will raise a database error
+        userId: id++, // Use id, then increase
         createdAt: new Date(),
         updatedAt: new Date(),
-      });
-    }
+      },
+      {
+        // Pedro perez
+        gender: "masculino",
+        birthday: faker.date.past(),
+        userId: id++,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ];
 
     return queryInterface.bulkInsert('players', players);
   },

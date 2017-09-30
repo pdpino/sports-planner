@@ -2,21 +2,25 @@ const faker = require('faker');
 
 module.exports = {
   up(queryInterface, Sequelize) {
-    const owners = [];
-    const nOwners = 5;
-    const startingId = 7;
+    let id = 4;  // HACK: starting id hardcoded
       // 1 is the admin
-      // 2-6 are the players
-
-    for (let i = 0; i < nOwners; i ++) {
-      owners.push({
+      // 2-3 are the basic players
+    const owners = [
+      {
+        // Tomas perez
         phone: faker.phone.phoneNumber(),
-        userId: i + startingId,
-        // HACK: Assume that users have been created with sequential IDs // If there is no user with that ID it will raise a database error
+        userId: id++, // Use id, then increase
         createdAt: new Date(),
         updatedAt: new Date(),
-      });
-    }
+      },
+      {
+        // Matias perez
+        phone: faker.phone.phoneNumber(),
+        userId: id++,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ];
 
     return queryInterface.bulkInsert('compoundOwners', owners);
   },
