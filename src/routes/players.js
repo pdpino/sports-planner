@@ -79,7 +79,6 @@ router.get('players', '/', async (ctx) => {
   await ctx.render('players/index', {
     players,
     playerPath: player => ctx.router.url('player', { id: player.id }),
-    newPlayerPath: ctx.router.url('playerNew'),
   });
 });
 

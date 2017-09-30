@@ -1,7 +1,7 @@
 const KoaRouter = require('koa-router');
 const router = new KoaRouter();
 
-
+/** Extract the User parameters from a params object (such as request.body) **/
 function getUserParams(params){
   return {
     email: params.email,
@@ -12,15 +12,17 @@ function getUserParams(params){
   };
 }
 
+/** Extract the compoundOwner parameters from a params object (such as request.body) **/
 function getCompoundOwnerParams(params){
   return {
     phone: params.phone
   };
 }
 
-
-
-/** TODO (se usa solo en vistas0) **/
+/*
+ * Merge a compoundOwner and a user to a new object with the important attributes
+ * This method is only used to render a view
+ **/
 function mergeCompoundOwnerUser(user, compoundOwner){
   return { //HACK: can't use assign because dataValues property.
     id: compoundOwner.id,
@@ -34,17 +36,15 @@ function mergeCompoundOwnerUser(user, compoundOwner){
   };
 }
 
-
 router.get('compoundOwners', '/', async (ctx) => {
   const compoundOwners = await ctx.orm.compoundOwner.findAll();
   for(let i = 0; i < compoundOwners.length; i++){
     const user = await compoundOwners[i].getUser(); // REVIEW: avoid DB query
-    compoundOwners[i]=mergeCompoundOwnerUser(user,compoundOwners[i]);
+    compoundOwners[i] = mergeCompoundOwnerUser(user, compoundOwners[i]);
   }
   await ctx.render('compoundOwners/index', {
     compoundOwners,
     compoundOwnerPath: compoundOwner => ctx.router.url('compoundOwner', { id: compoundOwner.id }),
-    newcompoundOwnerPath: ctx.router.url('compoundOwnerNew'),
   });
 });
 
