@@ -12,6 +12,7 @@ router.get('sports', '/', async (ctx) => {
   const sports = await ctx.orm.sport.findAll();
   await ctx.render('sports/index', {
     sports,
+    hasModifyPermission: ctx.state.hasAdminPermission,
     sportPath: sport => ctx.router.url('sport', { id: sport.id }),
     newSportPath: ctx.router.url('sportNew'),
   });

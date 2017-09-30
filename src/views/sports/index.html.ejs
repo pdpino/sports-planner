@@ -1,8 +1,10 @@
 <h1>Deportes en jugamos</h1>
 
-<form action=<%= newSportPath %>>
-    <input type="submit" value="Crear deporte"/>
-</form>
+<% if (hasModifyPermission) { %>
+  <form action=<%= newSportPath %>>
+      <input type="submit" value="Crear deporte"/>
+  </form>
+<% } %>
 
 <ul>
   <% sports.forEach((sport) => { %>
