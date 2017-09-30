@@ -63,6 +63,13 @@ function mergePlayerUser(user, player){
   };
 }
 
+/** Load the player and the user from the database **/
+async function getPlayerAndUser(ctx, playerId){
+  const player = await ctx.orm.player.findById(playerId);
+  const user = await player.getUser();
+  return { player, user };
+}
+
 router.get('players', '/', async (ctx) => {
   const players = await ctx.orm.player.findAll();
   for(let i = 0; i < players.length; i++){
@@ -79,8 +86,9 @@ router.get('players', '/', async (ctx) => {
 router.get('playerNew', '/new', async (ctx) => {
   if (!ctx.state.requireNoLogin(ctx)) return;
 
-  const user = ctx.orm.user.build(ctx.request.body);
-  const player = ctx.orm.player.build(ctx.request.body);
+  const user = ctx.orm.user.build(); // (ctx.request.body);
+  const player = ctx.orm.player.build(); // (ctx.request.body);
+
   await ctx.render('players/new', {
     player: mergePlayerUser(user, player),
     genders,
@@ -111,8 +119,7 @@ router.post('playerCreate', '/', async (ctx) => {
 });
 
 router.get('playerEdit', '/:id/edit', async (ctx) => {
-  const player = await ctx.orm.player.findById(ctx.params.id);
-  const user = await ctx.orm.user.findById(player.userId);
+  const { player, user } = await getPlayerAndUser(ctx, ctx.params.id);
 
   if (!ctx.state.requireModifyPermission(ctx, user)) return;
 
@@ -126,8 +133,7 @@ router.get('playerEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('playerUpdate', '/:id', async (ctx) => {
-  const player = await ctx.orm.player.findById(ctx.params.id);
-  const user = await ctx.orm.user.findById(player.userId);
+  const { player, user } = await getPlayerAndUser(ctx, ctx.params.id);
 
   if (!ctx.state.requireModifyPermission(ctx, user)) return;
 
@@ -150,8 +156,8 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
 });
 
 router.get('player', '/:id', async (ctx) => {
-  const player = await ctx.orm.player.findById(ctx.params.id);
-  const user = await player.getUser();
+  const { player, user } = await getPlayerAndUser(ctx, ctx.params.id);
+
   const playerSports = await player.getSports();
   const playerTeams = await player.getTeams();
   const playerAge = calculateAge(player.birthday);
@@ -180,8 +186,7 @@ router.get('player', '/:id', async (ctx) => {
 });
 
 router.delete('playerDelete', '/:id', async (ctx) => {
-  const player = await ctx.orm.player.findById(ctx.params.id);
-  const user = await ctx.orm.user.findById(player.userId);
+  const { player, user } = await getPlayerAndUser(ctx, ctx.params.id);
 
   if (!ctx.state.requireModifyPermission(ctx, user)) return;
 
@@ -192,8 +197,7 @@ router.delete('playerDelete', '/:id', async (ctx) => {
 router.use(
   '/:playerId/teams',
   async (ctx, next) => {
-    const player = await ctx.orm.player.findById(ctx.params.playerId);
-    const user = await player.getUser();
+    const { player, user } = await getPlayerAndUser(ctx, ctx.params.id);
 
     if (!ctx.state.requireModifyPermission(ctx, user)) return;
 
@@ -208,8 +212,7 @@ router.use(
 router.use(
   '/:playerId/sports',
   async (ctx, next) => {
-    const player = await ctx.orm.player.findById(ctx.params.playerId);
-    const user = await player.getUser();
+    const { player, user } = await getPlayerAndUser(ctx, ctx.params.id);
 
     if (!ctx.state.requireModifyPermission(ctx, user)) return;
 

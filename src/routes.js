@@ -14,6 +14,8 @@ router.use(async (ctx, next) => {
   Object.assign(ctx.state, {
     currentUser: ctx.session.userId && await ctx.orm.user.findById(ctx.session.userId),
     newSessionPath: ctx.router.url('sessionNew'),
+    signUpPlayerPath: ctx.router.url('playerNew'),
+    signUpOwnerPath: ctx.router.url('compoundOwnerNew'),
     destroySessionPath: ctx.router.url('sessionDestroy'),
     homePath: '/',
     // HACK: ctx.router.url('home') not working (returns '//' and page goes to about:blank)
