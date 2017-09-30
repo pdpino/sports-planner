@@ -2,14 +2,14 @@ const faker = require('faker');
 
 module.exports = {
   up(queryInterface, Sequelize) {
-    const userPlayers = [];
-    const nPlayers = 10;
+    const userOwners = [];
+    const nOwners = 10;
 
-    for (let i = 0; i < nPlayers; i ++) {
-      userPlayers.push({
-        role: 'player',
+    for (let i = 0; i < nOwners; i ++) {
+      userOwners.push({
+        role: 'owner',
         email: faker.internet.email(),
-        password: 'player', // faker.internet.password(),
+        password: 'owner', // Hardcode it to login later // Can also use faker.internet.password(),
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
         photo: faker.image.avatar(),
@@ -18,10 +18,10 @@ module.exports = {
       });
     }
 
-    return queryInterface.bulkInsert('users', userPlayers);
+    return queryInterface.bulkInsert('users', userOwners);
   },
 
   down(queryInterface, Sequelize) {
-    return queryInterface.bulkDelete('users', { role: 'player' });
+    return queryInterface.bulkDelete('users', { role: 'owner' });
   },
 };
