@@ -18,9 +18,11 @@
 
   <p> Género: <%= player.gender %> </p>
 
-  <form action="<%= editPlayerPath %>">
-      <input type="submit" value="Editar Información personal" />
-  </form>
+  <% if(hasModifyPermission) { %>
+    <form action="<%= editPlayerPath %>">
+        <input type="submit" value="Editar Información personal" />
+    </form>
+  <% } %>
 </div>
 
 <br />

@@ -13,7 +13,7 @@ function calculateAge(birthday){
   // OPTIMIZE this function? dates can be substracted
   const today = new Date();
 
-  console.log("TYPE OF birthday", typeof(birthday));
+  // console.log("TYPE OF birthday", typeof(birthday));
 
   const year = birthday.substring(0,4);
   const month = birthday.substring(5,7);
@@ -45,11 +45,12 @@ function getPlayerParams(params){
 }
 
 /*
- * Merge a player and a user object important attributes
+ * Merge a player and a user to an object with the important attributes
  * This method is only used to render a view
  **/
 function mergePlayerUser(user, player){
-  return { //HACK: can't use assign because orm objects have the dataValue property
+  // HACK: can't use Object.assign because orm objects have the dataValue property
+  return {
     id: player.id,
     gender: player.gender,
     birthday: player.birthday,
@@ -62,9 +63,16 @@ function mergePlayerUser(user, player){
   };
 }
 
+
+
 /** Boolean indicating if the user has modify permission **/
 function has_modify_permission(ctx, user){
   return ctx.session.userId == user.id;
+}
+
+/** Boolean indicating if there is an user logged in**/
+function is_logged_in(ctx){
+  return Boolean(ctx.session.userId);
 }
 
 function require_modify_permission(ctx, user){
@@ -77,7 +85,7 @@ function require_modify_permission(ctx, user){
 
 /** If can't signup, redirect to somewhere **/
 function require_no_signup(ctx){
-  if(ctx.session.userId){ // There is already an user logged in
+  if(is_logged_in(ctx)){ // There is already an user logged in
     console.log("NOTICE: can't signup if you are already logged in");
     // TODO: show message to the user
     ctx.redirect('/');
@@ -176,7 +184,9 @@ router.get('player', '/:id', async (ctx) => {
   const playerSports = await player.getSports();
   const playerTeams = await player.getTeams();
   const playerAge = calculateAge(player.birthday);
+
   await ctx.render('players/show', {
+    hasModifyPermission: has_modify_permission(ctx, user),
     player: mergePlayerUser(user, player),
     playerAge,
     playerSports,
