@@ -16,29 +16,12 @@
         <input type="hidden" name="_method" value="patch" />
       </div>
     <% } %>
-    <div>
-      <label for="email">E-Mail</label>
-      <input type="text" name="email" value="<%= player.email %>" />
-    </div>
-    <div>
-      <label for="password">password</label>
-      <input type="password" name="password" value="<%= player.password %>" />
-    </div>
-    <div>
-      <label for="firstName">Nombre</label>
-      <input type="text" name="firstName" value="<%= player.firstName %>" />
-    </div>
-    <div>
-      <label for="lastName">Apellido</label>
-      <input type="text" name="lastName" value="<%= player.lastName %>" />
-    </div>
+    
+    <%- include('../users/_form', { user: player }) %>
+
     <div>
       <label for="birthday">Cumpleaños</label>
       <input type="date" name="birthday" value="<%= player.birthday %>" />
-    </div>
-    <div>
-      <label for="photo">Photo</label>
-      <input type="text" name="photo" value="<%= player.photo %>" />
     </div>
     <label for="gender">Género</label>
     <% genders.forEach( (gender) => { %>

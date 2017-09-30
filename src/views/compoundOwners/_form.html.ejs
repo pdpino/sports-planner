@@ -16,22 +16,9 @@
         <input type="hidden" name="_method" value="patch" />
       </div>
     <% } %>
-    <div>
-      <label for="email">E-Mail</label>
-      <input type="text" name="email" value="<%= compoundOwner.email %>" />
-    </div>
-    <div>
-      <label for="password">password</label>
-      <input type="password" name="password" value="<%= compoundOwner.password %>" />
-    </div>
-    <div>
-      <label for="firstName">Nombre</label>
-      <input type="text" name="firstName" value="<%= compoundOwner.firstName %>" />
-    </div>
-    <div>
-      <label for="lastName">Apellido</label>
-      <input type="text" name="lastName" value="<%= compoundOwner.lastName %>" />
-    </div>
+    
+    <%- include('../users/_form', { user: compoundOwner }) %>
+
     <div>
       <label for="phone">Teléfono</label>
       <input type="text" name="phone" value="<%= compoundOwner.phone %>" />
