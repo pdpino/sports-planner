@@ -1,9 +1,11 @@
+const bcrypt = require('bcrypt');
+
 module.exports = {
   up(queryInterface, Sequelize) {
     const admin = {
       role: 'admin',
       email: 'admin@admin.com',
-      password: 'admin', // really safe
+      password: bcrypt.hashSync('admin', 10), // really safe password
       firstName: 'Admin',
       lastName: 'Admin',
       photo: "",
