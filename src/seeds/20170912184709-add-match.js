@@ -2,25 +2,19 @@ const faker = require('faker');
 
 module.exports = {
   up(queryInterface, Sequelize) {
-    const matchesData = [];
+    const matches = [];
     for (let i = 0; i < 10; i += 1) {
-      matchesData.push({
+      matches.push({
         isPublic:faker.random.boolean(),
         date: faker.date.past(),
         createdAt: new Date(),
         updatedAt: new Date(),
       });
     }
-    return queryInterface.bulkInsert('matches', matchesData);
+    return queryInterface.bulkInsert('matches', matches);
   },
 
   down(queryInterface, Sequelize) {
-    /*
-      Add reverting commands here.
-      Return a promise to correctly handle asynchronicity.
-
-      Example:
-      return queryInterface.bulkDelete('Person', null, {});
-    */
+    return queryInterface.bulkDelete('matches', null);
   },
 };

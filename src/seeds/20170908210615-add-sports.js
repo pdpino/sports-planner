@@ -1,17 +1,6 @@
 module.exports = {
   up(queryInterface, Sequelize) {
-    /*
-      Add altering commands here.
-      Return a promise to correctly handle asynchronicity.
-
-      Example:
-      return queryInterface.bulkInsert('Person', [{
-        name: 'John Doe',
-        isBetaMember: false
-      }], {});
-    */
-
-    return queryInterface.bulkInsert('sports', [{
+    const sports = [{
       name: 'Futbol',
       isIndividual: false,
       createdAt: new Date(),
@@ -28,17 +17,12 @@ module.exports = {
       isIndividual: false,
       createdAt: new Date(),
       updatedAt: new Date(),
-    }], {});
+    }];
+
+    return queryInterface.bulkInsert('sports', sports);
   },
 
   down(queryInterface, Sequelize) {
-    /*
-      Add reverting commands here.
-      Return a promise to correctly handle asynchronicity.
-
-      Example:
-      return queryInterface.bulkDelete('Person', null, {});
-    */
-    return queryInterface.bulkDelete('sports', null, {});
+    return queryInterface.bulkDelete('sports', null);
   },
 };
