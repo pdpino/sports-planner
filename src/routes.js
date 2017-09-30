@@ -32,8 +32,8 @@ router.use((ctx, next) => {
     if(!ctx.state.hasModifyPermission(ctx, user)){
       console.log("NOTICE: you don't have modify permission");
       // TODO: send message to the user
-      ctx.redirect('/');
 
+      ctx.redirect('/');
       return false; // Require failed
     }
     return true; // Require passed
@@ -41,10 +41,11 @@ router.use((ctx, next) => {
 
   /** If is logged in, redirect to home **/
   ctx.state.requireNoLogin = function(ctx){
-    if(isLoggedIn(ctx)){ // There is already an user logged in
+    if(ctx.state.isLoggedIn){ // There is already an user logged in
       console.log("NOTICE: can't signup if you are already logged in");
       // TODO: show message to the user
-      ctx.redirect('/');
+
+      ctx.redirect('/'); // TODO: customize where to redirect
       return false; // Require failed
     }
     return true; // Require passed
