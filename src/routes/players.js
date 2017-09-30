@@ -45,7 +45,7 @@ function getPlayerParams(params){
 }
 
 /*
- * Merge a player and a user to an object with the important attributes
+ * Merge a player and a user to a new object with the important attributes
  * This method is only used to render a view
  **/
 function mergePlayerUser(user, player){

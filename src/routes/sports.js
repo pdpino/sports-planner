@@ -18,6 +18,8 @@ router.get('sports', '/', async (ctx) => {
 });
 
 router.get('sportNew', '/new', async (ctx) => {
+  if (!ctx.state.requireAdminPermission(ctx)) return;
+
   const sport = ctx.orm.sport.build();
   await ctx.render('sports/new', {
     sport,
@@ -27,6 +29,8 @@ router.get('sportNew', '/new', async (ctx) => {
 });
 
 router.post('sportCreate', '/', async (ctx) => {
+  if (!ctx.state.requireAdminPermission(ctx)) return;
+
   fixUpdateParams(ctx.request.body);
   try {
     const sport = await ctx.orm.sport.create(ctx.request.body);
@@ -42,6 +46,8 @@ router.post('sportCreate', '/', async (ctx) => {
 });
 
 router.get('sportEdit', '/:id/edit', async (ctx) => {
+  if (!ctx.state.requireAdminPermission(ctx)) return;
+
   const sport = await ctx.orm.sport.findById(ctx.params.id);
   await ctx.render('sports/edit', {
     sport,
@@ -51,6 +57,8 @@ router.get('sportEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('sportUpdate', '/:id', async (ctx) => {
+  if (!ctx.state.requireAdminPermission(ctx)) return;
+
   fixUpdateParams(ctx.request.body);
   const sport = await ctx.orm.sport.findById(ctx.params.id);
   try {
@@ -71,12 +79,15 @@ router.get('sport', '/:id', async (ctx) => {
   await ctx.render('sports/show', {
     sport,
     sportsPath: ctx.router.url('sports'),
+    hasModifyPermission: ctx.state.hasAdminPermission,
     editSportPath: ctx.router.url('sportEdit', sport.id),
     deleteSportPath: ctx.router.url('sportDelete', sport.id),
   });
 });
 
 router.delete('sportDelete', '/:id', async (ctx) => {
+  if (!ctx.state.requireAdminPermission(ctx)) return;
+
   const sport = await ctx.orm.sport.findById(ctx.params.id);
   await sport.destroy(); // {force: true});
   ctx.redirect(ctx.router.url('sports'));

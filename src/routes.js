@@ -26,6 +26,7 @@ router.use(async (ctx, next) => {
 
 // Add helper functions
 router.use((ctx, next) => {
+  ctx.state.hasAdminPermission = ctx.state.currentUser && ctx.state.currentUser.role == 'admin';
   ctx.state.hasModifyPermission = (ctx, user) => ctx.session.userId == user.id;
   ctx.state.isLoggedIn = Boolean(ctx.state.currentUser);
 
@@ -33,6 +34,18 @@ router.use((ctx, next) => {
   ctx.state.requireModifyPermission = function(ctx, user){
     if(!ctx.state.hasModifyPermission(ctx, user)){
       console.log("NOTICE: you don't have modify permission");
+      // TODO: send message to the user
+
+      ctx.redirect('/');
+      return false; // Require failed
+    }
+    return true; // Require passed
+  }
+
+  /** If the user doesn't have admin permissions it will be redirected to home **/
+  ctx.state.requireAdminPermission = function(ctx){
+    if(!ctx.state.hasAdminPermission){
+      console.log("NOTICE: you don't have admin permission");
       // TODO: send message to the user
 
       ctx.redirect('/');
