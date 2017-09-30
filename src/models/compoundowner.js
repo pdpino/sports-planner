@@ -4,6 +4,8 @@ module.exports = function definecompoundOwner(sequelize, DataTypes) {
   });
   compoundOwner.associate = function associate(models) {
     compoundOwner.belongsTo(models.user);
+    compoundOwner.hasMany(models.compound);
   };
+
   return compoundOwner;
 };

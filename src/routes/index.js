@@ -10,6 +10,7 @@ router.get('home', '', async (ctx) => {
     playersPath: ctx.router.url('players'),
     matchesPath: ctx.router.url('matches'),
     compoundOwnersPath: ctx.router.url('compoundOwners'),
+    compoundsPath: ctx.router.url('compounds'),
   });
 });
 

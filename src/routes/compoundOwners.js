@@ -116,9 +116,12 @@ router.patch('compoundOwnerUpdate', '/:id', async (ctx) => {
 
 router.get('compoundOwner', '/:id', async (ctx) => {
   const compoundOwner = await ctx.orm.compoundOwner.findById(ctx.params.id);
+  const compounds= await compoundOwner.getCompounds();
   const user = await compoundOwner.getUser();
   await ctx.render('compoundOwners/show', {
     compoundOwner: mergecompoundOwnerUser(user, compoundOwner),
+    compounds,
+    compoundPath: compound => ctx.router.url('compound', { id: compound.id }),
     editcompoundOwnerPath: ctx.router.url('compoundOwnerEdit', compoundOwner.id),
     compoundOwnersPath: ctx.router.url('compoundOwners'),
   });

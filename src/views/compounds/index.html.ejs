@@ -1,0 +1,16 @@
+<h1>Recintos en Jugamos</h1>
+
+<form action=<%= newCompoundPath %>>
+    <input type="submit" value="Crear recinto"/>
+</form>
+
+<ul>
+  <% compounds.forEach((compound) => { %>
+    <li>
+        <%= compound.name %>
+        <form action=<%= compoundPath(compound) %>>
+            <input type="submit" value="Ver Recinto"/>
+        </form>
+    </li>
+  <% }) %>
+</ul>
