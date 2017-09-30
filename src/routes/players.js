@@ -63,42 +63,6 @@ function mergePlayerUser(user, player){
   };
 }
 
-
-
-/** Boolean indicating if the user has modify permission **/
-function has_modify_permission(ctx, user){
-  return ctx.session.userId == user.id;
-}
-
-/** Boolean indicating if there is an user logged in**/
-function is_logged_in(ctx){
-  return Boolean(ctx.session.userId);
-}
-
-/** If the user doesn't have modify permissions it will be redirected to home **/
-function require_modify_permission(ctx, user){
-  if(!has_modify_permission(ctx, user)){
-    console.log("NOTICE: YOU DON'T HAVE MODIFY PERMISSION");
-    // TODO: send message to the user
-    ctx.redirect('/');
-
-    return false; // Require failed
-  }
-  return true; // Require passed
-}
-
-/** If can't signup, redirect to somewhere **/
-function require_no_signup(ctx){
-  if(is_logged_in(ctx)){ // There is already an user logged in
-    console.log("NOTICE: can't signup if you are already logged in");
-    // TODO: show message to the user
-    ctx.redirect('/');
-    return false; // Require failed
-  }
-
-  return true; // Require passed
-}
-
 router.get('players', '/', async (ctx) => {
   const players = await ctx.orm.player.findAll();
   for(let i = 0; i < players.length; i++){
@@ -113,7 +77,7 @@ router.get('players', '/', async (ctx) => {
 });
 
 router.get('playerNew', '/new', async (ctx) => {
-  if (!require_no_signup(ctx)) return;
+  if (!ctx.state.requireNoLogin(ctx)) return;
 
   const user = ctx.orm.user.build(ctx.request.body);
   const player = ctx.orm.player.build(ctx.request.body);
@@ -126,7 +90,7 @@ router.get('playerNew', '/new', async (ctx) => {
 });
 
 router.post('playerCreate', '/', async (ctx) => {
-  if (!require_no_signup(ctx)) return;
+  if (!ctx.state.requireNoLogin(ctx)) return;
 
   const userParams = getUserParams(ctx.request.body);
   const playerParams = getPlayerParams(ctx.request.body);
@@ -150,7 +114,7 @@ router.get('playerEdit', '/:id/edit', async (ctx) => {
   const player = await ctx.orm.player.findById(ctx.params.id);
   const user = await ctx.orm.user.findById(player.userId);
 
-  if (!require_modify_permission(ctx, user)) return;
+  if (!ctx.state.requireModifyPermission(ctx, user)) return;
 
   await ctx.render('players/edit', {
     player: mergePlayerUser(user, player),
@@ -165,7 +129,7 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
   const player = await ctx.orm.player.findById(ctx.params.id);
   const user = await ctx.orm.user.findById(player.userId);
 
-  if (!require_modify_permission(ctx, user)) return;
+  if (!ctx.state.requireModifyPermission(ctx, user)) return;
 
   const userParams = getUserParams(ctx.request.body);
   const playerParams = getPlayerParams(ctx.request.body);
@@ -193,7 +157,7 @@ router.get('player', '/:id', async (ctx) => {
   const playerAge = calculateAge(player.birthday);
 
   await ctx.render('players/show', {
-    hasModifyPermission: has_modify_permission(ctx, user),
+    hasModifyPermission: ctx.state.hasModifyPermission(ctx, user),
     player: mergePlayerUser(user, player),
     playerAge,
     playerSports,
@@ -219,7 +183,7 @@ router.delete('playerDelete', '/:id', async (ctx) => {
   const player = await ctx.orm.player.findById(ctx.params.id);
   const user = await ctx.orm.user.findById(player.userId);
 
-  if (!require_modify_permission(ctx, user)) return;
+  if (!ctx.state.requireModifyPermission(ctx, user)) return;
 
   await user.destroy(); // NOTE: player.destroy() is not neccesary beause onDelete: cascade
   ctx.redirect(ctx.router.url('players'));
@@ -231,7 +195,7 @@ router.use(
     const player = await ctx.orm.player.findById(ctx.params.playerId);
     const user = await player.getUser();
 
-    if (!require_modify_permission(ctx, user)) return;
+    if (!ctx.state.requireModifyPermission(ctx, user)) return;
 
     ctx.state.teams = await ctx.orm.team.findAll();
     ctx.state.player = player;
@@ -247,7 +211,7 @@ router.use(
     const player = await ctx.orm.player.findById(ctx.params.playerId);
     const user = await player.getUser();
 
-    if (!require_modify_permission(ctx, user)) return;
+    if (!ctx.state.requireModifyPermission(ctx, user)) return;
 
     ctx.state.sports = await ctx.orm.sport.findAll();
     ctx.state.player = player;
