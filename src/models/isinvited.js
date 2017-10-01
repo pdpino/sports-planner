@@ -3,10 +3,10 @@ module.exports = function defineisInvited(sequelize, DataTypes) {
     isAdmin: {
       type:DataTypes.BOOLEAN,
       defaultValue:false,
-    }
+    },
     status: {
       type: DataTypes.ENUM,
-      values: ['sentToUser', 'sentbyUser', 'userRejected','rejectdByUser',"accepted"] // HACK: copied in migration (and probably in routes/isInviteds)
+      values: ['sentToUser', 'sentbyUser', 'userRejected','rejectdByUser', 'accepted'], // HACK: copied in migration (and probably in routes/isInviteds)
       allowNull: false,
       validate: {
         // NOTE: notNull has been deprecated, a warning is raised
