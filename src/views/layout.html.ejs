@@ -4,9 +4,17 @@
   <head>
     <meta charset="utf-8">
     <title>Jugamos? - IIC2513</title>
+    <% if (env !== 'development') { %>
+      <link rel="stylesheet" href="/assets/styles.css">
+    <% } %>
   </head>
 
   <body>
+    <header>
+      <div id="logo">
+        <img src="/assets/logo.png" alt="Logo" />
+      </div>
+    </header>
     <form action="<%= homePath %>" method="get">
         <input type="submit" value="Home"/>
     </form>
@@ -30,6 +38,7 @@
     </div>
 
     <%- body %>
+    <script src="/assets/app.js"></script>
   </body>
 
 </html>

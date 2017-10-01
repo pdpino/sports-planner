@@ -3,6 +3,7 @@ const Koa = require('koa');
 const koaBody = require('koa-body');
 const koaLogger = require('koa-logger');
 const koaFlashMessage = require('koa-flash-message').default;
+const koaStatic = require('koa-static');
 const render = require('koa-ejs');
 const session = require('koa-session');
 const override = require('koa-override-method');
@@ -28,8 +29,30 @@ app.context.orm = orm;
  * Middlewares
  */
 
+// expose running mode in ctx.state
+app.use((ctx, next) => {
+  ctx.state.env = ctx.app.env;
+  return next();
+});
+
 // log requests
 app.use(koaLogger());
+
+// webpack middleware for dev mode only
+if (developmentMode) {
+  /* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
+  app.use(require('koa-webpack')({ // eslint-disable-line global-require
+    dev: {
+      index: 'index.html',
+      stats: {
+        colors: true,
+      },
+    },
+    hot: false,
+  }));
+}
+
+app.use(koaStatic(path.join(__dirname, '..', 'build'), {}));
 
 // expose a session hash to store information across requests from same client
 app.use(session({
