@@ -18,6 +18,35 @@
 </form>
 
 <br />
+<% if(matchPlayers.length > 0) { %>
+  <h4> Jugadores que participan: </h4>
+  <ul>
+    <% matchPlayers.forEach((player) => { %>
+      <% if (player.isInvited.status=="accepted") {%>
+      <li>
+        <a href="<%= getPlayerPath(player) %>">
+          <%= player.firstName %> <%= player.lastName %>
+        </a>
+        <%= (player.isInvited.isAdmin) ? '-- Admin del partido' : '' %>
+
+        <% if(hasModifyPermission) { %>
+          <!--
+          <form action="<%= editMatchPlayerPath(player) %>">
+              <input type="submit" value="Editar" />
+          </form>
+          -->
+          <% } %>
+        <%}%>
+      </li>
+    <% }) %>
+  </ul>
+<% } else { %>
+  No contiene jugadores.
+<% } %>
+
+<form action="<%= newMatchPlayerPath %>">
+    <input type="submit" value="Añadir Jugador" />
+</form>
 
 <form action=<%= matchesPath %>>
     <input type="submit" value="Volver a todos los partidos"/>
