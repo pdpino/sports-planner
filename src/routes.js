@@ -44,7 +44,9 @@ router.use(async (ctx, next) => {
   return next();
 });
 
-// Add helper functions
+/** Add helper functions
+ * See https://github.com/embbnux/kails (koa in rails style) for examples on helper functions
+ **/
 router.use((ctx, next) => {
   ctx.state.hasAdminPermission = ctx.state.currentUser && ctx.state.currentUser.role == 'admin';
   ctx.state.hasModifyPermission = (ctx, user) => ctx.session.userId == user.id;
