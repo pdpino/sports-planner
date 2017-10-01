@@ -11,6 +11,7 @@ const compoundOwners = require('./routes/compoundOwners');
 const router = new KoaRouter();
 
 router.use(async (ctx, next) => {
+  // Load user and (player or owner)
   const currentUser = ctx.session.userId && await ctx.orm.user.findById(ctx.session.userId);
   let currentPlayer = null;
   let currentOwner = null;
@@ -55,8 +56,6 @@ router.use((ctx, next) => {
   ctx.state.requireModifyPermission = function(ctx, user){
     if(!ctx.state.hasModifyPermission(ctx, user)){
       console.log("NOTICE: you don't have modify permission");
-      // TODO: send message to the user
-
       ctx.redirect('/');
       return false; // Require failed
     }
@@ -67,8 +66,6 @@ router.use((ctx, next) => {
   ctx.state.requireAdminPermission = function(ctx){
     if(!ctx.state.hasAdminPermission){
       console.log("NOTICE: you don't have admin permission");
-      // TODO: send message to the user
-
       ctx.redirect('/');
       return false; // Require failed
     }

@@ -10,6 +10,24 @@ function findSportName(sportId, allSports){
   return (sportsFound[0]) ? sportsFound[0].name : null;
 }
 
+/** Given a team and the currentPlayer logged in, boolean indicating modify permission **/
+async function hasModifyTeamPermission(team, currentPlayer){
+  return currentPlayer && await team.hasPlayer(currentPlayer, {
+    through: {
+      where: { isCaptain: true }
+    }
+  });
+}
+
+/** Require modify team permissions, else redirect to home **/
+async function requireModifyTeamPermission(ctx, team){
+  const hasModifyPermission = await hasModifyTeamPermission(team, ctx.state.currentPlayer);
+  if(!hasModifyPermission){
+    ctx.redirect('/');
+    return false; // Require failed
+  }
+  return true; // Require passed
+}
 
 router.get('teams', '/', async (ctx) => {
   const teams = await ctx.orm.team.findAll();
@@ -53,9 +71,10 @@ router.post('teamCreate', '/', async (ctx) => {
 });
 
 router.get('teamEdit', '/:id/edit', async (ctx) => {
-  if (!ctx.state.requirePlayerLogin(ctx)) return; // TODO: require correct user
-
   const team = await ctx.orm.team.findById(ctx.params.id);
+
+  if (! await requireModifyTeamPermission(ctx, team)) return;
+
   await ctx.render('teams/edit', {
     team,
     sports: ctx.state.sports,
@@ -65,9 +84,10 @@ router.get('teamEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('teamUpdate', '/:id', async (ctx) => {
-  if (!ctx.state.requirePlayerLogin(ctx)) return; // TODO: require correct user
-
   const team = await ctx.orm.team.findById(ctx.params.id);
+
+  if (! await requireModifyTeamPermission(ctx, team)) return;
+
   try {
     await team.update(ctx.request.body);
     ctx.redirect(ctx.router.url('team', { id: team.id }));
@@ -86,11 +106,7 @@ router.get('team', '/:id', async (ctx) => {
   const team = await ctx.orm.team.findById(ctx.params.id);
   const sport = await ctx.orm.sport.findById(team.sportId);
   const teamMembers = await team.getPlayers();
-  const hasModifyPermission = ctx.state.currentPlayer && await team.hasPlayer(ctx.state.currentPlayer, {
-    through: {
-      where: { isCaptain: true }
-    }
-  });
+  const hasModifyPermission = await hasModifyTeamPermission(team, ctx.state.currentPlayer);
 
   await ctx.render('teams/show', {
     team,
@@ -111,9 +127,10 @@ router.get('team', '/:id', async (ctx) => {
 });
 
 router.delete('teamDelete', '/:id', async (ctx) => {
-  if (!ctx.state.requirePlayerLogin(ctx)) return; // TODO: require correct user
-
   const team = await ctx.orm.team.findById(ctx.params.id);
+
+  if (! await requireModifyTeamPermission(ctx, team)) return;
+
   await team.destroy();
   ctx.redirect(ctx.router.url('teams'));
 });
