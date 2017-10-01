@@ -97,12 +97,20 @@ router.post('playerCreate', '/', async (ctx) => {
 
   const userParams = getUserParams(ctx.request.body);
   const playerParams = getPlayerParams(ctx.request.body);
+
+  let user = null;
   try {
-    const user = await ctx.orm.user.create(userParams);
+    user = await ctx.orm.user.create(userParams);
     playerParams.userId = user.id;
     const player = await ctx.orm.player.create(playerParams);
     ctx.redirect(ctx.router.url('players'));
   } catch (validationError) {
+    if (user){ // User was created correctly, delete it
+      // REVIEW: you may avoid saving to the DB and then deleting by using
+      // build() and then save() methods on user and player 
+      user.destroy();
+    }
+
     await ctx.render('players/new', {
       player: ctx.orm.player.build(ctx.request.body),
       genders,
@@ -134,6 +142,7 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
 
   const userParams = getUserParams(ctx.request.body);
   const playerParams = getPlayerParams(ctx.request.body);
+
   try {
     await user.update(userParams);
     await player.update(playerParams);
