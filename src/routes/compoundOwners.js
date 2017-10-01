@@ -36,6 +36,7 @@ function mergeCompoundOwnerUser(user, compoundOwner){
   };
 }
 
+
 router.get('compoundOwners', '/', async (ctx) => {
   const compoundOwners = await ctx.orm.compoundOwner.findAll();
   for(let i = 0; i < compoundOwners.length; i++){
@@ -45,6 +46,7 @@ router.get('compoundOwners', '/', async (ctx) => {
   await ctx.render('compoundOwners/index', {
     compoundOwners,
     compoundOwnerPath: compoundOwner => ctx.router.url('compoundOwner', { id: compoundOwner.id }),
+    newcompoundOwnerPath: ctx.router.url('compoundOwnerNew'),
   });
 });
 
@@ -60,7 +62,7 @@ router.get('compoundOwnerNew', '/new', async (ctx) => {
 
 router.post('compoundOwnerCreate', '/', async (ctx) => {
   const userParams = getUserParams(ctx.request.body);
-  const compoundOwnerParams = getCompoundOwnerParams(ctx.request.body);
+  const compoundOwnerParams = getcompoundOwnerParams(ctx.request.body);
   try {
     const user = await ctx.orm.user.create(userParams);
     compoundOwnerParams.userId = user.id;
@@ -110,9 +112,12 @@ router.patch('compoundOwnerUpdate', '/:id', async (ctx) => {
 
 router.get('compoundOwner', '/:id', async (ctx) => {
   const compoundOwner = await ctx.orm.compoundOwner.findById(ctx.params.id);
+  const compounds= await compoundOwner.getCompounds();
   const user = await compoundOwner.getUser();
   await ctx.render('compoundOwners/show', {
     compoundOwner: mergeCompoundOwnerUser(user, compoundOwner),
+    compounds,
+    compoundPath: compound => ctx.router.url('compound', { id: compound.id }),
     editcompoundOwnerPath: ctx.router.url('compoundOwnerEdit', compoundOwner.id),
     compoundOwnersPath: ctx.router.url('compoundOwners'),
   });

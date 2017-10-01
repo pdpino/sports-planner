@@ -16,7 +16,18 @@
   </form>
 </div>
 
-
+<% if(compounds.length > 0) { %>
+<ul>
+  <% compounds.forEach((compound) => { %>
+    <li>
+        <%= compound.name %>
+        <form action=<%= compoundPath(compound) %>>
+            <input type="submit" value="Ver recinto"/>
+        </form>
+    </li>
+  <% }) %>
+</ul>
+<% } %>
 
 <br />
 

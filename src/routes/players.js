@@ -42,26 +42,6 @@ function getPlayerParams(params){
   };
 }
 
-/*
- * DEPRECATED: this function is deprecated, an afterFind hook has been placed in the Player model
- * Merge a player and a user to a new object with the important attributes
- * This method is only used to render a view
- **/
-// function mergePlayerUser(user, player){
-//   // HACK: can't use Object.assign because orm objects have the dataValue property
-//   return {
-//     id: player.id,
-//     gender: player.gender,
-//     birthday: player.birthday,
-//     isNewRecord: player.isNewRecord,
-//     email: user.email,
-//     photo: user.photo,
-//     firstName: user.firstName,
-//     lastName: user.lastName,
-//     password: user.password,
-//   };
-// }
-
 /** Load the player and the user from the database **/
 async function getPlayerAndUser(ctx, playerId){
   // REVIEW: apparently not all calls of this need both user and player
@@ -107,7 +87,7 @@ router.post('playerCreate', '/', async (ctx) => {
   } catch (validationError) {
     if (user){ // User was created correctly, delete it
       // REVIEW: you may avoid saving to the DB and then deleting by using
-      // build() and then save() methods on user and player 
+      // build() and then save() methods on user and player
       user.destroy();
     }
 
