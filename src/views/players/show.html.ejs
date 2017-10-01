@@ -3,7 +3,7 @@
 <div>
   <h4>Información personal</h4>
   <img src=<%= player.photo %> >
-  
+
   <p> E-mail: <%= player.email %> </p>
 
   <p> Cumpleaños: <%= player.birthday %> </p>
@@ -63,9 +63,11 @@
           <%= (team.isMember.isCaptain) ? '-- Capitán del equipo' : '' %>
 
           <% if(hasModifyPermission) { %>
+            <!--
             <form action="<%= editPlayerTeamPath(team) %>">
                 <input type="submit" value="Editar" />
             </form>
+            -->
           <% } %>
 
         </li>

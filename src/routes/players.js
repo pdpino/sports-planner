@@ -207,7 +207,7 @@ router.use(
 router.use(
   '/:playerId/sports',
   async (ctx, next) => {
-    const { player, user } = await getPlayerAndUser(ctx, ctx.params.id);
+    const { player, user } = await getPlayerAndUser(ctx, ctx.params.playerId);
 
     if (!ctx.state.requireModifyPermission(ctx, user)) return;
 
