@@ -11,8 +11,27 @@ const compoundOwners = require('./routes/compoundOwners');
 const router = new KoaRouter();
 
 router.use(async (ctx, next) => {
+  const currentUser = ctx.session.userId && await ctx.orm.user.findById(ctx.session.userId);
+  let currentPlayer = null;
+  let currentOwner = null;
+
+  if (currentUser){ // NOTE: don't use oneline assignation for clarity
+    if (currentUser.role == 'player'){
+      currentPlayer = await ctx.orm.player.find({
+        where: { userId: currentUser.id }
+      });
+    }
+    else if (currentUser.role == 'owner'){
+      currentOwner = await ctx.orm.player.find({
+        where: { userId: currentUser.id }
+      });
+    }
+  }
+
   Object.assign(ctx.state, {
-    currentUser: ctx.session.userId && await ctx.orm.user.findById(ctx.session.userId),
+    currentUser,
+    currentPlayer,
+    currentOwner,
     newSessionPath: ctx.router.url('sessionNew'),
     signUpPlayerPath: ctx.router.url('playerNew'),
     signUpOwnerPath: ctx.router.url('compoundOwnerNew'),
@@ -29,6 +48,8 @@ router.use((ctx, next) => {
   ctx.state.hasAdminPermission = ctx.state.currentUser && ctx.state.currentUser.role == 'admin';
   ctx.state.hasModifyPermission = (ctx, user) => ctx.session.userId == user.id;
   ctx.state.isLoggedIn = Boolean(ctx.state.currentUser);
+  ctx.state.isPlayerLoggedIn = Boolean(ctx.state.currentPlayer);
+  ctx.state.isOwnerLoggedIn = Boolean(ctx.state.currentOwner);
 
   /** If the user doesn't have modify permissions it will be redirected to home **/
   ctx.state.requireModifyPermission = function(ctx, user){
@@ -47,6 +68,18 @@ router.use((ctx, next) => {
     if(!ctx.state.hasAdminPermission){
       console.log("NOTICE: you don't have admin permission");
       // TODO: send message to the user
+
+      ctx.redirect('/');
+      return false; // Require failed
+    }
+    return true; // Require passed
+  }
+
+  /** If not logged in, redirect to home **/
+  ctx.state.requirePlayerLogin = function(ctx){
+    if(!ctx.state.isPlayerLoggedIn){ // There is already an user logged in
+      console.log("NOTICE: you are not signed in as a player");
+      // TODO: show message to the user
 
       ctx.redirect('/');
       return false; // Require failed

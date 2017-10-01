@@ -1,8 +1,11 @@
 <h1>Equipos en jugamos</h1>
 
-<form action=<%= newTeamPath %>>
+<% if (hasCreatePermission) { %>
+  <form action=<%= newTeamPath %>>
     <input type="submit" value="Crear Equipo"/>
-</form>
+  </form>
+<% } %>
+
 
 <ul>
   <% teams.forEach((team) => { %>

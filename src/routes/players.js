@@ -13,8 +13,6 @@ function calculateAge(birthday){
   // OPTIMIZE this function? dates can be substracted
   const today = new Date();
 
-  // console.log("TYPE OF birthday", typeof(birthday));
-
   const year = birthday.substring(0,4);
   const month = birthday.substring(5,7);
   const day = birthday.substring(8,10);
@@ -45,37 +43,35 @@ function getPlayerParams(params){
 }
 
 /*
+ * DEPRECATED: this function is deprecated, an afterFind hook has been placed in the Player model
  * Merge a player and a user to a new object with the important attributes
  * This method is only used to render a view
  **/
-function mergePlayerUser(user, player){
-  // HACK: can't use Object.assign because orm objects have the dataValue property
-  return {
-    id: player.id,
-    gender: player.gender,
-    birthday: player.birthday,
-    isNewRecord: player.isNewRecord,
-    email: user.email,
-    photo: user.photo,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    password: user.password,
-  };
-}
+// function mergePlayerUser(user, player){
+//   // HACK: can't use Object.assign because orm objects have the dataValue property
+//   return {
+//     id: player.id,
+//     gender: player.gender,
+//     birthday: player.birthday,
+//     isNewRecord: player.isNewRecord,
+//     email: user.email,
+//     photo: user.photo,
+//     firstName: user.firstName,
+//     lastName: user.lastName,
+//     password: user.password,
+//   };
+// }
 
 /** Load the player and the user from the database **/
 async function getPlayerAndUser(ctx, playerId){
+  // REVIEW: apparently not all calls of this need both user and player
   const player = await ctx.orm.player.findById(playerId);
-  const user = await player.getUser();
+  const user = player && await player.getUser();
   return { player, user };
 }
 
 router.get('players', '/', async (ctx) => {
   const players = await ctx.orm.player.findAll();
-  for(let i = 0; i < players.length; i++){
-    const user = await players[i].getUser(); // REVIEW: avoid DB query?
-    players[i] = mergePlayerUser(user, players[i]);
-  }
   await ctx.render('players/index', {
     players,
     playerPath: player => ctx.router.url('player', { id: player.id }),
@@ -89,7 +85,7 @@ router.get('playerNew', '/new', async (ctx) => {
   const player = ctx.orm.player.build(); // (ctx.request.body);
 
   await ctx.render('players/new', {
-    player: mergePlayerUser(user, player),
+    player,
     genders,
     submitPlayerPath: ctx.router.url('playerCreate'),
     cancelPath : ctx.router.url('players'),
@@ -123,7 +119,7 @@ router.get('playerEdit', '/:id/edit', async (ctx) => {
   if (!ctx.state.requireModifyPermission(ctx, user)) return;
 
   await ctx.render('players/edit', {
-    player: mergePlayerUser(user, player),
+    player,
     genders,
     submitPlayerPath: ctx.router.url('playerUpdate', player.id),
     deletePlayerPath: ctx.router.url('playerDelete', player.id),
@@ -144,7 +140,7 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
     ctx.redirect(ctx.router.url('player', { id: player.id }));
   } catch (validationError) {
     await ctx.render('players/edit', {
-      player: mergePlayerUser(user, player),
+      player,
       genders,
       errors: validationError.errors,
       submitPlayerPath: ctx.router.url('playerUpdate', player.id),
@@ -163,7 +159,7 @@ router.get('player', '/:id', async (ctx) => {
 
   await ctx.render('players/show', {
     hasModifyPermission: ctx.state.hasModifyPermission(ctx, user),
-    player: mergePlayerUser(user, player),
+    player,
     playerAge,
     playerSports,
     playerTeams,
@@ -196,7 +192,7 @@ router.delete('playerDelete', '/:id', async (ctx) => {
 router.use(
   '/:playerId/teams',
   async (ctx, next) => {
-    const { player, user } = await getPlayerAndUser(ctx, ctx.params.id);
+    const { player, user } = await getPlayerAndUser(ctx, ctx.params.playerId);
 
     if (!ctx.state.requireModifyPermission(ctx, user)) return;
 

@@ -5,41 +5,51 @@
   Deporte: <%= sport %>
 </p>
 
-<form action=<%= editTeamPath %>>
-    <input type="submit" value="Editar"/>
-</form>
+<% if (hasModifyPermission) { %>
+  <form action=<%= editTeamPath %>>
+      <input type="submit" value="Editar"/>
+  </form>
 
-<form action="<%= deleteTeamPath %>" method="post">
-  <div>
-    <input type="hidden" name="_method" value="delete" />
-  </div>
-  <div>
-    <input type="submit" name="delete" value="Eliminar" />
-  </div>
-</form>
+  <form action="<%= deleteTeamPath %>" method="post">
+    <div>
+      <input type="hidden" name="_method" value="delete" />
+    </div>
+    <div>
+      <input type="submit" name="delete" value="Eliminar" />
+    </div>
+  </form>
+<% } %>
 
 <div>
   <% if(teamMembers.length > 0) { %>
     <h4>Jugadores:</h4>
     <ul>
-      <% teamMembers.forEach((teamMember) => { %>
+      <% teamMembers.forEach( (teamMember) => { %>
         <li>
           <a href="<%= getPlayerPath(teamMember) %>">
-            <%= teamMember.name %>
+            <%= teamMember.firstName %>
           </a>
           <%= (teamMember.isMember.isCaptain ? '-- capitán del equipo' : '' )%>
-          <form action=<%= editTeamMemberPath(teamMember) %>>
-              <input type="submit" value="Editar" />
-          </form>
+
+          <% if (hasModifyPermission) { %>
+            <form action=<%= editTeamMemberPath(teamMember) %>>
+                <input type="submit" value="Editar" />
+            </form>
+          <% } %>
+
         </li>
       <% }) %>
     </ul>
   <% } else { %>
     <%= team.name %> no tiene jugadores.
   <% } %>
-  <form action=<%= newTeamMemberPath %>>
-      <input type="submit" value="Añadir Jugador" />
-  </form>
+
+  <% if (hasModifyPermission) { %>
+    <form action=<%= newTeamMemberPath %>>
+        <input type="submit" value="Añadir Jugador" />
+    </form>
+  <% } %>
+
 </div>
 
 <br>

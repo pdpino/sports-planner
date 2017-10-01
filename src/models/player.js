@@ -1,3 +1,14 @@
+async function getUserObject(models, userId){
+  const user = await models.user.findById(userId);
+  return { // REVIEW: replace this by a js method (like assign)?
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    photo: user.photo,
+  };
+}
+
+
 module.exports = function defineplayer(sequelize, DataTypes) {
   const player = sequelize.define('player', {
     birthday: {
@@ -36,5 +47,19 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     player.belongsToMany(models.sport, { through: models.plays });
     player.belongsToMany(models.team, { through: models.isMember });
   };
+
+  /** Load user info (email, names and photo) into player object **/
+  player.afterFind(async function loadUser(result) {
+    // REVIEW: avoid DB query?
+    if(result.constructor == Array) {
+      for (let i = 0; i < result.length; i++) {
+          Object.assign(result[i], await getUserObject(sequelize.models, result[i].userId));
+      }
+    } else {
+      Object.assign(result, await getUserObject(sequelize.models, result.userId));
+    }
+
+  });
+
   return player;
 };
