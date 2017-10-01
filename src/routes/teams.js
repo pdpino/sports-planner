@@ -138,7 +138,11 @@ router.delete('teamDelete', '/:id', async (ctx) => {
 router.use(
   '/:teamId/players',
   async (ctx, next) => {
-    ctx.state.team = await ctx.orm.team.findById(ctx.params.teamId);
+    const team = await ctx.orm.team.findById(ctx.params.teamId);
+
+    if (! await requireModifyTeamPermission(ctx, team)) return;
+
+    ctx.state.team = team;
     ctx.state.teamMembers = await ctx.state.team.getPlayers();
     ctx.state.players = await ctx.orm.player.findAll();
     await next();
