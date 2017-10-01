@@ -1,12 +1,12 @@
 module.exports = function defineisInvited(sequelize, DataTypes) {
   const isInvited = sequelize.define('isInvited', {
     isAdmin: {
-      type:DataTypes.BOOLEAN,
-      defaultValue:false,
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
     status: {
       type: DataTypes.ENUM,
-      values: ['sentToUser', 'sentbyUser', 'userRejected','rejectdByUser', 'accepted'], // HACK: copied in migration (and probably in routes/isInviteds)
+      values: ['sentToUser', 'sentByUser', 'userRejected','rejectedByUser', 'accepted'], // HACK: copied in migration (and probably in routes/isInviteds)
       allowNull: false,
       validate: {
         // NOTE: notNull has been deprecated, a warning is raised
@@ -14,12 +14,14 @@ module.exports = function defineisInvited(sequelize, DataTypes) {
         //   msg: "Estado no asignado"
         // },
         notEmpty: {
-          msg: "Estado no asignado"
+          msg: 'Estado no asignado'
         },
       },
     },
   });
+
   isInvited.associate = function associate(models) {
+
   };
 
   return isInvited;
