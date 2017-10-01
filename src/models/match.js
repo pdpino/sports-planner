@@ -8,6 +8,7 @@ module.exports = function definematch(sequelize, DataTypes) {
     },
   });
   match.associate = function associate(models) {
+    match.belongsToMany(models.player, { through: models.isInvited });
     // associations can be defined here
   };
   return match;

@@ -77,15 +77,16 @@
     No pertenece a ningún equipo.
   <% } %>
 
+
   <% if(playerMatches.length > 0) { %>
     <h4> Partidos a los que pertenece: </h4>
     <ul>
-      <% playerMatches.forEach((team) => { %>
+      <% playerMatches.forEach((match) => { %>
         <li>
-          <a href="<%= getTeamPath(team) %>">
+          <a href="<%= getMatchPath(match) %>">
             <%= match.id %> - <%= match.date %>
           </a>
-          <%= (team.isInvited.isAdmin) ? '-- Admin del partido' : '' %>
+          <%= (match.isInvited.isAdmin) ? '-- Usted es Admin del partido' : '' %>
 
           <% if(hasModifyPermission) { %>
             <!--
@@ -99,13 +100,24 @@
       <% }) %>
     </ul>
   <% } else { %>
-    No pertenece a ningún equipo.
+    No pertenece a ningún partido.
   <% } %>
+
+
+    <form action="<%= newPlayerMatchPath %>">
+        <input type="submit" value="Añadir Partido" />
+    </form>
+
 
   <% if(hasModifyPermission) { %>
     <!--
     <form action="<%= newPlayerTeamPath %>">
         <input type="submit" value="Añadir Equipo" />
+    </form>
+
+
+    <form action="<%= newPlayerMatchPath %>">
+        <input type="submit" value="Añadir Partido" />
     </form>
     -->
   <% } %>

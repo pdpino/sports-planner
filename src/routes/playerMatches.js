@@ -3,15 +3,15 @@ const KoaRouter = require('koa-router');
 const router = new KoaRouter();
 
 /** Boolean if searchedMatch is in playerMatches **/
-function isPlayerInvited(searchedMatch, playerMatches){
+function isMatchInvitable(searchedMatch, playerMatches){
   return Boolean(playerMatches.find((match) => match.id == searchedMatch.id));
 }
 
 /** Return the difference between allMatches and playerMatches **/
-function getMatchNotInvited(allMatches, playerMatches){
+function getMatchesNotInvited(allMatches, playerMatches){
   // OPTIMIZE ???
   return allMatches.filter( (anyMatch) => {
-    return !doesPlayerPlay(anyMatch, playerMatches);
+    return !isMatchInvitable(anyMatch, playerMatches);
   });
 }
 
@@ -25,7 +25,7 @@ async function findPlayerMatchById(player, matchId){
 router.get('playerMatchNew', '/new', async (ctx) => {
   await ctx.render('playerMatches/new', {
     player: ctx.state.player,
-    matchesNotInvited: getMatchNotInvited(ctx.state.matches, ctx.state.playerMatches),
+    matchesNotInvited: getMatchesNotInvited(ctx.state.matches, ctx.state.playerMatches),
     submitPlayerMatchPath: ctx.router.url('playerMatchCreate', { playerId: ctx.state.player.id }),
     cancelPath: ctx.router.url('player', { id: ctx.state.player.id })
   });

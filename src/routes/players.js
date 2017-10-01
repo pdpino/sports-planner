@@ -145,6 +145,7 @@ router.get('player', '/:id', async (ctx) => {
 
   const playerSports = await player.getSports();
   const playerTeams = await player.getTeams();
+  const playerMatches = await player.getMatches();
   const playerAge = calculateAge(player.birthday);
 
   await ctx.render('players/show', {
@@ -153,10 +154,11 @@ router.get('player', '/:id', async (ctx) => {
     playerAge,
     playerSports,
     playerTeams,
+    playerMatches,
     editPlayerPath: ctx.router.url('playerEdit', player.id),
     getSportPath: (sport) => ctx.router.url('sport', sport.id),
     getTeamPath: (team) => ctx.router.url('team', team.id),
-    getMatchPath: (match) => ctx.router.url('team', team.id),
+    getMatchPath: (match) => ctx.router.url('match', match.id),
     newPlayerTeamPath: ctx.router.url('playerTeamNew', { playerId: player.id } ),
     editPlayerTeamPath: (team) => ctx.router.url('playerTeamEdit', {
       playerId: player.id,
@@ -205,14 +207,14 @@ router.use(
   async (ctx, next) => {
     const { player, user } = await getPlayerAndUser(ctx, ctx.params.playerId);
 
-    if (!ctx.state.requireModifyPermission(ctx, user)) return;
+    //if (!ctx.state.requireModifyPermission(ctx, user)) return;
 
     ctx.state.matches = await ctx.orm.match.findAll();
     ctx.state.player = player;
     ctx.state.playerMatches = await ctx.state.player.getMatches();
     await next();
   },
-  playerTeamsRouter.routes(),
+  playerMatchesRouter.routes(),
 );
 
 // router.use(
