@@ -33,6 +33,13 @@
         <p> Solicitud rechazada </p>
       </div>
         <% } %>
+        <div>
+          <%if ( playMatch.isInvited.status == "accepted") { %>
+            <label for="isAdmin"></label>
+            <input type="checkbox" name="isAdmin" <%= (playMatch.isInvited.isAdmin) ? 'checked' : '' %> /> Administrador
+
+            <% } %>
+        </div>
       <div>
         <input type="submit" name="update" value="Guardar Cambios" />
       </div>
