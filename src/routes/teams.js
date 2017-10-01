@@ -58,6 +58,9 @@ router.post('teamCreate', '/', async (ctx) => {
 
   try {
     const team = await ctx.orm.team.create(ctx.request.body);
+    ctx.state.currentPlayer.addTeam(team, {
+      through: { isCaptain: true }
+    });
     ctx.redirect(ctx.router.url('team', { id: team.id }));
   } catch (validationError) {
     await ctx.render('teams/new', {
