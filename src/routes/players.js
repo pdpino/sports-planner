@@ -204,19 +204,19 @@ router.use(
   playerTeamsRouter.routes(),
 );
 
-router.use(
-  '/:playerId/sports',
-  async (ctx, next) => {
-    const { player, user } = await getPlayerAndUser(ctx, ctx.params.playerId);
-
-    if (!ctx.state.requireModifyPermission(ctx, user)) return;
-
-    ctx.state.sports = await ctx.orm.sport.findAll();
-    ctx.state.player = player;
-    ctx.state.playerSports = await ctx.state.player.getSports();
-    await next();
-  },
-  playerSportsRouter.routes(),
-);
+// router.use(
+//   '/:playerId/sports',
+//   async (ctx, next) => {
+//     const { player, user } = await getPlayerAndUser(ctx, ctx.params.playerId);
+//
+//     if (!ctx.state.requireModifyPermission(ctx, user)) return;
+//
+//     ctx.state.sports = await ctx.orm.sport.findAll();
+//     ctx.state.player = player;
+//     ctx.state.playerSports = await ctx.state.player.getSports();
+//     await next();
+//   },
+//   playerSportsRouter.routes(),
+// );
 
 module.exports = router;

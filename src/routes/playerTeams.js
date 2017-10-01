@@ -48,53 +48,53 @@ router.post('playerTeamCreate', '/', async (ctx) => {
   }
 });
 
-// router.get('playerTeamEdit', '/:id/edit', async (ctx) => {
-//   const playerTeam = await findPlayerTeamById(ctx.state.player, ctx.params.id);
-//   if (!playerTeam){
-//     console.log("WARNING: passed to playerTeamEdit and didn't find any playerTeam"); // DEBUG
-//     // REVIEW: notify the user?
-//     return ctx.redirect('/'); // HACK: can't use 'home' url
-//   }
-//   await ctx.render('playerTeams/edit', {
-//     player: ctx.state.player,
-//     playerTeam,
-//     submitPlayerTeamPath: ctx.router.url('playerTeamUpdate', {
-//       playerId: ctx.state.player.id,
-//       id: playerTeam.id
-//     }),
-//     deletePlayerTeamPath: ctx.router.url('playerTeamDelete', {
-//       playerId: ctx.state.player.id,
-//       id: playerTeam.id
-//     }),
-//     cancelPath: ctx.router.url('player', ctx.state.player.id)
-//   });
-// });
-//
-// router.patch('playerTeamUpdate', '/:id', async (ctx) => {
-//   const playerTeam = await findPlayerTeamById(ctx.state.player, ctx.params.id);
-//   try {
-//     await ctx.state.player.addTeam(playerTeam, {
-//       through: { isCaptain: ctx.request.body.isCaptain }
-//     });
-//     ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));
-//   } catch (validationError) {
-//     console.log("###### validation error when updating player-team: ", validationError); // DEBUG
-//     await ctx.render('playerTeams/edit', {
-//       player: ctx.state.player,
-//       playerTeam,
-//       errors: validationError.errors,
-//       submitPlayerTeamPath: ctx.router.url('playerTeamUpdate', {
-//         playerId: ctx.state.player.id,
-//         id: playerTeam.id
-//       }),
-//       deletePlayerTeamPath: ctx.router.url('playerTeamDelete', {
-//         playerId: ctx.state.player.id,
-//         id: playerTeam.id
-//       }),
-//       cancelPath: ctx.router.url('player', ctx.state.player.id)
-//     });
-//   }
-// });
+router.get('playerTeamEdit', '/:id/edit', async (ctx) => {
+  const playerTeam = await findPlayerTeamById(ctx.state.player, ctx.params.id);
+  if (!playerTeam){
+    console.log("WARNING: passed to playerTeamEdit and didn't find any playerTeam"); // DEBUG
+    // REVIEW: notify the user?
+    return ctx.redirect('/'); // HACK: can't use 'home' url
+  }
+  await ctx.render('playerTeams/edit', {
+    player: ctx.state.player,
+    playerTeam,
+    submitPlayerTeamPath: ctx.router.url('playerTeamUpdate', {
+      playerId: ctx.state.player.id,
+      id: playerTeam.id
+    }),
+    deletePlayerTeamPath: ctx.router.url('playerTeamDelete', {
+      playerId: ctx.state.player.id,
+      id: playerTeam.id
+    }),
+    cancelPath: ctx.router.url('player', ctx.state.player.id)
+  });
+});
+
+router.patch('playerTeamUpdate', '/:id', async (ctx) => {
+  const playerTeam = await findPlayerTeamById(ctx.state.player, ctx.params.id);
+  try {
+    await ctx.state.player.addTeam(playerTeam, {
+      through: { isCaptain: ctx.request.body.isCaptain }
+    });
+    ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));
+  } catch (validationError) {
+    console.log("###### validation error when updating player-team: ", validationError); // DEBUG
+    await ctx.render('playerTeams/edit', {
+      player: ctx.state.player,
+      playerTeam,
+      errors: validationError.errors,
+      submitPlayerTeamPath: ctx.router.url('playerTeamUpdate', {
+        playerId: ctx.state.player.id,
+        id: playerTeam.id
+      }),
+      deletePlayerTeamPath: ctx.router.url('playerTeamDelete', {
+        playerId: ctx.state.player.id,
+        id: playerTeam.id
+      }),
+      cancelPath: ctx.router.url('player', ctx.state.player.id)
+    });
+  }
+});
 
 router.delete('playerTeamDelete', '/:id', async (ctx) => {
    await ctx.state.player.removeTeam(ctx.params.id);
