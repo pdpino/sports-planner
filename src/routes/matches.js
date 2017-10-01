@@ -1,4 +1,5 @@
 const KoaRouter = require('koa-router');
+const matchPlayersRouter = require('./matchPlayers');
 
 const router = new KoaRouter();
 

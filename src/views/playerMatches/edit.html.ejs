@@ -1,0 +1,54 @@
+<h1> Editar solicitudes de partido %></h1>
+<div>
+  <% if (locals.errors) { %>
+    <div class="errors">
+      Necesitas arreglar los siguiente errores:
+      <ul>
+        <% errors.forEach(error => { %>
+          <li><%= error.message %></li>
+        <% }); %>
+      </ul>
+    </div>
+  <% } %>
+
+  <%= playMatch.id %> - <%= playMatch.date %>
+  <form action="<%= submitPlayerTeamPath %>" method="post">
+    <div>
+      <input type="hidden" name="_method" value="patch" />
+    </div>
+    <%if (playMatch.isInvited.status == "sentToUser" || playMatch.isInvited.status == "rejectedByUser" || || playMatch.isInvited.status == "accepted"){ %>
+    <div>
+      <input type="radio" name="status" value="accepted" <%= (playMatch.isInvited.status=="accepted") ? 'checked' : '' %>> Aceptar Invitación<br>
+      <input type="radio" name="status" value="rejectedByUser" <%= (playMatch.isInvited.status=="rejectedByUser") ? 'checked' : '' %>> Rechazar Invitación<br>
+      <input type="radio" name="status" value="sentToUser" <%= (playMatch.isInvited.status=="sentToUser") ? 'checked' : '' %>> No responder Aún<br>
+    </div>
+    <% } %>
+    <%else if (playMatch.isInvited.status == "sentbyUser"){ %>
+    <div>
+      <p> Esperando respuesta </p>
+    </div>
+      <% } %>
+      <%else if (playMatch.isInvited.status == "userRejected"){ %>
+      <div>
+        <p> Solicitud rechazada </p>
+      </div>
+        <% } %>
+      <div>
+        <input type="submit" name="update" value="Guardar Cambios" />
+      </div>
+  </form>
+
+</div>
+
+<form action="<%= deletePlayerTeamPath %>" method="post">
+  <div>
+    <input type="hidden" name="_method" value="delete" />
+  </div>
+  <div>
+    <input type="submit" name="delete" value="Eliminar" />
+  </div>
+</form>
+
+<form action=<%= cancelPath %>>
+  <input type="submit" value="Cancelar"/>
+</form>

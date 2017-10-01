@@ -1,6 +1,7 @@
 const KoaRouter = require('koa-router');
 const playerSportsRouter = require('./playerSports');
 const playerTeamsRouter = require('./playerTeams');
+const playerMatchesRouter = require('./playerMatches');
 
 const router = new KoaRouter();
 
@@ -155,10 +156,16 @@ router.get('player', '/:id', async (ctx) => {
     editPlayerPath: ctx.router.url('playerEdit', player.id),
     getSportPath: (sport) => ctx.router.url('sport', sport.id),
     getTeamPath: (team) => ctx.router.url('team', team.id),
+    getMatchPath: (match) => ctx.router.url('team', team.id),
     newPlayerTeamPath: ctx.router.url('playerTeamNew', { playerId: player.id } ),
     editPlayerTeamPath: (team) => ctx.router.url('playerTeamEdit', {
       playerId: player.id,
       id: team.id
+    }),
+    newPlayerMatchPath: ctx.router.url('playerMatchNew', { playerId: player.id } ),
+    editPlayerMatchPath: (match) => ctx.router.url('playerMatchEdit', {
+      playerId: player.id,
+      id: match.id
     }),
     newPlayerSportPath: ctx.router.url('playerSportNew', { playerId: player.id } ),
     editPlayerSportPath: (sport) => ctx.router.url('playerSportEdit', {
@@ -188,6 +195,21 @@ router.use(
     ctx.state.teams = await ctx.orm.team.findAll();
     ctx.state.player = player;
     ctx.state.playerTeams = await ctx.state.player.getTeams();
+    await next();
+  },
+  playerTeamsRouter.routes(),
+);
+
+router.use(
+  '/:playerId/matches',
+  async (ctx, next) => {
+    const { player, user } = await getPlayerAndUser(ctx, ctx.params.playerId);
+
+    if (!ctx.state.requireModifyPermission(ctx, user)) return;
+
+    ctx.state.matches = await ctx.orm.match.findAll();
+    ctx.state.player = player;
+    ctx.state.playerMatches = await ctx.state.player.getMatches();
     await next();
   },
   playerTeamsRouter.routes(),

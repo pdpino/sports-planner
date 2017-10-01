@@ -3,7 +3,7 @@
 <% if(joinableTeams.length > 0) { %>
   <form action="<%= submitPlayerTeamPath %>" method="post">
     <div>
-      <label for="teamId">Elegir deporte</label>
+      <label for="teamId">Elegir equipo</label>
       <% joinableTeams.forEach( (team) => { %>
         <div>
           <input type="radio" name="teamId" value="<%= team.id %>"/> <%= team.name %>

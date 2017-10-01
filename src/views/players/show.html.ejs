@@ -77,6 +77,31 @@
     No pertenece a ningún equipo.
   <% } %>
 
+  <% if(playerMatches.length > 0) { %>
+    <h4> Partidos a los que pertenece: </h4>
+    <ul>
+      <% playerMatches.forEach((team) => { %>
+        <li>
+          <a href="<%= getTeamPath(team) %>">
+            <%= match.id %> - <%= match.date %>
+          </a>
+          <%= (team.isInvited.isAdmin) ? '-- Admin del partido' : '' %>
+
+          <% if(hasModifyPermission) { %>
+            <!--
+            <form action="<%= editPlayerMatchPath(match) %>">
+                <input type="submit" value="Editar" />
+            </form>
+            -->
+          <% } %>
+
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    No pertenece a ningún equipo.
+  <% } %>
+
   <% if(hasModifyPermission) { %>
     <!--
     <form action="<%= newPlayerTeamPath %>">

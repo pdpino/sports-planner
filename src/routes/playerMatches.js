@@ -34,13 +34,13 @@ router.get('playerMatchNew', '/new', async (ctx) => {
 router.post('playerMatchCreate', '/', async (ctx) => {
   const playMatch = await findPlayerMatchById(ctx.state.player, ctx.params.id);
   try {
-    await ctx.state.player.addMatch(ctx.request.body.matchId, { through: { status: "sentToUser" }});
+    await ctx.state.player.addMatch(ctx.request.body.matchId, { through: { status: "sentByUser" }});
     ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));
   } catch (validationError) {
     console.log("###### validation error when creating player-match: ", validationError); // DEBUG
     await ctx.render('playerMatches/new', {
       player: ctx.state.player,
-      matchesNotPlayed: getMatchesNotPlayed(ctx.state.matches, ctx.state.playerMatches),
+      matchesNotInvited: getMatchesNotInvited(ctx.state.matches, ctx.state.playerMatches),
       errors: validationError.errors,
       submitPlayerMatchPath: ctx.router.url('playerMatchCreate', { playerId: ctx.state.player.id }),
       cancelPath: ctx.router.url('player', { id: ctx.state.player.id })
