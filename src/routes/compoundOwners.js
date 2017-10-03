@@ -118,7 +118,7 @@ router.get('compoundOwner', '/:id', async (ctx) => {
     compoundOwner,
     compounds,
     compoundPath: compound => ctx.router.url('compound', { id: compound.id }),
-    editcompoundOwnerPath: ctx.router.url('compoundOwnerEdit', compoundOwner.id),
+    editCompoundOwnerPath: ctx.router.url('compoundOwnerEdit', compoundOwner.id),
     compoundOwnersPath: ctx.router.url('compoundOwners'),
   });
 });
