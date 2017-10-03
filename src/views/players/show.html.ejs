@@ -77,9 +77,14 @@
     No pertenece a ningún equipo. <br>
   <% } %>
 
+  <% if(hasModifyPermission) { %>
+    <form action="<%= newPlayerTeamPath %>">
+        <input type="submit" value="Añadir Equipo" />
+    </form>
+  <% } %>
 
   <% if(playerMatches.length > 0) { %>
-    <h4> Partidos a los que pertenece: </h4>
+    <h4> Partidos: </h4>
     <ul>
       <% playerMatches.forEach((match) => { %>
         <li>
@@ -107,16 +112,9 @@
 
 
   <% if(hasModifyPermission) { %>
-
-    <form action="<%= newPlayerTeamPath %>">
-        <input type="submit" value="Añadir Equipo" />
-    </form>
-
-
     <form action="<%= newPlayerMatchPath %>">
         <input type="submit" value="Añadir Partido" />
     </form>
-
   <% } %>
 
 </div>
