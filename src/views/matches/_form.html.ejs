@@ -25,6 +25,13 @@
       <input type="datetime-local" name="date" value="<%= match.date%>"></input>
     </div>
     <div>
+      <label for="sportId">Deporte</label>
+      <br>
+      <% sports.forEach((sport) => { %>
+        <input type="radio" name="sportId" value="<%= sport.id %>" <%= (sport.id === match.sportId) ? 'checked' : '' %> > <%= sport.name %> <br>
+      <% }) %>
+    </div>
+    <div>
       <% if(match.isNewRecord) { %>
         <input type="submit" name="create" value="Crear" />
       <% } else { %>

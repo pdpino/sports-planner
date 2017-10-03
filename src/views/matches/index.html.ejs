@@ -1,8 +1,10 @@
 <h1>Partidos en jugamos</h1>
 
+<% if (hasCreatePermission) { %>
 <form action=<%= newMatchPath %>>
     <input type="submit" value="Crear partido"/>
 </form>
+<% } %>
 
 <ul>
   <% matches.forEach((match) => { %>

@@ -11,24 +11,22 @@
     </div>
   <% } %>
 
-  <%= playMatch.name %>
+  <%= playMatch.firstName %> <%= playMatch.lastName %> 
   <form action="<%= submitMatchPlayerPath %>" method="post">
     <div>
       <input type="hidden" name="_method" value="patch" />
     </div>
-    <%if (playMatch.isInvited.status == "sentbyUser" || playMatch.isInvited.status == "userRejected" || || playMatch.isInvited.status == "accepted"){ %>
+    <%if (playMatch.isInvited.status == "sentByUser" || playMatch.isInvited.status == "userRejected" || playMatch.isInvited.status == "accepted"){ %>
     <div>
       <input type="radio" name="status" value="accepted" <%= (playMatch.isInvited.status=="accepted") ? 'checked' : '' %>> Aceptar Invitación<br>
       <input type="radio" name="status" value="rejectedByUser" <%= (playMatch.isInvited.status=="rejectedByUser") ? 'checked' : '' %>> Rechazar Invitación<br>
       <input type="radio" name="status" value="sentToUser" <%= (playMatch.isInvited.status=="sentToUser") ? 'checked' : '' %>> No responder Aún<br>
     </div>
-    <% } %>
-    <%else if (playMatch.isInvited.status == "sentToUser"){ %>
+    <% } else if (playMatch.isInvited.status == "sentToUser"){ %>
     <div>
       <p> Esperando respuesta </p>
     </div>
-      <% } %>
-      <%else if (playMatch.isInvited.status == "rejectedByUser"){ %>
+      <% } else if (playMatch.isInvited.status == "rejectedByUser"){ %>
       <div>
         <p> Solicitud rechazada </p>
       </div>
@@ -38,8 +36,11 @@
             <label for="isAdmin"></label>
             <input type="checkbox" name="isAdmin" <%= (playMatch.isInvited.isAdmin) ? 'checked' : '' %> /> Administrador
 
-            <% } %>
-        </div>
+            <% } else { %>
+
+              <input type="hidden" name="isAdmin" value=<%false%>>
+           <%} %>
+           </div>
       <div>
         <input type="submit" name="update" value="Guardar Cambios" />
       </div>
