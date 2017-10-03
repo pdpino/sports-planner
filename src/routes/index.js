@@ -11,6 +11,7 @@ router.get('home', '', async (ctx) => {
     matchesPath: ctx.router.url('matches'),
     compoundOwnersPath: ctx.router.url('compoundOwners'),
     compoundsPath: ctx.router.url('compounds'),
+    fieldsPath: ctx.router.url('fields'),
   });
 });
 
