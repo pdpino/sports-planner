@@ -9,6 +9,7 @@ module.exports = {
         date: faker.date.past(),
         createdAt: new Date(),
         updatedAt: new Date(),
+        sportId: 1,
       });
     }
     return queryInterface.bulkInsert('matches', matches);

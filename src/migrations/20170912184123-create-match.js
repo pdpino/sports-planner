@@ -14,6 +14,16 @@ module.exports = {
       date: {
         type: Sequelize.DATE,
       },
+      sportId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'sports',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade',
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

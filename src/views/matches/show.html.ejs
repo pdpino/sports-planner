@@ -2,8 +2,10 @@
 <p>
   Fecha: <%= match.date%>
   <br>
+  Deporte: <%= sport %>
 </p>
 
+<% if (hasModifyPermission) { %>
 <form action=<%= editMatchPath %>>
     <input type="submit" value="Editar"/>
 </form>
@@ -16,6 +18,7 @@
     <input type="submit" name="delete" value="Eliminar" />
   </div>
 </form>
+<% } %>
 
 <br />
 <% if(matchPlayers.length > 0) { %>
@@ -30,11 +33,11 @@
         <%= (player.isInvited.isAdmin) ? '-- Admin del partido' : '' %>
 
         <% if(hasModifyPermission) { %>
-          <!--
+
           <form action="<%= editMatchPlayerPath(player) %>">
               <input type="submit" value="Editar" />
           </form>
-          -->
+
           <% } %>
         <%}%>
       </li>
@@ -44,9 +47,11 @@
   No contiene jugadores.
 <% } %>
 
-<form action="<%= newMatchPlayerPath %>">
-    <input type="submit" value="Añadir Jugador" />
-</form>
+<% if (hasModifyPermission) { %>
+  <form action=<%= newMatchPlayerPath %>>
+      <input type="submit" value="Añadir Jugador" />
+  </form>
+<% } %>
 
 <form action=<%= matchesPath %>>
     <input type="submit" value="Volver a todos los partidos"/>

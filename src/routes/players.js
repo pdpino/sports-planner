@@ -207,7 +207,7 @@ router.use(
   async (ctx, next) => {
     const { player, user } = await getPlayerAndUser(ctx, ctx.params.playerId);
 
-    //if (!ctx.state.requireModifyPermission(ctx, user)) return;
+    if (!ctx.state.requireModifyPermission(ctx, user)) return;
 
     ctx.state.matches = await ctx.orm.match.findAll();
     ctx.state.player = player;

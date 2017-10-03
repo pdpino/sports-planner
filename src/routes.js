@@ -116,7 +116,14 @@ router.use(
 );
 
 router.use('/players', players.routes());
-router.use('/matches', matches.routes());
+router.use(
+  '/matches',
+  async (ctx, next) => {
+    ctx.state.sports = await ctx.orm.sport.findAll();
+    await next();
+  },
+  matches.routes(),
+);
 router.use('/compoundOwners', compoundOwners.routes());
 router.use('/session', session.routes());
 router.use('/compounds', compound.routes());
