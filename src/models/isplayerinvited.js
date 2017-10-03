@@ -7,7 +7,7 @@ module.exports = function defineisPlayerInvited(sequelize, DataTypes) {
     },
     status: {
       type: DataTypes.ENUM,
-      values: ['sentToUser', 'sentByUser', 'userRejected', 'rejectedByUser', 'accepted'], // HACK: copied in migration (and probably in routes/isPlayerInviteds)
+      values: ['sentToUser', 'sentByUser', 'userRejected', 'rejectedByUser', 'accepted'], // HACK: copied in migration
       allowNull: false,
       validate: {
         notEmpty: {
