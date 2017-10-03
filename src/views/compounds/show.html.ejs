@@ -8,19 +8,22 @@
 
   <br>
 
-
   <p> Teléfono: <%= compound.localphone %> </p> <br>
   <p> Dirección: <%= compound.address %> </p> <br>
-  <p>Dueño: <%= compoundOwner.email %> <form action="<%= compoundOwnerPath(compoundOwner) %>">
+  <p> Dueño: <%= compoundOwner.email %>
+
+    <form action="<%= compoundOwnerPath %>">
       <input type="submit" value="Ir perfil dueño" />
-  </form> </br>
+    </form>
+  </br>
 
-  <form action="<%= editCompoundPath %>">
-      <input type="submit" value="Editar Información personal" />
-  </form>
+  <% if(hasModifyPermission) { %>
+    <form action="<%= editCompoundPath %>">
+        <input type="submit" value="Editar información del recinto" />
+    </form>
+  <% } %>
+
 </div>
-
-
 
 <br />
 

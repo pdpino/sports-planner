@@ -16,46 +16,47 @@ function mergeCompoundOwnerUser(user, compoundOwner){
   return compoundOwnerFull;
 }
 
-
 router.get('compounds', '/', async (ctx) => {
   const compounds = await ctx.orm.compound.findAll();
+
+  console.log("IS OWNER LOGGED IN:", ctx.state.isOwnerLoggedIn);
+
   await ctx.render('compounds/index', {
     compounds,
+    hasCreatePermission: ctx.state.isOwnerLoggedIn,
     compoundPath: compound => ctx.router.url('compound', { id: compound.id }),
     newCompoundPath: ctx.router.url('compoundNew'),
   });
 });
 
 router.get('compoundNew', '/new', async (ctx) => {
+  if (!ctx.state.requireOwnerLogin(ctx)) return;
+
   const compound = ctx.orm.compound.build();
-  const compoundOwners = await ctx.orm.compoundOwner.findAll();
-  for(let i = 0; i < compoundOwners.length; i++){
-    const user = await compoundOwners[i].getUser(); // REVIEW: avoid DB query
-    compoundOwners[i] = mergeCompoundOwnerUser(user, compoundOwners[i]);
-  }
+
   await ctx.render('compounds/new', {
     compound,
-    compoundOwners,
     submitCompoundPath: ctx.router.url('compoundCreate'),
     cancelPath: ctx.router.url('compounds'),
   });
 });
 
 router.post('compoundCreate', '/', async (ctx) => {
-  const compoundOwners = await ctx.orm.compoundOwner.findAll();
-  for(let i = 0; i < compoundOwners.length; i++){
-    const user = await compoundOwners[i].getUser(); // REVIEW: avoid DB query
-    compoundOwners[i] = mergeCompoundOwnerUser(user, compoundOwners[i]);
-  }
+  if (!ctx.state.requireOwnerLogin(ctx)) return;
+
+  const params = ctx.request.body; // TODO: parse, permit and require
+  // ctx.state.currentOwner.addCompound(compound);
+  params.compoundOwnerId = ctx.state.currentOwner.id;
+
   try {
-    const compound = await ctx.orm.compound.create(ctx.request.body);
+    const compound = await ctx.orm.compound.create(params);
 
     ctx.redirect(ctx.router.url('compound', { id: compound.id }));
   } catch (validationError) {
+    console.log("ERROR EN VALIDACION COMPOUND: ", validationError);
     await ctx.render('compounds/new', {
       compound: ctx.orm.compound.build(ctx.request.body),
       errors: validationError.errors,
-      compoundOwners,
       submitCompoundPath: ctx.router.url('compoundCreate'),
       cancelPath: ctx.router.url('compounds'),
     });
@@ -64,14 +65,12 @@ router.post('compoundCreate', '/', async (ctx) => {
 
 router.get('compoundEdit', '/:id/edit', async (ctx) => {
   const compound = await ctx.orm.compound.findById(ctx.params.id);
-  const compoundOwners = await ctx.orm.compoundOwner.findAll();
-  for(let i = 0; i < compoundOwners.length; i++){
-    const user = await compoundOwners[i].getUser(); // REVIEW: avoid DB query
-    compoundOwners[i] = mergeCompoundOwnerUser(user, compoundOwners[i]);
-  }
+  const compoundOwner = await ctx.orm.compoundOwner.findById(compound.compoundOwnerId);
+
+  if (!ctx.state.requireOwnerModifyPermission(ctx, compoundOwner)) return;
+
   await ctx.render('compounds/edit', {
     compound,
-    compoundOwners,
     submitCompoundPath: ctx.router.url('compoundUpdate', compound.id),
     deleteCompoundPath: ctx.router.url('compoundDelete', compound.id),
     cancelPath: ctx.router.url('compound', { id: ctx.params.id }),
@@ -80,11 +79,10 @@ router.get('compoundEdit', '/:id/edit', async (ctx) => {
 
 router.patch('compoundUpdate', '/:id', async (ctx) => {
   const compound = await ctx.orm.compound.findById(ctx.params.id);
-  const compoundOwners = await ctx.orm.compoundOwner.findAll();
-  for(let i = 0; i < compoundOwners.length; i++){
-    const user = await compoundOwners[i].getUser(); // REVIEW: avoid DB query
-    compoundOwners[i] = mergeCompoundOwnerUser(user, compoundOwners[i]);
-  }
+  const compoundOwner = await ctx.orm.compoundOwner.findById(compound.compoundOwnerId);
+
+  if (!ctx.state.requireOwnerModifyPermission(ctx, compoundOwner)) return;
+
   try {
     await compound.update(ctx.request.body);
     ctx.redirect(ctx.router.url('compound', { id: compound.id }));
@@ -92,7 +90,6 @@ router.patch('compoundUpdate', '/:id', async (ctx) => {
     await ctx.render('compounds/edit', {
       compound,
       errors: validationError.errors,
-      compoundOwners,
       submitCompoundPath: ctx.router.url('compoundUpdate', compound.id),
       cancelPath: ctx.router.url('compound', { id: ctx.params.id }),
       deleteCompoundPath: ctx.router.url('compoundDelete', compound.id),
@@ -102,16 +99,19 @@ router.patch('compoundUpdate', '/:id', async (ctx) => {
 
 router.get('compound', '/:id', async (ctx) => {
   const compound = await ctx.orm.compound.findById(ctx.params.id);
-  let compoundOwner = await ctx.orm.compoundOwner.findById(compound.compoundOwnerId);
-  const User=await compoundOwner.getUser();
-  compoundOwner = mergeCompoundOwnerUser(User, compoundOwner);
+  const compoundOwner = await ctx.orm.compoundOwner.findById(compound.compoundOwnerId);
+
+  console.log("HAS MODIFY PERMISSION: ", ctx.state.hasOwnerModifyPermission(ctx, compoundOwner));
+  console.log(compoundOwner);
+  console.log(ctx.state.currentOwner);
+
   await ctx.render('compounds/show', {
+    hasModifyPermission: ctx.state.hasOwnerModifyPermission(ctx, compoundOwner),
     compound,
     compoundOwner,
     compoundsPath: ctx.router.url('compounds'),
-    compoundOwnerPath: compoundOwner => ctx.router.url('compoundOwner', { id: compoundOwner.id }),
+    compoundOwnerPath: ctx.router.url('compoundOwner', { id: compoundOwner.id }),
     editCompoundPath: ctx.router.url('compoundEdit', compound.id),
-
   });
 });
 

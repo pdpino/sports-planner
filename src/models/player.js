@@ -49,9 +49,12 @@ module.exports = function defineplayer(sequelize, DataTypes) {
   };
 
   /** Load user info (email, names and photo) into player object **/
-  player.afterFind(async function loadUser(result) {
+  player.afterFind(async function loadUser(result, options) {
     // REVIEW: avoid DB query?
-    if(result.constructor == Array) {
+    if(!result){
+      console.log("Loading no players, options:", options);
+      return;
+    } else if(result.constructor == Array) {
       for (let i = 0; i < result.length; i++) {
           Object.assign(result[i], await getUserObject(sequelize.models, result[i].userId));
       }

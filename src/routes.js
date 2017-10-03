@@ -24,7 +24,7 @@ router.use(async (ctx, next) => {
       });
     }
     else if (currentUser.role == 'owner'){
-      currentOwner = await ctx.orm.player.find({
+      currentOwner = await ctx.orm.compoundOwner.find({
         where: { userId: currentUser.id }
       });
     }
@@ -51,6 +51,9 @@ router.use(async (ctx, next) => {
 router.use((ctx, next) => {
   ctx.state.hasAdminPermission = ctx.state.currentUser && ctx.state.currentUser.role == 'admin';
   ctx.state.hasModifyPermission = (ctx, user) => ctx.session.userId == user.id;
+  ctx.state.hasOwnerModifyPermission = (ctx, owner) =>
+    ctx.state.currentOwner && ctx.state.currentOwner.id == owner.id;
+
   ctx.state.isLoggedIn = Boolean(ctx.state.currentUser);
   ctx.state.isPlayerLoggedIn = Boolean(ctx.state.currentPlayer);
   ctx.state.isOwnerLoggedIn = Boolean(ctx.state.currentOwner);
@@ -59,6 +62,16 @@ router.use((ctx, next) => {
   ctx.state.requireModifyPermission = function(ctx, user){
     if(!ctx.state.hasModifyPermission(ctx, user)){
       console.log("NOTICE: you don't have modify permission");
+      ctx.redirect('/');
+      return false; // Require failed
+    }
+    return true; // Require passed
+  }
+
+  /**  **/
+  ctx.state.requireOwnerModifyPermission = function(ctx, owner){
+    if(!ctx.state.hasOwnerModifyPermission(ctx, owner)){
+      console.log("NOTICE: you as owner don't have modify permission");
       ctx.redirect('/');
       return false; // Require failed
     }
@@ -77,8 +90,21 @@ router.use((ctx, next) => {
 
   /** If not logged in, redirect to home **/
   ctx.state.requirePlayerLogin = function(ctx){
-    if(!ctx.state.isPlayerLoggedIn){ // There is already an user logged in
+    if(!ctx.state.isPlayerLoggedIn){
       console.log("NOTICE: you are not signed in as a player");
+      // TODO: show message to the user
+
+      // REVIEW: cambiar nombre por requirePlayerLoggedIn?
+
+      ctx.redirect('/');
+      return false; // Require failed
+    }
+    return true; // Require passed
+  }
+
+  ctx.state.requireOwnerLogin = function(ctx){
+    if(!ctx.state.isOwnerLoggedIn){
+      console.log("NOTICE: you are not signed in as a owner");
       // TODO: show message to the user
 
       ctx.redirect('/');
