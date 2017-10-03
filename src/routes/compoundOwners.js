@@ -54,7 +54,7 @@ router.post('compoundOwnerCreate', '/', async (ctx) => {
   if (!ctx.state.requireNoLogin(ctx)) return;
 
   const userParams = getUserParams(ctx.request.body);
-  const compoundOwnerParams = getcompoundOwnerParams(ctx.request.body);
+  const compoundOwnerParams = getCompoundOwnerParams(ctx.request.body);
 
   try {
     const user = await ctx.orm.user.create(userParams);
@@ -64,7 +64,6 @@ router.post('compoundOwnerCreate', '/', async (ctx) => {
   } catch (validationError) {
     await ctx.render('compoundOwners/new', {
       compoundOwner: ctx.orm.compoundOwner.build(ctx.request.body),
-      genders,
       errors: validationError.errors,
       submitcompoundOwnerPath: ctx.router.url('compoundOwnerCreate'),
       cancelPath: ctx.router.url('compoundOwners'),

@@ -82,9 +82,10 @@ router.patch('fieldUpdate', '/:id', async (ctx) => {
 
 router.get('field', '/:id', async (ctx) => {
   const field = await ctx.orm.field.findById(ctx.params.id);
+  const compound= await field.getCompound();
   await ctx.render('fields/show', {
     field,
-    fieldOwner,
+    compound,
     fieldsPath: ctx.router.url('fields'),
     compoundPath: compound => ctx.router.url('compound', { id: compound.id }),
     editFieldPath: ctx.router.url('fieldEdit', field.id),
