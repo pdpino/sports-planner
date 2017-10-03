@@ -19,6 +19,15 @@ function getCompoundOwnerParams(params){
   };
 }
 
+/** Load the owner and his user from the database **/
+async function getOwnerAndUser(ctx, compoundOwnerId){
+  // REVIEW: apparently not all calls of this need both user and compoundOwner
+  const compoundOwner = await ctx.orm.compoundOwner.findById(compoundOwnerId);
+  const user = compoundOwner && await compoundOwner.getUser();
+  return { compoundOwner, user };
+}
+
+
 router.get('compoundOwners', '/', async (ctx) => {
   const compoundOwners = await ctx.orm.compoundOwner.findAll();
 
@@ -30,6 +39,8 @@ router.get('compoundOwners', '/', async (ctx) => {
 });
 
 router.get('compoundOwnerNew', '/new', async (ctx) => {
+  if (!ctx.state.requireNoLogin(ctx)) return;
+
   const compoundOwner = ctx.orm.compoundOwner.build(ctx.request.body);
 
   await ctx.render('compoundOwners/new', {
@@ -40,6 +51,8 @@ router.get('compoundOwnerNew', '/new', async (ctx) => {
 });
 
 router.post('compoundOwnerCreate', '/', async (ctx) => {
+  if (!ctx.state.requireNoLogin(ctx)) return;
+
   const userParams = getUserParams(ctx.request.body);
   const compoundOwnerParams = getcompoundOwnerParams(ctx.request.body);
 
@@ -60,7 +73,9 @@ router.post('compoundOwnerCreate', '/', async (ctx) => {
 });
 
 router.get('compoundOwnerEdit', '/:id/edit', async (ctx) => {
-  const compoundOwner = await ctx.orm.compoundOwner.findById(ctx.params.id);
+  const { compoundOwner, user } = await getOwnerAndUser(ctx, ctx.params.id);
+
+  if (!ctx.state.requireModifyPermission(ctx, user)) return;
 
   await ctx.render('compoundOwners/edit', {
     compoundOwner,
@@ -71,8 +86,10 @@ router.get('compoundOwnerEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('compoundOwnerUpdate', '/:id', async (ctx) => {
-  const compoundOwner = await ctx.orm.compoundOwner.findById(ctx.params.id);
-  const user = await ctx.orm.user.findById(compoundOwner.userId);
+  const { compoundOwner, user } = await getOwnerAndUser(ctx, ctx.params.id);
+
+  if (!ctx.state.requireModifyPermission(ctx, user)) return;
+
   const userParams = getUserParams(ctx.request.body);
   const compoundOwnerParams = getCompoundOwnerParams(ctx.request.body);
 
@@ -92,10 +109,12 @@ router.patch('compoundOwnerUpdate', '/:id', async (ctx) => {
 });
 
 router.get('compoundOwner', '/:id', async (ctx) => {
-  const compoundOwner = await ctx.orm.compoundOwner.findById(ctx.params.id);
+  const { compoundOwner, user } = await getOwnerAndUser(ctx, ctx.params.id);
+
   const compounds = await compoundOwner.getCompounds();
-  
+
   await ctx.render('compoundOwners/show', {
+    hasModifyPermission: ctx.state.hasModifyPermission(ctx, user),
     compoundOwner,
     compounds,
     compoundPath: compound => ctx.router.url('compound', { id: compound.id }),
@@ -105,8 +124,10 @@ router.get('compoundOwner', '/:id', async (ctx) => {
 });
 
 router.delete('compoundOwnerDelete', '/:id', async (ctx) => {
-  const compoundOwner = await ctx.orm.compoundOwner.findById(ctx.params.id);
-  const user = await ctx.orm.user.findById(compoundOwner.userId);
+  const { compoundOwner, user } = await getOwnerAndUser(ctx, ctx.params.id);
+
+  if (!ctx.state.requireModifyPermission(ctx, user)) return;
+
   await user.destroy(); // NOTE: compoundOwner.destroy() is not neccesary beause onDelete: cascade
   ctx.redirect(ctx.router.url('compoundOwners'));
 });

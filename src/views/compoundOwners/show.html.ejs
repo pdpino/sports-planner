@@ -8,25 +8,30 @@
 
   <br>
 
-
   <p> Teléfono: <%= compoundOwner.phone %> </p>
 
-  <form action="<%= editcompoundOwnerPath %>">
-      <input type="submit" value="Editar Información personal" />
-  </form>
+  <% if(hasModifyPermission) { %>
+    <form action="<%= editCompoundOwnerPath %>">
+        <input type="submit" value="Editar Información personal" />
+    </form>
+  <% } %>
+
 </div>
 
 <% if(compounds.length > 0) { %>
-<ul>
-  <% compounds.forEach((compound) => { %>
-    <li>
-        <%= compound.name %>
-        <form action=<%= compoundPath(compound) %>>
-            <input type="submit" value="Ver recinto"/>
-        </form>
-    </li>
-  <% }) %>
-</ul>
+  <h4>Recintos:</h4>
+  <ul>
+    <% compounds.forEach((compound) => { %>
+      <li>
+          <%= compound.name %>
+          <form action=<%= compoundPath(compound) %>>
+              <input type="submit" value="Ver recinto"/>
+          </form>
+      </li>
+    <% }) %>
+  </ul>
+<% } else { %>
+  No tiene recintos.
 <% } %>
 
 <br />
