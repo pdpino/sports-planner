@@ -53,7 +53,7 @@ async function getPlayerAndUser(ctx, playerId){
 
 router.get('players', '/', async (ctx) => {
   const players = await ctx.orm.player.findAll();
-  
+
   await ctx.render('players/index', {
     players,
     playerPath: player => ctx.router.url('player', { id: player.id }),
