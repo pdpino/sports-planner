@@ -16,26 +16,26 @@
     <div>
       <input type="hidden" name="_method" value="patch" />
     </div>
-    <% if (playMatch.isInvited.status == "sentByUser" || playMatch.isInvited.status == "userRejected" || playMatch.isInvited.status == "accepted"){ %>
+    <% if (playMatch.isPlayerInvited.status == "sentByUser" || playMatch.isPlayerInvited.status == "userRejected" || playMatch.isPlayerInvited.status == "accepted"){ %>
     <div>
-      <input type="radio" name="status" value="accepted" <%= (playMatch.isInvited.status=="accepted") ? 'checked' : '' %>> Aceptar Invitación<br>
-      <input type="radio" name="status" value="rejectedByUser" <%= (playMatch.isInvited.status=="rejectedByUser") ? 'checked' : '' %>> Rechazar Invitación<br>
-      <input type="radio" name="status" value="sentToUser" <%= (playMatch.isInvited.status=="sentToUser") ? 'checked' : '' %>> No responder Aún<br>
+      <input type="radio" name="status" value="accepted" <%= (playMatch.isPlayerInvited.status=="accepted") ? 'checked' : '' %>> Aceptar Invitación<br>
+      <input type="radio" name="status" value="rejectedByUser" <%= (playMatch.isPlayerInvited.status=="rejectedByUser") ? 'checked' : '' %>> Rechazar Invitación<br>
+      <input type="radio" name="status" value="sentToUser" <%= (playMatch.isPlayerInvited.status=="sentToUser") ? 'checked' : '' %>> No responder Aún<br>
     </div>
-    <% } else if (playMatch.isInvited.status == "sentToUser"){ %>
+    <% } else if (playMatch.isPlayerInvited.status == "sentToUser"){ %>
       <div>
         <p> Esperando respuesta </p>
       </div>
-    <% } else if (playMatch.isInvited.status == "rejectedByUser"){ %>
+    <% } else if (playMatch.isPlayerInvited.status == "rejectedByUser"){ %>
       <div>
         <p> Solicitud rechazada </p>
       </div>
     <% } %>
 
     <div>
-      <% if (playMatch.isInvited.status == "accepted") { %>
+      <% if (playMatch.isPlayerInvited.status == "accepted") { %>
         <label for="isAdmin"></label>
-        <input type="checkbox" name="isAdmin" <%= (playMatch.isInvited.isAdmin) ? 'checked' : '' %> /> Administrador
+        <input type="checkbox" name="isAdmin" <%= (playMatch.isPlayerInvited.isAdmin) ? 'checked' : '' %> /> Administrador
 
       <% } else { %>
         <input type="hidden" name="isAdmin" value=<%false%>>

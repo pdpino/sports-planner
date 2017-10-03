@@ -9,7 +9,7 @@ module.exports = function definematch(sequelize, DataTypes) {
   });
   match.associate = function associate(models) {
     match.belongsTo(models.sport);
-    match.belongsToMany(models.player, { through: models.isInvited });
+    match.belongsToMany(models.player, { through: models.isPlayerInvited });
   };
   return match;
 };

@@ -31,10 +31,10 @@
           <%= player.firstName %> <%= player.lastName %>
         </a>
 
-        <%= (player.isInvited.isAdmin) ? '-- Admin del partido' : '' %>
+        <%= (player.isPlayerInvited.isAdmin) ? '-- Admin del partido' : '' %>
 
         -- 
-        <%= statusMessage(player.isInvited.status) %>
+        <%= statusMessage(player.isPlayerInvited.status) %>
 
 
         <% if(hasModifyPermission) { %>

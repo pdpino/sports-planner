@@ -27,8 +27,8 @@ function fixSubmitParams(body){
   body.isPublic = Boolean(body.isPublic);
 }
 
-/** Transform an isInvited status to a string
- * HACK: this shouldn't be here (should be in isInvited)
+/** Transform an isPlayerInvited status to a string
+ * HACK: this shouldn't be here (should be in isPlayerInvited)
  **/
 function statusMessage(status){
   const statusMessages = {

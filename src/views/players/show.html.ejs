@@ -91,7 +91,7 @@
           <a href="<%= getMatchPath(match) %>">
             <%= match.id %> - <%= match.date %>
           </a>
-          <%= (match.isInvited.isAdmin) ? '-- Usted es Admin del partido' : '' %>
+          <%= (match.isPlayerInvited.isAdmin) ? '-- Usted es Admin del partido' : '' %>
 
           <% if(hasModifyPermission) { %>
 

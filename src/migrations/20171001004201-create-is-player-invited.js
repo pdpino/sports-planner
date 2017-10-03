@@ -1,6 +1,6 @@
 module.exports = {
   up(queryInterface, Sequelize) {
-    return queryInterface.createTable('isInviteds', {
+    return queryInterface.createTable('isPlayerInviteds', {
       playerId: {
         primaryKey: true,
         type: Sequelize.INTEGER,
@@ -64,6 +64,6 @@ module.exports = {
     });
   },
   down(queryInterface, Sequelize) {
-    return queryInterface.dropTable('isInviteds');
+    return queryInterface.dropTable('isPlayerInviteds');
   },
 };
