@@ -25,12 +25,17 @@
   <h4> Jugadores que participan: </h4>
   <ul>
     <% matchPlayers.forEach((player) => { %>
-      <% if (player.isInvited.status=="accepted") {%>
       <li>
+
         <a href="<%= getPlayerPath(player) %>">
           <%= player.firstName %> <%= player.lastName %>
         </a>
+
         <%= (player.isInvited.isAdmin) ? '-- Admin del partido' : '' %>
+
+        -- 
+        <%= statusMessage(player.isInvited.status) %>
+
 
         <% if(hasModifyPermission) { %>
 
@@ -38,8 +43,7 @@
               <input type="submit" value="Editar" />
           </form>
 
-          <% } %>
-        <%}%>
+        <% } %>
       </li>
     <% }) %>
   </ul>

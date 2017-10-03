@@ -27,6 +27,18 @@ function fixSubmitParams(body){
   body.isPublic = Boolean(body.isPublic);
 }
 
+/** **/
+function statusMessage(status){
+  const statusMessages = {
+    'sentToUser': 'Esperando confirmación del invitado',
+    'sentByUser': 'Esperando confirmación del admin',
+    'userRejected': 'Usuario rechazado',
+    'rejectedByUser': 'No asistirá',
+    'accepted': 'Asistirá'
+  };
+  return statusMessages[status] || 'no status';
+}
+
 router.get('matches', '/', async (ctx) => {
   const matches = await ctx.orm.match.findAll();
   await ctx.render('matches/index', {
@@ -111,6 +123,7 @@ router.get('match', '/:id', async (ctx) => {
     matchPlayers,
     hasModifyPermission,
     sport: sport.name,
+    statusMessage,
     matchesPath: ctx.router.url('matches'),
     editMatchPath: ctx.router.url('matchEdit', match.id),
     getPlayerPath: (player) => ctx.router.url('player', player.id),
@@ -138,7 +151,7 @@ router.use(
     if (! await requireModifyMatchPermission(ctx, match)) return;
 
     ctx.state.players = await ctx.orm.player.findAll();
-    
+
     ctx.state.match = match;
     ctx.state.matchPlayers = await ctx.state.match.getPlayers();
     await next();
