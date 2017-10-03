@@ -8,7 +8,6 @@ async function getUserObject(models, userId){
   };
 }
 
-
 module.exports = function defineplayer(sequelize, DataTypes) {
   const player = sequelize.define('player', {
     birthday: {
