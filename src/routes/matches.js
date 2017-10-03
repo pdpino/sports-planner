@@ -1,23 +1,6 @@
 const KoaRouter = require('koa-router');
 const matchPlayersRouter = require('./matchPlayers');
 
-async function getPlayerAndUser(ctx, playerId){
-  // REVIEW: apparently not all calls of this need both user and player
-  const player = await ctx.orm.player.findById(playerId);
-  const user = player && await player.getUser();
-  return { player, user };
-}
-
-async function getAllPlayersAndUsers(ctx,allPlayers){
-  let fullPlayerUser=[]
-  let aux;
-  for(let i = 0; i < allPlayers.length; i++){
-    aux=await getPlayerAndUser(ctx, allPlayers[i].id)
-    fullPlayerUser.push(aux);
-  }
-  return fullPlayerUser;
-}
-
 /** Given a match and the currentPlayer logged in, boolean indicating modify permission **/
 async function hasModifyMatchPermission(match, currentPlayer){
   return currentPlayer && await match.hasPlayer(currentPlayer, {
@@ -153,9 +136,9 @@ router.use(
     const match = await ctx.orm.match.findById(ctx.params.matchId);
 
     if (! await requireModifyMatchPermission(ctx, match)) return;
-    ctx.state.players= await ctx.orm.player.findAll();
-    //ctx.state.players =  await getAllPlayersAndUsers(ctx,players);
 
+    ctx.state.players = await ctx.orm.player.findAll();
+    
     ctx.state.match = match;
     ctx.state.matchPlayers = await ctx.state.match.getPlayers();
     await next();
