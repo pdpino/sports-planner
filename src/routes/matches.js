@@ -1,4 +1,6 @@
+const _ = require('lodash');
 const KoaRouter = require('koa-router');
+
 const invitedPlayersRouter = require('./invitedPlayers');
 const invitedTeamsRouter = require('./invitedTeams');
 
@@ -22,10 +24,15 @@ async function requireModifyMatchPermission(ctx, match){
 }
 const router = new KoaRouter();
 
-/**Fix the parameters passed by the matches/_form.html.ejs (used when creating and when editing a match)*/
-function fixSubmitParams(body){
+/** Filter the parameters passed by the matches/_form.html.ejs (create or edit a match)*/
+function getMatchParams(params){
+  const filteredParams = _.pick(params, 'name', 'isPublic', 'date', 'sportId');
+
   /* checkbox input passes 'on' when checked and null when not-checked. Parse this to boolean */
-  body.isPublic = Boolean(body.isPublic);
+  params.isPublic = Boolean(params.isPublic);
+  params.name = params.name || '';
+
+  return filteredParams;
 }
 
 /** Transform an isPlayerInvited status to a message for the user
@@ -42,6 +49,11 @@ function getStatusMessage(status){
   return statusMessages[status] || 'no status';
 }
 
+/** Get the default name for a match **/
+function getDefaultName(player){
+  return "Partido de " + player.firstName;
+}
+
 router.get('matches', '/', async (ctx) => {
   const matches = await ctx.orm.match.findAll();
   await ctx.render('matches/index', {
@@ -55,7 +67,9 @@ router.get('matches', '/', async (ctx) => {
 
 router.get('matchNew', '/new', async (ctx) => {
   if (!ctx.state.requirePlayerLogin(ctx)) return;
+
   const match = ctx.orm.match.build();
+  match.name = getDefaultName(ctx.state.currentPlayer);
 
   await ctx.render('matches/new', {
     match,
@@ -66,19 +80,27 @@ router.get('matchNew', '/new', async (ctx) => {
 });
 
 router.post('matchCreate', '/', async (ctx) => {
-  fixSubmitParams(ctx.request.body);
+  const params = getMatchParams(ctx.request.body);
+
   if (!ctx.state.requirePlayerLogin(ctx)) return;
+
+  // REVIEW: should this be in the model? (beforeCreate hook?) (but the model doesn't know the creator)
+  params.name = params.name || getDefaultName(ctx.state.currentPlayer);
+
   try {
-    const match = await ctx.orm.match.create(ctx.request.body);
+    const match = await ctx.orm.match.create(params);
     await ctx.state.currentPlayer.addMatch(match.id, {
-    through: { isAdmin: true ,
-       status: "accepted"
-     }
+      through: {
+        isAdmin: true,
+        status: "accepted"
+      }
     });
     ctx.redirect(ctx.router.url('match', match.id ));
   } catch (validationError) {
+    console.log("VALIDATION ERROR WHEN CREATING MATCH: ", validationError);
+    
     await ctx.render('matches/new', {
-      match: ctx.orm.match.build(ctx.request.body),
+      match: ctx.orm.match.build(params),
       errors: validationError.errors,
       sports: ctx.state.sports,
       submitMatchPath: ctx.router.url('matchCreate'),
@@ -99,7 +121,7 @@ router.get('matchEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('matchUpdate', '/:id', async (ctx) => {
-  fixSubmitParams(ctx.request.bosdy);
+  getMatchParams(ctx.request.bosdy);
   const match = await ctx.orm.match.findById(ctx.params.id);
   if (! await requireModifyMatchPermission(ctx, match)) return;
   try {
