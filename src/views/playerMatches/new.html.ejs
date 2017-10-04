@@ -8,7 +8,7 @@
         <label for="matchId">Elegir partido</label>
         <% matchesNotInvited.forEach( (match) => { %>
           <div>
-            <input type="radio" name="matchId" value="<%= match.id %>"/> <%= match.id %> - <%= match.date %>
+            <input type="radio" name="matchId" value="<%= match.id %>"/> <%= match.name %> - <%= match.date %>
           </div>
         <% }) %>
       </div>

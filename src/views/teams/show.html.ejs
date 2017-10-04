@@ -63,7 +63,7 @@
         <% teamMatches.forEach( (match) => { %>
           <li>
             <a href="<%= getMatchPath(match) %>">
-              <%= match.id %>
+              <%= match.name %>
             </a>
 
             <% if (hasModifyPermission) { %>

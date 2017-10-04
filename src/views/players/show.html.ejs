@@ -90,7 +90,7 @@
         <% playerMatches.forEach((match) => { %>
           <li>
             <a href="<%= getMatchPath(match) %>">
-              <%= match.id %> - <%= match.date %>
+              <%= match.name %> - <%= match.date %>
             </a>
             <%= (match.isPlayerInvited.isAdmin) ? '-- Usted es Admin del partido' : '' %>
 

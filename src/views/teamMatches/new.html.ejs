@@ -7,7 +7,7 @@
         <label for="playerId">Elegir un partido</label>
         <% joinableMatches.forEach( (match) => { %>
           <div>
-            <input type="radio" name="matchId" value="<%= match.id %>"/> <%= match.id %>
+            <input type="radio" name="matchId" value="<%= match.id %>"/> <%= match.name %>
           </div>
         <% }) %>
       </div>
