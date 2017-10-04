@@ -1,5 +1,6 @@
 const KoaRouter = require('koa-router');
 const teamMembersRouter = require('./teamMembers');
+const teamMatchesRouter = require('./teamMatches');
 
 const router = new KoaRouter();
 
@@ -109,22 +110,30 @@ router.get('team', '/:id', async (ctx) => {
   const team = await ctx.orm.team.findById(ctx.params.id);
   const sport = await ctx.orm.sport.findById(team.sportId);
   const teamMembers = await team.getPlayers();
+  const teamMatches = await team.getMatches();
   const hasModifyPermission = await hasModifyTeamPermission(team, ctx.state.currentPlayer);
 
   await ctx.render('teams/show', {
     team,
     teamMembers,
+    teamMatches,
     hasModifyPermission,
     sport: sport.name,
     teamsPath: ctx.router.url('teams'),
     editTeamPath: ctx.router.url('teamEdit', team.id),
     deleteTeamPath: ctx.router.url('teamDelete', team.id),
     getPlayerPath: (player) => ctx.router.url('player', player.id),
+    getMatchPath: (match) => ctx.router.url('match', match.id),
+    newTeamMemberPath: ctx.router.url('teamMemberNew', { teamId: team.id } ),
     editTeamMemberPath: (player) => ctx.router.url('teamMemberEdit', {
       teamId: team.id,
       id: player.id
     }),
-    newTeamMemberPath: ctx.router.url('teamMemberNew', { teamId: team.id } ),
+    newTeamMatchPath: ctx.router.url('teamMatchNew', { teamId: team.id } ),
+    editTeamMatchPath: (match) => ctx.router.url('teamMatchEdit', {
+      teamId: team.id,
+      id: match.id
+    }),
     playersPath: ctx.router.url('teams'),
   });
 });
@@ -151,6 +160,21 @@ router.use(
     await next();
   },
   teamMembersRouter.routes(),
+);
+
+router.use(
+  '/:teamId/matches',
+  async (ctx, next) => {
+    const team = await ctx.orm.team.findById(ctx.params.teamId);
+
+    if (! await requireModifyTeamPermission(ctx, team)) return;
+
+    ctx.state.team = team;
+    ctx.state.teamMatches = await ctx.state.team.getMatches();
+    ctx.state.allMatches = await ctx.orm.match.findAll();
+    await next();
+  },
+  teamMatchesRouter.routes(),
 );
 
 module.exports = router;

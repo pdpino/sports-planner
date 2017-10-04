@@ -54,6 +54,39 @@
 
 <br>
 
+<div>
+  <% if(teamMatches.length > 0) { %>
+    <h4>Partidos:</h4>
+    <ul>
+      <% teamMatches.forEach( (match) => { %>
+        <li>
+          <a href="<%= getMatchPath(match) %>">
+            <%= match.id %>
+          </a>
+
+          <% if (hasModifyPermission) { %>
+            <form action=<%= editTeamMatchPath(match) %>>
+                <input type="submit" value="Editar" />
+            </form>
+          <% } %>
+
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <%= team.name %> no tiene partidos.
+  <% } %>
+
+  <% if (hasModifyPermission) { %>
+    <form action=<%= newTeamMatchPath %>>
+        <input type="submit" value="Añadir partidos" />
+    </form>
+  <% } %>
+
+</div>
+
+<br>
+
 <form action=<%= teamsPath %>>
     <input type="submit" value="Volver a todos los equipos"/>
 </form>

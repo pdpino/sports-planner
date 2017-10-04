@@ -1,12 +1,13 @@
 <h1>Agregar Jugadores</h1>
 
 <% if(playersNotInTeam.length > 0) { %>
-  <form action="<%= submitteamMemberPath %>" method="post">
+  <form action="<%= submitTeamMemberPath %>" method="post">
     <div>
       <label for="playerId">Elegir Jugadores</label>
       <% playersNotInTeam.forEach( (player) => { %>
         <div>
-          <input type="radio" name="playerId" value="<%= player.id %>"/> <%= player.name %>
+          <input type="radio" name="playerId" value="<%= player.id %>"/>
+          <%= player.email %>
         </div>
       <% }) %>
     </div>
