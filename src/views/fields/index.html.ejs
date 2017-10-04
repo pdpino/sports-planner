@@ -12,10 +12,11 @@
   <ul>
     <% fields.forEach((field) => { %>
       <li>
-          <%= field.name %>
-          <form action=<%= fieldPath(field) %>>
-              <input type="submit" value="Ver Cancha"/>
-          </form>
+          <a class="lilink" href=<%= fieldPath(field) %>>
+          <img src=<%=field.photo%> width="128" height="128"/>
+          <div>
+           <%= field.name %>
+         </div>
       </li>
     <% }) %>
   </ul>

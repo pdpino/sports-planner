@@ -25,6 +25,9 @@
 
     <div id="user-bar">
       <% if (currentUser) { %>
+        <div class=bar>
+        <img src=<%=currentUser.photo %> height="56px"/>
+      </div>
         <span class="username" class="name"> Hola <%= currentUser.firstName %></span>
 
         <% if (!hasAdminPermission) { %>

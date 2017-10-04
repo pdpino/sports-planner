@@ -24,10 +24,15 @@
     <ul>
       <% compounds.forEach((compound) => { %>
         <li>
-            <%= compound.name %>
-            <form action=<%= getCompoundPath(compound) %>>
-                <input type="submit" value="Ver recinto"/>
-            </form>
+            <a class="lilink" href=<%= getCompoundPath(compound) %>>
+            <img src=<%=compound.photo%> width="32" height="32"/>
+            <div>
+             <%= compound.name %>
+           </div>
+           <div>
+            <%= compound.address %>
+            </div>
+
         </li>
       <% }) %>
     </ul>

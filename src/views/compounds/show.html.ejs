@@ -23,13 +23,12 @@
       <h4> Canchas que dispone: </h4>
       <ul>
         <% fields.forEach((field) => { %>
-          <% console.log(field) %>
           <li>
-            <a href="<%= getFieldPath(field) %>">
-              <%= field.name %>
-
-
-
+              <a class="lilink" href=<%= getFieldPath(field) %>>
+              <img src=<%=field.photo%> width="64" height="64"/>
+              <div>
+               <%= field.name %>
+             </div>
           </li>
         <% }) %>
       </ul>
