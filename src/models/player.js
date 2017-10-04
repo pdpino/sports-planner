@@ -17,9 +17,9 @@ module.exports = function defineplayer(sequelize, DataTypes) {
         notEmpty: {
           msg: "Debes ingresar tu fecha de nacimiento"
         },
-        notEmpty: {
-          msg: "Debes ingresar una fecha de nacimiento válida"
-        },
+        // notEmpty: { // notNull?
+        //   msg: "Debes ingresar una fecha de nacimiento válida"
+        // },
         isBefore: {
           args: [ String(new Date()) ],
           msg: "No puedes ingresar una fecha de nacimiento en el futuro"

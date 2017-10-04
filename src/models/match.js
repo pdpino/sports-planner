@@ -1,7 +1,10 @@
 module.exports = function definematch(sequelize, DataTypes) {
   const match = sequelize.define('match', {
+    name: {
+      type: DataTypes.STRING,
+    },
     isPublic: {
-      type:DataTypes.BOOLEAN,
+      type: DataTypes.BOOLEAN,
     },
     date: {
       type: DataTypes.DATE,
