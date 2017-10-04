@@ -18,12 +18,16 @@
         </div>
       <% } %>
       <div>
+        <label for="name">Nombre</label>
+        <input type="text" name="name" value="<%= match.name %>"> </input> 
+      </div>
+      <div>
         <label for="isPublic">Público?</label>
         <input type="checkbox" name="isPublic" <%= match.isPublic ? 'checked' : '' %> ></input>
       </div>
       <div>
         <label for="date">Fecha y Hora</label>
-        <input type="datetime-local" name="date" value="<%= match.date%>"></input>
+        <input type="datetime-local" name="date" value="<%= match.date %>"></input>
       </div>
       <div>
         <label for="sportId">Deporte</label>
