@@ -1,3 +1,5 @@
+<div class ="center">
+
 <h1> Editar solicitudes de partido %></h1>
 <div>
   <% if (locals.errors) { %>
@@ -53,10 +55,11 @@
     <input type="hidden" name="_method" value="delete" />
   </div>
   <div>
-    <input type="submit" name="delete" value="Eliminar" />
+    <input id="deletebutton" type="submit" name="delete" value="Eliminar" />
   </div>
 </form>
 
 <form action=<%= cancelPath %>>
   <input type="submit" value="Cancelar"/>
 </form>
+</div>

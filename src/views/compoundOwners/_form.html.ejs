@@ -1,4 +1,6 @@
+<div class ="center">
 <h1> <%= (compoundOwner.isNewRecord) ? 'Nuevo Dueño de recinto' : 'Editar Dueño de recinto' %></h1>
+
 <div>
   <% if (locals.errors) { %>
     <div class="errors">
@@ -16,7 +18,7 @@
         <input type="hidden" name="_method" value="patch" />
       </div>
     <% } %>
-    
+
     <%- include('../users/_form', { user: compoundOwner }) %>
 
     <div>
@@ -30,7 +32,7 @@
       <% } %>
     </div>
   </form>
-</div>
+
 
 
 <% if(!compoundOwner.isNewRecord) { %>
@@ -39,7 +41,7 @@
       <input type="hidden" name="_method" value="delete" />
     </div>
     <div>
-      <input type="submit" name="delete" value="Eliminar Usuario" />
+      <input id="deletebutton" type="submit" name="delete" value="Eliminar Usuario" />
     </div>
   </form>
 <% } %>
@@ -47,3 +49,5 @@
 <form action="<%= cancelPath %>" method="get">
     <input type="submit" value="Cancelar"/>
 </form>
+
+</div>

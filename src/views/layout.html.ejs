@@ -4,47 +4,51 @@
   <head>
     <meta charset="utf-8">
     <title>Jugamos? - IIC2513</title>
-    <% if (env !== 'development') { %>
-      <link rel="stylesheet" href="/assets/styles.css">
-    <% } %>
+
+      <link rel="stylesheet" href="/assets/styles/layout.css">
+
   </head>
 
   <body>
     <header>
       <div id="logo">
+        <a href="<%= homePath %>">
         <img src="/assets/logo.png" alt="Logo" />
+      </a>
       </div>
-    </header>
-    <form action="<%= homePath %>" method="get">
-        <input type="submit" value="Home"/>
-    </form>
+
 
     <div id="user-bar">
       <% if (currentUser) { %>
-        <span class="name"> Hola <%= currentUser.firstName %></span>
+        <span class="username" class="name"> Hola <%= currentUser.firstName %></span>
 
         <% if (!hasAdminPermission) { %>
-          <form action="<%= profilePath %>" method="get">
+          <form  class="bar" action="<%= profilePath %>" method="get">
             <input type="submit" value="Mi Perfil" />
           </form>
         <% } %>
 
-        <form action="<%= destroySessionPath %>" method="post">
+        <form class="bar" action="<%= destroySessionPath %>" method="post">
           <input type="hidden" name="_method" value="delete" />
           <input type="submit" value="Salir" />
         </form>
 
       <% } else { %>
-        <span class="name">Hola Invitado</span>
-        <br>
-        <a href="<%= newSessionPath %>">Inicia Sesión</a>
-        <br>
-        <a href="<%= signUpPlayerPath %>">Regístrate como jugador</a>
-        <br>
-        <a href="<%= signUpOwnerPath %>">Regístrate como dueño de recintos deportivos</a>
+        <span class="username" class="name">Hola Invitado</span>
+
+        <form class="bar" action="<%= newSessionPath %>" method="get">
+          <input type="submit" value="Iniciar sesión" />
+        </form>
+        <form class="bar" action="<%= signUpPlayerPath %>" method="get">
+          <input type="submit" value="Regístrate como jugador" />
+        </form>
+        <form class="bar" action="<%= signUpOwnerPath %>" method="get">
+          <input type="submit" value="Regístrate como dueño de recintos deportivos" />
+        </form>
+
       <% } %>
     </div>
-
+    </header>
     <%- body %>
     <script src="/assets/app.js"></script>
   </body>

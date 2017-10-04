@@ -1,3 +1,5 @@
+<div class ="center">
+
 <h1> <%= (player.isNewRecord) ? 'Nuevo Jugador' : 'Editar Jugador' %></h1>
 <div>
   <% if (locals.errors) { %>
@@ -16,7 +18,7 @@
         <input type="hidden" name="_method" value="patch" />
       </div>
     <% } %>
-    
+
     <%- include('../users/_form', { user: player }) %>
 
     <div>
@@ -43,12 +45,12 @@
 
 
 <% if(!player.isNewRecord) { %>
-  <form action="<%= deletePlayerPath %>" method="post">
+  <form  action="<%= deletePlayerPath %>" method="post">
     <div>
       <input type="hidden" name="_method" value="delete" />
     </div>
     <div>
-      <input type="submit" name="delete" value="Eliminar Usuario" />
+      <input id="deletebutton" type="submit" name="delete" value="Eliminar Usuario" />
     </div>
   </form>
 <% } %>
@@ -56,3 +58,4 @@
 <form action="<%= cancelPath %>" method="get">
     <input type="submit" value="Cancelar"/>
 </form>
+</div>

@@ -1,3 +1,4 @@
+<div class ="center">
 <h1> <%= (compound.isNewRecord) ? 'Nuevo recinto' : 'Editar recinto' %></h1>
 <div>
   <% if (locals.errors) { %>
@@ -54,7 +55,7 @@
       <input type="hidden" name="_method" value="delete" />
     </div>
     <div>
-      <input type="submit" name="delete" value="Eliminar Recinto" />
+      <input id="deletebutton" type="submit" name="delete" value="Eliminar Recinto" />
     </div>
   </form>
 <% } %>
@@ -62,3 +63,4 @@
 <form action="<%= cancelPath %>" method="get">
     <input type="submit" value="Cancelar"/>
 </form>
+</div>
