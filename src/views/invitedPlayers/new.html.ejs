@@ -1,7 +1,7 @@
 <h1>Agregar Jugadores</h1>
 
 <% if(playersNotInvited.length > 0) { %>
-  <form action="<%= submitMatchPlayerPath %>" method="post">
+  <form action="<%= submitInvitedPlayerPath %>" method="post">
     <div>
       <label for="matchId">Elegir jugador</label>
       <% playersNotInvited.forEach( (player) => { %>

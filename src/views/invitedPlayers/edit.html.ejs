@@ -12,7 +12,7 @@
   <% } %>
 
   <%= invitedPlayer.firstName %> <%= invitedPlayer.lastName %>
-  <form action="<%= submitMatchPlayerPath %>" method="post">
+  <form action="<%= submitInvitedPlayerPath %>" method="post">
     <div>
       <input type="hidden" name="_method" value="patch" />
     </div>
@@ -48,7 +48,7 @@
 
 </div>
 
-<form action="<%= deleteMatchPlayerPath %>" method="post">
+<form action="<%= deleteInvitedPlayerPath %>" method="post">
   <div>
     <input type="hidden" name="_method" value="delete" />
   </div>

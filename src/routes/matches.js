@@ -1,5 +1,5 @@
 const KoaRouter = require('koa-router');
-const matchPlayersRouter = require('./matchPlayers');
+const invitedPlayersRouter = require('./invitedPlayers');
 const invitedTeamsRouter = require('./invitedTeams');
 
 /** Given a match and the currentPlayer logged in, boolean indicating modify permission **/
@@ -119,13 +119,13 @@ router.patch('matchUpdate', '/:id', async (ctx) => {
 router.get('match', '/:id', async (ctx) => {
   const match = await ctx.orm.match.findById(ctx.params.id);
   const sport = await ctx.orm.sport.findById(match.sportId);
-  const matchPlayers = await match.getPlayers();
+  const invitedPlayers = await match.getPlayers();
   const invitedTeams = await match.getTeams();
   const hasModifyPermission = await hasModifyMatchPermission(match, ctx.state.currentPlayer);
 
   await ctx.render('matches/show', {
     match,
-    matchPlayers,
+    invitedPlayers,
     hasModifyPermission,
     sport: sport.name,
     getStatusMessage,
@@ -134,9 +134,9 @@ router.get('match', '/:id', async (ctx) => {
     editMatchPath: ctx.router.url('matchEdit', match.id),
     getPlayerPath: (player) => ctx.router.url('player', player.id),
     getTeamPath: (team) => ctx.router.url('team', team.id),
-    newMatchPlayerPath: ctx.router.url('matchPlayerNew', { matchId: match.id } ),
+    newInvitedPlayerPath: ctx.router.url('invitedPlayerNew', { matchId: match.id } ),
     newInvitedTeamPath: ctx.router.url('invitedTeamNew', { matchId: match.id } ),
-    editMatchPlayerPath: (player) => ctx.router.url('matchPlayerEdit', {
+    editInvitedPlayerPath: (player) => ctx.router.url('invitedPlayerEdit', {
       matchId: match.id,
       id: player.id
     }),
@@ -165,10 +165,10 @@ router.use(
     ctx.state.players = await ctx.orm.player.findAll();
 
     ctx.state.match = match;
-    ctx.state.matchPlayers = await ctx.state.match.getPlayers();
+    ctx.state.invitedPlayers = await ctx.state.match.getPlayers();
     await next();
   },
-  matchPlayersRouter.routes(),
+  invitedPlayersRouter.routes(),
 );
 
 router.use(

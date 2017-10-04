@@ -21,10 +21,10 @@
 <% } %>
 
 <br />
-<% if(matchPlayers.length > 0) { %>
+<% if(invitedPlayers.length > 0) { %>
   <h4> Jugadores que participan: </h4>
   <ul>
-    <% matchPlayers.forEach((player) => { %>
+    <% invitedPlayers.forEach((player) => { %>
       <li>
 
         <a href="<%= getPlayerPath(player) %>">
@@ -39,7 +39,7 @@
 
         <% if(hasModifyPermission) { %>
 
-          <form action="<%= editMatchPlayerPath(player) %>">
+          <form action="<%= editInvitedPlayerPath(player) %>">
               <input type="submit" value="Editar" />
           </form>
 
@@ -52,7 +52,7 @@
 <% } %>
 
 <% if (hasModifyPermission) { %>
-  <form action=<%= newMatchPlayerPath %>>
+  <form action=<%= newInvitedPlayerPath %>>
       <input type="submit" value="Añadir Jugador" />
   </form>
 <% } %>
