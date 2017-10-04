@@ -32,7 +32,7 @@ router.get('teamMemberNew', '/new', async (ctx) => {
   await ctx.render('teamMembers/new', {
     team: ctx.state.team,
     playersNotInTeam: getInvitablePlayers(ctx.state.players, ctx.state.teamMembers),
-    submitteamMemberPath: ctx.router.url('teamMemberCreate', {
+    submitTeamMemberPath: ctx.router.url('teamMemberCreate', {
       teamId: ctx.state.team.id
     }),
     cancelPath: ctx.router.url('team', ctx.state.team.id)
@@ -52,7 +52,7 @@ router.post('teamMemberCreate', '/', async (ctx) => {
       team: ctx.state.team,
       errors: validationError.errors,
       playersNotInTeam: getInvitablePlayers(ctx.state.players, ctx.state.teamMembers),
-      submitteamMemberPath: ctx.router.url('teamMemberCreate', {
+      submitTeamMemberPath: ctx.router.url('teamMemberCreate', {
         teamId: ctx.state.team.id
       }),
       cancelPath: ctx.router.url('team', ctx.state.team.id)
@@ -65,11 +65,11 @@ router.get('teamMemberEdit', '/:id/edit', async (ctx) => {
   await ctx.render('teamMembers/edit', {
     team: ctx.state.team,
     teamMember,
-    submitteamMemberPath: ctx.router.url('teamMemberUpdate', {
+    submitTeamMemberPath: ctx.router.url('teamMemberUpdate', {
       teamId: ctx.state.team.id,
       id: teamMember.id
     }),
-    deleteteamMemberPath: ctx.router.url('teamMemberDelete', {
+    deleteTeamMemberPath: ctx.router.url('teamMemberDelete', {
       teamId: ctx.state.team.id,
       id: teamMember.id
     }),
@@ -91,11 +91,11 @@ router.patch('teamMemberUpdate', '/:id', async (ctx) => {
       team: ctx.state.team,
       teamMember,
       errors: validationError.errors,
-      submitteamMemberPath: ctx.router.url('teamMemberUpdate', {
+      submitTeamMemberPath: ctx.router.url('teamMemberUpdate', {
         teamId: ctx.state.team.id,
         id: teamMember.id
       }),
-      deleteteamMemberPath: ctx.router.url('teamMemberDelete', {
+      deleteTeamMemberPath: ctx.router.url('teamMemberDelete', {
         teamId: ctx.state.team.id,
         id: teamMember.id
       }),

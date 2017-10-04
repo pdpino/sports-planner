@@ -32,13 +32,7 @@
       <label for="schedule">Horario</label>
       <input type="text" name="schedule" value="<%= field.schedule %>" />
     </div>
-    <div>
-      <label for="compoundId">Recinto</label>
-      <br>
-      <% compounds.forEach((compound) => { %>
-        <input type="radio" name="compoundId" value="<%= compound.id %>" <%= (compound.id === field.compoundId) ? 'checked' : '' %> > <%= compound.name %> <br>
-      <% }) %>
-    </div>
+    <input type="hidden" name="compoundId" value="<%=compound.id %>"
     <div>
       <label for="sportId">Deporte</label>
       <br>

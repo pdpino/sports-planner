@@ -45,7 +45,8 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     player.belongsTo(models.user);
     player.belongsToMany(models.sport, { through: models.plays });
     player.belongsToMany(models.team, { through: models.isMember });
-    player.belongsToMany(models.match, { through: models.isInvited });
+
+    player.belongsToMany(models.match, { through: models.isPlayerInvited });
   };
 
   /** Load user info (email, names and photo) into player object **/

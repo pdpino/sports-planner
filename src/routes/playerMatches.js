@@ -32,7 +32,6 @@ router.get('playerMatchNew', '/new', async (ctx) => {
 });
 
 router.post('playerMatchCreate', '/', async (ctx) => {
-  const playMatch = await findPlayerMatchById(ctx.state.player, ctx.params.id);
   try {
     await ctx.state.player.addMatch(ctx.request.body.matchId, { through: { status: "sentByUser" }});
     ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));
@@ -49,28 +48,40 @@ router.post('playerMatchCreate', '/', async (ctx) => {
 });
 
 router.get('playerMatchEdit', '/:id/edit', async (ctx) => {
-  const playMatch = await findPlayerMatchById(ctx.state.player, ctx.params.id);
+  const playerMatch = await findPlayerMatchById(ctx.state.player, ctx.params.id);
   await ctx.render('playerMatches/edit', {
     player: ctx.state.player,
-    playMatch,
-    submitPlayerMatchPath: ctx.router.url('playerMatchUpdate', { playerId: ctx.state.player.id, id: playMatch.id }),
-    deletePlayerMatchPath: ctx.router.url('playerMatchDelete', { playerId: ctx.state.player.id, id: playMatch.id }),
+    playerMatch,
+    submitPlayerMatchPath: ctx.router.url('playerMatchUpdate', {
+      playerId: ctx.state.player.id,
+      id: playerMatch.id
+    }),
+    deletePlayerMatchPath: ctx.router.url('playerMatchDelete', {
+      playerId: ctx.state.player.id,
+      id: playerMatch.id
+    }),
     cancelPath: ctx.router.url('player', { id: ctx.state.player.id })
   });
 });
 
 router.patch('playerMatchUpdate', '/:id', async (ctx) => {
-  const playMatch = await findPlayerMatchById(ctx.state.player, ctx.params.id);
+  const playerMatch = await findPlayerMatchById(ctx.state.player, ctx.params.id);
   try {
-    await ctx.state.player.addMatch(playMatch, { through: { status: ctx.request.body.status }});
+    await ctx.state.player.addMatch(playerMatch, { through: { status: ctx.request.body.status }});
     ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));
   } catch (validationError) {
     console.log("###### validation error when updating player-match: ", validationError); // DEBUG
     await ctx.render('playerMatches/edit', {
       player: ctx.state.player,
-      playMatch,
+      playerMatch,
       errors: validationError.errors,
-      submitPlayerMatchPath: ctx.router.url('playerMatchUpdate', { playerId: ctx.state.player.id, id: playMatch.id }),
+      submitPlayerMatchPath: ctx.router.url('playerMatchUpdate', {
+        playerId: ctx.state.player.id,
+        id: playerMatch.id
+      }),
+      deletePlayerMatchPath: ctx.router.url('playerMatchDelete', { playerId: ctx.state.player.id,
+        id: playerMatch.id
+      }),
       cancelPath: ctx.router.url('player', { id: ctx.state.player.id })
     });
   }

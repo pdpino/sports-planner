@@ -9,8 +9,8 @@ module.exports = function definematch(sequelize, DataTypes) {
   });
   match.associate = function associate(models) {
     match.belongsTo(models.sport);
-    match.belongsToMany(models.player, { through: models.isInvited });
-    // associations can be defined here
+    match.belongsToMany(models.player, { through: models.isPlayerInvited });
+    match.belongsToMany(models.team, { through: models.isTeamInvited });
   };
   return match;
 };

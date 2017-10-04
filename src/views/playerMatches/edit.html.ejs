@@ -11,19 +11,30 @@
     </div>
   <% } %>
 
-  <%= playMatch.id %> - <%= playMatch.date %>
-  
+  <%= playerMatch.id %> - <%= playerMatch.date %>
+
   <form action="<%= submitPlayerMatchPath %>" method="post">
     <div>
       <input type="hidden" name="_method" value="patch" />
     </div>
-    <% if (playMatch.isInvited.status == "sentToUser" || playMatch.isInvited.status == "rejectedByUser"  || playMatch.isInvited.status == "accepted"){ %>
+    <% if ( playerMatch.isPlayerInvited.status == "sentToUser" ||
+            playerMatch.isPlayerInvited.status == "rejectedByUser" ||
+            playerMatch.isPlayerInvited.status == "accepted"){ %>
       <div>
-        <input type="radio" name="status" value="accepted" <%= (playMatch.isInvited.status=="accepted") ? 'checked' : '' %>> Aceptar Invitación<br>
-        <input type="radio" name="status" value="rejectedByUser" <%= (playMatch.isInvited.status=="rejectedByUser") ? 'checked' : '' %>> Rechazar Invitación<br>
-        <input type="radio" name="status" value="sentToUser" <%= (playMatch.isInvited.status=="sentToUser") ? 'checked' : '' %>> No responder Aún<br>
+        <input type="radio" name="status" value="accepted"
+        <%= (playerMatch.isPlayerInvited.status=="accepted") ? 'checked' : '' %>>
+        Aceptar Invitación<br>
+
+        <input type="radio" name="status" value="rejectedByUser"
+        <%= (playerMatch.isPlayerInvited.status=="rejectedByUser") ? 'checked' : '' %>>
+        Rechazar Invitación<br>
+
+        <input type="radio" name="status" value="sentToUser"
+        <%= (playerMatch.isPlayerInvited.status=="sentToUser") ? 'checked' : '' %>>
+        No responder Aún<br>
+
       </div>
-    <% } else if (playMatch.isInvited.status == "sentByUser"){ %>
+    <% } else if (playerMatch.isPlayerInvited.status == "sentByUser"){ %>
       <div>
         <p> Esperando respuesta </p>
       </div>

@@ -4,7 +4,7 @@
   <% compoundOwners.forEach((compoundOwner) => { %>
     <li>
         <%= compoundOwner.email %>
-        <form action=<%= compoundOwnerPath(compoundOwner) %>>
+        <form action=<%= getCompoundOwnerPath(compoundOwner) %>>
             <input type="submit" value="Ver perfil"/>
         </form>
     </li>

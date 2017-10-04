@@ -24,7 +24,7 @@
     <% compounds.forEach((compound) => { %>
       <li>
           <%= compound.name %>
-          <form action=<%= compoundPath(compound) %>>
+          <form action=<%= getCompoundPath(compound) %>>
               <input type="submit" value="Ver recinto"/>
           </form>
       </li>

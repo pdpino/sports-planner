@@ -1,22 +1,6 @@
 const KoaRouter = require('koa-router');
-const matchPlayersRouter = require('./matchPlayers');
-
-async function getPlayerAndUser(ctx, playerId){
-  // REVIEW: apparently not all calls of this need both user and player
-  const player = await ctx.orm.player.findById(playerId);
-  const user = player && await player.getUser();
-  return { player, user };
-}
-
-async function getAllPlayersAndUsers(ctx,allPlayers){
-  let fullPlayerUser=[]
-  let aux;
-  for(let i = 0; i < allPlayers.length; i++){
-    aux=await getPlayerAndUser(ctx, allPlayers[i].id)
-    fullPlayerUser.push(aux);
-  }
-  return fullPlayerUser;
-}
+const invitedPlayersRouter = require('./invitedPlayers');
+const invitedTeamsRouter = require('./invitedTeams');
 
 /** Given a match and the currentPlayer logged in, boolean indicating modify permission **/
 async function hasModifyMatchPermission(match, currentPlayer){
@@ -42,6 +26,20 @@ const router = new KoaRouter();
 function fixSubmitParams(body){
   /* checkbox input passes 'on' when checked and null when not-checked. Parse this to boolean */
   body.isPublic = Boolean(body.isPublic);
+}
+
+/** Transform an isPlayerInvited status to a message for the user
+ * HACK: this shouldn't be here (should be in isPlayerInvited)
+ **/
+function getStatusMessage(status){
+  const statusMessages = {
+    'sentToTeam': 'Esperando confirmación del capitán del equipo',
+    'sentByTeam': 'Esperando confirmación del administrador del partido',
+    'teamRejected': 'Equipo rechazado',
+    'rejectedByTeam': 'No asistirá',
+    'accepted': 'Asistirá'
+  };
+  return statusMessages[status] || 'no status';
 }
 
 router.get('matches', '/', async (ctx) => {
@@ -121,20 +119,27 @@ router.patch('matchUpdate', '/:id', async (ctx) => {
 router.get('match', '/:id', async (ctx) => {
   const match = await ctx.orm.match.findById(ctx.params.id);
   const sport = await ctx.orm.sport.findById(match.sportId);
-  const matchPlayers = await match.getPlayers();
+  const invitedPlayers = await match.getPlayers();
+  const invitedTeams = await match.getTeams();
   const hasModifyPermission = await hasModifyMatchPermission(match, ctx.state.currentPlayer);
+
   await ctx.render('matches/show', {
     match,
-    matchPlayers,
+    invitedPlayers,
     hasModifyPermission,
     sport: sport.name,
-    matchesPath: ctx.router.url('matches'),
+    getStatusMessage,
+    invitedTeams,
     editMatchPath: ctx.router.url('matchEdit', match.id),
-    getPlayerPath: (player) => ctx.router.url('player', player.id),
-    newMatchPlayerPath: ctx.router.url('matchPlayerNew', { matchId: match.id } ),
-    editMatchPlayerPath: (player) => ctx.router.url('matchPlayerEdit', {
+    newInvitedPlayerPath: ctx.router.url('invitedPlayerNew', { matchId: match.id } ),
+    newInvitedTeamPath: ctx.router.url('invitedTeamNew', { matchId: match.id } ),
+    editInvitedPlayerPath: (player) => ctx.router.url('invitedPlayerEdit', {
       matchId: match.id,
       id: player.id
+    }),
+    editInvitedTeamPath: (team) => ctx.router.url('invitedTeamEdit', {
+      matchId: match.id,
+      id: team.id
     }),
     deleteMatchPath: ctx.router.url('matchDelete', match.id),
   });
@@ -153,14 +158,29 @@ router.use(
     const match = await ctx.orm.match.findById(ctx.params.matchId);
 
     if (! await requireModifyMatchPermission(ctx, match)) return;
-    ctx.state.players= await ctx.orm.player.findAll();
-    //ctx.state.players =  await getAllPlayersAndUsers(ctx,players);
+
+    ctx.state.players = await ctx.orm.player.findAll();
 
     ctx.state.match = match;
-    ctx.state.matchPlayers = await ctx.state.match.getPlayers();
+    ctx.state.invitedPlayers = await ctx.state.match.getPlayers();
     await next();
   },
-  matchPlayersRouter.routes(),
+  invitedPlayersRouter.routes(),
+);
+
+router.use(
+  '/:matchId/teams',
+  async (ctx, next) => {
+    const match = await ctx.orm.match.findById(ctx.params.matchId);
+
+    if (! await requireModifyMatchPermission(ctx, match)) return;
+
+    ctx.state.match = match;
+    ctx.state.teams = await ctx.orm.team.findAll();
+    ctx.state.invitedTeams = await ctx.state.match.getTeams();
+    await next();
+  },
+  invitedTeamsRouter.routes(),
 );
 
 module.exports = router;

@@ -21,25 +21,29 @@
 <% } %>
 
 <br />
-<% if(matchPlayers.length > 0) { %>
+<% if(invitedPlayers.length > 0) { %>
   <h4> Jugadores que participan: </h4>
   <ul>
-    <% matchPlayers.forEach((player) => { %>
-      <% if (player.isInvited.status=="accepted") {%>
+    <% invitedPlayers.forEach((player) => { %>
       <li>
+
         <a href="<%= getPlayerPath(player) %>">
           <%= player.firstName %> <%= player.lastName %>
         </a>
-        <%= (player.isInvited.isAdmin) ? '-- Admin del partido' : '' %>
+
+        <%= (player.isPlayerInvited.isAdmin) ? '-- Admin del partido' : '' %>
+
+        --
+        <%= getStatusMessage(player.isPlayerInvited.status) %>
+
 
         <% if(hasModifyPermission) { %>
 
-          <form action="<%= editMatchPlayerPath(player) %>">
+          <form action="<%= editInvitedPlayerPath(player) %>">
               <input type="submit" value="Editar" />
           </form>
 
-          <% } %>
-        <%}%>
+        <% } %>
       </li>
     <% }) %>
   </ul>
@@ -48,8 +52,40 @@
 <% } %>
 
 <% if (hasModifyPermission) { %>
-  <form action=<%= newMatchPlayerPath %>>
+  <form action=<%= newInvitedPlayerPath %>>
       <input type="submit" value="Añadir Jugador" />
+  </form>
+<% } %>
+
+<% if(invitedTeams.length > 0) { %>
+  <h4> Equipos que participan: </h4>
+  <ul>
+    <% invitedTeams.forEach((team) => { %>
+      <li>
+
+        <a href="<%= getTeamPath(team) %>">
+          <%= team.name %>
+        </a>
+
+        --
+        <%= getStatusMessage(team.isTeamInvited.status) %>
+
+        <% if(hasModifyPermission) { %>
+          <form action="<%= editInvitedTeamPath(team) %>">
+              <input type="submit" value="Editar Invitación" />
+          </form>
+        <% } %>
+
+      </li>
+    <% }) %>
+  </ul>
+<% } else { %>
+  No hay equipos invitados.
+<% } %>
+
+<% if (hasModifyPermission) { %>
+  <form action=<%= newInvitedTeamPath %>>
+      <input type="submit" value="Invitar equipo" />
   </form>
 <% } %>
 

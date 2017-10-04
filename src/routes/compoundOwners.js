@@ -33,7 +33,6 @@ router.get('compoundOwners', '/', async (ctx) => {
 
   await ctx.render('compoundOwners/index', {
     compoundOwners,
-    compoundOwnerPath: compoundOwner => ctx.router.url('compoundOwner', { id: compoundOwner.id }),
     newcompoundOwnerPath: ctx.router.url('compoundOwnerNew'),
   });
 });
@@ -116,9 +115,7 @@ router.get('compoundOwner', '/:id', async (ctx) => {
     hasModifyPermission: ctx.state.hasModifyPermission(ctx, user),
     compoundOwner,
     compounds,
-    compoundPath: compound => ctx.router.url('compound', { id: compound.id }),
     editCompoundOwnerPath: ctx.router.url('compoundOwnerEdit', compoundOwner.id),
-    compoundOwnersPath: ctx.router.url('compoundOwners'),
   });
 });
 

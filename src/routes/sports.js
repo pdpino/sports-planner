@@ -79,7 +79,6 @@ router.get('sport', '/:id', async (ctx) => {
   const sport = await ctx.orm.sport.findById(ctx.params.id);
   await ctx.render('sports/show', {
     sport,
-    sportsPath: ctx.router.url('sports'),
     hasModifyPermission: ctx.state.hasAdminPermission,
     editSportPath: ctx.router.url('sportEdit', sport.id),
     deleteSportPath: ctx.router.url('sportDelete', sport.id),

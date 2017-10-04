@@ -12,10 +12,37 @@
   <p> Dirección: <%= compound.address %> </p> <br>
   <p> Dueño: <%= compoundOwner.email %>
 
-    <form action="<%= compoundOwnerPath %>">
+    <form action="<%= getCompoundOwnerPath(compoundOwner) %>">
       <input type="submit" value="Ir perfil dueño" />
     </form>
   </br>
+  <% if(fields.length > 0) { %>
+    <h4> Canchas que dispone: </h4>
+    <ul>
+      <% fields.forEach((field) => { %>
+        <% console.log(field) %>
+        <li>
+          <a href="<%= getFieldPath(field) %>">
+            <%= field.name %>
+
+
+
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    No contiene canchas.
+  <% } %>
+
+  <% if(hasModifyPermission) { %>
+
+    <form action="<%= newFieldPath %>">
+        <input type="submit" value="Crear Cancha" />
+    </form>
+    
+
+
+    <% } %>
 
   <% if(hasModifyPermission) { %>
     <form action="<%= editCompoundPath %>">

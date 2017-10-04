@@ -12,7 +12,7 @@
   <% } %>
 
   <%= teamMember.name %>
-  <form action="<%= submitteamMemberPath %>" method="post">
+  <form action="<%= submitTeamMemberPath %>" method="post">
     <div>
       <input type="hidden" name="_method" value="patch" />
     </div>
@@ -26,7 +26,7 @@
   </form>
 </div>
 
-<form action="<%= deleteteamMemberPath %>" method="post">
+<form action="<%= deleteTeamMemberPath %>" method="post">
   <div>
     <input type="hidden" name="_method" value="delete" />
   </div>
