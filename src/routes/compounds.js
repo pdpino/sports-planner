@@ -1,5 +1,5 @@
 const KoaRouter = require('koa-router');
-
+const fieldsRouter = require('./fields');
 const router = new KoaRouter();
 
 function mergeCompoundOwnerUser(user, compoundOwner){
@@ -100,6 +100,8 @@ router.patch('compoundUpdate', '/:id', async (ctx) => {
 router.get('compound', '/:id', async (ctx) => {
   const compound = await ctx.orm.compound.findById(ctx.params.id);
   const compoundOwner = await ctx.orm.compoundOwner.findById(compound.compoundOwnerId);
+  const fields= await compound.getFields();
+  const compoundId= compound.id;
 
   console.log("HAS MODIFY PERMISSION: ", ctx.state.hasOwnerModifyPermission(ctx, compoundOwner));
   console.log(compoundOwner);
@@ -108,10 +110,14 @@ router.get('compound', '/:id', async (ctx) => {
   await ctx.render('compounds/show', {
     hasModifyPermission: ctx.state.hasOwnerModifyPermission(ctx, compoundOwner),
     compound,
+    compoundId,
+    fields,
     compoundOwner,
+    getFieldPath: (field) => ctx.router.url('field', {id:field.id,compoundId: compoundId  }),
     compoundsPath: ctx.router.url('compounds'),
     compoundOwnerPath: ctx.router.url('compoundOwner', { id: compoundOwner.id }),
     editCompoundPath: ctx.router.url('compoundEdit', compound.id),
+    newFieldPath: ctx.router.url('fieldNew',compound.id),
   });
 });
 
@@ -121,5 +127,17 @@ router.delete('compoundDelete', '/:id', async (ctx) => {
   ctx.redirect(ctx.router.url('compounds'));
 });
 
+router.use(
+  '/:compoundId/fields',
+  async (ctx, next) => {
+
+    const compound = await ctx.orm.compound.findById(ctx.params.compoundId);
+
+    ctx.state.sports = await ctx.orm.sport.findAll();
+    ctx.state.compound = compound;
+    await next();
+  },
+  fieldsRouter.routes(),
+);
 
 module.exports = router;

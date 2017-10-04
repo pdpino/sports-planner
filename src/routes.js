@@ -8,7 +8,6 @@ const matches = require('./routes/matches');
 const session = require('./routes/session');
 const compoundOwners = require('./routes/compoundOwners');
 const compound = require('./routes/compounds');
-const field = require('./routes/fields');
 
 const router = new KoaRouter();
 
@@ -154,6 +153,5 @@ router.use(
 router.use('/compoundOwners', compoundOwners.routes());
 router.use('/session', session.routes());
 router.use('/compounds', compound.routes());
-router.use('/fields', field.routes());
 
 module.exports = router;

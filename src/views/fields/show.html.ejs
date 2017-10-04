@@ -4,26 +4,24 @@
   <h4>Información de la cancha</h4>
   <img src=<%= compound.photo %> > <br>
 
-  <p> prices: <%= compound.localemail %> </p>
+  <p> Prices: <%= compound.localemail %> </p>
 
   <br>
 
 
-  <p> schedule: <%= compound.localphone %> </p> <br>
+  <p> Schedule: <%= compound.localphone %> </p> <br>
   <p> Dirección: <%= compound.address %> </p> <br>
   <p>Recinto: <%= compound.name %> <form action="<%= compoundPath(compound) %>">
       <input type="submit" value="Ir perfil recinto" />
   </form> </br>
 
-  <form action="<%= editCompoundPath %>">
-      <input type="submit" value="Editar Información personal" />
+<% if (hasModifyPermission) { %>
+  <form action="<%= editFieldPath %>">
+      <input type="submit" value="Editar de cancha" />
   </form>
+  <%}%>
 </div>
 
 
 
 <br />
-
-<form action="<%= compoundsPath %>">
-    <input type="submit" value="Volver" />
-</form>
