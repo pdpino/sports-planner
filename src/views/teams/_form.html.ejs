@@ -1,48 +1,48 @@
 <div class ="center">
-<h1><%= team.isNewRecord ? 'Nuevo equipo' : 'Editar equipo' %></h1>
-<div>
-  <% if (locals.errors) { %>
-    <div class="errors">
-      Necesitas arreglar los siguiente errores:
-      <ul>
-        <% errors.forEach(error => { %>
-          <li><%= error.message %></li>
-        <% }); %>
-      </ul>
-    </div>
-  <% } %>
-  <form action="<%= submitTeamPath %>" method="post">
-    <% if(!team.isNewRecord) { %>
-      <div>
-        <input type="hidden" name="_method" value="patch" />
+  <h1><%= team.isNewRecord ? 'Nuevo equipo' : 'Editar equipo' %></h1>
+  <div>
+    <% if (locals.errors) { %>
+      <div class="errors">
+        Necesitas arreglar los siguiente errores:
+        <ul>
+          <% errors.forEach(error => { %>
+            <li><%= error.message %></li>
+          <% }); %>
+        </ul>
       </div>
     <% } %>
-    <div>
-      <label for="name">Nombre</label>
-      <input type="text" name="name" value="<%= team.name %>" />
-    </div>
-    <div>
-      <label for="logo">Logo</label>
-      <input type="text" name="logo" value="<%= team.logo %>"></input>
-    </div>
-    <div>
-      <label for="sportId">Deporte</label>
-      <br>
-      <% sports.forEach((sport) => { %>
-        <input type="radio" name="sportId" value="<%= sport.id %>" <%= (sport.id === team.sportId) ? 'checked' : '' %> > <%= sport.name %> <br>
-      <% }) %>
-    </div>
-    <div>
-      <% if(team.isNewRecord) { %>
-        <input type="submit" name="create" value="Crear" />
-      <% } else { %>
-        <input type="submit" name="update" value="Guardar" />
+    <form action="<%= submitTeamPath %>" method="post">
+      <% if(!team.isNewRecord) { %>
+        <div>
+          <input type="hidden" name="_method" value="patch" />
+        </div>
       <% } %>
-    </div>
-  </form>
-</div>
+      <div>
+        <label for="name">Nombre</label>
+        <input type="text" name="name" value="<%= team.name %>" />
+      </div>
+      <div>
+        <label for="logo">Logo</label>
+        <input type="text" name="logo" value="<%= team.logo %>"></input>
+      </div>
+      <div>
+        <label for="sportId">Deporte</label>
 
-<form action="<%= cancelPath %>" method="get">
-    <input type="submit" value="Cancelar"/>
-</form>
+        <% sports.forEach((sport) => { %>
+          <input type="radio" name="sportId" value="<%= sport.id %>" <%= (sport.id === team.sportId) ? 'checked' : '' %> > <%= sport.name %>
+        <% }) %>
+      </div>
+      <div>
+        <% if(team.isNewRecord) { %>
+          <input type="submit" name="create" value="Crear" />
+        <% } else { %>
+          <input type="submit" name="update" value="Guardar" />
+        <% } %>
+      </div>
+    </form>
+  </div>
+
+  <form action="<%= cancelPath %>" method="get">
+      <input type="submit" value="Cancelar"/>
+  </form>
 </div>

@@ -1,33 +1,33 @@
 <div class ="center">
 
-<h1>Agregar Partidos</h1>
+  <h1>Agregar Partidos</h1>
 
-<% if(matchesNotInvited.length > 0) { %>
-  <form action="<%= submitPlayerMatchPath %>" method="post">
+  <% if(matchesNotInvited.length > 0) { %>
+    <form action="<%= submitPlayerMatchPath %>" method="post">
+      <div>
+        <label for="matchId">Elegir partido</label>
+        <% matchesNotInvited.forEach( (match) => { %>
+          <div>
+            <input type="radio" name="matchId" value="<%= match.id %>"/> <%= match.id %> - <%= match.date %>
+          </div>
+        <% }) %>
+      </div>
+
+
+      <div>
+        <input type="submit" name="create" value="Añadir" />
+      </div>
+
+    </form>
+  <% } else { %>
     <div>
-      <label for="matchId">Elegir partido</label>
-      <% matchesNotInvited.forEach( (match) => { %>
-        <div>
-          <input type="radio" name="matchId" value="<%= match.id %>"/> <%= match.id %> - <%= match.date %>
-        </div>
-      <% }) %>
+      <strong>
+        No quedan partidos para agregar!
+      </strong>
     </div>
+  <% } %>
 
-    <br />
-    <div>
-      <input type="submit" name="create" value="Añadir" />
-    </div>
-
+  <form action="<%= cancelPath %>" method="get">
+      <input type="submit" value="Cancelar"/>
   </form>
-<% } else { %>
-  <div>
-    <strong>
-      No quedan partidos para agregar!
-    </strong>
-  </div>
-<% } %>
-
-<form action="<%= cancelPath %>" method="get">
-    <input type="submit" value="Cancelar"/>
-</form>
 </div>

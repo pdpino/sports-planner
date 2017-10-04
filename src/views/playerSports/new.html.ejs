@@ -1,37 +1,37 @@
 <div class ="center">
 
-<h1>Agregar deporte</h1>
+  <h1>Agregar deporte</h1>
 
-<% if(sportsNotPlayed.length > 0) { %>
-  <form action="<%= submitPlayerSportPath %>" method="post">
+  <% if(sportsNotPlayed.length > 0) { %>
+    <form action="<%= submitPlayerSportPath %>" method="post">
+      <div>
+        <label for="sportId">Elegir deporte</label>
+        <% sportsNotPlayed.forEach( (sport) => { %>
+          <div>
+            <input type="radio" name="sportId" value="<%= sport.id %>"/> <%= sport.name %>
+          </div>
+        <% }) %>
+      </div>
+
+      <div>
+        <label for="position">Posición:</label>
+        <input type="text" name="position" />
+      </div>
+
+      <div>
+        <input type="submit" name="create" value="Añadir" />
+      </div>
+
+    </form>
+  <% } else { %>
     <div>
-      <label for="sportId">Elegir deporte</label>
-      <% sportsNotPlayed.forEach( (sport) => { %>
-        <div>
-          <input type="radio" name="sportId" value="<%= sport.id %>"/> <%= sport.name %>
-        </div>
-      <% }) %>
+      <strong>
+        No quedan deportes para agregar!
+      </strong>
     </div>
+  <% } %>
 
-    <div>
-      <label for="position">Posición:</label>
-      <input type="text" name="position" />
-    </div>
-
-    <div>
-      <input type="submit" name="create" value="Añadir" />
-    </div>
-
+  <form action="<%= cancelPath %>" method="get">
+      <input type="submit" value="Cancelar"/>
   </form>
-<% } else { %>
-  <div>
-    <strong>
-      No quedan deportes para agregar!
-    </strong>
-  </div>
-<% } %>
-
-<form action="<%= cancelPath %>" method="get">
-    <input type="submit" value="Cancelar"/>
-</form>
 </div>

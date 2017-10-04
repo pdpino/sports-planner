@@ -1,39 +1,39 @@
 <div class ="center">
-<h1>Agregar Jugadores</h1>
+  <h1>Agregar Jugadores</h1>
 
-<% if(playersNotInTeam.length > 0) { %>
-  <form action="<%= submitTeamMemberPath %>" method="post">
+  <% if(playersNotInTeam.length > 0) { %>
+    <form action="<%= submitTeamMemberPath %>" method="post">
+      <div>
+        <label for="playerId">Elegir Jugadores</label>
+        <% playersNotInTeam.forEach( (player) => { %>
+          <div>
+            <input type="radio" name="playerId" value="<%= player.id %>"/>
+            <%= player.email %>
+          </div>
+        <% }) %>
+      </div>
+
+
+
+      <div>
+        <label for="isCaptain"></label>
+        <input type="checkbox" name="isCaptain" /> Capitán?
+      </div>
+
+      <div>
+        <input type="submit" name="create" value="Añadir" />
+      </div>
+
+    </form>
+  <% } else { %>
     <div>
-      <label for="playerId">Elegir Jugadores</label>
-      <% playersNotInTeam.forEach( (player) => { %>
-        <div>
-          <input type="radio" name="playerId" value="<%= player.id %>"/>
-          <%= player.email %>
-        </div>
-      <% }) %>
+      <strong>
+        No quedan jugadores para agregar!
+      </strong>
     </div>
+  <% } %>
 
-    <br />
-
-    <div>
-      <label for="isCaptain"></label>
-      <input type="checkbox" name="isCaptain" /> Capitán?
-    </div>
-
-    <div>
-      <input type="submit" name="create" value="Añadir" />
-    </div>
-
+  <form action="<%= cancelPath %>" method="get">
+      <input type="submit" value="Cancelar"/>
   </form>
-<% } else { %>
-  <div>
-    <strong>
-      No quedan jugadores para agregar!
-    </strong>
-  </div>
-<% } %>
-
-<form action="<%= cancelPath %>" method="get">
-    <input type="submit" value="Cancelar"/>
-</form>
 </div>

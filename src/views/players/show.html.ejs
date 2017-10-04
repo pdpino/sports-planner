@@ -1,129 +1,129 @@
 <div class ="center">
 
-<h1><%= player.firstName %> <%= player.lastName %></h1>
+  <h1><%= player.firstName %> <%= player.lastName %></h1>
 
-<div>
-  <h4>Información personal</h4>
-  <img src=<%= player.photo %> >
+  <div>
+    <h4>Información personal</h4>
+    <img src=<%= player.photo %> >
 
-  <p> E-mail: <%= player.email %> </p>
+    <p> E-mail: <%= player.email %> </p>
 
-  <p> Cumpleaños: <%= player.birthday %> </p>
+    <p> Cumpleaños: <%= player.birthday %> </p>
 
-  <p> Edad: <%= playerAge %> </p>
+    <p> Edad: <%= playerAge %> </p>
 
-  <p> Género: <%= player.gender %> </p>
+    <p> Género: <%= player.gender %> </p>
 
-  <% if(hasModifyPermission) { %>
-    <form action="<%= editPlayerPath %>">
-        <input type="submit" value="Editar Información personal" />
-    </form>
-  <% } %>
-</div>
+    <% if(hasModifyPermission) { %>
+      <form action="<%= editPlayerPath %>">
+          <input type="submit" value="Editar Información personal" />
+      </form>
+    <% } %>
+  </div>
 
-<div>
-  <% if(playerSports.length > 0) { %>
-    <h4>Deportes que practica:</h4>
-    <ul>
-      <% playerSports.forEach((sport) => { %>
-        <li>
-          <a href="<%= getSportPath(sport) %>">
-            <%= sport.name %>
-          </a>
-          -- Posición (es): <%= sport.plays.position %>
+  <div>
+    <% if(playerSports.length > 0) { %>
+      <h4>Deportes que practica:</h4>
+      <ul>
+        <% playerSports.forEach((sport) => { %>
+          <li>
+            <a href="<%= getSportPath(sport) %>">
+              <%= sport.name %>
+            </a>
+            -- Posición (es): <%= sport.plays.position %>
 
-          <% if(hasModifyPermission) { %>
-            <form action="<%= editPlayerSportPath(sport) %>">
-                <input type="submit" value="Editar deporte" />
-            </form>
-          <% } %>
+            <% if(hasModifyPermission) { %>
+              <form action="<%= editPlayerSportPath(sport) %>">
+                  <input type="submit" value="Editar deporte" />
+              </form>
+            <% } %>
 
-        </li>
-      <% }) %>
-    </ul>
-  <% } else { %>
-    No practica ningún deporte.
-  <% } %>
+          </li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      No practica ningún deporte.
+    <% } %>
 
-  <% if(hasModifyPermission) { %>
-    <form action="<%= newPlayerSportPath %>">
-        <input type="submit" value="Añadir deporte" />
-    </form>
-  <% } %>
+    <% if(hasModifyPermission) { %>
+      <form action="<%= newPlayerSportPath %>">
+          <input type="submit" value="Añadir deporte" />
+      </form>
+    <% } %>
 
-</div>
+  </div>
 
-<div>
-  <% if(playerTeams.length > 0) { %>
-    <h4> Equipos a los que pertenece: </h4>
-    <ul>
-      <% playerTeams.forEach((team) => { %>
-        <li>
-          <a href="<%= getTeamPath(team) %>">
-            <%= team.name %>
-          </a>
-          <%= (team.isMember.isCaptain) ? '-- Capitán del equipo' : '' %>
+  <div>
+    <% if(playerTeams.length > 0) { %>
+      <h4> Equipos a los que pertenece: </h4>
+      <ul>
+        <% playerTeams.forEach((team) => { %>
+          <li>
+            <a href="<%= getTeamPath(team) %>">
+              <%= team.name %>
+            </a>
+            <%= (team.isMember.isCaptain) ? '-- Capitán del equipo' : '' %>
 
-          <% if(hasModifyPermission) { %>
-            <!--
-            <form action="<%= editPlayerTeamPath(team) %>">
-                <input type="submit" value="Editar" />
-            </form>
-            -->
-          <% } %>
+            <% if(hasModifyPermission) { %>
+              <!--
+              <form action="<%= editPlayerTeamPath(team) %>">
+                  <input type="submit" value="Editar" />
+              </form>
+              -->
+            <% } %>
 
-        </li>
-      <% }) %>
-    </ul>
-  <% } else { %>
-    No pertenece a ningún equipo. <br>
-  <% } %>
+          </li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      No pertenece a ningún equipo.
+    <% } %>
 
-  <% if(hasModifyPermission) { %>
-    <form action="<%= newPlayerTeamPath %>">
-        <input type="submit" value="Añadir Equipo" />
-    </form>
-  <% } %>
+    <% if(hasModifyPermission) { %>
+      <form action="<%= newPlayerTeamPath %>">
+          <input type="submit" value="Añadir Equipo" />
+      </form>
+    <% } %>
 
-  <% if(playerMatches.length > 0) { %>
-    <h4> Partidos: </h4>
-    <ul>
-      <% playerMatches.forEach((match) => { %>
-        <li>
-          <a href="<%= getMatchPath(match) %>">
-            <%= match.id %> - <%= match.date %>
-          </a>
-          <%= (match.isPlayerInvited.isAdmin) ? '-- Usted es Admin del partido' : '' %>
+    <% if(playerMatches.length > 0) { %>
+      <h4> Partidos: </h4>
+      <ul>
+        <% playerMatches.forEach((match) => { %>
+          <li>
+            <a href="<%= getMatchPath(match) %>">
+              <%= match.id %> - <%= match.date %>
+            </a>
+            <%= (match.isPlayerInvited.isAdmin) ? '-- Usted es Admin del partido' : '' %>
 
-          <% if(hasModifyPermission) { %>
+            <% if(hasModifyPermission) { %>
 
-            <form action="<%= editPlayerMatchPath(match) %>">
-                <input type="submit" value="Editar" />
-            </form>
+              <form action="<%= editPlayerMatchPath(match) %>">
+                  <input type="submit" value="Editar" />
+              </form>
 
-          <% } %>
+            <% } %>
 
-        </li>
-      <% }) %>
-    </ul>
-  <% } else { %>
-    No pertenece a ningún partido.
-  <% } %>
-
-
+          </li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      No pertenece a ningún partido.
+    <% } %>
 
 
-  <% if(hasModifyPermission) { %>
-    <form action="<%= newPlayerMatchPath %>">
-        <input type="submit" value="Añadir Partido" />
-    </form>
-  <% } %>
 
-</div>
 
-<br />
+    <% if(hasModifyPermission) { %>
+      <form action="<%= newPlayerMatchPath %>">
+          <input type="submit" value="Añadir Partido" />
+      </form>
+    <% } %>
 
-<form action="<%= playersPath %>">
-    <input type="submit" value="Volver" />
-</form>
+  </div>
+
+
+
+  <form action="<%= playersPath %>">
+      <input type="submit" value="Volver" />
+  </form>
 </div>

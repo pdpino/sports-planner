@@ -1,66 +1,66 @@
 <div class ="center">
-<h1> <%= (compound.isNewRecord) ? 'Nuevo recinto' : 'Editar recinto' %></h1>
-<div>
-  <% if (locals.errors) { %>
-    <div class="errors">
-      Necesitas arreglar los siguiente errores:
-      <ul>
-        <% errors.forEach(error => { %>
-          <li><%= error.message %></li>
-        <% }); %>
-      </ul>
-    </div>
-  <% } %>
-
-  <form action="<%= submitCompoundPath %>" method="post">
-    <% if(!compound.isNewRecord) { %>
-      <div>
-        <input type="hidden" name="_method" value="patch" />
+  <h1> <%= (compound.isNewRecord) ? 'Nuevo recinto' : 'Editar recinto' %></h1>
+  <div>
+    <% if (locals.errors) { %>
+      <div class="errors">
+        Necesitas arreglar los siguiente errores:
+        <ul>
+          <% errors.forEach(error => { %>
+            <li><%= error.message %></li>
+          <% }); %>
+        </ul>
       </div>
     <% } %>
-    <div>
-      <label for="name">Nombre</label>
-      <input type="text" name="name" value="<%= compound.name %>" />
-    </div>
-    <div>
-      <label for="localemail">E-Mail</label>
-      <input type="text" name="localemail" value="<%= compound.localemail %>" />
-    </div>
-    <div>
-      <label for="photo">Foto</label>
-      <input type="text" name="photo" value="<%= compound.photo %>" />
-    </div>
-    <div>
-      <label for="address">Dirección</label>
-      <input type="text" name="address" value="<%= compound.address %>" />
-    </div>
-    <div>
-      <label for="localphone">Teléfono</label>
-      <input type="text" name="localphone" value="<%= compound.localphone %>" />
-      <div>
-    </div>
-      <% if(compound.isNewRecord) { %>
-        <input type="submit" name="create" value="Crear" />
-      <% } else { %>
-        <input type="submit" name="update" value="Guardar Cambios" />
+
+    <form action="<%= submitCompoundPath %>" method="post">
+      <% if(!compound.isNewRecord) { %>
+        <div>
+          <input type="hidden" name="_method" value="patch" />
+        </div>
       <% } %>
-    </div>
+      <div>
+        <label for="name">Nombre</label>
+        <input type="text" name="name" value="<%= compound.name %>" />
+      </div>
+      <div>
+        <label for="localemail">E-Mail</label>
+        <input type="text" name="localemail" value="<%= compound.localemail %>" />
+      </div>
+      <div>
+        <label for="photo">Foto</label>
+        <input type="text" name="photo" value="<%= compound.photo %>" />
+      </div>
+      <div>
+        <label for="address">Dirección</label>
+        <input type="text" name="address" value="<%= compound.address %>" />
+      </div>
+      <div>
+        <label for="localphone">Teléfono</label>
+        <input type="text" name="localphone" value="<%= compound.localphone %>" />
+        <div>
+      </div>
+        <% if(compound.isNewRecord) { %>
+          <input type="submit" name="create" value="Crear" />
+        <% } else { %>
+          <input type="submit" name="update" value="Guardar Cambios" />
+        <% } %>
+      </div>
+    </form>
+  </div>
+
+
+  <% if(!compound.isNewRecord) { %>
+    <form action="<%= deleteCompoundPath %>" method="post">
+      <div>
+        <input type="hidden" name="_method" value="delete" />
+      </div>
+      <div>
+        <input class"deletebutton" type="submit" name="delete" value="Eliminar Recinto" />
+      </div>
+    </form>
+  <% } %>
+
+  <form action="<%= cancelPath %>" method="get">
+      <input type="submit" value="Cancelar"/>
   </form>
-</div>
-
-
-<% if(!compound.isNewRecord) { %>
-  <form action="<%= deleteCompoundPath %>" method="post">
-    <div>
-      <input type="hidden" name="_method" value="delete" />
-    </div>
-    <div>
-      <input id="deletebutton" type="submit" name="delete" value="Eliminar Recinto" />
-    </div>
-  </form>
-<% } %>
-
-<form action="<%= cancelPath %>" method="get">
-    <input type="submit" value="Cancelar"/>
-</form>
 </div>

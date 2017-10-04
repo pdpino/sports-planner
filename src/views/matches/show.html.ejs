@@ -1,96 +1,96 @@
 <div class ="center">
-<h1><%= match.id %></h1>
-<p>
-  Fecha: <%= match.date%>
-  <br>
-  Deporte: <%= sport %>
-</p>
+  <h1><%= match.id %></h1>
+  <p>
+    Fecha: <%= match.date%>
 
-<% if (hasModifyPermission) { %>
-<form action=<%= editMatchPath %>>
-    <input type="submit" value="Editar"/>
-</form>
+    Deporte: <%= sport %>
+  </p>
 
-<form action="<%= deleteMatchPath %>" method="post">
-  <div>
-    <input type="hidden" name="_method" value="delete" />
-  </div>
-  <div>
-    <input type="submit" name="delete" value="Eliminar" />
-  </div>
-</form>
-<% } %>
-
-<br />
-<% if(invitedPlayers.length > 0) { %>
-  <h4> Jugadores que participan: </h4>
-  <ul>
-    <% invitedPlayers.forEach((player) => { %>
-      <li>
-
-        <a href="<%= getPlayerPath(player) %>">
-          <%= player.firstName %> <%= player.lastName %>
-        </a>
-
-        <%= (player.isPlayerInvited.isAdmin) ? '-- Admin del partido' : '' %>
-
-        --
-        <%= getStatusMessage(player.isPlayerInvited.status) %>
-
-
-        <% if(hasModifyPermission) { %>
-
-          <form action="<%= editInvitedPlayerPath(player) %>">
-              <input type="submit" value="Editar" />
-          </form>
-
-        <% } %>
-      </li>
-    <% }) %>
-  </ul>
-<% } else { %>
-  No contiene jugadores.
-<% } %>
-
-<% if (hasModifyPermission) { %>
-  <form action=<%= newInvitedPlayerPath %>>
-      <input type="submit" value="Añadir Jugador" />
+  <% if (hasModifyPermission) { %>
+  <form action=<%= editMatchPath %>>
+      <input type="submit" value="Editar"/>
   </form>
-<% } %>
 
-<% if(invitedTeams.length > 0) { %>
-  <h4> Equipos que participan: </h4>
-  <ul>
-    <% invitedTeams.forEach((team) => { %>
-      <li>
-
-        <a href="<%= getTeamPath(team) %>">
-          <%= team.name %>
-        </a>
-
-        --
-        <%= getStatusMessage(team.isTeamInvited.status) %>
-
-        <% if(hasModifyPermission) { %>
-          <form action="<%= editInvitedTeamPath(team) %>">
-              <input type="submit" value="Editar Invitación" />
-          </form>
-        <% } %>
-
-      </li>
-    <% }) %>
-  </ul>
-<% } else { %>
-  No hay equipos invitados.
-<% } %>
-
-<% if (hasModifyPermission) { %>
-  <form action=<%= newInvitedTeamPath %>>
-      <input type="submit" value="Invitar equipo" />
+  <form action="<%= deleteMatchPath %>" method="post">
+    <div>
+      <input type="hidden" name="_method" value="delete" />
+    </div>
+    <div>
+      <input type="submit" name="delete" value="Eliminar" />
+    </div>
   </form>
-<% } %>
+  <% } %>
 
-<form action=<%= matchesPath %>>
-    <input type="submit" value="Volver a todos los partidos"/>
-</form>
+
+  <% if(invitedPlayers.length > 0) { %>
+    <h4> Jugadores que participan: </h4>
+    <ul>
+      <% invitedPlayers.forEach((player) => { %>
+        <li>
+
+          <a href="<%= getPlayerPath(player) %>">
+            <%= player.firstName %> <%= player.lastName %>
+          </a>
+
+          <%= (player.isPlayerInvited.isAdmin) ? '-- Admin del partido' : '' %>
+
+          --
+          <%= getStatusMessage(player.isPlayerInvited.status) %>
+
+
+          <% if(hasModifyPermission) { %>
+
+            <form action="<%= editInvitedPlayerPath(player) %>">
+                <input type="submit" value="Editar" />
+            </form>
+
+          <% } %>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    No contiene jugadores.
+  <% } %>
+
+  <% if (hasModifyPermission) { %>
+    <form action=<%= newInvitedPlayerPath %>>
+        <input type="submit" value="Añadir Jugador" />
+    </form>
+  <% } %>
+
+  <% if(invitedTeams.length > 0) { %>
+    <h4> Equipos que participan: </h4>
+    <ul>
+      <% invitedTeams.forEach((team) => { %>
+        <li>
+
+          <a href="<%= getTeamPath(team) %>">
+            <%= team.name %>
+          </a>
+
+          --
+          <%= getStatusMessage(team.isTeamInvited.status) %>
+
+          <% if(hasModifyPermission) { %>
+            <form action="<%= editInvitedTeamPath(team) %>">
+                <input type="submit" value="Editar Invitación" />
+            </form>
+          <% } %>
+
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    No hay equipos invitados.
+  <% } %>
+
+  <% if (hasModifyPermission) { %>
+    <form action=<%= newInvitedTeamPath %>>
+        <input type="submit" value="Invitar equipo" />
+    </form>
+  <% } %>
+
+  <form action=<%= matchesPath %>>
+      <input type="submit" value="Volver a todos los partidos"/>
+  </form>
 </div>

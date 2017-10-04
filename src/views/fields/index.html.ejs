@@ -1,22 +1,22 @@
 <div class ="center">
 
-<h1>Canchas en Jugamos</h1>
+  <h1>Canchas en Jugamos</h1>
 
 
-<% if(hasModifyPermission) { %>
-<form action=<%= newFieldPath %>>
-    <input type="submit" value="Crear cancha"/>
-</form>
-<%}%>
+  <% if(hasModifyPermission) { %>
+  <form action=<%= newFieldPath %>>
+      <input type="submit" value="Crear cancha"/>
+  </form>
+  <%}%>
 
-<ul>
-  <% fields.forEach((field) => { %>
-    <li>
-        <%= field.name %>
-        <form action=<%= fieldPath(field) %>>
-            <input type="submit" value="Ver Cancha"/>
-        </form>
-    </li>
-  <% }) %>
-</ul>
+  <ul>
+    <% fields.forEach((field) => { %>
+      <li>
+          <%= field.name %>
+          <form action=<%= fieldPath(field) %>>
+              <input type="submit" value="Ver Cancha"/>
+          </form>
+      </li>
+    <% }) %>
+  </ul>
 </div>

@@ -1,45 +1,45 @@
 <div class ="center">
-<h1><%= sport.isNewRecord ? 'Nuevo deporte' : 'Editar deporte' %></h1>
-<div>
-  <% if (locals.errors) { %>
-    <div class="errors">
-      Necesitas arreglar los siguiente errores:
-      <ul>
-        <% errors.forEach(error => { %>
-          <li><%= error.message %></li>
-        <% }); %>
-      </ul>
-    </div>
-  <% } %>
-  <form action="<%= submitSportPath %>" method="post">
-    <% if(!sport.isNewRecord) { %>
-      <div>
-        <input type="hidden" name="_method" value="patch" />
+  <h1><%= sport.isNewRecord ? 'Nuevo deporte' : 'Editar deporte' %></h1>
+  <div>
+    <% if (locals.errors) { %>
+      <div class="errors">
+        Necesitas arreglar los siguiente errores:
+        <ul>
+          <% errors.forEach(error => { %>
+            <li><%= error.message %></li>
+          <% }); %>
+        </ul>
       </div>
     <% } %>
-    <div>
-      <label for="name">Nombre</label>
-      <input type="text" name="name" value="<%= sport.name %>" />
-    </div>
-    <div>
-      <label for="logo">Logo</label>
-      <input type="text" name="logo" value="<%= sport.logo %>"></input>
-    </div>
-    <div>
-      <label for="isIndividual">Individual?</label>
-      <input type="checkbox" name="isIndividual" <%= sport.isIndividual ? 'checked' : '' %> ></input>
-    </div>
-    <div>
-      <% if(sport.isNewRecord) { %>
-        <input type="submit" name="create" value="Crear" />
-      <% } else { %>
-        <input type="submit" name="update" value="Guardar" />
+    <form action="<%= submitSportPath %>" method="post">
+      <% if(!sport.isNewRecord) { %>
+        <div>
+          <input type="hidden" name="_method" value="patch" />
+        </div>
       <% } %>
-    </div>
-  </form>
-</div>
+      <div>
+        <label for="name">Nombre</label>
+        <input type="text" name="name" value="<%= sport.name %>" />
+      </div>
+      <div>
+        <label for="logo">Logo</label>
+        <input type="text" name="logo" value="<%= sport.logo %>"></input>
+      </div>
+      <div>
+        <label for="isIndividual">Individual?</label>
+        <input type="checkbox" name="isIndividual" <%= sport.isIndividual ? 'checked' : '' %> ></input>
+      </div>
+      <div>
+        <% if(sport.isNewRecord) { %>
+          <input type="submit" name="create" value="Crear" />
+        <% } else { %>
+          <input type="submit" name="update" value="Guardar" />
+        <% } %>
+      </div>
+    </form>
+  </div>
 
-<form action="<%= cancelPath %>" method="get">
-    <input type="submit" value="Cancelar"/>
-</form>
+  <form action="<%= cancelPath %>" method="get">
+      <input type="submit" value="Cancelar"/>
+  </form>
 </div>
