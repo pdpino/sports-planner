@@ -4,11 +4,6 @@
   "main": "index.js",
   "repository": "https://github.com/IIC2513-2017-2/kame-house",
   "license": "MIT",
-  "engines": {
-    "node": "^8.4.0",
-    "npm": "5.3.0",
-    "yarn": "^1.0.2"
-  },
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
@@ -50,5 +45,9 @@
     "sequelize-cli": "https://github.com/IIC2513-2017-2/sequelize-cli#iic2513-version",
     "style-loader": "^0.18.2",
     "webpack": "^3.6.0"
-  }
+  },
+  "engines": {
+    "node": "^8.5.0",
+    "yarn": "^1.0.2"
+  },
 }

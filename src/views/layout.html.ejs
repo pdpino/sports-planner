@@ -5,7 +5,12 @@
     <meta charset="utf-8">
     <title>Jugamos? - IIC2513</title>
 
-      <link rel="stylesheet" href="/assets/styles/layout.css">
+
+    <link rel="stylesheet" href="/assets/styles/layout.css">
+
+    <% if (env !== 'development') { %>
+       <link rel="stylesheet" href="/assets/styles.css">
+     <% } %>
 
   </head>
 
@@ -13,8 +18,8 @@
     <header>
       <div id="logo">
         <a href="<%= homePath %>">
-        <img src="/assets/logo.png" alt="Logo" />
-      </a>
+          <img src="/assets/logo.png" alt="Logo" />
+        </a>
       </div>
 
 
