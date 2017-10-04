@@ -32,7 +32,7 @@ router.get('matchPlayerNew', '/new', async (ctx) => {
 });
 
 router.post('matchPlayerCreate', '/', async (ctx) => {
-  const playMatch = await findMatchPlayerById(ctx.state.match, ctx.params.id);
+  const invitedPlayer = await findMatchPlayerById(ctx.state.match, ctx.params.id);
   try {
     await ctx.state.match.addPlayer(ctx.request.body.playerId, { through: { status: "sentToUser" }});
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
@@ -49,28 +49,43 @@ router.post('matchPlayerCreate', '/', async (ctx) => {
 });
 
 router.get('matchPlayerEdit', '/:id/edit', async (ctx) => {
-  const playMatch = await findMatchPlayerById(ctx.state.match, ctx.params.id);
+  const invitedPlayer = await findMatchPlayerById(ctx.state.match, ctx.params.id);
   await ctx.render('matchPlayers/edit', {
     match: ctx.state.match,
-    playMatch,
-    submitMatchPlayerPath: ctx.router.url('matchPlayerUpdate', { matchId: ctx.state.match.id, id: playMatch.id }),
-    deleteMatchPlayerPath: ctx.router.url('matchPlayerDelete', { matchId: ctx.state.match.id, id: playMatch.id }),
+    invitedPlayer,
+    submitMatchPlayerPath: ctx.router.url('matchPlayerUpdate', {
+      matchId: ctx.state.match.id,
+      id: invitedPlayer.id
+    }),
+    deleteMatchPlayerPath: ctx.router.url('matchPlayerDelete', {
+      matchId: ctx.state.match.id,
+      id: invitedPlayer.id
+    }),
     cancelPath: ctx.router.url('match', { id: ctx.state.match.id })
   });
 });
 
 router.patch('matchPlayerUpdate', '/:id', async (ctx) => {
-  const playMatch = await findMatchPlayerById(ctx.state.match, ctx.params.id);
+  const invitedPlayer = await findMatchPlayerById(ctx.state.match, ctx.params.id);
+  const newStatus = ctx.request.body.status || invitedPlayer.isPlayerInvited.status;
+
   try {
-    await ctx.state.match.addPlayer(playMatch, { through: { status: ctx.request.body.status }});
+    await ctx.state.match.addPlayer(invitedPlayer, { through: { status: newStatus }});
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
   } catch (validationError) {
     console.log("###### validation error when updating player-match: ", validationError); // DEBUG
     await ctx.render('matchPlayers/edit', {
       match: ctx.state.match,
-      playMatch,
+      invitedPlayer,
       errors: validationError.errors,
-      submitMatchPlayerPath: ctx.router.url('matchPlayerUpdate', { matchId: ctx.state.match.id, id: playMatch.id }),
+      submitMatchPlayerPath: ctx.router.url('matchPlayerUpdate', {
+        matchId: ctx.state.match.id,
+        id: invitedPlayer.id
+      }),
+      deleteMatchPlayerPath: ctx.router.url('matchPlayerDelete', {
+        matchId: ctx.state.match.id,
+        id: invitedPlayer.id
+      }),
       cancelPath: ctx.router.url('match', { id: ctx.state.match.id })
     });
   }
@@ -80,6 +95,5 @@ router.delete('matchPlayerDelete', '/:id', async (ctx) => {
    await ctx.state.match.removePlayer(ctx.params.id);
    ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
  });
-
 
 module.exports = router;
