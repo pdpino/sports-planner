@@ -11,15 +11,15 @@ const compound = require('./routes/compounds');
 
 const router = new KoaRouter();
 
-/** Add basic functions **/
+/** Add basic info and functions **/
 router.use(async (ctx, next) => {
   // Load user and (player or owner)
   const currentUser = ctx.session.userId && await ctx.orm.user.findById(ctx.session.userId);
   let currentPlayer = null;
   let currentOwner = null;
-  let profilePath = '/';
+  let profilePath = null;
 
-  if (currentUser){ // NOTE: don't use oneline assignation for clarity
+  if (currentUser){
     if (currentUser.role == 'player'){
       currentPlayer = await ctx.orm.player.find({
         where: { userId: currentUser.id }
@@ -34,18 +34,27 @@ router.use(async (ctx, next) => {
     }
   }
 
-
   Object.assign(ctx.state, {
     currentUser,
     currentPlayer,
     currentOwner,
+    profilePath,
     newSessionPath: ctx.router.url('sessionNew'),
     signUpPlayerPath: ctx.router.url('playerNew'),
     signUpOwnerPath: ctx.router.url('compoundOwnerNew'),
     destroySessionPath: ctx.router.url('sessionDestroy'),
-    // getPlayerPath: (player) => ctx.router.url('player', { id: player.id }),
-    // getOwnerPath: (compoundOwner) => ctx.router.url('compoundOwner', { id: compoundOwner.id }),
-    profilePath,
+    getSportPath: (sport) => ctx.router.url('sport', sport.id),
+    getPlayerPath: (player) => ctx.router.url('player', player.id),
+    getCompoundOwnerPath: (compoundOwner) => ctx.router.url('compoundOwner', compoundOwner.id),
+    getCompoundPath: (compound) => ctx.router.url('compound', compound.id),
+    getTeamPath: (team) => ctx.router.url('team', team.id),
+    getMatchPath: (match) => ctx.router.url('match', match.id),
+    sportsPath: ctx.router.url('sports'),
+    teamsPath: ctx.router.url('teams'),
+    playersPath: ctx.router.url('players'),
+    matchesPath: ctx.router.url('matches'),
+    compoundOwnersPath: ctx.router.url('compoundOwners'),
+    compoundsPath: ctx.router.url('compounds'),
     homePath: '/',
     // HACK: ctx.router.url('home') not working (returns '//' and page goes to about:blank)
     // path hardcoded

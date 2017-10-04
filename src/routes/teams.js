@@ -119,11 +119,8 @@ router.get('team', '/:id', async (ctx) => {
     teamMatches,
     hasModifyPermission,
     sport: sport.name,
-    teamsPath: ctx.router.url('teams'),
     editTeamPath: ctx.router.url('teamEdit', team.id),
     deleteTeamPath: ctx.router.url('teamDelete', team.id),
-    getPlayerPath: (player) => ctx.router.url('player', player.id),
-    getMatchPath: (match) => ctx.router.url('match', match.id),
     newTeamMemberPath: ctx.router.url('teamMemberNew', { teamId: team.id } ),
     editTeamMemberPath: (player) => ctx.router.url('teamMemberEdit', {
       teamId: team.id,
@@ -134,7 +131,6 @@ router.get('team', '/:id', async (ctx) => {
       teamId: team.id,
       id: match.id
     }),
-    playersPath: ctx.router.url('teams'),
   });
 });
 

@@ -24,7 +24,6 @@ router.get('compounds', '/', async (ctx) => {
   await ctx.render('compounds/index', {
     compounds,
     hasCreatePermission: ctx.state.isOwnerLoggedIn,
-    compoundPath: compound => ctx.router.url('compound', { id: compound.id }),
     newCompoundPath: ctx.router.url('compoundNew'),
   });
 });
@@ -101,16 +100,11 @@ router.get('compound', '/:id', async (ctx) => {
   const compound = await ctx.orm.compound.findById(ctx.params.id);
   const compoundOwner = await ctx.orm.compoundOwner.findById(compound.compoundOwnerId);
 
-  console.log("HAS MODIFY PERMISSION: ", ctx.state.hasOwnerModifyPermission(ctx, compoundOwner));
-  console.log(compoundOwner);
-  console.log(ctx.state.currentOwner);
-
   await ctx.render('compounds/show', {
     hasModifyPermission: ctx.state.hasOwnerModifyPermission(ctx, compoundOwner),
     compound,
     compoundOwner,
     compoundsPath: ctx.router.url('compounds'),
-    compoundOwnerPath: ctx.router.url('compoundOwner', { id: compoundOwner.id }),
     editCompoundPath: ctx.router.url('compoundEdit', compound.id),
   });
 });

@@ -12,7 +12,7 @@
   <p> Dirección: <%= compound.address %> </p> <br>
   <p> Dueño: <%= compoundOwner.email %>
 
-    <form action="<%= compoundOwnerPath %>">
+    <form action="<%= getCompoundOwnerPath(compoundOwner) %>">
       <input type="submit" value="Ir perfil dueño" />
     </form>
   </br>

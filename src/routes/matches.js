@@ -130,10 +130,7 @@ router.get('match', '/:id', async (ctx) => {
     sport: sport.name,
     getStatusMessage,
     invitedTeams,
-    matchesPath: ctx.router.url('matches'),
     editMatchPath: ctx.router.url('matchEdit', match.id),
-    getPlayerPath: (player) => ctx.router.url('player', player.id),
-    getTeamPath: (team) => ctx.router.url('team', team.id),
     newInvitedPlayerPath: ctx.router.url('invitedPlayerNew', { matchId: match.id } ),
     newInvitedTeamPath: ctx.router.url('invitedTeamNew', { matchId: match.id } ),
     editInvitedPlayerPath: (player) => ctx.router.url('invitedPlayerEdit', {
