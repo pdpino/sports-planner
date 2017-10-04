@@ -1,10 +1,10 @@
 <h1>Agregar Jugadores</h1>
 
-<% if(PlayersNotInvited.length > 0) { %>
+<% if(playersNotInvited.length > 0) { %>
   <form action="<%= submitMatchPlayerPath %>" method="post">
     <div>
       <label for="matchId">Elegir jugador</label>
-      <% PlayersNotInvited.forEach( (player) => { %>
+      <% playersNotInvited.forEach( (player) => { %>
         <div>
           <input type="radio" name="playerId" value="<%= player.id %>"/> <%= player.email %>
         </div>

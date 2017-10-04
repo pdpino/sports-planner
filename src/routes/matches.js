@@ -1,5 +1,6 @@
 const KoaRouter = require('koa-router');
 const matchPlayersRouter = require('./matchPlayers');
+const matchTeamsRouter = require('./matchTeams');
 
 /** Given a match and the currentPlayer logged in, boolean indicating modify permission **/
 async function hasModifyMatchPermission(match, currentPlayer){
@@ -27,15 +28,15 @@ function fixSubmitParams(body){
   body.isPublic = Boolean(body.isPublic);
 }
 
-/** Transform an isPlayerInvited status to a string
+/** Transform an isPlayerInvited status to a message for the user
  * HACK: this shouldn't be here (should be in isPlayerInvited)
  **/
-function statusMessage(status){
+function getStatusMessage(status){
   const statusMessages = {
-    'sentToUser': 'Esperando confirmación del invitado',
-    'sentByUser': 'Esperando confirmación del admin',
-    'userRejected': 'Usuario rechazado',
-    'rejectedByUser': 'No asistirá',
+    'sentToTeam': 'Esperando confirmación del capitán del equipo',
+    'sentByTeam': 'Esperando confirmación del administrador del partido',
+    'teamRejected': 'Equipo rechazado',
+    'rejectedByTeam': 'No asistirá',
     'accepted': 'Asistirá'
   };
   return statusMessages[status] || 'no status';
@@ -119,20 +120,29 @@ router.get('match', '/:id', async (ctx) => {
   const match = await ctx.orm.match.findById(ctx.params.id);
   const sport = await ctx.orm.sport.findById(match.sportId);
   const matchPlayers = await match.getPlayers();
+  const invitedTeams = await match.getTeams();
   const hasModifyPermission = await hasModifyMatchPermission(match, ctx.state.currentPlayer);
+
   await ctx.render('matches/show', {
     match,
     matchPlayers,
     hasModifyPermission,
     sport: sport.name,
-    statusMessage,
+    getStatusMessage,
+    invitedTeams,
     matchesPath: ctx.router.url('matches'),
     editMatchPath: ctx.router.url('matchEdit', match.id),
     getPlayerPath: (player) => ctx.router.url('player', player.id),
+    getTeamPath: (team) => ctx.router.url('team', team.id),
     newMatchPlayerPath: ctx.router.url('matchPlayerNew', { matchId: match.id } ),
+    newMatchTeamPath: ctx.router.url('matchTeamNew', { matchId: match.id } ),
     editMatchPlayerPath: (player) => ctx.router.url('matchPlayerEdit', {
       matchId: match.id,
       id: player.id
+    }),
+    editMatchTeamPath: (team) => ctx.router.url('matchTeamEdit', {
+      matchId: match.id,
+      id: team.id
     }),
     deleteMatchPath: ctx.router.url('matchDelete', match.id),
   });
@@ -159,6 +169,21 @@ router.use(
     await next();
   },
   matchPlayersRouter.routes(),
+);
+
+router.use(
+  '/:matchId/teams',
+  async (ctx, next) => {
+    const match = await ctx.orm.match.findById(ctx.params.matchId);
+
+    if (! await requireModifyMatchPermission(ctx, match)) return;
+
+    ctx.state.match = match;
+    ctx.state.teams = await ctx.orm.team.findAll();
+    ctx.state.invitedTeams = await ctx.state.match.getTeams();
+    await next();
+  },
+  matchTeamsRouter.routes(),
 );
 
 module.exports = router;

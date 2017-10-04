@@ -1,0 +1,61 @@
+<h1> Editar invitación a equipo %></h1>
+<div>
+  <% if (locals.errors) { %>
+    <div class="errors">
+      Necesitas arreglar los siguiente errores:
+      <ul>
+        <% errors.forEach(error => { %>
+          <li><%= error.message %></li>
+        <% }); %>
+      </ul>
+    </div>
+  <% } %>
+
+  <%= team.name %>
+
+  <form action="<%= submitMatchTeamPath %>" method="post">
+    <div>
+      <input type="hidden" name="_method" value="patch" />
+    </div>
+    <% if (team.isTeamInvited.status == "sentByTeam" || team.isTeamInvited.status == "rejectedByTeam" || team.isTeamInvited.status == "accepted"){ %>
+      <div>
+        <input type="radio" name="status" value="accepted" <%= (team.isTeamInvited.status=="accepted") ? 'checked' : '' %>>
+        Aceptar Invitación<br>
+
+        <input type="radio" name="status" value="rejectedByTeam"
+        <%= (team.isTeamInvited.status=="rejectedByTeam") ? 'checked' : '' %>>
+        Rechazar Invitación<br>
+
+        <input type="radio" name="status" value="sentToTeam" <%= (team.isTeamInvited.status=="sentToTeam") ? 'checked' : '' %>>
+        No responder Aún<br>
+
+      </div>
+    <% } else if (team.isTeamInvited.status == "sentToTeam"){ %>
+      <div>
+        <p> Esperando respuesta </p>
+      </div>
+    <% } else if (team.isTeamInvited.status == "teamRejected"){ %>
+      <div>
+        <p> Solicitud rechazada </p>
+      </div>
+    <% } %>
+
+    <div>
+      <input type="submit" name="update" value="Guardar Cambios" />
+    </div>
+  </form>
+
+</div>
+
+<form action="<%= deleteMatchTeamPath %>" method="post">
+  <div>
+    <input type="hidden" name="_method" value="delete" />
+  </div>
+  <div>
+    <input type="submit" name="delete" value="Eliminar" />
+  </div>
+</form>
+
+<form action=<%= cancelPath %>>
+  <input type="submit" value="Cancelar"/>
+</form>

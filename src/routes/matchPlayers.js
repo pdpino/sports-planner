@@ -1,5 +1,4 @@
 const KoaRouter = require('koa-router');
-const matchPlayersRouter = require('./matchPlayers');
 
 const router = new KoaRouter();
 
@@ -24,10 +23,9 @@ async function findMatchPlayerById(match, playerId){
 }
 
 router.get('matchPlayerNew', '/new', async (ctx) => {
-  console.log(ctx.state.players);
   await ctx.render('matchPlayers/new', {
     match: ctx.state.match,
-    PlayersNotInvited: getPlayersNotInvited(ctx.state.players, ctx.state.matchPlayers),
+    playersNotInvited: getPlayersNotInvited(ctx.state.players, ctx.state.matchPlayers),
     submitMatchPlayerPath: ctx.router.url('matchPlayerCreate', { matchId: ctx.state.match.id }),
     cancelPath: ctx.router.url('match', { id: ctx.state.match.id })
   });
@@ -42,7 +40,7 @@ router.post('matchPlayerCreate', '/', async (ctx) => {
     console.log("###### validation error when creating player-match: ", validationError); // DEBUG
     await ctx.render('matchPlayers/new', {
       match: ctx.state.match,
-      PlayersNotInvited: getPlayersNotInvited(ctx.state.players, ctx.state.matchPlayers),
+      playersNotInvited: getPlayersNotInvited(ctx.state.players, ctx.state.matchPlayers),
       errors: validationError.errors,
       submitMatchPlayerPath: ctx.router.url('matchPlayerCreate', { matchId: ctx.state.match.id }),
       cancelPath: ctx.router.url('match', { id: ctx.state.match.id })

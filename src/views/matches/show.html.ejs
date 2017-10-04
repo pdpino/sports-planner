@@ -33,8 +33,8 @@
 
         <%= (player.isPlayerInvited.isAdmin) ? '-- Admin del partido' : '' %>
 
-        -- 
-        <%= statusMessage(player.isPlayerInvited.status) %>
+        --
+        <%= getStatusMessage(player.isPlayerInvited.status) %>
 
 
         <% if(hasModifyPermission) { %>
@@ -54,6 +54,38 @@
 <% if (hasModifyPermission) { %>
   <form action=<%= newMatchPlayerPath %>>
       <input type="submit" value="Añadir Jugador" />
+  </form>
+<% } %>
+
+<% if(invitedTeams.length > 0) { %>
+  <h4> Equipos que participan: </h4>
+  <ul>
+    <% invitedTeams.forEach((team) => { %>
+      <li>
+
+        <a href="<%= getTeamPath(team) %>">
+          <%= team.name %>
+        </a>
+
+        --
+        <%= getStatusMessage(team.isTeamInvited.status) %>
+
+        <% if(hasModifyPermission) { %>
+          <form action="<%= editMatchTeamPath(team) %>">
+              <input type="submit" value="Editar Invitación" />
+          </form>
+        <% } %>
+
+      </li>
+    <% }) %>
+  </ul>
+<% } else { %>
+  No hay equipos invitados.
+<% } %>
+
+<% if (hasModifyPermission) { %>
+  <form action=<%= newMatchTeamPath %>>
+      <input type="submit" value="Invitar equipo" />
   </form>
 <% } %>
 
