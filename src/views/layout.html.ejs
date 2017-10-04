@@ -22,13 +22,21 @@
     <div id="user-bar">
       <% if (currentUser) { %>
         <span class="name"> Hola <%= currentUser.firstName %></span>
+
+        <% if (!hasAdminPermission) { %>
+          <form action="<%= profilePath %>" method="get">
+            <input type="submit" value="Mi Perfil" />
+          </form>
+        <% } %>
+
         <form action="<%= destroySessionPath %>" method="post">
           <input type="hidden" name="_method" value="delete" />
           <input type="submit" value="Salir" />
         </form>
+
       <% } else { %>
         <span class="name">Hola Invitado</span>
-        <br> 
+        <br>
         <a href="<%= newSessionPath %>">Inicia Sesión</a>
         <br>
         <a href="<%= signUpPlayerPath %>">Regístrate como jugador</a>

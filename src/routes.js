@@ -11,24 +11,29 @@ const compound = require('./routes/compounds');
 
 const router = new KoaRouter();
 
+/** Add basic functions **/
 router.use(async (ctx, next) => {
   // Load user and (player or owner)
   const currentUser = ctx.session.userId && await ctx.orm.user.findById(ctx.session.userId);
   let currentPlayer = null;
   let currentOwner = null;
+  let profilePath = '/';
 
   if (currentUser){ // NOTE: don't use oneline assignation for clarity
     if (currentUser.role == 'player'){
       currentPlayer = await ctx.orm.player.find({
         where: { userId: currentUser.id }
       });
+      profilePath = ctx.router.url('player', { id: currentPlayer.id });
     }
     else if (currentUser.role == 'owner'){
       currentOwner = await ctx.orm.compoundOwner.find({
         where: { userId: currentUser.id }
       });
+      profilePath = ctx.router.url('compoundOwner', { id: currentOwner.id });
     }
   }
+
 
   Object.assign(ctx.state, {
     currentUser,
@@ -38,6 +43,9 @@ router.use(async (ctx, next) => {
     signUpPlayerPath: ctx.router.url('playerNew'),
     signUpOwnerPath: ctx.router.url('compoundOwnerNew'),
     destroySessionPath: ctx.router.url('sessionDestroy'),
+    // getPlayerPath: (player) => ctx.router.url('player', { id: player.id }),
+    // getOwnerPath: (compoundOwner) => ctx.router.url('compoundOwner', { id: compoundOwner.id }),
+    profilePath,
     homePath: '/',
     // HACK: ctx.router.url('home') not working (returns '//' and page goes to about:blank)
     // path hardcoded
@@ -45,7 +53,7 @@ router.use(async (ctx, next) => {
   return next();
 });
 
-/** Add helper functions
+/** Add helper require and login functions
  * See https://github.com/embbnux/kails (koa in rails style) for examples on helper functions
  **/
 router.use((ctx, next) => {
