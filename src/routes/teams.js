@@ -166,6 +166,7 @@ router.use(
     if (! await requireModifyTeamPermission(ctx, team)) return;
 
     ctx.state.team = team;
+    ctx.state.teamMembers = await ctx.state.team.getPlayers();
     ctx.state.teamMatches = await ctx.state.team.getMatches();
     ctx.state.allMatches = await ctx.orm.match.findAll();
     await next();

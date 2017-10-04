@@ -72,12 +72,23 @@ router.get('teamMatchEdit', '/:id/edit', async (ctx) => {
 
 router.patch('teamMatchUpdate', '/:id', async (ctx) => {
   const teamMatch = await findTeamMatchById(ctx.state.team, ctx.params.id);
+
   const newStatus = ctx.request.body.status || teamMatch.isTeamInvited.status;
+  const statusChanged = newStatus !== teamMatch.isTeamInvited.status;
 
   try {
     await ctx.state.team.addMatch(teamMatch, {
       through: { status: newStatus }
     });
+
+    if(statusChanged && newStatus == "accepted"){ // HACK: status hardcoded
+      // Invite all of his players to the game
+      await teamMatch.addPlayers(ctx.state.teamMembers, {
+        through: { status: "sentToUser" }
+      });
+      // HACK: status hardcoded
+    }
+
     ctx.redirect(ctx.router.url('team', { id: ctx.state.team.id }));
   } catch (validationError) {
     console.log("###### validation error when updating team-match: ", validationError); // DEBUG
