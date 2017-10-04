@@ -29,8 +29,8 @@ function getMatchParams(params){
   const filteredParams = _.pick(params, 'name', 'isPublic', 'date', 'sportId');
 
   /* checkbox input passes 'on' when checked and null when not-checked. Parse this to boolean */
-  params.isPublic = Boolean(params.isPublic);
-  params.name = params.name || '';
+  filteredParams.isPublic = Boolean(filteredParams.isPublic);
+  filteredParams.name = filteredParams.name || '';
 
   return filteredParams;
 }
@@ -87,6 +87,8 @@ router.post('matchCreate', '/', async (ctx) => {
   // REVIEW: should this be in the model? (beforeCreate hook?) (but the model doesn't know the creator)
   params.name = params.name || getDefaultName(ctx.state.currentPlayer);
 
+  console.log("PARAMS: ", params);
+
   try {
     const match = await ctx.orm.match.create(params);
     await ctx.state.currentPlayer.addMatch(match.id, {
@@ -98,7 +100,7 @@ router.post('matchCreate', '/', async (ctx) => {
     ctx.redirect(ctx.router.url('match', match.id ));
   } catch (validationError) {
     console.log("VALIDATION ERROR WHEN CREATING MATCH: ", validationError);
-    
+
     await ctx.render('matches/new', {
       match: ctx.orm.match.build(params),
       errors: validationError.errors,
