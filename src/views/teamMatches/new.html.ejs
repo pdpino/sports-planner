@@ -1,31 +1,31 @@
 <div class ="center">
-<h1>Buscar partidos para unirse</h1>
+  <h1>Buscar partidos para unirse</h1>
 
-<% if(joinableMatches.length > 0) { %>
-  <form action="<%= submitTeamMatchPath %>" method="post">
+  <% if(joinableMatches.length > 0) { %>
+    <form action="<%= submitTeamMatchPath %>" method="post">
+      <div>
+        <label for="playerId">Elegir un partido</label>
+        <% joinableMatches.forEach( (match) => { %>
+          <div>
+            <input type="radio" name="matchId" value="<%= match.id %>"/> <%= match.id %>
+          </div>
+        <% }) %>
+      </div>
+
+      <div>
+        <input type="submit" name="create" value="Solicitar unirse" />
+      </div>
+
+    </form>
+  <% } else { %>
     <div>
-      <label for="playerId">Elegir un partido</label>
-      <% joinableMatches.forEach( (match) => { %>
-        <div>
-          <input type="radio" name="matchId" value="<%= match.id %>"/> <%= match.id %>
-        </div>
-      <% }) %>
+      <strong>
+        No hay partidos para unirse
+      </strong>
     </div>
+  <% } %>
 
-    <div>
-      <input type="submit" name="create" value="Solicitar unirse" />
-    </div>
-
+  <form action="<%= cancelPath %>" method="get">
+      <input type="submit" value="Cancelar"/>
   </form>
-<% } else { %>
-  <div>
-    <strong>
-      No hay partidos para unirse
-    </strong>
-  </div>
-<% } %>
-
-<form action="<%= cancelPath %>" method="get">
-    <input type="submit" value="Cancelar"/>
-</form>
 </div>

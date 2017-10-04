@@ -1,19 +1,19 @@
 <div class ="center">
-<h1>Deportes en jugamos</h1>
+  <h1>Deportes en jugamos</h1>
 
-<% if (hasModifyPermission) { %>
-  <form action=<%= newSportPath %>>
-      <input type="submit" value="Crear deporte"/>
-  </form>
-<% } %>
+  <% if (hasModifyPermission) { %>
+    <form action=<%= newSportPath %>>
+        <input type="submit" value="Crear deporte"/>
+    </form>
+  <% } %>
 
-<ul>
-  <% sports.forEach((sport) => { %>
-    <li>
-      <a href="<%= sportPath(sport) %>">
-        <%= sport.name %>
-      </a>
-    </li>
-  <% }) %>
-</ul>
+  <ul>
+    <% sports.forEach((sport) => { %>
+      <li>
+        <a href="<%= sportPath(sport) %>">
+          <%= sport.name %>
+        </a>
+      </li>
+    <% }) %>
+  </ul>
 </div>

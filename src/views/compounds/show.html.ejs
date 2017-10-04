@@ -1,63 +1,63 @@
 <div class ="center">
 
 
-<h1><%= compound.name %></h1>
+  <h1><%= compound.name %></h1>
 
-<div>
-  <h4>Información personal</h4>
-  <img src=<%= compound.photo %> > <br>
+  <div>
+    <h4>Información personal</h4>
+    <img src=<%= compound.photo %> >
 
-  <p> E-mail: <%= compound.localemail %> </p>
-
-  <br>
-
-  <p> Teléfono: <%= compound.localphone %> </p> <br>
-  <p> Dirección: <%= compound.address %> </p> <br>
-  <p> Dueño: <%= compoundOwner.email %>
-
-    <form action="<%= getCompoundOwnerPath(compoundOwner) %>">
-      <input type="submit" value="Ir perfil dueño" />
-    </form>
-  </br>
-  <% if(fields.length > 0) { %>
-    <h4> Canchas que dispone: </h4>
-    <ul>
-      <% fields.forEach((field) => { %>
-        <% console.log(field) %>
-        <li>
-          <a href="<%= getFieldPath(field) %>">
-            <%= field.name %>
+    <p> E-mail: <%= compound.localemail %> </p>
 
 
 
-        </li>
-      <% }) %>
-    </ul>
-  <% } else { %>
-    No contiene canchas.
-  <% } %>
+    <p> Teléfono: <%= compound.localphone %> </p>
+    <p> Dirección: <%= compound.address %> </p>
+    <p> Dueño: <%= compoundOwner.email %>
 
-  <% if(hasModifyPermission) { %>
+      <form action="<%= getCompoundOwnerPath(compoundOwner) %>">
+        <input type="submit" value="Ir perfil dueño" />
+      </form>
+    </br>
+    <% if(fields.length > 0) { %>
+      <h4> Canchas que dispone: </h4>
+      <ul>
+        <% fields.forEach((field) => { %>
+          <% console.log(field) %>
+          <li>
+            <a href="<%= getFieldPath(field) %>">
+              <%= field.name %>
 
-    <form action="<%= newFieldPath %>">
-        <input type="submit" value="Crear Cancha" />
-    </form>
 
 
-
+          </li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      No contiene canchas.
     <% } %>
 
-  <% if(hasModifyPermission) { %>
-    <form action="<%= editCompoundPath %>">
-        <input type="submit" value="Editar información del recinto" />
-    </form>
-  <% } %>
+    <% if(hasModifyPermission) { %>
 
-</div>
+      <form action="<%= newFieldPath %>">
+          <input type="submit" value="Crear Cancha" />
+      </form>
 
-<br />
 
-<form action="<%= compoundsPath %>">
-    <input type="submit" value="Volver" />
-</form>
+
+      <% } %>
+
+    <% if(hasModifyPermission) { %>
+      <form action="<%= editCompoundPath %>">
+          <input type="submit" value="Editar información del recinto" />
+      </form>
+    <% } %>
+
+  </div>
+
+
+
+  <form action="<%= compoundsPath %>">
+      <input type="submit" value="Volver" />
+  </form>
 </div>

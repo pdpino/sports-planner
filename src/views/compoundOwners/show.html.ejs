@@ -1,44 +1,44 @@
 <div class ="center">
-<h1><%= compoundOwner.firstName %> <%= compoundOwner.lastName %></h1>
+  <h1><%= compoundOwner.firstName %> <%= compoundOwner.lastName %></h1>
 
-<div>
-  <h4>Información personal</h4>
-  <img src=<%= compoundOwner.photo %> > <br>
+  <div>
+    <h4>Información personal</h4>
+    <img src=<%= compoundOwner.photo %> >
 
-  <p> E-mail: <%= compoundOwner.email %> </p>
+    <p> E-mail: <%= compoundOwner.email %> </p>
 
-  <br>
 
-  <p> Teléfono: <%= compoundOwner.phone %> </p>
 
-  <% if(hasModifyPermission) { %>
-    <form action="<%= editCompoundOwnerPath %>">
-        <input type="submit" value="Editar Información personal" />
-    </form>
+    <p> Teléfono: <%= compoundOwner.phone %> </p>
+
+    <% if(hasModifyPermission) { %>
+      <form action="<%= editCompoundOwnerPath %>">
+          <input class="editbutton" type="submit" value="Editar Información personal" />
+      </form>
+    <% } %>
+
+  </div>
+
+  <% if(compounds.length > 0) { %>
+    <h4>Recintos:</h4>
+    <ul>
+      <% compounds.forEach((compound) => { %>
+        <li>
+            <%= compound.name %>
+            <form action=<%= getCompoundPath(compound) %>>
+                <input type="submit" value="Ver recinto"/>
+            </form>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    No tiene recintos.
   <% } %>
 
-</div>
 
-<% if(compounds.length > 0) { %>
-  <h4>Recintos:</h4>
-  <ul>
-    <% compounds.forEach((compound) => { %>
-      <li>
-          <%= compound.name %>
-          <form action=<%= getCompoundPath(compound) %>>
-              <input type="submit" value="Ver recinto"/>
-          </form>
-      </li>
-    <% }) %>
-  </ul>
-<% } else { %>
-  No tiene recintos.
-<% } %>
 
-<br />
-
-<form action="<%= compoundOwnersPath %>">
-    <input type="submit" value="Volver" />
-</form>
+  <form action="<%= compoundOwnersPath %>">
+      <input type="submit" value="Volver" />
+  </form>
 
 </div>

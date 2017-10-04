@@ -1,22 +1,22 @@
 <div class ="center">
 
-<h1>Recintos en Jugamos</h1>
+  <h1>Recintos en Jugamos</h1>
 
 
-<% if (hasCreatePermission) { %>
-  <form action=<%= newCompoundPath %>>
-      <input type="submit" value="Crear recinto"/>
-  </form>
-<% } %>
+  <% if (hasCreatePermission) { %>
+    <form action=<%= newCompoundPath %>>
+        <input type="submit" value="Crear recinto"/>
+    </form>
+  <% } %>
 
-<ul>
-  <% compounds.forEach((compound) => { %>
-    <li>
-        <%= compound.name %>
-        <form action=<%= getCompoundPath(compound) %>>
-            <input type="submit" value="Ver Recinto"/>
-        </form>
-    </li>
-  <% }) %>
-</ul>
-<div>
+  <ul>
+    <% compounds.forEach((compound) => { %>
+      <li>
+          <%= compound.name %>
+          <form action=<%= getCompoundPath(compound) %>>
+              <input type="submit" value="Ver Recinto"/>
+          </form>
+      </li>
+    <% }) %>
+  </ul>
+</div>

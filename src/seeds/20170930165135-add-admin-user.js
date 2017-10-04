@@ -8,7 +8,6 @@ module.exports = {
       password: bcrypt.hashSync('admin', 10), // really safe password
       firstName: 'Admin',
       lastName: 'Admin',
-      photo: "",
       createdAt: new Date(),
       updatedAt: new Date(),
     };

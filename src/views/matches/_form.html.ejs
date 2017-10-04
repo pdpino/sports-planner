@@ -1,48 +1,48 @@
 <div class ="center">
-<h1><%= match.isNewRecord ? 'Nuevo Partido' : 'Editar Partido' %></h1>
-<div>
-  <% if (locals.errors) { %>
-    <div class="errors">
-      Necesitas arreglar los siguiente errores:
-      <ul>
-        <% errors.forEach(error => { %>
-          <li><%= error.message %></li>
-        <% }); %>
-      </ul>
-    </div>
-  <% } %>
-  <form action="<%= submitMatchPath %>" method="post">
-    <% if(!match.isNewRecord) { %>
-      <div>
-        <input type="hidden" name="_method" value="patch" />
+  <h1><%= match.isNewRecord ? 'Nuevo Partido' : 'Editar Partido' %></h1>
+  <div>
+    <% if (locals.errors) { %>
+      <div class="errors">
+        Necesitas arreglar los siguiente errores:
+        <ul>
+          <% errors.forEach(error => { %>
+            <li><%= error.message %></li>
+          <% }); %>
+        </ul>
       </div>
     <% } %>
-    <div>
-      <label for="isPublic">Público?</label>
-      <input type="checkbox" name="isPublic" <%= match.isPublic ? 'checked' : '' %> ></input>
-    </div>
-    <div>
-      <label for="date">Fecha y Hora</label>
-      <input type="datetime-local" name="date" value="<%= match.date%>"></input>
-    </div>
-    <div>
-      <label for="sportId">Deporte</label>
-      <br>
-      <% sports.forEach((sport) => { %>
-        <input type="radio" name="sportId" value="<%= sport.id %>" <%= (sport.id === match.sportId) ? 'checked' : '' %> > <%= sport.name %> <br>
-      <% }) %>
-    </div>
-    <div>
-      <% if(match.isNewRecord) { %>
-        <input type="submit" name="create" value="Crear" />
-      <% } else { %>
-        <input type="submit" name="update" value="Guardar" />
+    <form action="<%= submitMatchPath %>" method="post">
+      <% if(!match.isNewRecord) { %>
+        <div>
+          <input type="hidden" name="_method" value="patch" />
+        </div>
       <% } %>
-    </div>
-  </form>
-</div>
+      <div>
+        <label for="isPublic">Público?</label>
+        <input type="checkbox" name="isPublic" <%= match.isPublic ? 'checked' : '' %> ></input>
+      </div>
+      <div>
+        <label for="date">Fecha y Hora</label>
+        <input type="datetime-local" name="date" value="<%= match.date%>"></input>
+      </div>
+      <div>
+        <label for="sportId">Deporte</label>
 
-<form action="<%= cancelPath %>" method="get">
-    <input id="deletebutton" type="submit" value="Cancelar"/>
-</form>
+        <% sports.forEach((sport) => { %>
+          <input type="radio" name="sportId" value="<%= sport.id %>" <%= (sport.id === match.sportId) ? 'checked' : '' %> > <%= sport.name %>
+        <% }) %>
+      </div>
+      <div>
+        <% if(match.isNewRecord) { %>
+          <input type="submit" name="create" value="Crear" />
+        <% } else { %>
+          <input type="submit" name="update" value="Guardar" />
+        <% } %>
+      </div>
+    </form>
+  </div>
+
+  <form action="<%= cancelPath %>" method="get">
+      <input class"deletebutton" type="submit" value="Cancelar"/>
+  </form>
 </div>

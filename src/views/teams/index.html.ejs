@@ -1,26 +1,26 @@
 <div class ="center">
 
-<h1>Equipos en jugamos</h1>
+  <h1>Equipos en jugamos</h1>
 
-<% if (hasCreatePermission) { %>
-  <form action=<%= newTeamPath %>>
-    <input type="submit" value="Crear Equipo"/>
-  </form>
-<% } %>
+  <% if (hasCreatePermission) { %>
+    <form action=<%= newTeamPath %>>
+      <input type="submit" value="Crear Equipo"/>
+    </form>
+  <% } %>
 
 
-<ul>
-  <% teams.forEach((team) => { %>
-    <li>
-      <a href="<%= teamPath(team) %>">
-        <%= team.name %>
-      </a>
-      <p>
-        Logo: <%= team.logo %>
-        <br>
-        Deporte: <%= getTeamSport(team) %>
-      </p>
-    </li>
-  <% }) %>
-</ul>
+  <ul>
+    <% teams.forEach((team) => { %>
+      <li>
+        <a href="<%= teamPath(team) %>">
+          <%= team.name %>
+        </a>
+        <p>
+          Logo: <%= team.logo %>
+
+          Deporte: <%= getTeamSport(team) %>
+        </p>
+      </li>
+    <% }) %>
+  </ul>
 </div>

@@ -29,8 +29,8 @@ module.exports = {
       },
       photo: {
         type: Sequelize.STRING,
-        allowNull: true,
-        defaultValue: null,
+        allowNull: false,
+        defaultValue: "/assets/defaultPerson.png",
       },
       createdAt: {
         allowNull: false,

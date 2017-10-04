@@ -1,44 +1,44 @@
 <div class ="center">
 
-<h1> Editar deporte que practico %></h1>
-<div>
-  <% if (locals.errors) { %>
-    <div class="errors">
-      Necesitas arreglar los siguiente errores:
-      <ul>
-        <% errors.forEach(error => { %>
-          <li><%= error.message %></li>
-        <% }); %>
-      </ul>
-    </div>
-  <% } %>
+  <h1> Editar deporte que practico %></h1>
+  <div>
+    <% if (locals.errors) { %>
+      <div class="errors">
+        Necesitas arreglar los siguiente errores:
+        <ul>
+          <% errors.forEach(error => { %>
+            <li><%= error.message %></li>
+          <% }); %>
+        </ul>
+      </div>
+    <% } %>
 
-  <%= playSport.name %>
-  <form action="<%= submitPlayerSportPath %>" method="post">
-    <div>
-      <input type="hidden" name="_method" value="patch" />
-    </div>
-    <div>
-      <label for="position">Posición: </label>
-      <input type="text" name="position" value="<%= playSport.plays.position %>"/>
-    </div>
+    <%= playSport.name %>
+    <form action="<%= submitPlayerSportPath %>" method="post">
+      <div>
+        <input type="hidden" name="_method" value="patch" />
+      </div>
+      <div>
+        <label for="position">Posición: </label>
+        <input type="text" name="position" value="<%= playSport.plays.position %>"/>
+      </div>
 
+      <div>
+        <input type="submit" name="update" value="Guardar Cambios" />
+      </div>
+    </form>
+  </div>
+
+  <form action="<%= deletePlayerSportPath %>" method="post">
     <div>
-      <input type="submit" name="update" value="Guardar Cambios" />
+      <input type="hidden" name="_method" value="delete" />
+    </div>
+    <div>
+      <input class"deletebutton" type="submit" name="delete" value="Eliminar" />
     </div>
   </form>
-</div>
 
-<form action="<%= deletePlayerSportPath %>" method="post">
-  <div>
-    <input type="hidden" name="_method" value="delete" />
-  </div>
-  <div>
-    <input id="deletebutton" type="submit" name="delete" value="Eliminar" />
-  </div>
-</form>
-
-<form action=<%= cancelPath %>>
-  <input type="submit" value="Cancelar"/>
-</form>
+  <form action=<%= cancelPath %>>
+    <input type="submit" value="Cancelar"/>
+  </form>
 </div>
