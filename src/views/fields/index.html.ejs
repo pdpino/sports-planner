@@ -1,0 +1,19 @@
+<h1>Recintos en Jugamos</h1>
+
+
+<% if(hasModifyPermission) { %>
+<form action=<%= newFieldPath %>>
+    <input type="submit" value="Crear cancha"/>
+</form>
+<%}%>
+
+<ul>
+  <% fields.forEach((field) => { %>
+    <li>
+        <%= field.name %>
+        <form action=<%= fieldPath(field) %>>
+            <input type="submit" value="Ver Cancha"/>
+        </form>
+    </li>
+  <% }) %>
+</ul>
