@@ -87,8 +87,6 @@ router.post('matchCreate', '/', async (ctx) => {
   // REVIEW: should this be in the model? (beforeCreate hook?) (but the model doesn't know the creator)
   params.name = params.name || getDefaultName(ctx.state.currentPlayer);
 
-  console.log("PARAMS: ", params);
-
   try {
     const match = await ctx.orm.match.create(params);
     await ctx.state.currentPlayer.addMatch(match.id, {
