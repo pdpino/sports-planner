@@ -22,44 +22,42 @@ async function findInvitedTeamById(match, teamId){
   return (invitedTeams.length == 1) ? invitedTeams[0] : null;
 }
 
-router.get('matchTeamNew', '/new', async (ctx) => {
-  await ctx.render('matchTeams/new', {
+router.get('invitedTeamNew', '/new', async (ctx) => {
+  await ctx.render('invitedTeams/new', {
     match: ctx.state.match,
     invitableTeams: getInvitableTeams(ctx.state.teams, ctx.state.invitedTeams),
-    submitMatchTeamPath: ctx.router.url('matchTeamCreate', { matchId: ctx.state.match.id }),
-    cancelPath: ctx.router.url('match', { id: ctx.state .match.id })
+    submitInvitedTeamPath: ctx.router.url('invitedTeamCreate', { matchId: ctx.state.match.id }),
+    cancelPath: ctx.router.url('match', { id: ctx.state.match.id })
   });
 });
 
-router.post('matchTeamCreate', '/', async (ctx) => {
+router.post('invitedTeamCreate', '/', async (ctx) => {
   try {
     await ctx.state.match.addTeam(ctx.request.body.teamId, { through: { status: "sentToTeam" }});
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
   } catch (validationError) {
     console.log("###### validation error when inviting team to a match: ", validationError); // DEBUG
-    await ctx.render('matchTeams/new', {
+    await ctx.render('invitedTeams/new', {
       match: ctx.state.match,
-      playersNotInvited: getInvitableTeams(ctx.state.teams, ctx.state.invitedTeams),
+      invitableTeams: getInvitableTeams(ctx.state.teams, ctx.state.invitedTeams),
       errors: validationError.errors,
-      submitMatchTeamPath: ctx.router.url('matchTeamCreate', { matchId: ctx.state.match.id }),
+      submitInvitedTeamPath: ctx.router.url('invitedTeamCreate', { matchId: ctx.state.match.id }),
       cancelPath: ctx.router.url('match', { id: ctx.state.match.id })
     });
   }
 });
 
-router.get('matchTeamEdit', '/:id/edit', async (ctx) => {
+router.get('invitedTeamEdit', '/:id/edit', async (ctx) => {
   const invitedTeam = await findInvitedTeamById(ctx.state.match, ctx.params.id);
 
-  console.log("INVITED TEAM: ", invitedTeam.isTeamInvited.status);
-
-  await ctx.render('matchTeams/edit', {
+  await ctx.render('invitedTeams/edit', {
     match: ctx.state.match,
     team: invitedTeam,
-    submitMatchTeamPath: ctx.router.url('matchTeamUpdate', {
+    submitInvitedTeamPath: ctx.router.url('invitedTeamUpdate', {
       matchId: ctx.state.match.id,
       id: invitedTeam.id
     }),
-    deleteMatchTeamPath: ctx.router.url('matchTeamDelete', {
+    deleteInvitedTeamPath: ctx.router.url('invitedTeamDelete', {
       matchId: ctx.state.match.id,
       id: invitedTeam.id
     }),
@@ -67,7 +65,7 @@ router.get('matchTeamEdit', '/:id/edit', async (ctx) => {
   });
 });
 
-router.patch('matchTeamUpdate', '/:id', async (ctx) => {
+router.patch('invitedTeamUpdate', '/:id', async (ctx) => {
   const invitedTeam = await findInvitedTeamById(ctx.state.match, ctx.params.id);
 
   const newStatus = ctx.request.body.status || invitedTeam.isTeamInvited.status;
@@ -77,15 +75,15 @@ router.patch('matchTeamUpdate', '/:id', async (ctx) => {
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
   } catch (validationError) {
     console.log("###### validation error when updating match-team: ", validationError); // DEBUG
-    await ctx.render('matchTeams/edit', {
+    await ctx.render('invitedTeams/edit', {
       match: ctx.state.match,
       team: invitedTeam,
       errors: validationError.errors,
-      submitMatchTeamPath: ctx.router.url('matchTeamUpdate', {
+      submitInvitedTeamPath: ctx.router.url('invitedTeamUpdate', {
         matchId: ctx.state.match.id,
         id: invitedTeam.id
       }),
-      deleteMatchTeamPath: ctx.router.url('matchTeamDelete', {
+      deleteInvitedTeamPath: ctx.router.url('invitedTeamDelete', {
         matchId: ctx.state.match.id,
         id: invitedTeam.id
       }),
@@ -94,7 +92,7 @@ router.patch('matchTeamUpdate', '/:id', async (ctx) => {
   }
 });
 
-router.delete('matchTeamDelete', '/:id', async (ctx) => {
+router.delete('invitedTeamDelete', '/:id', async (ctx) => {
    await ctx.state.match.removePlayer(ctx.params.id);
    ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
  });

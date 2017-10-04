@@ -71,7 +71,7 @@
         <%= getStatusMessage(team.isTeamInvited.status) %>
 
         <% if(hasModifyPermission) { %>
-          <form action="<%= editMatchTeamPath(team) %>">
+          <form action="<%= editInvitedTeamPath(team) %>">
               <input type="submit" value="Editar Invitación" />
           </form>
         <% } %>
@@ -84,7 +84,7 @@
 <% } %>
 
 <% if (hasModifyPermission) { %>
-  <form action=<%= newMatchTeamPath %>>
+  <form action=<%= newInvitedTeamPath %>>
       <input type="submit" value="Invitar equipo" />
   </form>
 <% } %>

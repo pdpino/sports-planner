@@ -1,7 +1,7 @@
 <h1>Agregar Equipos</h1>
 
 <% if(invitableTeams.length > 0) { %>
-  <form action="<%= submitMatchTeamPath %>" method="post">
+  <form action="<%= submitInvitedTeamPath %>" method="post">
     <div>
       <label for="teamId">Elegir equipo</label>
       <% invitableTeams.forEach( (team) => { %>

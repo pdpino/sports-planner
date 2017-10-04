@@ -13,7 +13,7 @@
 
   <%= team.name %>
 
-  <form action="<%= submitMatchTeamPath %>" method="post">
+  <form action="<%= submitInvitedTeamPath %>" method="post">
     <div>
       <input type="hidden" name="_method" value="patch" />
     </div>
@@ -47,7 +47,7 @@
 
 </div>
 
-<form action="<%= deleteMatchTeamPath %>" method="post">
+<form action="<%= deleteInvitedTeamPath %>" method="post">
   <div>
     <input type="hidden" name="_method" value="delete" />
   </div>

@@ -1,6 +1,6 @@
 const KoaRouter = require('koa-router');
 const matchPlayersRouter = require('./matchPlayers');
-const matchTeamsRouter = require('./matchTeams');
+const invitedTeamsRouter = require('./invitedTeams');
 
 /** Given a match and the currentPlayer logged in, boolean indicating modify permission **/
 async function hasModifyMatchPermission(match, currentPlayer){
@@ -135,12 +135,12 @@ router.get('match', '/:id', async (ctx) => {
     getPlayerPath: (player) => ctx.router.url('player', player.id),
     getTeamPath: (team) => ctx.router.url('team', team.id),
     newMatchPlayerPath: ctx.router.url('matchPlayerNew', { matchId: match.id } ),
-    newMatchTeamPath: ctx.router.url('matchTeamNew', { matchId: match.id } ),
+    newInvitedTeamPath: ctx.router.url('invitedTeamNew', { matchId: match.id } ),
     editMatchPlayerPath: (player) => ctx.router.url('matchPlayerEdit', {
       matchId: match.id,
       id: player.id
     }),
-    editMatchTeamPath: (team) => ctx.router.url('matchTeamEdit', {
+    editInvitedTeamPath: (team) => ctx.router.url('invitedTeamEdit', {
       matchId: match.id,
       id: team.id
     }),
@@ -183,7 +183,7 @@ router.use(
     ctx.state.invitedTeams = await ctx.state.match.getTeams();
     await next();
   },
-  matchTeamsRouter.routes(),
+  invitedTeamsRouter.routes(),
 );
 
 module.exports = router;
