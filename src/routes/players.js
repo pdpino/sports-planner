@@ -158,7 +158,7 @@ router.get('player', '/:id', async (ctx) => {
     playerMatches,
     editPlayerPath: ctx.router.url('playerEdit', player.id),
     newPlayerTeamPath: ctx.router.url('playerTeamNew', { playerId: player.id } ),
-    editPlayerTeamPath: (team) => ctx.router.url('playerTeamEdit', {
+    deletePlayerTeamPath: (team) => ctx.router.url('playerTeamDelete', {
       playerId: player.id,
       id: team.id
     }),
@@ -184,20 +184,20 @@ router.delete('playerDelete', '/:id', async (ctx) => {
   ctx.redirect(ctx.router.url('players'));
 });
 
-// router.use(
-//   '/:playerId/teams',
-//   async (ctx, next) => {
-//     const { player, user } = await getPlayerAndUser(ctx, ctx.params.playerId);
-//
-//     if (!ctx.state.requireModifyPermission(ctx, user)) return;
-//
-//     ctx.state.teams = await ctx.orm.team.findAll();
-//     ctx.state.player = player;
-//     ctx.state.playerTeams = await ctx.state.player.getTeams();
-//     await next();
-//   },
-//   playerTeamsRouter.routes(),
-// );
+router.use(
+  '/:playerId/teams',
+  async (ctx, next) => {
+    const { player, user } = await getPlayerAndUser(ctx, ctx.params.playerId);
+
+    if (!ctx.state.requireModifyPermission(ctx, user)) return;
+
+    ctx.state.teams = await ctx.orm.team.findAll();
+    ctx.state.player = player;
+    ctx.state.playerTeams = await ctx.state.player.getTeams();
+    await next();
+  },
+  playerTeamsRouter.routes(),
+);
 
 router.use(
   '/:playerId/matches',

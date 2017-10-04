@@ -65,11 +65,11 @@
           <%= (team.isMember.isCaptain) ? '-- Capitán del equipo' : '' %>
 
           <% if(hasModifyPermission) { %>
-            <!--
-            <form action="<%= editPlayerTeamPath(team) %>">
-                <input type="submit" value="Editar" />
+            <% console.log("AAAA: ", deletePlayerTeamPath(team)) %>
+            <form action="<%= deletePlayerTeamPath(team) %>" method="post">
+              <input type="hidden" name="_method" value="delete" />
+              <input type="submit" value="Abandonar equipo" />
             </form>
-            -->
           <% } %>
 
         </li>
@@ -96,11 +96,9 @@
           <%= (match.isPlayerInvited.isAdmin) ? '-- Usted es Admin del partido' : '' %>
 
           <% if(hasModifyPermission) { %>
-
             <form action="<%= editPlayerMatchPath(match) %>">
                 <input type="submit" value="Editar" />
             </form>
-
           <% } %>
 
         </li>
