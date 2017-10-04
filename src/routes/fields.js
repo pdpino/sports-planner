@@ -94,12 +94,7 @@ router.get('field', '/:id', async (ctx) => {
   await ctx.render('fields/show', {
     hasModifyPermission: ctx.state.hasOwnerModifyPermission(ctx, compoundOwner),
     field,
-<<<<<<< HEAD
-    compound,
-    fieldsPath: ctx.router.url('fields'),
-=======
     fieldsPath: ctx.router.url('fields', {compoundId: ctx.state.compound.id}),
->>>>>>> 3548f2d393e2bebc56b1f8b3d53f0e7e7404afcc
     compoundPath: compound => ctx.router.url('compound', { id: compound.id }),
     editFieldPath: ctx.router.url('fieldEdit', {compoundId: ctx.state.compound.id, id: field.id}),
 
