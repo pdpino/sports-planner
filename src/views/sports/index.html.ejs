@@ -9,11 +9,15 @@
 
   <ul>
     <% sports.forEach((sport) => { %>
-      <li>
-        <a href="<%= sportPath(sport) %>">
-          <%= sport.name %>
-        </a>
-      </li>
+        <li>
+            <a class="lilink sport" href="<%= sportPath(sport) %>"%>>
+            <img src=<%=sport.logo%> width="128" height="128"/>
+            <div>
+             <%= sport.name %>
+           </div>
+          </a>
+        </li>
     <% }) %>
+
   </ul>
 </div>

@@ -12,15 +12,18 @@
   <ul>
     <% teams.forEach((team) => { %>
       <li>
-        <a href="<%= teamPath(team) %>">
-          <%= team.name %>
+          <a class="lilink sport" href="<%= teamPath(team) %>"%>>
+          <img src=<%=team.logo%> widt"h="128" height="128"/>
+          <div id="margincustom">
+           <%= team.name %>
+         </div>
+         <div id="separar">
+         <%= getTeamSport(team) %>
+        </div>
         </a>
-        <p>
-          Logo: <%= team.logo %>
-
-          Deporte: <%= getTeamSport(team) %>
-        </p>
       </li>
     <% }) %>
   </ul>
+
+
 </div>

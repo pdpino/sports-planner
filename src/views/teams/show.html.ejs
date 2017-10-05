@@ -28,17 +28,17 @@
       <ul>
         <% teamMembers.forEach( (teamMember) => { %>
           <li>
-            <a href="<%= getPlayerPath(teamMember) %>">
-              <%= teamMember.firstName %>
+              <a class="lilink" href="<%= getPlayerPath(teamMember) %>"%>>
+              <img src=<%=teamMember.photo%> widt"h="32" height="32"/>
+              <div id="margincustom">
+               <%= teamMember.firstName %> <%= (teamMember.isMember.isCaptain ? '-- capitán del equipo' : '' )%>
+             </div>
+             <% if (hasModifyPermission) { %>
+               <form action=<%= editTeamMemberPath(teamMember) %>>
+                   <input type="submit" value="Editar" />
+               </form>
+             <% } %>
             </a>
-            <%= (teamMember.isMember.isCaptain ? '-- capitán del equipo' : '' )%>
-
-            <% if (hasModifyPermission) { %>
-              <form action=<%= editTeamMemberPath(teamMember) %>>
-                  <input type="submit" value="Editar" />
-              </form>
-            <% } %>
-
           </li>
         <% }) %>
       </ul>
@@ -61,17 +61,19 @@
       <h4>Partidos:</h4>
       <ul>
         <% teamMatches.forEach( (match) => { %>
+
           <li>
-            <a href="<%= getMatchPath(match) %>">
-              <%= match.name %>
+              <a class="lilink" href="<%= getMatchPath(match) %>">%>
+              <img src=<%=match.photo%> widt"h="32" height="32"/>
+              <div id="margincustom">
+               <%= match.name %>
+             </div>
+             <% if (hasModifyPermission) { %>
+               <form action=<%= editTeamMatchPath(match) %>>
+                   <input type="submit" value="Editar" />
+               </form>
+             <% } %>
             </a>
-
-            <% if (hasModifyPermission) { %>
-              <form action=<%= editTeamMatchPath(match) %>>
-                  <input type="submit" value="Editar" />
-              </form>
-            <% } %>
-
           </li>
         <% }) %>
       </ul>
