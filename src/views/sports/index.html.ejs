@@ -7,8 +7,9 @@
     </form>
   <% } %>
 
-  <ul>
-    <% sports.forEach((sport) => { %>
+  <% if (sports.length > 0) { %>
+    <ul>
+      <% sports.forEach((sport) => { %>
         <li>
             <a class="lilink sport" href="<%= sportPath(sport) %>"%>>
             <img src=<%=sport.logo%> width="128" height="128"/>
@@ -17,7 +18,9 @@
            </div>
           </a>
         </li>
-    <% }) %>
-
-  </ul>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p> No hay deportes para mostrar </p>
+  <% } %>
 </div>
