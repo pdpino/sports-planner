@@ -36,6 +36,7 @@
     "koa-session": "^5.5.0",
     "koa-static": "^4.0.1",
     "node-sass": "^4.5.3",
+    "nodemailer": "^4.1.1",
     "pg": "^7.1.2",
     "pg-hstore": "^2.3.2",
     "sass-loader": "^6.0.6",
