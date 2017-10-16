@@ -1,0 +1,41 @@
+const KoaRouter = require('koa-router');
+
+const router = new KoaRouter();
+
+router.get('sessionNew', '/new', async (ctx) => {
+  if (!ctx.state.requireNoLogin(ctx)) return;
+
+  return ctx.render('session/new', {
+    email: '',
+    createSessionPath: ctx.router.url('sessionCreate'),
+    notice: ctx.flashMessage.notice,
+    cancelPath: '/', // HACK: can't use 'home' url
+  });
+});
+
+router.put('sessionCreate', '/', async (ctx) => {
+  if (!ctx.state.requireNoLogin(ctx)) return;
+  
+  const { email, password } = ctx.request.body;
+  const user = await ctx.orm.user.find({ where: { email } });
+  if (user) {
+    const isPasswordCorrect = await user.checkPassword(password);
+    if (isPasswordCorrect) {
+      ctx.session.userId = user.id;
+      return ctx.redirect('/'); // HACK: can't use 'home' path
+    }
+  }
+  return ctx.render('session/new', {
+    email,
+    createSessionPath: ctx.router.url('sessionCreate'),
+    error: 'e-mail o contraseña incorrectos',
+    cancelPath: '/', // HACK: can't use 'home' url
+  });
+});
+
+router.delete('sessionDestroy', '/', (ctx) => {
+  ctx.session = null;
+  ctx.redirect(ctx.router.url('sessionNew'));
+});
+
+module.exports = router;

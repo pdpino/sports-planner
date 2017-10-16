@@ -1,0 +1,33 @@
+<div class ="center">
+  <h1> Iniciar sesión </h1>
+  <div>
+    <% if (locals.notice) { %>
+      <div className="notice"><%= notice %></div>
+    <% } %>
+    <% if (locals.error) { %>
+      <div class="errors">
+        <%= error %>
+      </div>
+    <% } %>
+    <form action="<%= createSessionPath %>" method="post">
+      <div>
+        <input type="hidden" name="_method" value="put" />
+      </div>
+      <div>
+        <label for="email">E-Mail</label>
+        <input type="text" name="email" value="<%= email %>"/>
+      </div>
+      <div>
+        <label for="password">password</label>
+        <input type="password" name="password" />
+      </div>
+      <div>
+        <input type="submit" name="create" value="Iniciar sesión" />
+      </div>
+    </form>
+  </div>
+
+  <form action="<%= cancelPath %>" method="get">
+      <input type="submit" value="Cancelar"/>
+  </form>
+</div>

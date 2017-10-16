@@ -1,0 +1,26 @@
+<div class ="center">
+  <h1><%= sport.name %></h1>
+  <p>Logo: <%= sport.logo %></p>
+  <p>Es un deporte <%= (sport.isIndividual) ? 'individual' : 'colectivo' %>.</p>
+
+  <% if (hasModifyPermission) { %>
+    <form action=<%= editSportPath %>>
+        <input type="submit" value="Editar"/>
+    </form>
+
+    <form action="<%= deleteSportPath %>" method="post">
+      <div>
+        <input type="hidden" name="_method" value="delete" />
+      </div>
+      <div>
+        <input type="submit" name="delete" value="Eliminar" />
+      </div>
+    </form>
+
+
+  <% } %>
+
+  <form action=<%= sportsPath %>>
+      <input type="submit" value="Volver a todos los deportes"/>
+  </form>
+</div>

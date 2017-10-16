@@ -1,0 +1,69 @@
+<div class ="center">
+
+  <h1> <%= (field.isNewRecord) ? 'Nueva Cancha' : 'Editar cancha' %></h1>
+  <div>
+    <% if (locals.errors) { %>
+      <div class="errors">
+        Necesitas arreglar los siguiente errores:
+        <ul>
+          <% errors.forEach(error => { %>
+            <li><%= error.message %></li>
+          <% }); %>
+        </ul>
+      </div>
+    <% } %>
+    <form action="<%= submitFieldPath %>" method="post">
+      <% if(!field.isNewRecord) { %>
+        <div>
+          <input type="hidden" name="_method" value="patch" />
+        </div>
+      <% } %>
+      <div>
+        <label for="name">Nombre</label>
+        <input type="text" name="name" value="<%= field.name %>" />
+      </div>
+      <div>
+        <label for="photo">Foto</label>
+        <input type="text" name="photo" value="<%= field.photo %>" />
+      </div>
+      <div>
+        <label for="prices">Precios</label>
+        <input type="text" name="address" value="<%= field.precio %>" />
+      </div>
+      <div>
+        <label for="schedule">Horario</label>
+        <input type="text" name="schedule" value="<%= field.schedule %>" />
+      </div>
+      <input type="hidden" name="compoundId" value="<%=compound.id %>"
+      <div>
+        <label for="sportId">Deporte</label>
+
+        <% sports.forEach((sport) => { %>
+          <input type="radio" name="sportId" value="<%= sport.id %>" <%= (sport.id === field.sportId) ? 'checked' : '' %> > <%= sport.name %>
+        <% }) %>
+      </div>
+        <% if(field.isNewRecord) { %>
+          <input type="submit" name="create" value="Crear" />
+        <% } else { %>
+          <input type="submit" name="update" value="Guardar Cambios" />
+        <% } %>
+      </div>
+    </form>
+
+
+
+  <% if(!field.isNewRecord) { %>
+    <form action="<%= deleteFieldPath %>" method="post">
+      <div>
+        <input type="hidden" name="_method" value="delete" />
+      </div>
+      <div>
+        <input class"deletebutton" type="submit" name="delete" value="Eliminar" />
+      </div>
+    </form>
+  <% } %>
+
+  <form action="<%= cancelPath %>" method="get">
+      <input type="submit" value="Cancelar"/>
+  </form>
+</div>

@@ -1,8 +1,8 @@
 {
-  "name": "template",
-  "version": "1.0.0",
+  "name": "jugamos",
+  "version": "2.0.0",
   "main": "index.js",
-  "repository": "https://github.com/IIC2513-2017-2/template.git",
+  "repository": "https://github.com/IIC2513-2017-2/kame-house",
   "license": "MIT",
   "scripts": {
     "start": "node index.js",
@@ -22,9 +22,11 @@
     "nodemon": "^1.11.0"
   },
   "dependencies": {
+    "bcrypt": "^1.0.3",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.7",
     "extract-text-webpack-plugin": "^3.0.0",
+    "faker": "^4.1.0",
     "file-loader": "^0.11.2",
     "koa": "^2.3.0",
     "koa-body": "^2.3.0",
@@ -35,12 +37,13 @@
     "koa-router": "^7.2.1",
     "koa-session": "^5.5.0",
     "koa-static": "^4.0.1",
+    "lodash": "^4.17.4",
     "node-sass": "^4.5.3",
     "nodemailer": "^4.1.1",
     "pg": "^7.1.2",
     "pg-hstore": "^2.3.2",
     "sass-loader": "^6.0.6",
-    "sequelize": "^4.6.0",
+    "sequelize": "^4.13.0",
     "sequelize-cli": "https://github.com/IIC2513-2017-2/sequelize-cli#iic2513-version",
     "style-loader": "^0.18.2",
     "webpack": "^3.6.0"

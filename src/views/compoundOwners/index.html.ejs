@@ -1,0 +1,20 @@
+<div class ="center">
+  <h1>Compound Owners en Jugamos</h1>
+
+  <ul>
+    <% compoundOwners.forEach((compoundOwner) => { %>
+
+      <li>
+          <a class="lilink" href=<%= getCompoundOwnerPath(compoundOwner) %>>
+          <img src=<%=compoundOwner.photo%> width="128" height="128"/>
+          <div>
+           <%= compoundOwner.firstName %> <%= compoundOwner.lastName %>
+         </div>
+         <div>
+          <%= compoundOwner.email %>
+          </div>
+        </a>
+      </li>
+    <% }) %>
+  </ul>
+</div>

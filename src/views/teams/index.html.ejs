@@ -1,0 +1,29 @@
+<div class ="center">
+
+  <h1>Equipos en jugamos</h1>
+
+  <% if (hasCreatePermission) { %>
+    <form action=<%= newTeamPath %>>
+      <input type="submit" value="Crear Equipo"/>
+    </form>
+  <% } %>
+
+
+  <ul>
+    <% teams.forEach((team) => { %>
+      <li>
+          <a class="lilink sport" href="<%= teamPath(team) %>"%>>
+          <img src=<%=team.logo%> widt"h="128" height="128"/>
+          <div id="margincustom">
+           <%= team.name %>
+         </div>
+         <div id="separar">
+         <%= getTeamSport(team) %>
+        </div>
+        </a>
+      </li>
+    <% }) %>
+  </ul>
+
+
+</div>

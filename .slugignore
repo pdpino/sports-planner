@@ -1,0 +1,6 @@
+# Add things to ignore after deploying in heroku
+# npm lock
+package-lock.json
+
+# yarn lock
+#yarn.lock

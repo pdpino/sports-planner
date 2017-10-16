@@ -1,0 +1,49 @@
+<div class ="center">
+  <h1><%= compoundOwner.firstName %> <%= compoundOwner.lastName %></h1>
+
+  <div>
+    <h4>Información personal</h4>
+    <img src=<%= compoundOwner.photo %> >
+
+    <p> E-mail: <%= compoundOwner.email %> </p>
+
+
+
+    <p> Teléfono: <%= compoundOwner.phone %> </p>
+
+    <% if(hasModifyPermission) { %>
+      <form action="<%= editCompoundOwnerPath %>">
+          <input class="editbutton" type="submit" value="Editar Información personal" />
+      </form>
+    <% } %>
+
+  </div>
+
+  <% if(compounds.length > 0) { %>
+    <h4>Recintos:</h4>
+    <ul>
+      <% compounds.forEach((compound) => { %>
+        <li>
+            <a class="lilink" href=<%= getCompoundPath(compound) %>>
+            <img src=<%=compound.photo%> width="32" height="32"/>
+            <div>
+             <%= compound.name %>
+           </div>
+           <div>
+            <%= compound.address %>
+            </div>
+          </a>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    No tiene recintos.
+  <% } %>
+
+
+
+  <form action="<%= compoundOwnersPath %>">
+      <input type="submit" value="Volver" />
+  </form>
+
+</div>

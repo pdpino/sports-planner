@@ -1,0 +1,26 @@
+<div class ="center">
+  <h1>Deportes en jugamos</h1>
+
+  <% if (hasModifyPermission) { %>
+    <form action=<%= newSportPath %>>
+        <input type="submit" value="Crear deporte"/>
+    </form>
+  <% } %>
+
+  <% if (sports.length > 0) { %>
+    <ul>
+      <% sports.forEach((sport) => { %>
+        <li>
+            <a class="lilink sport" href="<%= sportPath(sport) %>"%>>
+            <img src=<%=sport.logo%> width="128" height="128"/>
+            <div>
+             <%= sport.name %>
+           </div>
+          </a>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p> No hay deportes para mostrar </p>
+  <% } %>
+</div>

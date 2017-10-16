@@ -1,0 +1,32 @@
+<div class ="center">
+  <h1>Agregar Jugadores</h1>
+
+  <% if(playersNotInvited.length > 0) { %>
+    <form action="<%= submitInvitedPlayerPath %>" method="post">
+      <div>
+        <label for="matchId">Elegir jugador</label>
+        <% playersNotInvited.forEach( (player) => { %>
+          <div>
+            <input type="radio" name="playerId" value="<%= player.id %>"/> <%= player.email %>
+          </div>
+        <% }) %>
+      </div>
+
+
+      <div>
+        <input type="submit" name="create" value="Añadir" />
+      </div>
+
+    </form>
+  <% } else { %>
+    <div>
+      <strong>
+        No quedan jugadores para agregar!
+      </strong>
+    </div>
+  <% } %>
+
+  <form action="<%= cancelPath %>" method="get">
+      <input type="submit" value="Cancelar"/>
+  </form>
+</div>

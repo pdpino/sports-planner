@@ -1,0 +1,42 @@
+<div class ="center">
+  <h1> Editar Jugadores del equipo %></h1>
+  <div>
+    <% if (locals.errors) { %>
+      <div class="errors">
+        Necesitas arreglar los siguiente errores:
+        <ul>
+          <% errors.forEach(error => { %>
+            <li><%= error.message %></li>
+          <% }); %>
+        </ul>
+      </div>
+    <% } %>
+
+    <%= teamMember.name %>
+    <form action="<%= submitTeamMemberPath %>" method="post">
+      <div>
+        <input type="hidden" name="_method" value="patch" />
+      </div>
+      <div>
+        <label for="isCaptain"></label>
+        <input type="checkbox" name="isCaptain" <%= (teamMember.isMember.isCaptain) ? 'checked' : '' %> /> Capitán
+      </div>
+      <div>
+        <input type="submit" name="update" value="Guardar Cambios" />
+      </div>
+    </form>
+  </div>
+
+  <form action="<%= deleteTeamMemberPath %>" method="post">
+    <div>
+      <input type="hidden" name="_method" value="delete" />
+    </div>
+    <div>
+      <input class"deletebutton" type="submit" name="delete" value="Eliminar" />
+    </div>
+  </form>
+
+  <form action=<%= cancelPath %>>
+    <input type="submit" value="Cancelar"/>
+  </form>
+</div>

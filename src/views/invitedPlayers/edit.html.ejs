@@ -1,0 +1,65 @@
+<div class ="center">
+
+  <h1> Editar solicitudes de partido %></h1>
+  <div>
+    <% if (locals.errors) { %>
+      <div class="errors">
+        Necesitas arreglar los siguiente errores:
+        <ul>
+          <% errors.forEach(error => { %>
+            <li><%= error.message %></li>
+          <% }); %>
+        </ul>
+      </div>
+    <% } %>
+
+    <%= invitedPlayer.firstName %> <%= invitedPlayer.lastName %>
+    <form action="<%= submitInvitedPlayerPath %>" method="post">
+      <div>
+        <input type="hidden" name="_method" value="patch" />
+      </div>
+      <% if (invitedPlayer.isPlayerInvited.status == "sentByUser" || invitedPlayer.isPlayerInvited.status == "userRejected" || invitedPlayer.isPlayerInvited.status == "accepted"){ %>
+      <div>
+        <input type="radio" name="status" value="accepted" <%= (invitedPlayer.isPlayerInvited.status=="accepted") ? 'checked' : '' %>> Aceptar Invitación
+        <input type="radio" name="status" value="rejectedByUser" <%= (invitedPlayer.isPlayerInvited.status=="rejectedByUser") ? 'checked' : '' %>> Rechazar Invitación
+        <input type="radio" name="status" value="sentByUser" <%= (invitedPlayer.isPlayerInvited.status=="sentToUser") ? 'checked' : '' %>> No responder Aún
+      </div>
+      <% } else if (invitedPlayer.isPlayerInvited.status == "sentToUser"){ %>
+        <div>
+          <p> Esperando respuesta </p>
+        </div>
+      <% } else if (invitedPlayer.isPlayerInvited.status == "rejectedByUser"){ %>
+        <div>
+          <p> Solicitud rechazada </p>
+        </div>
+      <% } %>
+
+      <div>
+        <% if (invitedPlayer.isPlayerInvited.status == "accepted") { %>
+          <label for="isAdmin"></label>
+          <input type="checkbox" name="isAdmin" <%= (invitedPlayer.isPlayerInvited.isAdmin) ? 'checked' : '' %> /> Administrador
+
+        <% } else { %>
+          <input type="hidden" name="isAdmin" value=<%false%>>
+        <%} %>
+      </div>
+      <div>
+        <input type="submit" name="update" value="Guardar Cambios" />
+      </div>
+    </form>
+
+  </div>
+
+  <form action="<%= deleteInvitedPlayerPath %>" method="post">
+    <div>
+      <input type="hidden" name="_method" value="delete" />
+    </div>
+    <div>
+      <input class"deletebutton" type="submit" name="delete" value="Eliminar" />
+    </div>
+  </form>
+
+  <form action=<%= cancelPath %>>
+    <input type="submit" value="Cancelar"/>
+  </form>
+</div>

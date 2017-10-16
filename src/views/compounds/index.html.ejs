@@ -1,0 +1,24 @@
+<div class ="center">
+
+  <h1>Recintos en Jugamos</h1>
+
+
+  <% if (hasCreatePermission) { %>
+    <form action=<%= newCompoundPath %>>
+        <input type="submit" value="Crear recinto"/>
+    </form>
+  <% } %>
+
+  <ul>
+    <% compounds.forEach((compound) => { %>
+      <li>
+          <a class="lilink" href=<%= getCompoundPath(compound) %>>
+          <img src=<%=compound.photo%> width="128" height="128"/>
+          <div>
+           <%= compound.name %>
+         </div>
+       </a>
+      </li>
+    <% }) %>
+  </ul>
+</div>

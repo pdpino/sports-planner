@@ -1,0 +1,33 @@
+<div class ="center">
+
+  <h1>Agregar Equipos</h1>
+
+  <% if(invitableTeams.length > 0) { %>
+    <form action="<%= submitInvitedTeamPath %>" method="post">
+      <div>
+        <label for="teamId">Elegir equipo</label>
+        <% invitableTeams.forEach( (team) => { %>
+          <div>
+            <input type="radio" name="teamId" value="<%= team.id %>"/> <%= team.name %>
+          </div>
+        <% }) %>
+      </div>
+
+
+      <div>
+        <input type="submit" name="create" value="Invitar" />
+      </div>
+
+    </form>
+  <% } else { %>
+    <div>
+      <strong>
+        No hay equipos para invitar
+      </strong>
+    </div>
+  <% } %>
+
+  <form action="<%= cancelPath %>" method="get">
+      <input type="submit" value="Cancelar"/>
+  </form>
+</div>
