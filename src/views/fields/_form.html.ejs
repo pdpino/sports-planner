@@ -32,7 +32,10 @@
         <label for="sportId">Deporte</label>
 
         <% sports.forEach((sport) => { %>
-          <input type="radio" name="sportId" value="<%= sport.id %>" <%= (sport.id === field.sportId) ? 'checked' : '' %> > <%= sport.name %>
+          <input type="radio" name="sportId" value="<%= sport.id %>"
+          <%= (sport.id === field.sportId) ? 'checked' : '' %> >
+          <%= sport.name %>
+          
         <% }) %>
       </div>
         <% if(field.isNewRecord) { %>

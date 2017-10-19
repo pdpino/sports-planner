@@ -2,24 +2,8 @@ const KoaRouter = require('koa-router');
 const fieldsRouter = require('./fields');
 const router = new KoaRouter();
 
-function mergeCompoundOwnerUser(user, compoundOwner){
-  const compoundOwnerFull = { //HACK: can't use assign because dataValues property.
-    id: compoundOwner.id,
-    email: user.email,
-    phone: compoundOwner.phone,
-    photo: user.photo,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    password: user.password,
-    isNewRecord: compoundOwner.isNewRecord,
-  };
-  return compoundOwnerFull;
-}
-
 router.get('compounds', '/', async (ctx) => {
   const compounds = await ctx.orm.compound.findAll();
-
-  console.log("IS OWNER LOGGED IN:", ctx.state.isOwnerLoggedIn);
 
   await ctx.render('compounds/index', {
     compounds,
