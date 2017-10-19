@@ -75,8 +75,8 @@ router.use((ctx, next) => {
     isOwnerLoggedIn: Boolean(ctx.state.currentOwner),
   });
 
-
-
+  // More elaborated functions:
+  
   ctx.state.requireModifyPermission = function(ctx, userId, options={}){
     ctx.assert(ctx.state.hasModifyPermission(ctx, userId), 403, options.message || "No tienes permisos para editar");
   }
