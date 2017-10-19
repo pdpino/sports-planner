@@ -1,18 +1,10 @@
 <div class ="center">
 
   <h1> Editar solicitudes de partido %></h1>
-  <div>
-    <% if (locals.errors) { %>
-      <div class="errors">
-        Necesitas arreglar los siguiente errores:
-        <ul>
-          <% errors.forEach(error => { %>
-            <li><%= error.message %></li>
-          <% }); %>
-        </ul>
-      </div>
-    <% } %>
 
+  <%- include('../error-snippet', { errors: locals.errors }) %>
+
+  <div>
     <%= invitedPlayer.firstName %> <%= invitedPlayer.lastName %>
     <form action="<%= submitInvitedPlayerPath %>" method="post">
       <div>
@@ -20,9 +12,18 @@
       </div>
       <% if (invitedPlayer.isPlayerInvited.status == "sentByUser" || invitedPlayer.isPlayerInvited.status == "userRejected" || invitedPlayer.isPlayerInvited.status == "accepted"){ %>
       <div>
-        <input type="radio" name="status" value="accepted" <%= (invitedPlayer.isPlayerInvited.status=="accepted") ? 'checked' : '' %>> Aceptar Invitación
-        <input type="radio" name="status" value="rejectedByUser" <%= (invitedPlayer.isPlayerInvited.status=="rejectedByUser") ? 'checked' : '' %>> Rechazar Invitación
-        <input type="radio" name="status" value="sentByUser" <%= (invitedPlayer.isPlayerInvited.status=="sentToUser") ? 'checked' : '' %>> No responder Aún
+        <input type="radio" name="status" value="accepted"
+        <%= (invitedPlayer.isPlayerInvited.status == "accepted") ? 'checked' : '' %>>
+        Aceptar Invitación
+
+        <input type="radio" name="status" value="rejectedByUser"
+        <%= (invitedPlayer.isPlayerInvited.status == "rejectedByUser") ? 'checked' : '' %>>
+        Rechazar Invitación
+
+        <input type="radio" name="status" value="sentByUser"
+        <%= (invitedPlayer.isPlayerInvited.status == "sentToUser") ? 'checked' : '' %>>
+        No responder Aún
+
       </div>
       <% } else if (invitedPlayer.isPlayerInvited.status == "sentToUser"){ %>
         <div>

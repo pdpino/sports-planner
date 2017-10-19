@@ -1,17 +1,9 @@
 <div class ="center">
   <h1> Editar Jugadores del equipo %></h1>
-  <div>
-    <% if (locals.errors) { %>
-      <div class="errors">
-        Necesitas arreglar los siguiente errores:
-        <ul>
-          <% errors.forEach(error => { %>
-            <li><%= error.message %></li>
-          <% }); %>
-        </ul>
-      </div>
-    <% } %>
 
+  <%- include('../error-snippet', { errors: locals.errors }) %>
+  
+  <div>
     <%= teamMember.name %>
     <form action="<%= submitTeamMemberPath %>" method="post">
       <div>

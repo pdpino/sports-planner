@@ -7,7 +7,7 @@ function isPlayerInvited(searchedPlayer, invitedPlayers){
   return Boolean(invitedPlayers.find((player) => player.id == searchedPlayer.id));
 }
 
-/** Return the difference between allMatches and invitedPlayers **/
+/** Return the difference between allPlayers and invitedPlayers **/
 function getPlayersNotInvited(allPlayers, invitedPlayers){
   // OPTIMIZE ???
   return allPlayers.filter( (anyPlayer) => {

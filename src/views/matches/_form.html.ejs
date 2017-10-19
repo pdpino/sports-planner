@@ -1,16 +1,9 @@
 <div class ="center">
   <h1><%= match.isNewRecord ? 'Nuevo Partido' : 'Editar Partido' %></h1>
+
+  <%- include('../error-snippet', { errors: locals.errors }) %>
+  
   <div>
-    <% if (locals.errors) { %>
-      <div class="errors">
-        Necesitas arreglar los siguiente errores:
-        <ul>
-          <% errors.forEach(error => { %>
-            <li><%= error.message %></li>
-          <% }); %>
-        </ul>
-      </div>
-    <% } %>
     <form action="<%= submitMatchPath %>" method="post">
       <% if(!match.isNewRecord) { %>
         <div>
@@ -19,7 +12,7 @@
       <% } %>
       <div>
         <label for="name">Nombre</label>
-        <input type="text" name="name" value="<%= match.name %>"> </input> 
+        <input type="text" name="name" value="<%= match.name %>"> </input>
       </div>
       <div>
         <label for="isPublic">Público?</label>

@@ -43,7 +43,7 @@ router.get('teams', '/', async (ctx) => {
 });
 
 router.get('teamNew', '/new', async (ctx) => {
-  if (!ctx.state.requirePlayerLogin(ctx)) return;
+  ctx.state.requirePlayerLoggedIn(ctx);
 
   const team = ctx.orm.team.build();
   await ctx.render('teams/new', {
@@ -55,7 +55,7 @@ router.get('teamNew', '/new', async (ctx) => {
 });
 
 router.post('teamCreate', '/', async (ctx) => {
-  if (!ctx.state.requirePlayerLogin(ctx)) return;
+  ctx.state.requirePlayerLoggedIn(ctx);
 
   try {
     const team = await ctx.orm.team.create(ctx.request.body);

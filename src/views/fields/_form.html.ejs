@@ -1,17 +1,10 @@
-<div class ="center">
+<div class="center">
 
   <h1> <%= (field.isNewRecord) ? 'Nueva Cancha' : 'Editar cancha' %></h1>
+
+  <%- include('../error-snippet', { errors: locals.errors }) %>
+
   <div>
-    <% if (locals.errors) { %>
-      <div class="errors">
-        Necesitas arreglar los siguiente errores:
-        <ul>
-          <% errors.forEach(error => { %>
-            <li><%= error.message %></li>
-          <% }); %>
-        </ul>
-      </div>
-    <% } %>
     <form action="<%= submitFieldPath %>" method="post">
       <% if(!field.isNewRecord) { %>
         <div>
@@ -39,7 +32,10 @@
         <label for="sportId">Deporte</label>
 
         <% sports.forEach((sport) => { %>
-          <input type="radio" name="sportId" value="<%= sport.id %>" <%= (sport.id === field.sportId) ? 'checked' : '' %> > <%= sport.name %>
+          <input type="radio" name="sportId" value="<%= sport.id %>"
+          <%= (sport.id === field.sportId) ? 'checked' : '' %> >
+          <%= sport.name %>
+          
         <% }) %>
       </div>
         <% if(field.isNewRecord) { %>
