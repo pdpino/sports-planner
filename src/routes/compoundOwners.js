@@ -38,7 +38,7 @@ router.get('compoundOwners', '/', async (ctx) => {
 });
 
 router.get('compoundOwnerNew', '/new', async (ctx) => {
-  if (!ctx.state.requireNoLogin(ctx)) return;
+  ctx.state.requireNoLogin(ctx);
 
   const compoundOwner = ctx.orm.compoundOwner.build(ctx.request.body);
 
@@ -50,7 +50,7 @@ router.get('compoundOwnerNew', '/new', async (ctx) => {
 });
 
 router.post('compoundOwnerCreate', '/', async (ctx) => {
-  if (!ctx.state.requireNoLogin(ctx)) return;
+  ctx.state.requireNoLogin(ctx);
 
   const userParams = getUserParams(ctx.request.body);
   const compoundOwnerParams = getCompoundOwnerParams(ctx.request.body);
@@ -71,9 +71,9 @@ router.post('compoundOwnerCreate', '/', async (ctx) => {
 });
 
 router.get('compoundOwnerEdit', '/:id/edit', async (ctx) => {
-  const { compoundOwner, user } = await getOwnerAndUser(ctx, ctx.params.id);
+  const compoundOwner = await ctx.orm.compoundOwner.findById(ctx.params.id);
 
-  if (!ctx.state.requireModifyPermission(ctx, user)) return;
+  if (!ctx.state.requireModifyPermission(ctx, compoundOwner.userId)) return;
 
   await ctx.render('compoundOwners/edit', {
     compoundOwner,
@@ -86,7 +86,7 @@ router.get('compoundOwnerEdit', '/:id/edit', async (ctx) => {
 router.patch('compoundOwnerUpdate', '/:id', async (ctx) => {
   const { compoundOwner, user } = await getOwnerAndUser(ctx, ctx.params.id);
 
-  if (!ctx.state.requireModifyPermission(ctx, user)) return;
+  if (!ctx.state.requireModifyPermission(ctx, user.id)) return;
 
   const userParams = getUserParams(ctx.request.body);
   const compoundOwnerParams = getCompoundOwnerParams(ctx.request.body);
@@ -107,14 +107,13 @@ router.patch('compoundOwnerUpdate', '/:id', async (ctx) => {
 });
 
 router.get('compoundOwner', '/:id', async (ctx) => {
-  const { compoundOwner, user } = await getOwnerAndUser(ctx, ctx.params.id);
-
+  const compoundOwner = await ctx.orm.compoundOwner.findById(ctx.params.id);
   const compounds = await compoundOwner.getCompounds();
 
   await ctx.render('compoundOwners/show', {
-    hasModifyPermission: ctx.state.hasModifyPermission(ctx, user),
     compoundOwner,
     compounds,
+    hasModifyPermission: ctx.state.hasModifyPermission(ctx, compoundOwner.userId),
     editCompoundOwnerPath: ctx.router.url('compoundOwnerEdit', compoundOwner.id),
   });
 });
@@ -122,7 +121,7 @@ router.get('compoundOwner', '/:id', async (ctx) => {
 router.delete('compoundOwnerDelete', '/:id', async (ctx) => {
   const { compoundOwner, user } = await getOwnerAndUser(ctx, ctx.params.id);
 
-  if (!ctx.state.requireModifyPermission(ctx, user)) return;
+  if (!ctx.state.requireModifyPermission(ctx, user.id)) return;
 
   await user.destroy(); // NOTE: compoundOwner.destroy() is not neccesary beause onDelete: cascade
   ctx.redirect(ctx.router.url('compoundOwners'));

@@ -83,6 +83,31 @@ render(app, {
 
 mailer(app);
 
+// Handle errors
+app.use(async (ctx, next) => {
+  try{
+    await next();
+  } catch(error) {
+    console.log("ERROR RECEIVED: ", error); // DEBUG
+    if (error.name === 'NotFoundError') {
+      await ctx.render('error', {
+        message: error.message,
+        details: error.details,
+      });
+    } else if (error.name === 'ForbiddenError') {
+      // TODO: Render home or same page where the user was, but with errors
+      await ctx.render('error', {
+        message: error.message,
+        details: error.details,
+      });
+    } else {
+      console.log("ERROR NOT RECOGNIZED"); // DEBUG
+    }
+
+    // throw error; // Upper middleware can handle it
+  }
+});
+
 // Routing middleware
 app.use(routes.routes());
 

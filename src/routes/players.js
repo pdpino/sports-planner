@@ -61,7 +61,7 @@ router.get('players', '/', async (ctx) => {
 });
 
 router.get('playerNew', '/new', async (ctx) => {
-  if (!ctx.state.requireNoLogin(ctx)) return;
+  ctx.state.requireNoLogin(ctx);
 
   const user = ctx.orm.user.build(); // (ctx.request.body);
   const player = ctx.orm.player.build(); // (ctx.request.body);
@@ -75,7 +75,7 @@ router.get('playerNew', '/new', async (ctx) => {
 });
 
 router.post('playerCreate', '/', async (ctx) => {
-  if (!ctx.state.requireNoLogin(ctx)) return;
+  ctx.state.requireNoLogin(ctx);
 
   const userParams = getUserParams(ctx.request.body);
   const playerParams = getPlayerParams(ctx.request.body);
@@ -104,9 +104,9 @@ router.post('playerCreate', '/', async (ctx) => {
 });
 
 router.get('playerEdit', '/:id/edit', async (ctx) => {
-  const { player, user } = await getPlayerAndUser(ctx, ctx.params.id);
+  const player = await ctx.orm.player.findById(ctx.params.id);
 
-  if (!ctx.state.requireModifyPermission(ctx, user)) return;
+  if (!ctx.state.requireModifyPermission(ctx, player.userId)) return;
 
   await ctx.render('players/edit', {
     player,
@@ -120,7 +120,7 @@ router.get('playerEdit', '/:id/edit', async (ctx) => {
 router.patch('playerUpdate', '/:id', async (ctx) => {
   const { player, user } = await getPlayerAndUser(ctx, ctx.params.id);
 
-  if (!ctx.state.requireModifyPermission(ctx, user)) return;
+  if (!ctx.state.requireModifyPermission(ctx, user.id)) return;
 
   const userParams = getUserParams(ctx.request.body);
   const playerParams = getPlayerParams(ctx.request.body);
@@ -142,15 +142,14 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
 });
 
 router.get('player', '/:id', async (ctx) => {
-  const { player, user } = await getPlayerAndUser(ctx, ctx.params.id);
-
+  const player = await ctx.orm.player.findById(ctx.params.id);
   const playerSports = await player.getSports();
   const playerTeams = await player.getTeams();
   const playerMatches = await player.getMatches();
   const playerAge = calculateAge(player.birthday);
 
   await ctx.render('players/show', {
-    hasModifyPermission: ctx.state.hasModifyPermission(ctx, user),
+    hasModifyPermission: ctx.state.hasModifyPermission(ctx, player.userId),
     player,
     playerAge,
     playerSports,
@@ -178,7 +177,7 @@ router.get('player', '/:id', async (ctx) => {
 router.delete('playerDelete', '/:id', async (ctx) => {
   const { player, user } = await getPlayerAndUser(ctx, ctx.params.id);
 
-  if (!ctx.state.requireModifyPermission(ctx, user)) return;
+  if (!ctx.state.requireModifyPermission(ctx, user.id)) return;
 
   await user.destroy(); // NOTE: player.destroy() is not neccesary beause onDelete: cascade
   ctx.redirect(ctx.router.url('players'));
@@ -187,12 +186,11 @@ router.delete('playerDelete', '/:id', async (ctx) => {
 router.use(
   '/:playerId/teams',
   async (ctx, next) => {
-    const { player, user } = await getPlayerAndUser(ctx, ctx.params.playerId);
+    ctx.state.player = await ctx.orm.player.findById(ctx.params.playerId);
 
-    if (!ctx.state.requireModifyPermission(ctx, user)) return;
+    if (!ctx.state.requireModifyPermission(ctx, ctx.state.player.userId)) return;
 
     ctx.state.teams = await ctx.orm.team.findAll();
-    ctx.state.player = player;
     ctx.state.playerTeams = await ctx.state.player.getTeams();
     await next();
   },
@@ -204,10 +202,11 @@ router.use(
   async (ctx, next) => {
     const { player, user } = await getPlayerAndUser(ctx, ctx.params.playerId);
 
-    if (!ctx.state.requireModifyPermission(ctx, user)) return;
+    ctx.state.player = await ctx.orm.player.findById(ctx.params.playerId);
+
+    if (!ctx.state.requireModifyPermission(ctx, ctx.state.player.userId)) return;
 
     ctx.state.matches = await ctx.orm.match.findAll();
-    ctx.state.player = player;
     ctx.state.playerMatches = await ctx.state.player.getMatches();
     await next();
   },
@@ -217,12 +216,11 @@ router.use(
 router.use(
   '/:playerId/sports',
   async (ctx, next) => {
-    const { player, user } = await getPlayerAndUser(ctx, ctx.params.playerId);
+    ctx.state.player = await ctx.orm.player.findById(ctx.params.playerId);
 
-    if (!ctx.state.requireModifyPermission(ctx, user)) return;
+    if (!ctx.state.requireModifyPermission(ctx, ctx.state.player.userId)) return;
 
     ctx.state.sports = await ctx.orm.sport.findAll();
-    ctx.state.player = player;
     ctx.state.playerSports = await ctx.state.player.getSports();
     await next();
   },

@@ -13,7 +13,7 @@ router.get('compounds', '/', async (ctx) => {
 });
 
 router.get('compoundNew', '/new', async (ctx) => {
-  if (!ctx.state.requireOwnerLogin(ctx)) return;
+  ctx.state.requireOwnerLoggedIn(ctx);
 
   const compound = ctx.orm.compound.build();
 
@@ -25,7 +25,7 @@ router.get('compoundNew', '/new', async (ctx) => {
 });
 
 router.post('compoundCreate', '/', async (ctx) => {
-  if (!ctx.state.requireOwnerLogin(ctx)) return;
+  ctx.state.requireOwnerLoggedIn(ctx);
 
   const params = ctx.request.body; // TODO: parse, permit and require
   // ctx.state.currentOwner.addCompound(compound);

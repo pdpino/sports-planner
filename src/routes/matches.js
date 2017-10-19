@@ -66,7 +66,7 @@ router.get('matches', '/', async (ctx) => {
 });
 
 router.get('matchNew', '/new', async (ctx) => {
-  if (!ctx.state.requirePlayerLogin(ctx)) return;
+  ctx.state.requirePlayerLoggedIn(ctx);
 
   const match = ctx.orm.match.build();
   match.name = getDefaultName(ctx.state.currentPlayer);
@@ -82,7 +82,7 @@ router.get('matchNew', '/new', async (ctx) => {
 router.post('matchCreate', '/', async (ctx) => {
   const params = getMatchParams(ctx.request.body);
 
-  if (!ctx.state.requirePlayerLogin(ctx)) return;
+  ctx.state.requirePlayerLoggedIn(ctx);
 
   // REVIEW: should this be in the model? (beforeCreate hook?) (but the model doesn't know the creator)
   params.name = params.name || getDefaultName(ctx.state.currentPlayer);

@@ -66,80 +66,39 @@ router.use(async (ctx, next) => {
  * See https://github.com/embbnux/kails (koa in rails style) for examples on helper functions
  **/
 router.use((ctx, next) => {
-  ctx.state.hasAdminPermission = ctx.state.currentUser && ctx.state.currentUser.role == 'admin';
-  ctx.state.hasModifyPermission = (ctx, user) => ctx.session.userId == user.id;
-  ctx.state.hasOwnerModifyPermission = (ctx, owner) =>
-    ctx.state.currentOwner && ctx.state.currentOwner.id == owner.id;
+  Object.assign(ctx.state, {
+    hasAdminPermission: ctx.state.currentUser && ctx.state.currentUser.role == 'admin',
+    hasModifyPermission: (ctx, userId) => ctx.session.userId == userId,
+    hasOwnerModifyPermission: (ctx, owner) => ctx.state.currentOwner && ctx.state.currentOwner.id == owner.id,
+    isLoggedIn: Boolean(ctx.state.currentUser),
+    isPlayerLoggedIn: Boolean(ctx.state.currentPlayer),
+    isOwnerLoggedIn: Boolean(ctx.state.currentOwner),
+  });
 
-  ctx.state.isLoggedIn = Boolean(ctx.state.currentUser);
-  ctx.state.isPlayerLoggedIn = Boolean(ctx.state.currentPlayer);
-  ctx.state.isOwnerLoggedIn = Boolean(ctx.state.currentOwner);
 
-  /** If the user doesn't have modify permissions it will be redirected to home **/
-  ctx.state.requireModifyPermission = function(ctx, user){
-    if(!ctx.state.hasModifyPermission(ctx, user)){
-      console.log("NOTICE: you don't have modify permission");
-      ctx.redirect('/');
-      return false; // Require failed
-    }
-    return true; // Require passed
+
+  ctx.state.requireModifyPermission = function(ctx, userId, options={}){
+    ctx.assert(ctx.state.hasModifyPermission(ctx, userId), 403, options.message || "No tienes permisos para editar");
   }
 
-  /**  **/
-  ctx.state.requireOwnerModifyPermission = function(ctx, owner){
-    if(!ctx.state.hasOwnerModifyPermission(ctx, owner)){
-      console.log("NOTICE: you as owner don't have modify permission");
-      ctx.redirect('/');
-      return false; // Require failed
-    }
-    return true; // Require passed
+  ctx.state.requireOwnerModifyPermission = function(ctx, owner, options={}){
+    ctx.assert(ctx.state.hasOwnerModifyPermission(ctx, owner), 403, options.message || "No tienes permisos para editar");
   }
 
-  /** If the user doesn't have admin permissions it will be redirected to home **/
-  ctx.state.requireAdminPermission = function(ctx){
-    if(!ctx.state.hasAdminPermission){
-      console.log("NOTICE: you don't have admin permission");
-      ctx.redirect('/');
-      return false; // Require failed
-    }
-    return true; // Require passed
+  ctx.state.requireAdminPermission = function(ctx, options={}){
+    ctx.assert(ctx.state.hasAdminPermission, 404, options.message || "Debes ser admin", {});
   }
 
-  /** If not logged in, redirect to home **/
-  ctx.state.requirePlayerLogin = function(ctx){
-    if(!ctx.state.isPlayerLoggedIn){
-      console.log("NOTICE: you are not signed in as a player");
-      // TODO: show message to the user
-
-      // REVIEW: cambiar nombre por requirePlayerLoggedIn?
-
-      ctx.redirect('/');
-      return false; // Require failed
-    }
-    return true; // Require passed
+  ctx.state.requirePlayerLoggedIn = function(ctx, options={}){
+    ctx.assert(ctx.state.isPlayerLoggedIn, 403, options.message || "Debes ser jugador", {});
   }
 
-  ctx.state.requireOwnerLogin = function(ctx){
-    if(!ctx.state.isOwnerLoggedIn){
-      console.log("NOTICE: you are not signed in as a owner");
-      // TODO: show message to the user
-
-      ctx.redirect('/');
-      return false; // Require failed
-    }
-    return true; // Require passed
+  ctx.state.requireOwnerLoggedIn = function(ctx, options={}){
+    ctx.assert(ctx.state.isOwnerLoggedIn, 403, options.message || "Debes ser dueño de recinto", {});
   }
 
-  /** If is logged in, redirect to home **/
-  ctx.state.requireNoLogin = function(ctx){
-    if(ctx.state.isLoggedIn){ // There is already an user logged in
-      console.log("NOTICE: can't signup if you are already logged in");
-      // TODO: show message to the user
-
-      ctx.redirect('/'); // TODO: customize where to redirect
-      return false; // Require failed
-    }
-    return true; // Require passed
+  ctx.state.requireNoLogin = function(ctx, options={}){
+    ctx.assert(!ctx.state.isLoggedIn, 403, options.message || "Ya iniciaste sesión", {});
   }
 
   return next();
