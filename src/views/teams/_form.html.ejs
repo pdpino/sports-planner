@@ -1,16 +1,9 @@
 <div class ="center">
   <h1><%= team.isNewRecord ? 'Nuevo equipo' : 'Editar equipo' %></h1>
+
+  <%- include('../error-snippet', { errors: locals.errors }) %>
+  
   <div>
-    <% if (locals.errors) { %>
-      <div class="errors">
-        Necesitas arreglar los siguiente errores:
-        <ul>
-          <% errors.forEach(error => { %>
-            <li><%= error.message %></li>
-          <% }); %>
-        </ul>
-      </div>
-    <% } %>
     <form action="<%= submitTeamPath %>" method="post">
       <% if(!team.isNewRecord) { %>
         <div>

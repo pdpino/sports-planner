@@ -1,17 +1,9 @@
 <div class ="center">
   <h1> <%= (compoundOwner.isNewRecord) ? 'Nuevo Dueño de recinto' : 'Editar Dueño de recinto' %></h1>
 
+  <%- include('../error-snippet', { errors: locals.errors }) %>
+
   <div>
-    <% if (locals.errors) { %>
-      <div class="errors">
-        Necesitas arreglar los siguiente errores:
-        <ul>
-          <% errors.forEach(error => { %>
-            <li><%= error.message %></li>
-          <% }); %>
-        </ul>
-      </div>
-    <% } %>
     <form action="<%= submitcompoundOwnerPath %>" method="post">
       <% if(!compoundOwner.isNewRecord) { %>
         <div>
