@@ -50,7 +50,7 @@ router.get('compoundEdit', '/:id/edit', async (ctx) => {
   const compound = await ctx.orm.compound.findById(ctx.params.id);
   const compoundOwner = await ctx.orm.compoundOwner.findById(compound.compoundOwnerId);
 
-  if (!ctx.state.requireOwnerModifyPermission(ctx, compoundOwner)) return;
+  ctx.state.requireOwnerModifyPermission(ctx, compoundOwner);
 
   await ctx.render('compounds/edit', {
     compound,
@@ -64,7 +64,7 @@ router.patch('compoundUpdate', '/:id', async (ctx) => {
   const compound = await ctx.orm.compound.findById(ctx.params.id);
   const compoundOwner = await ctx.orm.compoundOwner.findById(compound.compoundOwnerId);
 
-  if (!ctx.state.requireOwnerModifyPermission(ctx, compoundOwner)) return;
+  ctx.state.requireOwnerModifyPermission(ctx, compoundOwner);
 
   try {
     await compound.update(ctx.request.body);

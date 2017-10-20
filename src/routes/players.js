@@ -106,7 +106,7 @@ router.post('playerCreate', '/', async (ctx) => {
 router.get('playerEdit', '/:id/edit', async (ctx) => {
   const player = await ctx.orm.player.findById(ctx.params.id);
 
-  if (!ctx.state.requireModifyPermission(ctx, player.userId)) return;
+  ctx.state.requireModifyPermission(ctx, player.userId);
 
   await ctx.render('players/edit', {
     player,
@@ -120,7 +120,7 @@ router.get('playerEdit', '/:id/edit', async (ctx) => {
 router.patch('playerUpdate', '/:id', async (ctx) => {
   const { player, user } = await getPlayerAndUser(ctx, ctx.params.id);
 
-  if (!ctx.state.requireModifyPermission(ctx, user.id)) return;
+  ctx.state.requireModifyPermission(ctx, user.id);
 
   const userParams = getUserParams(ctx.request.body);
   const playerParams = getPlayerParams(ctx.request.body);
@@ -177,7 +177,7 @@ router.get('player', '/:id', async (ctx) => {
 router.delete('playerDelete', '/:id', async (ctx) => {
   const { player, user } = await getPlayerAndUser(ctx, ctx.params.id);
 
-  if (!ctx.state.requireModifyPermission(ctx, user.id)) return;
+  ctx.state.requireModifyPermission(ctx, user.id);
 
   await user.destroy(); // NOTE: player.destroy() is not neccesary beause onDelete: cascade
   ctx.redirect(ctx.router.url('players'));
@@ -188,7 +188,7 @@ router.use(
   async (ctx, next) => {
     ctx.state.player = await ctx.orm.player.findById(ctx.params.playerId);
 
-    if (!ctx.state.requireModifyPermission(ctx, ctx.state.player.userId)) return;
+    ctx.state.requireModifyPermission(ctx, ctx.state.player.userId);
 
     ctx.state.teams = await ctx.orm.team.findAll();
     ctx.state.playerTeams = await ctx.state.player.getTeams();
@@ -204,7 +204,7 @@ router.use(
 
     ctx.state.player = await ctx.orm.player.findById(ctx.params.playerId);
 
-    if (!ctx.state.requireModifyPermission(ctx, ctx.state.player.userId)) return;
+    ctx.state.requireModifyPermission(ctx, ctx.state.player.userId);
 
     ctx.state.matches = await ctx.orm.match.findAll();
     ctx.state.playerMatches = await ctx.state.player.getMatches();
@@ -218,7 +218,7 @@ router.use(
   async (ctx, next) => {
     ctx.state.player = await ctx.orm.player.findById(ctx.params.playerId);
 
-    if (!ctx.state.requireModifyPermission(ctx, ctx.state.player.userId)) return;
+    ctx.state.requireModifyPermission(ctx, ctx.state.player.userId);
 
     ctx.state.sports = await ctx.orm.sport.findAll();
     ctx.state.playerSports = await ctx.state.player.getSports();
