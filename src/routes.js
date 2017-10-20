@@ -76,7 +76,7 @@ router.use((ctx, next) => {
   });
 
   // More elaborated functions:
-  
+
   ctx.state.requireModifyPermission = function(ctx, userId, options={}){
     ctx.assert(ctx.state.hasModifyPermission(ctx, userId), 403, options.message || "No tienes permisos para editar");
   }
@@ -104,6 +104,37 @@ router.use((ctx, next) => {
   return next();
 });
 
+/** Add invitation helper functions **/
+router.use((ctx, next) => {
+  /** Transform an isPlayerInvited status to a message for the user **/
+  ctx.state.invitationToString = function(status){
+    // TODO: adecuate message considering if is an invitation for me or I am deciding (see matchesShow and matchesPlayerEdit)
+    const statusMessages = {
+      'sent': 'No responder aún',
+      'asked': 'Esperando confirmación del administrador del partido',
+      'rejectedByUser': 'Rechazar invitación',
+      'rejectedByAdmin': 'Solicitud rechazada',
+      'accepted': 'Aceptar invitación'
+    };
+    return statusMessages[status] || status;
+  }
+
+  ctx.state.eligibleStatuses = function (status, isUser) {
+    if (isUser) { // Is the user invited to the event
+      if (status == 'accepted' || status == 'rejectedByUser' || status == 'sent') {
+        return ['accepted', 'rejectedByUser', 'sent'];
+      }
+    } else { // Is the admin of the event
+      if (status == 'accepted' || status == 'rejectedByAdmin' || status == 'asked') {
+        return ['accepted', 'rejectedByAdmin', 'asked'];
+      }
+    }
+
+    return null; // Is not in his hands to respond the invitation
+  }
+
+  return next();
+});
 
 // Add actual routes
 router.use('/', index.routes());

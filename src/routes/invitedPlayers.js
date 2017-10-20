@@ -37,7 +37,7 @@ router.post('invitedPlayerCreate', '/', async (ctx) => {
   const invitedPlayer = await findInvitedPlayerById(ctx.state.match, ctx.params.id);
   try {
     await ctx.state.match.addPlayer(ctx.request.body.playerId, {
-      through: { status: "sentToUser" }
+      through: { status: "sent" }
     });
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
   } catch (validationError) {
@@ -54,9 +54,12 @@ router.post('invitedPlayerCreate', '/', async (ctx) => {
 
 router.get('invitedPlayerEdit', '/:id/edit', async (ctx) => {
   const invitedPlayer = await findInvitedPlayerById(ctx.state.match, ctx.params.id);
+  const chooseStatuses = ctx.state.eligibleStatuses(invitedPlayer.isPlayerInvited.status, false);
+
   await ctx.render('invitedPlayers/edit', {
     match: ctx.state.match,
     invitedPlayer,
+    chooseStatuses,
     submitInvitedPlayerPath: ctx.router.url('invitedPlayerUpdate', {
       matchId: ctx.state.match.id,
       id: invitedPlayer.id
@@ -72,15 +75,20 @@ router.get('invitedPlayerEdit', '/:id/edit', async (ctx) => {
 router.patch('invitedPlayerUpdate', '/:id', async (ctx) => {
   const invitedPlayer = await findInvitedPlayerById(ctx.state.match, ctx.params.id);
   const newStatus = ctx.request.body.status || invitedPlayer.isPlayerInvited.status;
+  const isAdmin = Boolean(ctx.request.body.isAdmin);
+  const chooseStatuses = ctx.state.eligibleStatuses(invitedPlayer.isPlayerInvited.status, false);
 
   try {
-    await ctx.state.match.addPlayer(invitedPlayer, { through: { status: newStatus }});
+    await ctx.state.match.addPlayer(invitedPlayer, { through: {
+      status: newStatus,
+      isAdmin,
+    }});
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
   } catch (validationError) {
-    console.log("###### validation error when updating player-match: ", validationError); // DEBUG
     await ctx.render('invitedPlayers/edit', {
       match: ctx.state.match,
       invitedPlayer,
+      chooseStatuses,
       errors: validationError.errors,
       submitInvitedPlayerPath: ctx.router.url('invitedPlayerUpdate', {
         matchId: ctx.state.match.id,

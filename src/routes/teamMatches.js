@@ -84,7 +84,7 @@ router.patch('teamMatchUpdate', '/:id', async (ctx) => {
     if(statusChanged && newStatus == "accepted"){ // HACK: status hardcoded
       // Invite all of his players to the game
       await teamMatch.addPlayers(ctx.state.teamMembers, {
-        through: { status: "sentToUser" }
+        through: { status: "sent" }
       });
       // HACK: status hardcoded
     }
