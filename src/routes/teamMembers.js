@@ -50,7 +50,7 @@ router.post('teamMemberCreate', '/', async (ctx) => {
     console.log("###### validation error when creating team-player: ", validationError); // DEBUG
     await ctx.render('teamMembers/new', {
       team: ctx.state.team,
-      errors: validationError.errors,
+      errors: ctx.state.parseValidationError(validationError),
       playersNotInTeam: getInvitablePlayers(ctx.state.players, ctx.state.teamMembers),
       submitTeamMemberPath: ctx.router.url('teamMemberCreate', {
         teamId: ctx.state.team.id
@@ -90,7 +90,7 @@ router.patch('teamMemberUpdate', '/:id', async (ctx) => {
     await ctx.render('teamMembers/edit', {
       team: ctx.state.team,
       teamMember,
-      errors: validationError.errors,
+      errors: ctx.state.parseValidationError(validationError),
       submitTeamMemberPath: ctx.router.url('teamMemberUpdate', {
         teamId: ctx.state.team.id,
         id: teamMember.id

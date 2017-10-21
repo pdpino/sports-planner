@@ -41,7 +41,7 @@ router.post('invitedTeamCreate', '/', async (ctx) => {
     await ctx.render('invitedTeams/new', {
       match: ctx.state.match,
       invitableTeams: getInvitableTeams(ctx.state.teams, ctx.state.invitedTeams),
-      errors: validationError.errors,
+      errors: ctx.state.parseValidationError(validationError),
       submitInvitedTeamPath: ctx.router.url('invitedTeamCreate', { matchId: ctx.state.match.id }),
       cancelPath: ctx.router.url('match', { id: ctx.state.match.id })
     });
@@ -80,7 +80,7 @@ router.patch('invitedTeamUpdate', '/:id', async (ctx) => {
       match: ctx.state.match,
       team: invitedTeam,
       chooseStatuses: ctx.state.eligibleStatuses(invitedTeam.isTeamInvited.status, true),
-      errors: validationError.errors,
+      errors: ctx.state.parseValidationError(validationError),
       submitInvitedTeamPath: ctx.router.url('invitedTeamUpdate', {
         matchId: ctx.state.match.id,
         id: invitedTeam.id

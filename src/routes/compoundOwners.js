@@ -63,7 +63,7 @@ router.post('compoundOwnerCreate', '/', async (ctx) => {
   } catch (validationError) {
     await ctx.render('compoundOwners/new', {
       compoundOwner: ctx.orm.compoundOwner.build(ctx.request.body),
-      errors: validationError.errors,
+      errors: ctx.state.parseValidationError(validationError),
       submitCompoundOwnerPath: ctx.router.url('compoundOwnerCreate'),
       cancelPath: ctx.router.url('compoundOwners'),
     });
@@ -98,7 +98,7 @@ router.patch('compoundOwnerUpdate', '/:id', async (ctx) => {
   } catch (validationError) {
     await ctx.render('compoundOwners/edit', {
       compoundOwner,
-      errors: validationError.errors,
+      errors: ctx.state.parseValidationError(validationError),
       submitCompoundOwnerPath: ctx.router.url('compoundOwnerUpdate', compoundOwner.id),
       deleteCompoundOwnerPath: ctx.router.url('compoundOwnerDelete', compoundOwner.id),
       cancelPath: ctx.router.url('compoundOwner', { id: compoundOwner.id }),

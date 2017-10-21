@@ -39,7 +39,7 @@ router.post('sportCreate', '/', async (ctx) => {
   } catch (validationError) {
     await ctx.render('sports/new', {
       sport: ctx.orm.sport.build(ctx.request.body),
-      errors: validationError.errors,
+      errors: ctx.state.parseValidationError(validationError),
       submitSportPath: ctx.router.url('sportCreate'),
       cancelPath: ctx.router.url('sports'),
     });
@@ -68,7 +68,7 @@ router.patch('sportUpdate', '/:id', async (ctx) => {
   } catch (validationError) {
     await ctx.render('sports/edit', {
       sport,
-      errors: validationError.errors,
+      errors: ctx.state.parseValidationError(validationError),
       submitSportPath: ctx.router.url('sportUpdate', sport.id),
       cancelPath: ctx.router.url('sport', { id: ctx.params.id }),
     });

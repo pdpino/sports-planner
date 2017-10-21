@@ -63,11 +63,9 @@ router.post('matchCreate', '/', async (ctx) => {
     });
     ctx.redirect(ctx.router.url('match', match.id ));
   } catch (validationError) {
-    console.log("VALIDATION ERROR WHEN CREATING MATCH: ", validationError);
-
     await ctx.render('matches/new', {
       match: ctx.orm.match.build(params),
-      errors: validationError.errors,
+      errors: ctx.state.parseValidationError(validationError),
       sports: ctx.state.sports,
       submitMatchPath: ctx.router.url('matchCreate'),
       cancelPath: ctx.router.url('matches'),
@@ -98,7 +96,7 @@ router.patch('matchUpdate', '/:id', async (ctx) => {
   } catch (validationError) {
     await ctx.render('matches/edit', {
       match,
-      errors: validationError.errors,
+      errors: ctx.state.parseValidationError(validationError),
       sports: ctx.state.sports,
       submitMatchPath: ctx.router.url('matchUpdate', match.id),
       cancelPath: ctx.router.url('match', { id: ctx.params.id }),
