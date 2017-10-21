@@ -14,9 +14,11 @@ module.exports = function definecompound(sequelize, DataTypes) {
     address: DataTypes.STRING,
     localphone: DataTypes.STRING,
   });
+
   compound.associate = function associate(models) {
     compound.belongsTo(models.compoundOwner);
     compound.hasMany(models.field);
   };
+
   return compound;
 };

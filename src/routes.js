@@ -77,8 +77,8 @@ router.use((ctx, next) => {
 
   // More elaborated functions:
 
-  ctx.state.requireModifyPermission = function(ctx, userId, options={}){
-    ctx.assert(ctx.state.hasModifyPermission(ctx, userId), 403, options.message || "No tienes permisos para editar");
+  ctx.state.requireModifyPermission = function(ctx, userId){
+    ctx.assert(ctx.state.hasModifyPermission(ctx, userId), 403, "No tienes permisos");
   }
 
   ctx.state.requireOwnerModifyPermission = function(ctx, owner){
@@ -87,24 +87,27 @@ router.use((ctx, next) => {
 
   /** Require permission of the player with a match or team (called entity) **/
   ctx.state.requirePlayerModifyPermission = async function(ctx, entity){
+    // REFACTOR: this function could be merged with requireModifyPermission and requireOwnerModifyPermission
+    // compound and field would need a method entity.hasModifyPermission()
+    // (maybe two versions: async and sync)
     const hasModifyPermission = await entity.hasModifyPermission(ctx.state.currentPlayer);
     ctx.assert(hasModifyPermission, 403, "No tienes permisos");
   }
 
-  ctx.state.requireAdmin = function(ctx, options={}){
-    ctx.assert(ctx.state.hasAdminPermission, 404, options.message || "Debes ser admin", {});
+  ctx.state.requireAdmin = function(ctx){
+    ctx.assert(ctx.state.hasAdminPermission, 404, "Debes ser admin", {});
   }
 
-  ctx.state.requirePlayerLoggedIn = function(ctx, options={}){
-    ctx.assert(ctx.state.isPlayerLoggedIn, 403, options.message || "Debes ser jugador", {});
+  ctx.state.requirePlayerLoggedIn = function(ctx){
+    ctx.assert(ctx.state.isPlayerLoggedIn, 403, "Debes ser jugador", {});
   }
 
-  ctx.state.requireOwnerLoggedIn = function(ctx, options={}){
-    ctx.assert(ctx.state.isOwnerLoggedIn, 403, options.message || "Debes ser dueño de recinto", {});
+  ctx.state.requireOwnerLoggedIn = function(ctx){
+    ctx.assert(ctx.state.isOwnerLoggedIn, 403, "Debes ser dueño de recinto", {});
   }
 
-  ctx.state.requireNoLogin = function(ctx, options={}){
-    ctx.assert(!ctx.state.isLoggedIn, 403, options.message || "Ya iniciaste sesión", {});
+  ctx.state.requireNoLogin = function(ctx){
+    ctx.assert(!ctx.state.isLoggedIn, 403, "Ya iniciaste sesión", {});
   }
 
   return next();
