@@ -1,7 +1,7 @@
 <div class ="center">
   <h1><%= match.isNewRecord ? 'Nuevo Partido' : 'Editar Partido' %></h1>
 
-  <%- include('../error-snippet', { errors: locals.errors }) %>
+  <%- include('../_error/snippet', { errors: locals.errors }) %>
 
   <div>
     <form action="<%= submitMatchPath %>" method="post">

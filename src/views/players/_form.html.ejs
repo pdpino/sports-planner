@@ -2,7 +2,7 @@
 
   <h1> <%= (player.isNewRecord) ? 'Nuevo Jugador' : 'Editar Jugador' %></h1>
 
-  <%- include('../error-snippet', { errors: locals.errors }) %>
+  <%- include('../_error/snippet', { errors: locals.errors }) %>
 
   <div>
     <form action="<%= submitPlayerPath %>" method="post">

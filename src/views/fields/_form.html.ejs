@@ -2,7 +2,7 @@
 
   <h1> <%= (field.isNewRecord) ? 'Nueva Cancha' : 'Editar cancha' %></h1>
 
-  <%- include('../error-snippet', { errors: locals.errors }) %>
+  <%- include('../_error/snippet', { errors: locals.errors }) %>
 
   <div>
     <form action="<%= submitFieldPath %>" method="post">
