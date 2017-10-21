@@ -8,7 +8,7 @@ function isPlayerInvited(searchedPlayer, invitedPlayers){
 }
 
 /** Return the difference between allPlayers and invitedPlayers **/
-function getPlayersNotInvited(allPlayers, invitedPlayers){
+function getInvitablePlayers(allPlayers, invitedPlayers){
   // OPTIMIZE ???
   return allPlayers.filter( (anyPlayer) => {
     return !isPlayerInvited(anyPlayer, invitedPlayers);
@@ -25,7 +25,7 @@ async function findInvitedPlayerById(match, playerId){
 router.get('invitedPlayerNew', '/new', async (ctx) => {
   await ctx.render('invitedPlayers/new', {
     match: ctx.state.match,
-    playersNotInvited: getPlayersNotInvited(ctx.state.players, ctx.state.invitedPlayers),
+    invitablePlayers: getInvitablePlayers(ctx.state.players, ctx.state.invitedPlayers),
     submitInvitedPlayerPath: ctx.router.url('invitedPlayerCreate', {
       matchId: ctx.state.match.id
     }),
@@ -41,10 +41,9 @@ router.post('invitedPlayerCreate', '/', async (ctx) => {
     });
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
   } catch (validationError) {
-    console.log("###### validation error when creating player-match: ", validationError); // DEBUG
     await ctx.render('invitedPlayers/new', {
       match: ctx.state.match,
-      playersNotInvited: getPlayersNotInvited(ctx.state.players, ctx.state.invitedPlayers),
+      invitablePlayers: getInvitablePlayers(ctx.state.players, ctx.state.invitedPlayers),
       errors: validationError.errors,
       submitInvitedPlayerPath: ctx.router.url('invitedPlayerCreate', { matchId: ctx.state.match.id }),
       cancelPath: ctx.router.url('match', { id: ctx.state.match.id })
