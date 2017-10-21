@@ -16,6 +16,17 @@ module.exports = function definematch(sequelize, DataTypes) {
     match.belongsToMany(models.team, { through: models.isTeamInvited });
   };
 
+  /** Boolean indicating if the player has modify permission on the match **/
+  match.prototype.hasModifyPermission = async function(player){
+    return player && await this.hasPlayer(player, {
+      through: {
+        where: {
+          isAdmin: true
+        }
+      }
+    });
+  }
+
   // async function assertNotEmptyName(instance){
   //   if (!instance.name){
   //     const sport = await sequelize.models.sport.findById(instance.sportId);

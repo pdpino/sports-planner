@@ -8,7 +8,7 @@ function isPlayerInvited(searchedPlayer, invitedPlayers){
 }
 
 /** Return the difference between allPlayers and invitedPlayers **/
-function getPlayersNotInvited(allPlayers, invitedPlayers){
+function getInvitablePlayers(allPlayers, invitedPlayers){
   // OPTIMIZE ???
   return allPlayers.filter( (anyPlayer) => {
     return !isPlayerInvited(anyPlayer, invitedPlayers);
@@ -25,7 +25,7 @@ async function findInvitedPlayerById(match, playerId){
 router.get('invitedPlayerNew', '/new', async (ctx) => {
   await ctx.render('invitedPlayers/new', {
     match: ctx.state.match,
-    playersNotInvited: getPlayersNotInvited(ctx.state.players, ctx.state.invitedPlayers),
+    invitablePlayers: getInvitablePlayers(ctx.state.players, ctx.state.invitedPlayers),
     submitInvitedPlayerPath: ctx.router.url('invitedPlayerCreate', {
       matchId: ctx.state.match.id
     }),
@@ -37,14 +37,13 @@ router.post('invitedPlayerCreate', '/', async (ctx) => {
   const invitedPlayer = await findInvitedPlayerById(ctx.state.match, ctx.params.id);
   try {
     await ctx.state.match.addPlayer(ctx.request.body.playerId, {
-      through: { status: "sentToUser" }
+      through: { status: "sent" } // HACK: invitation status harcoded
     });
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
   } catch (validationError) {
-    console.log("###### validation error when creating player-match: ", validationError); // DEBUG
     await ctx.render('invitedPlayers/new', {
       match: ctx.state.match,
-      playersNotInvited: getPlayersNotInvited(ctx.state.players, ctx.state.invitedPlayers),
+      invitablePlayers: getInvitablePlayers(ctx.state.players, ctx.state.invitedPlayers),
       errors: validationError.errors,
       submitInvitedPlayerPath: ctx.router.url('invitedPlayerCreate', { matchId: ctx.state.match.id }),
       cancelPath: ctx.router.url('match', { id: ctx.state.match.id })
@@ -54,9 +53,12 @@ router.post('invitedPlayerCreate', '/', async (ctx) => {
 
 router.get('invitedPlayerEdit', '/:id/edit', async (ctx) => {
   const invitedPlayer = await findInvitedPlayerById(ctx.state.match, ctx.params.id);
+  const chooseStatuses = ctx.state.eligibleStatuses(invitedPlayer.isPlayerInvited.status, true);
+
   await ctx.render('invitedPlayers/edit', {
     match: ctx.state.match,
     invitedPlayer,
+    chooseStatuses,
     submitInvitedPlayerPath: ctx.router.url('invitedPlayerUpdate', {
       matchId: ctx.state.match.id,
       id: invitedPlayer.id
@@ -72,15 +74,20 @@ router.get('invitedPlayerEdit', '/:id/edit', async (ctx) => {
 router.patch('invitedPlayerUpdate', '/:id', async (ctx) => {
   const invitedPlayer = await findInvitedPlayerById(ctx.state.match, ctx.params.id);
   const newStatus = ctx.request.body.status || invitedPlayer.isPlayerInvited.status;
+  const isAdmin = Boolean(ctx.request.body.isAdmin);
+  const chooseStatuses = ctx.state.eligibleStatuses(invitedPlayer.isPlayerInvited.status, true);
 
   try {
-    await ctx.state.match.addPlayer(invitedPlayer, { through: { status: newStatus }});
+    await ctx.state.match.addPlayer(invitedPlayer, { through: {
+      status: newStatus,
+      isAdmin,
+    }});
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
   } catch (validationError) {
-    console.log("###### validation error when updating player-match: ", validationError); // DEBUG
     await ctx.render('invitedPlayers/edit', {
       match: ctx.state.match,
       invitedPlayer,
+      chooseStatuses,
       errors: validationError.errors,
       submitInvitedPlayerPath: ctx.router.url('invitedPlayerUpdate', {
         matchId: ctx.state.match.id,

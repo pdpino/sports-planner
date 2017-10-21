@@ -2,11 +2,11 @@
 
   <h1>Agregar Partidos</h1>
 
-  <% if(matchesNotInvited.length > 0) { %>
+  <% if(invitableMatches.length > 0) { %>
     <form action="<%= submitPlayerMatchPath %>" method="post">
       <div>
         <label for="matchId">Elegir partido</label>
-        <% matchesNotInvited.forEach( (match) => { %>
+        <% invitableMatches.forEach( (match) => { %>
           <div>
             <input type="radio" name="matchId" value="<%= match.id %>"/> <%= match.name %> - <%= match.date %>
           </div>

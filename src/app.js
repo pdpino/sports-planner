@@ -102,9 +102,9 @@ app.use(async (ctx, next) => {
       });
     } else {
       console.log("ERROR NOT RECOGNIZED"); // DEBUG
+      throw error; // Upper middleware can handle it
     }
 
-    // throw error; // Upper middleware can handle it
   }
 });
 

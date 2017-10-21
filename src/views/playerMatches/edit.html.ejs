@@ -4,42 +4,14 @@
   <%- include('../error-snippet', { errors: locals.errors }) %>
 
   <div>
-    <%= playerMatch.id %> - <%= playerMatch.date %>
+    <%= match.name %> - <%= match.date %>
 
-    <form action="<%= submitPlayerMatchPath %>" method="post">
-      <div>
-        <input type="hidden" name="_method" value="patch" />
-      </div>
-      <% if ( playerMatch.isPlayerInvited.status == "sentToUser" ||
-              playerMatch.isPlayerInvited.status == "rejectedByUser" ||
-              playerMatch.isPlayerInvited.status == "accepted"){ %>
-        <div>
-          <input type="radio" name="status" value="accepted"
-          <%= (playerMatch.isPlayerInvited.status=="accepted") ? 'checked' : '' %>>
-          Aceptar Invitación
-
-          <input type="radio" name="status" value="rejectedByUser"
-          <%= (playerMatch.isPlayerInvited.status=="rejectedByUser") ? 'checked' : '' %>>
-          Rechazar Invitación
-
-          <input type="radio" name="status" value="sentToUser"
-          <%= (playerMatch.isPlayerInvited.status=="sentToUser") ? 'checked' : '' %>>
-          No responder Aún
-
-        </div>
-      <% } else if (playerMatch.isPlayerInvited.status == "sentByUser"){ %>
-        <div>
-          <p> Esperando respuesta </p>
-        </div>
-      <% } else { %>
-        <div>
-          <p> Solicitud rechazada </p>
-        </div>
-      <% } %>
-        <div>
-          <input type="submit" name="update" value="Guardar Cambios" />
-        </div>
-    </form>
+    <%- include('../_invitations/form', {
+      invitation: match.isPlayerInvited,
+      chooseStatuses,
+      submitPath: submitPlayerMatchPath,
+      hasAdminPermission: match.isPlayerInvited.isAdmin,
+    }) %>
 
   </div>
 
@@ -52,7 +24,7 @@
     </div>
   </form>
 
-  <form action=<%= cancelPath %>>
+  <form action="<%= cancelPath %>">
     <input class"deletebutton" type="submit" value="Cancelar"/>
   </form>
 </div>

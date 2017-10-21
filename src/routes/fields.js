@@ -17,7 +17,7 @@ router.get('fields', '/', async (ctx) => {
 
 router.get('fieldNew', '/new', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
-  if (!ctx.state.requireOwnerModifyPermission(ctx, compoundOwner)) return;
+  ctx.state.requireOwnerModifyPermission(ctx, compoundOwner);
   const field = ctx.orm.field.build();
   const sports= await ctx.orm.sport.findAll();
   await ctx.render('fields/new', {
@@ -31,7 +31,7 @@ router.get('fieldNew', '/new', async (ctx) => {
 
 router.post('fieldCreate', '/', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
-  if (!ctx.state.requireOwnerModifyPermission(ctx, compoundOwner)) return;
+  ctx.state.requireOwnerModifyPermission(ctx, compoundOwner);
   const sports= await ctx.orm.sport.findAll();
   try {
     const field = await ctx.orm.field.create(ctx.request.body);
@@ -51,7 +51,7 @@ router.post('fieldCreate', '/', async (ctx) => {
 
 router.get('fieldEdit', '/:id/edit', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
-  if (!ctx.state.requireOwnerModifyPermission(ctx, compoundOwner)) return;
+  ctx.state.requireOwnerModifyPermission(ctx, compoundOwner);
   const sports= await ctx.orm.sport.findAll();
   const field = await ctx.orm.field.findById(ctx.params.id);
 
@@ -67,7 +67,7 @@ router.get('fieldEdit', '/:id/edit', async (ctx) => {
 
 router.patch('fieldUpdate', '/:id', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
-  if (!ctx.state.requireOwnerModifyPermission(ctx, compoundOwner)) return;
+  ctx.state.requireOwnerModifyPermission(ctx, compoundOwner);
   const sports= await ctx.orm.sport.findAll();
   const field = await ctx.orm.field.findById(ctx.params.id);
   try {
@@ -103,7 +103,7 @@ router.get('field', '/:id', async (ctx) => {
 
 router.delete('fieldDelete', '/:id', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
-  if (!ctx.state.requireOwnerModifyPermission(ctx, compoundOwner)) return;
+  ctx.state.requireOwnerModifyPermission(ctx, compoundOwner);
   const field = await ctx.orm.field.findById(ctx.params.id);
   await field.destroy();
   ctx.redirect(ctx.router.url('compound',{id: ctx.state.compound.id}));

@@ -34,11 +34,10 @@ router.get('invitedTeamNew', '/new', async (ctx) => {
 router.post('invitedTeamCreate', '/', async (ctx) => {
   try {
     await ctx.state.match.addTeam(ctx.request.body.teamId, {
-      through: { status: "sentToTeam" }
+      through: { status: "sent" } // HACK: invitation status harcoded
     });
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
   } catch (validationError) {
-    console.log("###### validation error when inviting team to a match: ", validationError); // DEBUG
     await ctx.render('invitedTeams/new', {
       match: ctx.state.match,
       invitableTeams: getInvitableTeams(ctx.state.teams, ctx.state.invitedTeams),
@@ -55,6 +54,7 @@ router.get('invitedTeamEdit', '/:id/edit', async (ctx) => {
   await ctx.render('invitedTeams/edit', {
     match: ctx.state.match,
     team: invitedTeam,
+    chooseStatuses: ctx.state.eligibleStatuses(invitedTeam.isTeamInvited.status, true),
     submitInvitedTeamPath: ctx.router.url('invitedTeamUpdate', {
       matchId: ctx.state.match.id,
       id: invitedTeam.id
@@ -76,10 +76,10 @@ router.patch('invitedTeamUpdate', '/:id', async (ctx) => {
     await ctx.state.match.addTeam(invitedTeam, { through: { status: newStatus }});
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
   } catch (validationError) {
-    console.log("###### validation error when updating match-team: ", validationError); // DEBUG
     await ctx.render('invitedTeams/edit', {
       match: ctx.state.match,
       team: invitedTeam,
+      chooseStatuses: ctx.state.eligibleStatuses(invitedTeam.isTeamInvited.status, true),
       errors: validationError.errors,
       submitInvitedTeamPath: ctx.router.url('invitedTeamUpdate', {
         matchId: ctx.state.match.id,

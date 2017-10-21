@@ -19,7 +19,7 @@ router.get('sports', '/', async (ctx) => {
 });
 
 router.get('sportNew', '/new', async (ctx) => {
-  if (!ctx.state.requireAdminPermission(ctx)) return;
+  ctx.state.requireAdmin(ctx);
 
   const sport = ctx.orm.sport.build();
   await ctx.render('sports/new', {
@@ -30,7 +30,7 @@ router.get('sportNew', '/new', async (ctx) => {
 });
 
 router.post('sportCreate', '/', async (ctx) => {
-  if (!ctx.state.requireAdminPermission(ctx)) return;
+  ctx.state.requireAdmin(ctx);
 
   fixUpdateParams(ctx.request.body);
   try {
@@ -47,7 +47,7 @@ router.post('sportCreate', '/', async (ctx) => {
 });
 
 router.get('sportEdit', '/:id/edit', async (ctx) => {
-  if (!ctx.state.requireAdminPermission(ctx)) return;
+  ctx.state.requireAdmin(ctx);
 
   const sport = await ctx.orm.sport.findById(ctx.params.id);
   await ctx.render('sports/edit', {
@@ -58,7 +58,7 @@ router.get('sportEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('sportUpdate', '/:id', async (ctx) => {
-  if (!ctx.state.requireAdminPermission(ctx)) return;
+  ctx.state.requireAdmin(ctx);
 
   fixUpdateParams(ctx.request.body);
   const sport = await ctx.orm.sport.findById(ctx.params.id);
@@ -86,7 +86,7 @@ router.get('sport', '/:id', async (ctx) => {
 });
 
 router.delete('sportDelete', '/:id', async (ctx) => {
-  if (!ctx.state.requireAdminPermission(ctx)) return;
+  ctx.state.requireAdmin(ctx);
 
   const sport = await ctx.orm.sport.findById(ctx.params.id);
   await sport.destroy(); // {force: true});

@@ -76,34 +76,73 @@ router.use((ctx, next) => {
   });
 
   // More elaborated functions:
-  
-  ctx.state.requireModifyPermission = function(ctx, userId, options={}){
-    ctx.assert(ctx.state.hasModifyPermission(ctx, userId), 403, options.message || "No tienes permisos para editar");
+
+  ctx.state.requireModifyPermission = function(ctx, userId){
+    ctx.assert(ctx.state.hasModifyPermission(ctx, userId), 403, "No tienes permisos");
   }
 
-  ctx.state.requireOwnerModifyPermission = function(ctx, owner, options={}){
-    ctx.assert(ctx.state.hasOwnerModifyPermission(ctx, owner), 403, options.message || "No tienes permisos para editar");
+  ctx.state.requireOwnerModifyPermission = function(ctx, owner){
+    ctx.assert(ctx.state.hasOwnerModifyPermission(ctx, owner), 403, "No tienes permisos");
   }
 
-  ctx.state.requireAdminPermission = function(ctx, options={}){
-    ctx.assert(ctx.state.hasAdminPermission, 404, options.message || "Debes ser admin", {});
+  /** Require permission of the player with a match or team (called entity) **/
+  ctx.state.requirePlayerModifyPermission = async function(ctx, entity){
+    // REFACTOR: this function could be merged with requireModifyPermission and requireOwnerModifyPermission
+    // compound and field would need a method entity.hasModifyPermission()
+    // (maybe two versions: async and sync)
+    const hasModifyPermission = await entity.hasModifyPermission(ctx.state.currentPlayer);
+    ctx.assert(hasModifyPermission, 403, "No tienes permisos");
   }
 
-  ctx.state.requirePlayerLoggedIn = function(ctx, options={}){
-    ctx.assert(ctx.state.isPlayerLoggedIn, 403, options.message || "Debes ser jugador", {});
+  ctx.state.requireAdmin = function(ctx){
+    ctx.assert(ctx.state.hasAdminPermission, 404, "Debes ser admin", {});
   }
 
-  ctx.state.requireOwnerLoggedIn = function(ctx, options={}){
-    ctx.assert(ctx.state.isOwnerLoggedIn, 403, options.message || "Debes ser dueño de recinto", {});
+  ctx.state.requirePlayerLoggedIn = function(ctx){
+    ctx.assert(ctx.state.isPlayerLoggedIn, 403, "Debes ser jugador", {});
   }
 
-  ctx.state.requireNoLogin = function(ctx, options={}){
-    ctx.assert(!ctx.state.isLoggedIn, 403, options.message || "Ya iniciaste sesión", {});
+  ctx.state.requireOwnerLoggedIn = function(ctx){
+    ctx.assert(ctx.state.isOwnerLoggedIn, 403, "Debes ser dueño de recinto", {});
+  }
+
+  ctx.state.requireNoLogin = function(ctx){
+    ctx.assert(!ctx.state.isLoggedIn, 403, "Ya iniciaste sesión", {});
   }
 
   return next();
 });
 
+/** Add invitation helper functions **/
+router.use((ctx, next) => {
+  /** Transform an isPlayerInvited status to a message for the user **/
+  ctx.state.invitationToString = function(status){
+    // TODO: adecuate message considering if is an invitation for me or I am deciding (see matchesShow and matchesPlayerEdit)
+    const statusMessages = {
+      'sent': 'No responder aún',
+      'asked': 'Esperando confirmación del administrador del partido',
+      'rejectedByUser': 'Rechazar invitación',
+      'rejectedByAdmin': 'Solicitud rechazada',
+      'accepted': 'Aceptar invitación'
+    };
+    return statusMessages[status] || status;
+  }
+
+  ctx.state.eligibleStatuses = function (status, isAdmin) {
+    const userList = ['accepted', 'rejectedByUser', 'sent'];
+    const adminList = ['accepted', 'rejectedByAdmin', 'asked'];
+
+    if (isAdmin && adminList.includes(status)) {
+      return adminList;
+    } else if (userList.includes(status)) {
+      return userList;
+    }
+
+    return null; // Is not in his hands to respond the invitation
+  }
+
+  return next();
+});
 
 // Add actual routes
 router.use('/', index.routes());

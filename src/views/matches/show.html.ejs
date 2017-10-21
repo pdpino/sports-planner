@@ -35,7 +35,7 @@
           <%= (player.isPlayerInvited.isAdmin) ? '-- Admin del partido' : '' %>
 
           --
-          <%= getStatusMessage(player.isPlayerInvited.status) %>
+          <%= invitationToString(player.isPlayerInvited.status) %>
 
 
           <% if(hasModifyPermission) { %>
@@ -69,7 +69,7 @@
           </a>
 
           --
-          <%= getStatusMessage(team.isTeamInvited.status) %>
+          <%= invitationToString(team.isTeamInvited.status) %>
 
           <% if(hasModifyPermission) { %>
             <form action="<%= editInvitedTeamPath(team) %>">
