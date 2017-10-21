@@ -37,7 +37,7 @@ router.post('invitedPlayerCreate', '/', async (ctx) => {
   const invitedPlayer = await findInvitedPlayerById(ctx.state.match, ctx.params.id);
   try {
     await ctx.state.match.addPlayer(ctx.request.body.playerId, {
-      through: { status: "sent" }
+      through: { status: "sent" } // HACK: invitation status harcoded
     });
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
   } catch (validationError) {

@@ -33,7 +33,11 @@ router.get('playerMatchNew', '/new', async (ctx) => {
 
 router.post('playerMatchCreate', '/', async (ctx) => {
   try {
-    await ctx.state.player.addMatch(ctx.request.body.matchId, { through: { status: "asked" }});
+    await ctx.state.player.addMatch(ctx.request.body.matchId, {
+      through: {
+        status: "asked" // HACK: invitation status harcoded
+      }
+    });
     ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));
   } catch (validationError) {
     await ctx.render('playerMatches/new', {
@@ -70,7 +74,7 @@ router.patch('playerMatchUpdate', '/:id', async (ctx) => {
   const playerMatch = await findPlayerMatchById(ctx.state.player, ctx.params.id);
   const chooseStatuses = ctx.state.eligibleStatuses(playerMatch.isPlayerInvited.status, false);
 
-  // TODO: check that the user has permission to modify this, it could be sent with curl
+  // TODO: check that the user has permission to modify this, it could be requested with curl
   const isAdmin = Boolean(ctx.request.body.isAdmin);
 
   try {

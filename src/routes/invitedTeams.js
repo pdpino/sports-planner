@@ -34,7 +34,7 @@ router.get('invitedTeamNew', '/new', async (ctx) => {
 router.post('invitedTeamCreate', '/', async (ctx) => {
   try {
     await ctx.state.match.addTeam(ctx.request.body.teamId, {
-      through: { status: "sent" }
+      through: { status: "sent" } // HACK: invitation status harcoded
     });
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
   } catch (validationError) {

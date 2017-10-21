@@ -80,7 +80,7 @@ router.post('matchCreate', '/', async (ctx) => {
     await ctx.state.currentPlayer.addMatch(match.id, {
       through: {
         isAdmin: true,
-        status: "accepted"
+        status: "accepted" // HACK: invitation status harcoded
       }
     });
     ctx.redirect(ctx.router.url('match', match.id ));

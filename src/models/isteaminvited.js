@@ -1,7 +1,6 @@
 module.exports = function defineisTeamInvited(sequelize, DataTypes) {
-  // OLD: const possibleStatus = ['sentToTeam', 'sentByTeam', 'teamRejected', 'rejectedByTeam', 'accepted'];
+  // HACK: invitation statuses
   const possibleStatus = ['sent', 'asked', 'rejectedByAdmin', 'rejectedByUser', 'accepted'];
-  // HACK: copied in migration
 
   const isTeamInvited = sequelize.define('isTeamInvited', {
     status: {
@@ -20,6 +19,6 @@ module.exports = function defineisTeamInvited(sequelize, DataTypes) {
   isTeamInvited.associate = function associate(models) {
 
   };
-  
+
   return isTeamInvited;
 };

@@ -1,5 +1,5 @@
 module.exports = function defineisPlayerInvited(sequelize, DataTypes) {
-  // HACK: copied in migration
+  // HACK: invitation statuses
   const possibleStatus = [
     'sent', // Sent to the user by the admin, the user must accept
     'asked', // The user asked if can be invited, the admin must accept

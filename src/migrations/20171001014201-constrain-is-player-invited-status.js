@@ -5,7 +5,7 @@ module.exports = {
       name: 'isPlayerInvited_status',
       where: {
         status: ['sent', 'asked', 'rejectedByAdmin', 'rejectedByUser', "accepted"]
-        // HACK: roles copied in model.isPlayerInvited
+        // HACK: invitation statuses copied
       }
     });
   },
