@@ -10,7 +10,6 @@
 
   <% } %>
 
-  <form action=<%= sportsPath %>>
-      <input type="submit" value="Volver a todos los deportes"/>
-  </form>
+  <%- include('../_buttons/back', { backPath: sportsPath, message: 'Volver a todos los deportes' }) %>
+
 </div>

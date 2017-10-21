@@ -15,7 +15,5 @@
 
   <%- include('../_buttons/delete', { deletePath: deleteTeamMatchPath }) %>
 
-  <form action="<%= cancelPath %>">
-    <input type="submit" value="Cancelar"/>
-  </form>
+  <%- include('../_buttons/cancel', { cancelPath }) %>
 </div>

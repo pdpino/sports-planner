@@ -39,8 +39,6 @@
     No tiene recintos.
   <% } %>
 
-  <form action="<%= compoundOwnersPath %>">
-      <input type="submit" value="Volver" />
-  </form>
+  <%- include('../_buttons/back', { backPath: compoundOwnersPath }) %>
 
 </div>

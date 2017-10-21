@@ -2,7 +2,7 @@
   <h1><%= sport.isNewRecord ? 'Nuevo deporte' : 'Editar deporte' %></h1>
 
   <%- include('../_error/snippet', { errors: locals.errors }) %>
-  
+
   <div>
     <form action="<%= submitSportPath %>" method="post">
       <% if(!sport.isNewRecord) { %>
@@ -32,7 +32,5 @@
     </form>
   </div>
 
-  <form action="<%= cancelPath %>" method="get">
-      <input type="submit" value="Cancelar"/>
-  </form>
+  <%- include('../_buttons/cancel', { cancelPath }) %>
 </div>

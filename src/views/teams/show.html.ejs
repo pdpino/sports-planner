@@ -79,7 +79,6 @@
 
   </div>
 
-  <form action="<%= teamsPath %>">
-      <input type="submit" value="Volver a todos los equipos"/>
-  </form>
+  <%- include('../_buttons/back', { backPath: teamsPath, message: 'Volver a todos los equipos' }) %>
+
 </div>

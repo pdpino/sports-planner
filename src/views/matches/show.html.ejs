@@ -76,7 +76,6 @@
     </form>
   <% } %>
 
-  <form action=<%= matchesPath %>>
-      <input type="submit" value="Volver a todos los partidos"/>
-  </form>
+  <%- include('../_buttons/back', { backPath: matchesPath, message: 'Volver a todos los partidos' }) %>
+
 </div>
