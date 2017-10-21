@@ -3,7 +3,7 @@
   <h1> Editar equipo al que pertenezco %></h1>
 
   <%- include('../error-snippet', { errors: locals.errors }) %>
-  
+
   <div>
     <%= playerTeam.name %>
     <form action="<%= submitPlayerTeamPath %>" method="post">
@@ -20,14 +20,7 @@
     </form>
   </div>
 
-  <form action="<%= deletePlayerTeamPath %>" method="post">
-    <div>
-      <input type="hidden" name="_method" value="delete" />
-    </div>
-    <div>
-      <input  class"deletebutton" type="submit" name="delete" value="Eliminar" />
-    </div>
-  </form>
+  <%- include('../_buttons/delete', { deletePath: deletePlayerTeamPath }) %>
 
   <form action=<%= cancelPath %>>
     <input type="submit" value="Cancelar"/>

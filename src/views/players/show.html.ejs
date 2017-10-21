@@ -15,9 +15,10 @@
     <p> Género: <%= player.gender %> </p>
 
     <% if(hasModifyPermission) { %>
-      <form action="<%= editPlayerPath %>">
-          <input type="submit" value="Editar Información personal" />
-      </form>
+      <%- include('../_buttons/edit', {
+        editPath: editPlayerPath,
+        message: 'Editar información personal',
+      }) %>
     <% } %>
   </div>
 
@@ -36,9 +37,10 @@
               posición (es): <%= sport.plays.position %>
 
             <% if(hasModifyPermission) { %>
-              <form action="<%= editPlayerSportPath(sport) %>">
-                  <input class="editin" type="submit" value="Editar deporte" />
-              </form>
+              <%- include('../_buttons/edit', {
+                editPath: editPlayerSportPath(sport),
+                message: 'Editar deporte'
+              }) %>
             <% } %>
           </a>
           </div>
@@ -74,10 +76,10 @@
 
 
               <% if(hasModifyPermission) { %>
-                <form action="<%= deletePlayerTeamPath(team) %>" method="post">
-                  <input type="hidden" name="_method" value="delete" />
-                  <input type="submit" value="Abandonar equipo" />
-                </form>
+                <%- include('../_buttons/delete', {
+                  deletePath: deletePlayerTeamPath(team),
+                  message: 'Abandonar equipo',
+                }) %>
               <% } %>
             </a>
         </li>
@@ -98,27 +100,21 @@
       <ul>
         <% playerMatches.forEach((match) => { %>
           <li>
-                <a class="lilink" href="<%= getMatchPath(match) %>">
+              <a class="lilink" href="<%= getMatchPath(match) %>">
                 <img src=<%=match.photo%> width="32" height="32"/>
                 <div>
-                <%= match.name %>
-               </div>
-               <div>
-                 <%= match.date %>
-                 </div>
-               <div>
-                   <%= (match.isPlayerInvited.isAdmin) ? 'Usted es Admin del partido' : '' %>
-                 </div>
+                  <%= match.name %>
+                </div>
+                <div>
+                  <%= match.date %>
+                </div>
+                <div>
+                  <%= (match.isPlayerInvited.isAdmin) ? 'Usted es Admin del partido' : '' %>
+                </div>
 
-
-
-                 <% if(hasModifyPermission) { %>
-
-                   <form action="<%= editPlayerMatchPath(match) %>">
-                       <input type="submit" value="Editar" />
-                   </form>
-
-                 <% } %>
+                <% if(hasModifyPermission) { %>
+                  <%- include('../_buttons/edit', { editPath: editPlayerMatchPath(match) }) %>
+                <% } %>
             </a>
         </li>
         <% }) %>
@@ -126,8 +122,6 @@
     <% } else { %>
       No pertenece a ningún partido.
     <% } %>
-
-
 
 
     <% if(hasModifyPermission) { %>

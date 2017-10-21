@@ -2,7 +2,7 @@
   <h1><%= match.isNewRecord ? 'Nuevo Partido' : 'Editar Partido' %></h1>
 
   <%- include('../error-snippet', { errors: locals.errors }) %>
-  
+
   <div>
     <form action="<%= submitMatchPath %>" method="post">
       <% if(!match.isNewRecord) { %>
@@ -40,6 +40,6 @@
   </div>
 
   <form action="<%= cancelPath %>" method="get">
-      <input class"deletebutton" type="submit" value="Cancelar"/>
+      <input type="submit" value="Cancelar"/>
   </form>
 </div>

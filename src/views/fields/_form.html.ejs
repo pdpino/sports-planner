@@ -35,7 +35,7 @@
           <input type="radio" name="sportId" value="<%= sport.id %>"
           <%= (sport.id === field.sportId) ? 'checked' : '' %> >
           <%= sport.name %>
-          
+
         <% }) %>
       </div>
         <% if(field.isNewRecord) { %>
@@ -49,14 +49,9 @@
 
 
   <% if(!field.isNewRecord) { %>
-    <form action="<%= deleteFieldPath %>" method="post">
-      <div>
-        <input type="hidden" name="_method" value="delete" />
-      </div>
-      <div>
-        <input class"deletebutton" type="submit" name="delete" value="Eliminar" />
-      </div>
-    </form>
+    <%- include('../_buttons/delete', {
+      deletePath: deleteFieldPath,
+    }) %>
   <% } %>
 
   <form action="<%= cancelPath %>" method="get">

@@ -39,20 +39,16 @@
       <form action="<%= newFieldPath %>">
           <input type="submit" value="Crear Cancha" />
       </form>
-
-
-
-      <% } %>
+    <% } %>
 
     <% if(hasModifyPermission) { %>
-      <form action="<%= editCompoundPath %>">
-          <input type="submit" value="Editar información del recinto" />
-      </form>
+      <%- include('../_buttons/edit', {
+        editPath: editCompoundPath,
+        message: 'Editar información del recinto',
+      }) %>
     <% } %>
 
   </div>
-
-
 
   <form action="<%= compoundsPath %>">
       <input type="submit" value="Volver" />

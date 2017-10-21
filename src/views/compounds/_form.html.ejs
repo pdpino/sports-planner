@@ -42,14 +42,10 @@
 
 
   <% if(!compound.isNewRecord) { %>
-    <form action="<%= deleteCompoundPath %>" method="post">
-      <div>
-        <input type="hidden" name="_method" value="delete" />
-      </div>
-      <div>
-        <input class"deletebutton" type="submit" name="delete" value="Eliminar Recinto" />
-      </div>
-    </form>
+    <%- include('../_buttons/delete', {
+      deletePath: deleteCompoundPath,
+      message: 'Eliminar recinto',
+    }) %>
   <% } %>
 
   <form action="<%= cancelPath %>" method="get">

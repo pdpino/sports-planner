@@ -15,14 +15,10 @@
 
   </div>
 
-  <form action="<%= deleteInvitedTeamPath %>" method="post">
-    <div>
-      <input type="hidden" name="_method" value="delete" />
-    </div>
-    <div>
-      <input class"deletebutton" type="submit" name="delete" value="Eliminar" />
-    </div>
-  </form>
+  <%- include('../_buttons/delete', {
+    deletePath: deleteInvitedTeamPath,
+    message: 'Eliminar invitación',
+  }) %>
 
   <form action=<%= cancelPath %>>
     <input type="submit" value="Cancelar"/>

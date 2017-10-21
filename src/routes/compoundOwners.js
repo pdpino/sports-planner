@@ -44,7 +44,7 @@ router.get('compoundOwnerNew', '/new', async (ctx) => {
 
   await ctx.render('compoundOwners/new', {
     compoundOwner,
-    submitcompoundOwnerPath: ctx.router.url('compoundOwnerCreate'),
+    submitCompoundOwnerPath: ctx.router.url('compoundOwnerCreate'),
     cancelPath : ctx.router.url('compoundOwners'),
   });
 });
@@ -64,7 +64,7 @@ router.post('compoundOwnerCreate', '/', async (ctx) => {
     await ctx.render('compoundOwners/new', {
       compoundOwner: ctx.orm.compoundOwner.build(ctx.request.body),
       errors: validationError.errors,
-      submitcompoundOwnerPath: ctx.router.url('compoundOwnerCreate'),
+      submitCompoundOwnerPath: ctx.router.url('compoundOwnerCreate'),
       cancelPath: ctx.router.url('compoundOwners'),
     });
   }
@@ -77,8 +77,8 @@ router.get('compoundOwnerEdit', '/:id/edit', async (ctx) => {
 
   await ctx.render('compoundOwners/edit', {
     compoundOwner,
-    submitcompoundOwnerPath: ctx.router.url('compoundOwnerUpdate', compoundOwner.id),
-    deletecompoundOwnerPath: ctx.router.url('compoundOwnerDelete', compoundOwner.id),
+    submitCompoundOwnerPath: ctx.router.url('compoundOwnerUpdate', compoundOwner.id),
+    deleteCompoundOwnerPath: ctx.router.url('compoundOwnerDelete', compoundOwner.id),
     cancelPath: ctx.router.url('compoundOwner', { id: compoundOwner.id }),
   });
 });
@@ -99,8 +99,8 @@ router.patch('compoundOwnerUpdate', '/:id', async (ctx) => {
     await ctx.render('compoundOwners/edit', {
       compoundOwner,
       errors: validationError.errors,
-      submitcompoundOwnerPath: ctx.router.url('compoundOwnerUpdate', compoundOwner.id),
-      deletecompoundOwnerPath: ctx.router.url('compoundOwnerDelete', compoundOwner.id),
+      submitCompoundOwnerPath: ctx.router.url('compoundOwnerUpdate', compoundOwner.id),
+      deleteCompoundOwnerPath: ctx.router.url('compoundOwnerDelete', compoundOwner.id),
       cancelPath: ctx.router.url('compoundOwner', { id: compoundOwner.id }),
     });
   }
