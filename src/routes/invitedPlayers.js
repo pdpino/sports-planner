@@ -53,7 +53,7 @@ router.post('invitedPlayerCreate', '/', async (ctx) => {
 
 router.get('invitedPlayerEdit', '/:id/edit', async (ctx) => {
   const invitedPlayer = await findInvitedPlayerById(ctx.state.match, ctx.params.id);
-  const chooseStatuses = ctx.state.eligibleStatuses(invitedPlayer.isPlayerInvited.status, false);
+  const chooseStatuses = ctx.state.eligibleStatuses(invitedPlayer.isPlayerInvited.status, true);
 
   await ctx.render('invitedPlayers/edit', {
     match: ctx.state.match,
@@ -75,7 +75,7 @@ router.patch('invitedPlayerUpdate', '/:id', async (ctx) => {
   const invitedPlayer = await findInvitedPlayerById(ctx.state.match, ctx.params.id);
   const newStatus = ctx.request.body.status || invitedPlayer.isPlayerInvited.status;
   const isAdmin = Boolean(ctx.request.body.isAdmin);
-  const chooseStatuses = ctx.state.eligibleStatuses(invitedPlayer.isPlayerInvited.status, false);
+  const chooseStatuses = ctx.state.eligibleStatuses(invitedPlayer.isPlayerInvited.status, true);
 
   try {
     await ctx.state.match.addPlayer(invitedPlayer, { through: {

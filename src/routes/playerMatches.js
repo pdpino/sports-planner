@@ -48,7 +48,7 @@ router.post('playerMatchCreate', '/', async (ctx) => {
 
 router.get('playerMatchEdit', '/:id/edit', async (ctx) => {
   const playerMatch = await findPlayerMatchById(ctx.state.player, ctx.params.id);
-  const chooseStatuses = ctx.state.eligibleStatuses(playerMatch.isPlayerInvited.status, true);
+  const chooseStatuses = ctx.state.eligibleStatuses(playerMatch.isPlayerInvited.status, false);
 
   await ctx.render('playerMatches/edit', {
     player: ctx.state.player,
@@ -68,7 +68,7 @@ router.get('playerMatchEdit', '/:id/edit', async (ctx) => {
 
 router.patch('playerMatchUpdate', '/:id', async (ctx) => {
   const playerMatch = await findPlayerMatchById(ctx.state.player, ctx.params.id);
-  const chooseStatuses = ctx.state.eligibleStatuses(playerMatch.isPlayerInvited.status, true);
+  const chooseStatuses = ctx.state.eligibleStatuses(playerMatch.isPlayerInvited.status, false);
 
   // TODO: check that the user has permission to modify this, it could be sent with curl
   const isAdmin = Boolean(ctx.request.body.isAdmin);

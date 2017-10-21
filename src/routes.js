@@ -119,15 +119,14 @@ router.use((ctx, next) => {
     return statusMessages[status] || status;
   }
 
-  ctx.state.eligibleStatuses = function (status, isUser) {
-    if (isUser) { // Is the user invited to the event
-      if (status == 'accepted' || status == 'rejectedByUser' || status == 'sent') {
-        return ['accepted', 'rejectedByUser', 'sent'];
-      }
-    } else { // Is the admin of the event
-      if (status == 'accepted' || status == 'rejectedByAdmin' || status == 'asked') {
-        return ['accepted', 'rejectedByAdmin', 'asked'];
-      }
+  ctx.state.eligibleStatuses = function (status, isAdmin) {
+    const userList = ['accepted', 'rejectedByUser', 'sent'];
+    const adminList = ['accepted', 'rejectedByAdmin', 'asked'];
+
+    if (isAdmin && adminList.includes(status)) {
+      return adminList;
+    } else if (userList.includes(status)) {
+      return userList;
     }
 
     return null; // Is not in his hands to respond the invitation
