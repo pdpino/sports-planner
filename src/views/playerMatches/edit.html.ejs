@@ -4,7 +4,7 @@
   <%- include('../error-snippet', { errors: locals.errors }) %>
 
   <div>
-    <%= match.id %> - <%= match.date %>
+    <%= match.name %> - <%= match.date %>
 
     <%- include('../_invitations/form', {
       invitation: match.isPlayerInvited,

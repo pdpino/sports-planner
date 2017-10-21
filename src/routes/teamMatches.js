@@ -35,7 +35,7 @@ router.get('teamMatchNew', '/new', async (ctx) => {
 router.post('teamMatchCreate', '/', async (ctx) => {
   try {
     await ctx.state.team.addMatch(ctx.request.body.matchId, {
-      through: { status: "sentByTeam" }
+      through: { status: "asked" }
     });
     ctx.redirect(ctx.router.url('team', { id: ctx.state.team.id }));
   } catch (validationError) {
@@ -58,6 +58,7 @@ router.get('teamMatchEdit', '/:id/edit', async (ctx) => {
   await ctx.render('teamMatches/edit', {
     team: ctx.state.team,
     teamMatch,
+    chooseStatuses: ctx.state.eligibleStatuses(teamMatch.isTeamInvited.status, true),
     submitTeamMatchPath: ctx.router.url('teamMatchUpdate', {
       teamId: ctx.state.team.id,
       id: teamMatch.id
@@ -91,10 +92,10 @@ router.patch('teamMatchUpdate', '/:id', async (ctx) => {
 
     ctx.redirect(ctx.router.url('team', { id: ctx.state.team.id }));
   } catch (validationError) {
-    console.log("###### validation error when updating team-match: ", validationError); // DEBUG
     await ctx.render('teamMatches/edit', {
       team: ctx.state.team,
       teamMatch,
+      chooseStatuses: ctx.state.eligibleStatuses(teamMatch.isTeamInvited.status, true),
       errors: validationError.errors,
       submitTeamMatchPath: ctx.router.url('teamMatchUpdate', {
         teamId: ctx.state.team.id,

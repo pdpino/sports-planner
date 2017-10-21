@@ -1,47 +1,17 @@
-<div class ="center">
+<div class="center">
   <h1> Editar invitación a partido %></h1>
 
   <%- include('../error-snippet', { errors: locals.errors }) %>
 
   <div>
-    <%= teamMatch.id %>
-    <%# TODO: Usar otra cosa que no sea el id %>
+    <%= teamMatch.name %>
 
-    <form action="<%= submitTeamMatchPath %>" method="post">
-      <div>
-        <input type="hidden" name="_method" value="patch" />
-      </div>
-      <% if ( teamMatch.isTeamInvited.status == "sentToTeam" ||
-              teamMatch.isTeamInvited.status == "rejectedByTeam" ||
-              teamMatch.isTeamInvited.status == "accepted"){ %>
-        <div>
-          <input type="radio" name="status" value="accepted"
-          <%= (teamMatch.isTeamInvited.status=="accepted") ? 'checked' : '' %>>
-          Aceptar Invitación
-
-          <input type="radio" name="status" value="rejectedByTeam"
-          <%= (teamMatch.isTeamInvited.status=="rejectedByTeam") ? 'checked' : '' %>>
-          Rechazar Invitación
-
-          <input type="radio" name="status" value="sentToTeam"
-          <%= (teamMatch.isTeamInvited.status=="sentToTeam") ? 'checked' : '' %>>
-          No responder Aún
-
-        </div>
-      <% } else if (teamMatch.isTeamInvited.status == "sentByTeam"){ %>
-        <div>
-          <p> Esperando respuesta </p>
-        </div>
-      <% } else if (teamMatch.isTeamInvited.status == "teamRejected"){ %>
-        <div>
-          <p> Solicitud rechazada </p>
-        </div>
-      <% } %>
-      <div>
-        <input type="submit" name="update" value="Guardar Cambios" />
-      </div>
-    </form>
-  </div>
+    <%- include('../_invitations/form', {
+      invitation: teamMatch.isTeamInvited,
+      chooseStatuses,
+      submitPath: submitTeamMatchPath,
+      hasAdminPermission: false, // REVIEW: the invitedTeams do not require this
+    }) %>
 
   <form action="<%= deleteTeamMatchPath %>" method="post">
     <div>
@@ -52,7 +22,7 @@
     </div>
   </form>
 
-  <form action=<%= cancelPath %>>
+  <form action="<%= cancelPath %>">
     <input type="submit" value="Cancelar"/>
   </form>
 </div>
