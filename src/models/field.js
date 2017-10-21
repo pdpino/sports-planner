@@ -33,6 +33,7 @@ module.exports = function definefield(sequelize, DataTypes) {
     field.belongsTo(models.sport);
     field.belongsTo(models.compound);
     field.hasMany(models.scheduleBase);
+    field.hasMany(models.scheduleBase);
   };
   return field;
 };
