@@ -1,5 +1,5 @@
 const KoaRouter = require('koa-router');
-
+const scheduleBasesRouter = require('./scheduleBases');
 const router = new KoaRouter();
 
 
@@ -91,12 +91,18 @@ router.get('field', '/:id', async (ctx) => {
   //const compoundOwner=owner
   const field = await ctx.orm.field.findById(ctx.params.id);
   const compound= await field.getCompound();
+  const scheduleBases= await field.getScheduleBases();
   await ctx.render('fields/show', {
     hasModifyPermission: ctx.state.hasOwnerModifyPermission(ctx, compoundOwner),
     field,
+    scheduleBases,
     fieldsPath: ctx.router.url('fields', {compoundId: ctx.state.compound.id}),
     compoundPath: compound => ctx.router.url('compound', { id: compound.id }),
     editFieldPath: ctx.router.url('fieldEdit', {compoundId: ctx.state.compound.id, id: field.id}),
+    newScheduleBasePath: ctx.router.url('scheduleBaseNew',{fieldId: field.id, compoundId: ctx.state.compound.id}),
+    editScheduleBasePath: ctx.router.url('scheduleBaseEdit',{fieldId: field.id, compoundId: ctx.state.compound.id}),
+
+
 
   });
 });
@@ -109,5 +115,18 @@ router.delete('fieldDelete', '/:id', async (ctx) => {
   ctx.redirect(ctx.router.url('compound',{id: ctx.state.compound.id}));
 });
 
+router.use(
+  '/:fieldId/scheduleBases',
+  async (ctx, next) => {
+
+    const field = await ctx.orm.field.findById(ctx.params.fieldId);
+    const compound= await field.getCompound();
+    ctx.state.sports = await ctx.orm.sport.findAll();
+    ctx.state.compound = compound;
+    ctx.state.field=field;
+    await next();
+  },
+  scheduleBasesRouter.routes(),
+);
 
 module.exports = router;

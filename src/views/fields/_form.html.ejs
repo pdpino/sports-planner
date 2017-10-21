@@ -27,12 +27,16 @@
         <input type="text" name="photo" value="<%= field.photo %>" />
       </div>
       <div>
-        <label for="prices">Precios</label>
-        <input type="text" name="address" value="<%= field.precio %>" />
+        <label for="openingHour">Hora de Entrada</label>
+        <input type="text" name="openingHour" value="<%= field.openingHour %>" />
       </div>
       <div>
-        <label for="schedule">Horario</label>
-        <input type="text" name="schedule" value="<%= field.schedule %>" />
+        <label for="schedule">Hora de Cierre</label>
+        <input type="text" name="closingHour" value="<%= field.closingHour %>" />
+      </div>
+      <div>
+        <label for="modules">Modulos</label>
+        <input type="text" name="modules" value="<%= field.modules %>" />
       </div>
       <input type="hidden" name="compoundId" value="<%=compound.id %>"
       <div>

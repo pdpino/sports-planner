@@ -4,9 +4,14 @@
 
   <div>
     <h4>Información de la cancha</h4>
-    <img src=<%= compound.photo %> >
+    <img src=<%= field.photo %> >
 
-    <p> Schedule: <%= field.openingHour %> - <%= field.closingHour %>  </p>
+    <p> Prices: <%= compound.localemail %> </p>
+
+
+
+
+    <p> Schedule: <%= compound.localphone %> </p>
     <p> Dirección: <%= compound.address %> </p>
     <p>Recinto: <%= compound.name %> <form action="<%= compoundPath(compound) %>">
         <input type="submit" value="Ir perfil recinto" />
@@ -19,19 +24,7 @@
     <%}%>
   </div>
 
-  <% if(hasModifyPermission) { %>
 
-
-    <% if(scheduleBases.length>0) { %>
-    <form action="<%= editScheduleBasePath %>">
-        <input type="submit" value="Editar Horario Base" />
-    </form>
-    <%} else { %>
-      <form action="<%= newScheduleBasePath %>">
-          <input type="submit" value="Crear Horario Base" />
-      </form>
-      <%}%>
-<% } %>
 
 
 
