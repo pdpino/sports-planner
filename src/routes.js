@@ -81,11 +81,17 @@ router.use((ctx, next) => {
     ctx.assert(ctx.state.hasModifyPermission(ctx, userId), 403, options.message || "No tienes permisos para editar");
   }
 
-  ctx.state.requireOwnerModifyPermission = function(ctx, owner, options={}){
-    ctx.assert(ctx.state.hasOwnerModifyPermission(ctx, owner), 403, options.message || "No tienes permisos para editar");
+  ctx.state.requireOwnerModifyPermission = function(ctx, owner){
+    ctx.assert(ctx.state.hasOwnerModifyPermission(ctx, owner), 403, "No tienes permisos");
   }
 
-  ctx.state.requireAdminPermission = function(ctx, options={}){
+  /** Require permission of the player with a match or team (called entity) **/
+  ctx.state.requirePlayerModifyPermission = async function(ctx, entity){
+    const hasModifyPermission = await entity.hasModifyPermission(ctx.state.currentPlayer);
+    ctx.assert(hasModifyPermission, 403, "No tienes permisos");
+  }
+
+  ctx.state.requireAdmin = function(ctx, options={}){
     ctx.assert(ctx.state.hasAdminPermission, 404, options.message || "Debes ser admin", {});
   }
 
