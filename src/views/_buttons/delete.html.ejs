@@ -1,0 +1,20 @@
+<%# Must provide: deletePath
+    optional: message, className, elementId %>
+
+<form
+  <% if(locals.className) { %>
+    class="<%= className %>"
+  <% } %>
+
+  <% if(locals.elementId) { %>
+    id="<%= elementId %>"
+  <% } %>
+
+  action="<%= deletePath %>" method="post">
+    <div>
+      <input type="hidden" name="_method" value="delete" />
+    </div>
+    <div>
+      <input class="delete-button" type="submit" name="delete" value="<%= locals.message || 'Eliminar' %>" />
+    </div>
+</form>

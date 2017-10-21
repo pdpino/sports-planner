@@ -1,8 +1,8 @@
 <div class ="center">
   <h1><%= team.isNewRecord ? 'Nuevo equipo' : 'Editar equipo' %></h1>
 
-  <%- include('../error-snippet', { errors: locals.errors }) %>
-  
+  <%- include('../_error/snippet', { errors: locals.errors }) %>
+
   <div>
     <form action="<%= submitTeamPath %>" method="post">
       <% if(!team.isNewRecord) { %>
@@ -35,7 +35,5 @@
     </form>
   </div>
 
-  <form action="<%= cancelPath %>" method="get">
-      <input type="submit" value="Cancelar"/>
-  </form>
+  <%- include('../_buttons/cancel', { cancelPath }) %>
 </div>

@@ -39,7 +39,7 @@ router.post('compoundCreate', '/', async (ctx) => {
     console.log("ERROR EN VALIDACION COMPOUND: ", validationError);
     await ctx.render('compounds/new', {
       compound: ctx.orm.compound.build(ctx.request.body),
-      errors: validationError.errors,
+      errors: ctx.state.parseValidationError(validationError),
       submitCompoundPath: ctx.router.url('compoundCreate'),
       cancelPath: ctx.router.url('compounds'),
     });
@@ -72,7 +72,7 @@ router.patch('compoundUpdate', '/:id', async (ctx) => {
   } catch (validationError) {
     await ctx.render('compounds/edit', {
       compound,
-      errors: validationError.errors,
+      errors: ctx.state.parseValidationError(validationError),
       submitCompoundPath: ctx.router.url('compoundUpdate', compound.id),
       cancelPath: ctx.router.url('compound', { id: ctx.params.id }),
       deleteCompoundPath: ctx.router.url('compoundDelete', compound.id),

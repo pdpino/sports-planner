@@ -69,13 +69,13 @@ a {
   }
 }
 
-input[type=text],input[type=password] {
+input[type=text], input[type=password] {
     border: 2px solid black;
     border-radius: 4px;
 }
 
 
-input[type=text]:focus,input[type=password]:focus {
+input[type=text]:focus, input[type=password]:focus {
     background-color: #F0F8FF;
 }
 
@@ -127,7 +127,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
   color: #8B0000;
 }
 
-.deletebutton {
+.delete-button {
   background-color: #8B0000;
   border: none;
   color: white;
@@ -151,7 +151,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
   cursor: pointer;
 }
 
-.editbutton {
+.edit-button {
   background-color: #FFD700;
   border: none;
   color: white;

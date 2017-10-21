@@ -1,17 +1,17 @@
 <div class ="center">
   <h1> <%= (compoundOwner.isNewRecord) ? 'Nuevo Dueño de recinto' : 'Editar Dueño de recinto' %></h1>
 
-  <%- include('../error-snippet', { errors: locals.errors }) %>
+  <%- include('../_error/snippet', { errors: locals.errors }) %>
 
   <div>
-    <form action="<%= submitcompoundOwnerPath %>" method="post">
+    <form action="<%= submitCompoundOwnerPath %>" method="post">
       <% if(!compoundOwner.isNewRecord) { %>
         <div>
           <input type="hidden" name="_method" value="patch" />
         </div>
       <% } %>
 
-      <%- include('../users/_form', { user: compoundOwner }) %>
+      <%- include('../_users/form', { user: compoundOwner }) %>
 
       <div>
         <label for="phone">Teléfono</label>
@@ -20,26 +20,18 @@
         <% if(compoundOwner.isNewRecord) { %>
           <input type="submit" name="create" value="Registrarse" />
         <% } else { %>
-          <input class="editbutton" type="submit" name="update" value="Guardar Cambios" />
+          <input class="edit-button" type="submit" name="update" value="Guardar Cambios" />
         <% } %>
       </div>
     </form>
 
-
-
   <% if(!compoundOwner.isNewRecord) { %>
-    <form action="<%= deletecompoundOwnerPath %>" method="post">
-      <div>
-        <input type="hidden" name="_method" value="delete" />
-      </div>
-      <div>
-        <input class="deletebutton" type="submit" name="delete" value="Eliminar Usuario" />
-      </div>
-    </form>
+    <%- include('../_buttons/delete', {
+      deletePath: deleteCompoundOwnerPath,
+      message: "Eliminar usuario",
+    }) %>
   <% } %>
 
-  <form action="<%= cancelPath %>" method="get">
-      <input type="submit" value="Cancelar"/>
-  </form>
+  <%- include('../_buttons/cancel', { cancelPath }) %>
 
 </div>

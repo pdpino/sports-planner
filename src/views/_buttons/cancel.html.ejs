@@ -1,0 +1,6 @@
+<%# Must provide: cancelPath
+    optional: message %>
+
+<form action="<%= cancelPath %>" method="get">
+    <input type="submit" value="<%= locals.message || 'Cancelar' %>"/>
+</form>

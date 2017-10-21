@@ -2,7 +2,7 @@
 
   <h1> Editar deporte que practico %></h1>
 
-  <%- include('../error-snippet', { errors: locals.errors }) %>
+  <%- include('../_error/snippet', { errors: locals.errors }) %>
 
   <div>
     <%= playSport.name %>
@@ -21,16 +21,10 @@
     </form>
   </div>
 
-  <form action="<%= deletePlayerSportPath %>" method="post">
-    <div>
-      <input type="hidden" name="_method" value="delete" />
-    </div>
-    <div>
-      <input class"deletebutton" type="submit" name="delete" value="Eliminar" />
-    </div>
-  </form>
+  <%- include('../_buttons/delete', {
+    deletePath: deletePlayerSportPath,
+    message: 'Abandonar equipo',
+  }) %>
 
-  <form action=<%= cancelPath %>>
-    <input type="submit" value="Cancelar"/>
-  </form>
+  <%- include('../_buttons/cancel', { cancelPath }) %>
 </div>

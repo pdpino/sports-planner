@@ -2,7 +2,7 @@
 
   <h1> <%= (player.isNewRecord) ? 'Nuevo Jugador' : 'Editar Jugador' %></h1>
 
-  <%- include('../error-snippet', { errors: locals.errors }) %>
+  <%- include('../_error/snippet', { errors: locals.errors }) %>
 
   <div>
     <form action="<%= submitPlayerPath %>" method="post">
@@ -12,7 +12,7 @@
         </div>
       <% } %>
 
-      <%- include('../users/_form', { user: player }) %>
+      <%- include('../_users/form', { user: player }) %>
 
       <div>
         <label for="birthday">Cumpleaños</label>
@@ -38,17 +38,11 @@
 
 
   <% if(!player.isNewRecord) { %>
-    <form  action="<%= deletePlayerPath %>" method="post">
-      <div>
-        <input type="hidden" name="_method" value="delete" />
-      </div>
-      <div>
-        <input class"deletebutton" type="submit" name="delete" value="Eliminar Usuario" />
-      </div>
-    </form>
+    <%- include('../_buttons/delete', {
+      deletePath: deletePlayerPath,
+      message: 'Eliminar usuario',
+    }) %>
   <% } %>
 
-  <form action="<%= cancelPath %>" method="get">
-      <input type="submit" value="Cancelar"/>
-  </form>
+  <%- include('../_buttons/cancel', { cancelPath }) %>
 </div>

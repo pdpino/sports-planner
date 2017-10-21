@@ -42,7 +42,7 @@ router.post('fieldCreate', '/', async (ctx) => {
       compound: ctx.state.compound,
       sports,
       field: ctx.orm.field.build(ctx.request.body),
-      errors: validationError.errors,
+      errors: ctx.state.parseValidationError(validationError),
       submitFieldPath: ctx.router.url('fieldCreate',{compoundId:ctx.state.compound.id}),
       cancelPath: ctx.router.url('compound',{id:ctx.state.compound.id}),
     });
@@ -78,7 +78,7 @@ router.patch('fieldUpdate', '/:id', async (ctx) => {
       field,
       sports,
       compound: ctx.state.compound,
-      errors: validationError.errors,
+      errors: ctx.state.parseValidationError(validationError),
       submitFieldPath: ctx.router.url('fieldUpdate', {id:field.id,compoundId:ctx.state.compound.id}),
       cancelPath: ctx.router.url('field', { id: ctx.params.id,compoundId:ctx.state.compound.id }),
       deleteFieldPath: ctx.router.url('fieldDelete', {id:field.id,compoundId:ctx.state.compound.id}),

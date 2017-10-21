@@ -96,7 +96,7 @@ router.post('playerCreate', '/', async (ctx) => {
     await ctx.render('players/new', {
       player: ctx.orm.player.build(ctx.request.body),
       genders,
-      errors: validationError.errors,
+      errors: ctx.state.parseValidationError(validationError),
       submitPlayerPath: ctx.router.url('playerCreate'),
       cancelPath: ctx.router.url('players'),
     });
@@ -133,7 +133,7 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
     await ctx.render('players/edit', {
       player,
       genders,
-      errors: validationError.errors,
+      errors: ctx.state.parseValidationError(validationError),
       submitPlayerPath: ctx.router.url('playerUpdate', player.id),
       deletePlayerPath: ctx.router.url('playerDelete', player.id),
       cancelPath: ctx.router.url('player', { id: player.id }),

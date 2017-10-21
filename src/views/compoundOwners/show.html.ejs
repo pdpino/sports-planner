@@ -7,14 +7,13 @@
 
     <p> E-mail: <%= compoundOwner.email %> </p>
 
-
-
     <p> Teléfono: <%= compoundOwner.phone %> </p>
 
     <% if(hasModifyPermission) { %>
-      <form action="<%= editCompoundOwnerPath %>">
-          <input class="editbutton" type="submit" value="Editar Información personal" />
-      </form>
+      <%- include('../_buttons/edit', {
+        editPath: editCompoundOwnerPath,
+        message: 'Editar información personal',
+      }) %>
     <% } %>
 
   </div>
@@ -40,10 +39,6 @@
     No tiene recintos.
   <% } %>
 
-
-
-  <form action="<%= compoundOwnersPath %>">
-      <input type="submit" value="Volver" />
-  </form>
+  <%- include('../_buttons/back', { backPath: compoundOwnersPath }) %>
 
 </div>

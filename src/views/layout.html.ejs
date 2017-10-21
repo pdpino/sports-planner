@@ -36,10 +36,11 @@
           </form>
         <% } %>
 
-        <form class="bar" action="<%= destroySessionPath %>" method="post">
-          <input type="hidden" name="_method" value="delete" />
-          <input type="submit" value="Salir" />
-        </form>
+        <%- include('_buttons/delete', {
+          deletePath: destroySessionPath,
+          message: 'Salir',
+          className: 'bar',
+        }) %>
 
       <% } else { %>
         <span class="username" class="name">Hola Invitado</span>

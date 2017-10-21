@@ -1,7 +1,7 @@
 <div class="center">
   <h1> Editar invitación a partido %></h1>
 
-  <%- include('../error-snippet', { errors: locals.errors }) %>
+  <%- include('../_error/snippet', { errors: locals.errors }) %>
 
   <div>
     <%= teamMatch.name %>
@@ -13,16 +13,7 @@
       hasAdminPermission: false, // REVIEW: the invitedTeams do not require this
     }) %>
 
-  <form action="<%= deleteTeamMatchPath %>" method="post">
-    <div>
-      <input type="hidden" name="_method" value="delete" />
-    </div>
-    <div>
-      <input class"deletebutton" type="submit" name="delete" value="Eliminar" />
-    </div>
-  </form>
+  <%- include('../_buttons/delete', { deletePath: deleteTeamMatchPath }) %>
 
-  <form action="<%= cancelPath %>">
-    <input type="submit" value="Cancelar"/>
-  </form>
+  <%- include('../_buttons/cancel', { cancelPath }) %>
 </div>

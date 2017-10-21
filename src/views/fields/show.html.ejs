@@ -18,9 +18,10 @@
     </form> </br>
 
   <% if (hasModifyPermission) { %>
-    <form action="<%= editFieldPath %>">
-        <input type="submit" value="Editar de cancha" />
-    </form>
+    <%- include('../_buttons/edit', {
+      editPath: editFieldPath,
+      message: 'Editar cancha',
+    }) %>
     <%}%>
   </div>
 

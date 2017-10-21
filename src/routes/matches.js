@@ -1,23 +1,29 @@
 const _ = require('lodash');
+const moment = require('moment');
 const KoaRouter = require('koa-router');
+
 const invitedPlayersRouter = require('./invitedPlayers');
 const invitedTeamsRouter = require('./invitedTeams');
 const router = new KoaRouter();
 
-/** Filter the parameters passed by the matches/_form.html.ejs (create or edit a match)*/
-function getMatchParams(params){
-  const filteredParams = _.pick(params, 'name', 'isPublic', 'date', 'sportId');
+/**
+ * Filter the parameters passed by the matches/_form.html.ejs (create or edit a match)
+ * Assumes that there is a player logged in (ctx.state.currentPlayer is defined)
+ */
+function getMatchParams(ctx){
+  const params = ctx.request.body;
+  const filteredParams = _.pick(params, 'name', 'isPublic', 'sportId', 'dateYear', 'dateMonth', 'dateDay', 'dateHour', 'dateMinute');
 
-  /* checkbox input passes 'on' when checked and null when not-checked. Parse this to boolean */
+  // Build date
+  filteredParams.date = moment(`${params.dateYear} ${params.dateMonth} ${params.dateDay} ${params.dateHour} ${params.dateMinute}`, "YYYY MM DD H:mm");
+
+  // checkbox input passes 'on' when checked and null when not-checked. Parse this to boolean
   filteredParams.isPublic = Boolean(filteredParams.isPublic);
-  filteredParams.name = filteredParams.name || '';
+
+  // Assure name (REVIEW: move this to model? hook? but the model doesnt know the currentPlayer)
+  filteredParams.name = filteredParams.name || ctx.orm.match.getDefaultName(ctx.state.currentPlayer);
 
   return filteredParams;
-}
-
-/** Get the default name for a match **/
-function getDefaultName(player){
-  return "Partido de " + player.firstName;
 }
 
 router.get('matches', '/', async (ctx) => {
@@ -35,7 +41,7 @@ router.get('matchNew', '/new', async (ctx) => {
   ctx.state.requirePlayerLoggedIn(ctx);
 
   const match = ctx.orm.match.build();
-  match.name = getDefaultName(ctx.state.currentPlayer);
+  match.name = ctx.orm.match.getDefaultName(ctx.state.currentPlayer);
 
   await ctx.render('matches/new', {
     match,
@@ -46,12 +52,9 @@ router.get('matchNew', '/new', async (ctx) => {
 });
 
 router.post('matchCreate', '/', async (ctx) => {
-  const params = getMatchParams(ctx.request.body);
-
   ctx.state.requirePlayerLoggedIn(ctx);
 
-  // REVIEW: should this be in the model? (beforeCreate hook?) (but the model doesn't know the creator)
-  params.name = params.name || getDefaultName(ctx.state.currentPlayer);
+  const params = getMatchParams(ctx);
 
   try {
     const match = await ctx.orm.match.create(params);
@@ -63,11 +66,9 @@ router.post('matchCreate', '/', async (ctx) => {
     });
     ctx.redirect(ctx.router.url('match', match.id ));
   } catch (validationError) {
-    console.log("VALIDATION ERROR WHEN CREATING MATCH: ", validationError);
-
     await ctx.render('matches/new', {
       match: ctx.orm.match.build(params),
-      errors: validationError.errors,
+      errors: ctx.state.parseValidationError(validationError),
       sports: ctx.state.sports,
       submitMatchPath: ctx.router.url('matchCreate'),
       cancelPath: ctx.router.url('matches'),
@@ -88,17 +89,17 @@ router.get('matchEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('matchUpdate', '/:id', async (ctx) => {
-  getMatchParams(ctx.request.body);
   const match = await ctx.orm.match.findById(ctx.params.id);
   await ctx.state.requirePlayerModifyPermission(ctx, match);
 
+  const params = getMatchParams(ctx);
   try {
-    await match.update(ctx.request.body);
+    await match.update(params);
     ctx.redirect(ctx.router.url('match', { id: match.id }));
   } catch (validationError) {
     await ctx.render('matches/edit', {
       match,
-      errors: validationError.errors,
+      errors: ctx.state.parseValidationError(validationError),
       sports: ctx.state.sports,
       submitMatchPath: ctx.router.url('matchUpdate', match.id),
       cancelPath: ctx.router.url('match', { id: ctx.params.id }),

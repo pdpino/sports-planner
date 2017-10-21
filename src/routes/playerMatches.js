@@ -43,7 +43,7 @@ router.post('playerMatchCreate', '/', async (ctx) => {
     await ctx.render('playerMatches/new', {
       player: ctx.state.player,
       invitableMatches: getInvitableMatches(ctx.state.matches, ctx.state.playerMatches),
-      errors: validationError.errors,
+      errors: ctx.state.parseValidationError(validationError),
       submitPlayerMatchPath: ctx.router.url('playerMatchCreate', { playerId: ctx.state.player.id }),
       cancelPath: ctx.router.url('player', { id: ctx.state.player.id })
     });
@@ -88,7 +88,7 @@ router.patch('playerMatchUpdate', '/:id', async (ctx) => {
       player: ctx.state.player,
       match: playerMatch,
       chooseStatuses,
-      errors: validationError.errors,
+      errors: ctx.state.parseValidationError(validationError),
       submitPlayerMatchPath: ctx.router.url('playerMatchUpdate', {
         playerId: ctx.state.player.id,
         id: playerMatch.id
