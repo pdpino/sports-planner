@@ -110,6 +110,15 @@ router.use((ctx, next) => {
     ctx.assert(!ctx.state.isLoggedIn, 403, "Ya iniciaste sesión", {});
   }
 
+  /**
+   * Wrapper to parse validation errors from sequelize
+   * If the error is from the model everything is ok with validationError.errors
+   * If is from the DB errors is undefined, HACK: put it to an array in a object with a message (as if it came from the model)
+   **/
+  ctx.state.parseValidationError = function(validationError){
+    return validationError.errors || [ { message: validationError.toString() } ]
+  }
+
   return next();
 });
 
