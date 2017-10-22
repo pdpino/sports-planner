@@ -1,3 +1,5 @@
+const _ = require('lodash');
+const sendInvitationPlayerMail = require('../mailers/invitation-player');
 const KoaRouter = require('koa-router');
 
 const router = new KoaRouter();
@@ -21,12 +23,12 @@ async function findTeamMemberById(team, playerId){
   return (teamMembersFound.length == 1) ? teamMembersFound[0] : null;
 }
 
-/** Fix new/update parameters passed from form **/
-function fixSubmitParams(params){
+function filterSubmitParams(params){
+  const filteredParams = _.pick(params, 'isCaptain', 'playerId');
   /** Parse isCaptain to boolean, html form passes it as 'on' or null **/
-  params.isCaptain = Boolean(params.isCaptain);
+  filteredParams.isCaptain = Boolean(filteredParams.isCaptain);
+  return filteredParams;
 }
-
 
 router.get('teamMemberNew', '/new', async (ctx) => {
   await ctx.render('teamMembers/new', {
@@ -40,14 +42,21 @@ router.get('teamMemberNew', '/new', async (ctx) => {
 });
 
 router.post('teamMemberCreate', '/', async (ctx) => {
-  fixSubmitParams(ctx.request.body);
+  const params = filterSubmitParams(ctx.request.body);
+  const player = await ctx.state.findById(ctx.orm.player, params.playerId);
   try {
-    await ctx.state.team.addPlayer(ctx.request.body.playerId, {
-      through: { isCaptain: ctx.request.body.isCaptain }
+    await ctx.state.team.addPlayer(player, {
+      through: {
+        isCaptain: params.isCaptain
+      }
+    });
+    sendInvitationPlayerMail(ctx, player.email, {
+      eventType: 'Equipo',
+      eventName: ctx.state.team.name,
+      invitedBy: ctx.state.currentPlayer.getName(),
     });
     ctx.redirect(ctx.router.url('team', { id: ctx.state.team.id }));
   } catch (validationError) {
-    console.log("###### validation error when creating team-player: ", validationError); // DEBUG
     await ctx.render('teamMembers/new', {
       team: ctx.state.team,
       errors: ctx.state.parseValidationError(validationError),
@@ -78,15 +87,16 @@ router.get('teamMemberEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('teamMemberUpdate', '/:id', async (ctx) => {
-  fixSubmitParams(ctx.request.body);
+  const params = filterSubmitParams(ctx.request.body);
   const teamMember = await findTeamMemberById(ctx.state.team, ctx.params.id);
   try {
     await ctx.state.team.addPlayer(teamMember, {
-      through: { isCaptain: ctx.request.body.isCaptain }
+      through: {
+        isCaptain: params.isCaptain
+      }
     });
     ctx.redirect(ctx.router.url('team', { id: ctx.state.team.id }));
   } catch (validationError) {
-    console.log("###### validation error when updating team-player: ", validationError); // DEBUG
     await ctx.render('teamMembers/edit', {
       team: ctx.state.team,
       teamMember,

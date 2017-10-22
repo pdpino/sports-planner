@@ -1,4 +1,4 @@
-const sendInvitationEmail = require('../mailers/invitation');
+const sendInvitationTeamMail = require('../mailers/invitation-team');
 const KoaRouter = require('koa-router');
 
 const router = new KoaRouter();
@@ -41,10 +41,11 @@ router.post('invitedTeamCreate', '/', async (ctx) => {
       through: { status: 'sent' } // HACK: invitation status harcoded
     });
     if(teamCaptain){
-      sendInvitationEmail(ctx, teamCaptain.email, {
+      sendInvitationTeamMail(ctx, teamCaptain.email, {
         eventType: 'Partido',
         eventName: ctx.state.match.name,
         invitedBy: ctx.state.currentPlayer.getName(),
+        teamName: team.name,
       });
     }
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
