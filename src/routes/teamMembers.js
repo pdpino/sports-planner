@@ -33,7 +33,7 @@ function filterSubmitParams(params){
 router.get('teamMemberNew', '/new', async (ctx) => {
   await ctx.render('teamMembers/new', {
     team: ctx.state.team,
-    playersNotInTeam: getInvitablePlayers(ctx.state.players, ctx.state.teamMembers),
+    invitablePlayers: getInvitablePlayers(ctx.state.invitablePlayers, ctx.state.teamMembers),
     submitTeamMemberPath: ctx.router.url('teamMemberCreate', {
       teamId: ctx.state.team.id
     }),
@@ -60,7 +60,7 @@ router.post('teamMemberCreate', '/', async (ctx) => {
     await ctx.render('teamMembers/new', {
       team: ctx.state.team,
       errors: ctx.state.parseValidationError(validationError),
-      playersNotInTeam: getInvitablePlayers(ctx.state.players, ctx.state.teamMembers),
+      invitablePlayers: getInvitablePlayers(ctx.state.invitablePlayers, ctx.state.teamMembers),
       submitTeamMemberPath: ctx.router.url('teamMemberCreate', {
         teamId: ctx.state.team.id
       }),

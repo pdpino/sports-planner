@@ -133,7 +133,7 @@ router.use(
     await ctx.state.requirePlayerModifyPermission(ctx, ctx.state.team);
 
     ctx.state.teamMembers = await ctx.state.team.getPlayers();
-    ctx.state.players = await ctx.orm.player.findAll();
+    ctx.state.invitablePlayers = await ctx.state.currentPlayer.getAllFriends();
     await next();
   },
   teamMembersRouter.routes(),
