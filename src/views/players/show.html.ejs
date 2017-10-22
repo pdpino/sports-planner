@@ -28,7 +28,7 @@
 
   <div>
     <h4>Información personal</h4>
-    <img src=<%= player.photo %> >
+    <img class="large-logo" src="<%= player.photo %>" >
 
     <p> E-mail: <%= player.email %> </p>
 
@@ -111,7 +111,7 @@
 
           <li>
             <a class="lilink" href="<%= getTeamPath(team) %>">
-              <img class="small-logo" src="<%=team.logo%>"/>
+              <img class="small-logo" src="<%= team.logo %>"/>
               <div>
                 <%= team.name %> <%= (team.isMember.isCaptain) ? '-- Capitán del equipo' : '' %>
               </div>

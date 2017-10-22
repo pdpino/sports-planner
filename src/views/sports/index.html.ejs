@@ -2,7 +2,7 @@
   <h1>Deportes</h1>
 
   <% if (hasModifyPermission) { %>
-    <form action=<%= newSportPath %>>
+    <form action="<%= newSportPath %>">
         <input type="submit" value="Crear deporte"/>
     </form>
   <% } %>
@@ -12,7 +12,7 @@
       <% sports.forEach((sport) => { %>
         <li>
             <a class="lilink sport" href="<%= sportPath(sport) %>"%>>
-            <img src=<%=sport.logo%> class="large-logo"/>
+            <img class="medium-logo" src="<%= sport.logo %>"/>
             <div>
              <%= sport.name %>
            </div>

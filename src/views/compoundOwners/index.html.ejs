@@ -5,8 +5,8 @@
     <% compoundOwners.forEach((compoundOwner) => { %>
 
       <li>
-          <a class="lilink" href=<%= getCompoundOwnerPath(compoundOwner) %>>
-          <img class="large-logo" src=<%=compoundOwner.photo%>/>
+          <a class="lilink" href="<%= getCompoundOwnerPath(compoundOwner) %>">
+          <img class="medium-logo" src="<%=compoundOwner.photo%>"/>
           <div>
            <%= compoundOwner.firstName %> <%= compoundOwner.lastName %>
          </div>

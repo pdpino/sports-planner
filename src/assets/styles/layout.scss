@@ -224,17 +224,18 @@ li {
   margin-top: 30px;
 }
 
+
 img {
-  .small-logo {
-    width: 32;
-    height: 32;
+  &.small-logo {
+    width: 3em;
+    height: 3em;
   }
-  .medium-logo {
-    width: 64;
-    height: 64;
+  &.medium-logo {
+    width: 10em;
+    height: 10em;
   }
-  .large-logo {
-    width: 128;
-    height: 128;
+  &.large-logo {
+    width: 20em;
+    height: 20em;
   }
 }

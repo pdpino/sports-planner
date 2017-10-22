@@ -3,7 +3,7 @@
 
   <div>
     <h4>Información personal</h4>
-    <img src=<%= compoundOwner.photo %> >
+    <img src="<%= compoundOwner.photo %>" >
 
     <p> E-mail: <%= compoundOwner.email %> </p>
 
@@ -24,7 +24,7 @@
       <% compounds.forEach((compound) => { %>
         <li>
             <a class="lilink" href=<%= getCompoundPath(compound) %>>
-            <img src=<%=compound.photo%> class="small-logo"/>
+            <img class="large-logo" src="<%=compound.photo%>"/>
             <div>
              <%= compound.name %>
            </div>

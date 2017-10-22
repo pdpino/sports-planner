@@ -2,7 +2,7 @@
   <h1>Recintos</h1>
 
   <% if (hasCreatePermission) { %>
-    <form action=<%= newCompoundPath %>>
+    <form action="<%= newCompoundPath %>">
         <input type="submit" value="Crear recinto"/>
     </form>
   <% } %>
@@ -11,7 +11,7 @@
     <% compounds.forEach((compound) => { %>
       <li>
           <a class="lilink" href=<%= getCompoundPath(compound) %>>
-          <img src=<%=compound.photo%> class="large-logo"/>
+          <img class="medium-logo" src="<%= compound.photo %>"/>
           <div>
            <%= compound.name %>
          </div>

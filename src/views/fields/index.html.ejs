@@ -3,10 +3,10 @@
   <h1>Canchas</h1>
 
   <% if(hasModifyPermission) { %>
-    <form action=<%= newFieldPath %>>
+    <form action="<%= newFieldPath %>">
         <input type="submit" value="Crear cancha"/>
     </form>
   <%}%>
 
-  <%- include('index-snippet', { fields, logoClassName: "large-logo" }) %>
+  <%- include('index-snippet', { fields, logoClassName: "medium-logo" }) %>
 </div>

@@ -3,7 +3,7 @@
   <h1>Equipos</h1>
 
   <% if (hasCreatePermission) { %>
-    <form action=<%= newTeamPath %>>
+    <form action="<%= newTeamPath %>">
       <input type="submit" value="Crear Equipo"/>
     </form>
   <% } %>
@@ -13,7 +13,7 @@
     <% teams.forEach((team) => { %>
       <li>
         <a class="lilink sport" href="<%= teamPath(team) %>"%>>
-          <img src=<%=team.logo%> class="large-logo"/>
+          <img class="medium-logo" src="<%= team.logo %>"/>
           <div id="margincustom">
             <%= team.name %>
           </div>
