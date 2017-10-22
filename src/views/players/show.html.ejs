@@ -57,12 +57,6 @@
                 <%= friend.getName() %>
               </div>
 
-              <% if (!friend.friendship.isAccepted) { %>
-                <div>
-                  Solicitud no aceptada aún
-                </div>
-              <% } %>
-
             </a>
           </li>
         <% }) %>
@@ -80,7 +74,7 @@
         <% playerSports.forEach((sport) => { %>
           <li>
             <a class="lilink" href="<%= getSportPath(sport) %>">
-              <img src=<%=sport.logo%> width="32" height="32"/>
+              <img class="small-logo" src="<%= sport.logo %>"/>
               <div>
                 <%= sport.name %>
               </div>
@@ -117,7 +111,7 @@
 
           <li>
             <a class="lilink" href="<%= getTeamPath(team) %>">
-              <img src=<%=team.logo%> width="32" height="32"/>
+              <img class="small-logo" src="<%=team.logo%>"/>
               <div>
                 <%= team.name %> <%= (team.isMember.isCaptain) ? '-- Capitán del equipo' : '' %>
               </div>
@@ -147,7 +141,6 @@
         <% playerMatches.forEach((match) => { %>
           <li>
               <a class="lilink" href="<%= getMatchPath(match) %>">
-                <img src=<%=match.photo%> width="32" height="32"/>
                 <div>
                   <%= match.name %>
                 </div>
