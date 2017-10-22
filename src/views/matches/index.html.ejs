@@ -1,4 +1,4 @@
-<div class ="center">
+<div class="center">
   <h1>Partidos en jugamos</h1>
 
   <% if (hasCreatePermission) { %>
@@ -8,16 +8,19 @@
   <% } %>
 
   <ul>
-    <% matches.forEach((match) => { %>
-      <li>
-        <a href="<%= matchPath(match) %>">
-          <%= match.name %>
-        </a>
-        <p>
-          Fecha: <%= match.date %>
+    <% if (privateMatches.length + publicMatches.length > 0) { %>
+      <% privateMatches.forEach((match) => { %>
+        <%- include('show-preview', { match }) %>
+      <% }) %>
 
-        </p>
-      </li>
-    <% }) %>
+      <% publicMatches.forEach((match) => { %>
+        <%- include('show-preview', { match }) %>
+      <% }) %>
+
+    <% } else { %>
+      <p>
+        No hay partidos disponibles
+      </p>
+    <% } %>
   </ul>
 </div>

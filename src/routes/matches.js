@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const moment = require('moment');
 const KoaRouter = require('koa-router');
+const Sequelize = require('sequelize');
 
 const invitedPlayersRouter = require('./invitedPlayers');
 const invitedTeamsRouter = require('./invitedTeams');
@@ -31,10 +32,51 @@ function getMatchParams(ctx){
   return filteredParams;
 }
 
+async function requireSeeMatchPermission(ctx, match){
+  const hasSeePermission = match.isPublic || (ctx.state.currentPlayer &&
+    await match.hasPlayer(ctx.state.currentPlayer, {
+      // HACK: through object copied in multiple places
+      through: {
+        where: {
+          status: { [Sequelize.Op.not]: "rejectedByAdmin" }
+          // HACK: invitation status hardcoded
+        }
+      }
+    }));
+  ctx.assert(hasSeePermission, 403, "No tienes permisos");
+}
+
 router.get('matches', '/', async (ctx) => {
-  const matches = await ctx.orm.match.findAll();
+  const publicMatches = await ctx.orm.match.findAll({
+    where: {
+      isPublic: true,
+    }
+  });
+
+  // REVIEW: is there a way to concat public and private matches?
+  // concat() doesn't work
+  let privateMatches = [];
+  if(ctx.state.isPlayerLoggedIn){
+    privateMatches = await ctx.orm.match.findAll({
+      include: [{
+        model: ctx.orm.player,
+        where: {
+          id: ctx.state.currentPlayer.id
+        },
+        // HACK: through object copied in multiple places
+        through: {
+          where: {
+            status: { [Sequelize.Op.not]: "rejectedByAdmin" }
+            // HACK: invitation status hardcoded
+          }
+        }
+      }]
+    });
+  }
+
   await ctx.render('matches/index', {
-    matches,
+    publicMatches,
+    privateMatches,
     sports: ctx.state.sports,
     hasCreatePermission: ctx.state.isPlayerLoggedIn,
     matchPath: match => ctx.router.url('match', { id: match.id }),
@@ -118,6 +160,8 @@ router.get('match', '/:id', async (ctx) => {
   const invitedPlayers = await match.getPlayers();
   const invitedTeams = await match.getTeams();
   const hasModifyPermission = await match.hasModifyPermission(ctx.state.currentPlayer);
+
+  await requireSeeMatchPermission(ctx, match);
 
   await ctx.render('matches/show', {
     match,
