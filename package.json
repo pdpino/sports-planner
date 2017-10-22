@@ -43,6 +43,7 @@
     "nodemailer": "^4.1.1",
     "pg": "^7.1.2",
     "pg-hstore": "^2.3.2",
+    "pkgcloud": "^1.5.0",
     "sass-loader": "^6.0.6",
     "sequelize": "^4.13.0",
     "sequelize-cli": "https://github.com/IIC2513-2017-2/sequelize-cli#iic2513-version",
