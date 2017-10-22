@@ -1,3 +1,4 @@
+const sendInvitationEmail = require('../mailers/invitation');
 const KoaRouter = require('koa-router');
 
 const router = new KoaRouter();
@@ -15,11 +16,10 @@ function getInvitablePlayers(allPlayers, invitedPlayers){
   });
 }
 
-/** Return the match played by player, searching with matchId **/
-async function findInvitedPlayerById(match, playerId){
-  // OPTIMIZE? use a model function?
-  const invitedPlayers = await match.getPlayers( { where: { id: playerId } } );
-  return (invitedPlayers.length == 1) ? invitedPlayers[0] : null;
+/** Return the match played by player, searching with matchId */
+async function findInvitedPlayerById(match, playerId) {
+  const invitedPlayers = await match.getPlayers({ where: { id: playerId } });
+  return (invitedPlayers.length === 1) ? invitedPlayers[0] : null;
 }
 
 router.get('invitedPlayerNew', '/new', async (ctx) => {
@@ -34,10 +34,15 @@ router.get('invitedPlayerNew', '/new', async (ctx) => {
 });
 
 router.post('invitedPlayerCreate', '/', async (ctx) => {
-  const invitedPlayer = await findInvitedPlayerById(ctx.state.match, ctx.params.id);
+  const player = await ctx.state.findById(ctx.orm.player, ctx.request.body.playerId);
   try {
-    await ctx.state.match.addPlayer(ctx.request.body.playerId, {
-      through: { status: "sent" } // HACK: invitation status harcoded
+    await ctx.state.match.addPlayer(player, {
+      through: { status: 'sent' }, // HACK: invitation status harcoded
+    });
+    sendInvitationEmail(ctx, player.email, {
+      eventType: 'Partido',
+      eventName: ctx.state.match.name,
+      invitedBy: ctx.state.currentPlayer.getName(),
     });
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
   } catch (validationError) {
@@ -46,7 +51,7 @@ router.post('invitedPlayerCreate', '/', async (ctx) => {
       invitablePlayers: getInvitablePlayers(ctx.state.players, ctx.state.invitedPlayers),
       errors: ctx.state.parseValidationError(validationError),
       submitInvitedPlayerPath: ctx.router.url('invitedPlayerCreate', { matchId: ctx.state.match.id }),
-      cancelPath: ctx.router.url('match', { id: ctx.state.match.id })
+      cancelPath: ctx.router.url('match', { id: ctx.state.match.id }),
     });
   }
 });

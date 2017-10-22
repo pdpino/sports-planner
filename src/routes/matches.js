@@ -38,7 +38,7 @@ async function requireSeeMatchPermission(ctx, match){
       // HACK: through object copied in multiple places
       through: {
         where: {
-          status: { [Sequelize.Op.not]: "rejectedByAdmin" }
+          status: { [Sequelize.Op.not]: 'rejectedByAdmin' }
           // HACK: invitation status hardcoded
         }
       }
@@ -82,7 +82,7 @@ router.post('matchCreate', '/', async (ctx) => {
     await ctx.state.currentPlayer.addMatch(match.id, {
       through: {
         isAdmin: true,
-        status: "accepted" // HACK: invitation status harcoded
+        status: 'accepted' // HACK: invitation status harcoded
       }
     });
     ctx.redirect(ctx.router.url('match', match.id ));
@@ -129,8 +129,7 @@ router.patch('matchUpdate', '/:id', async (ctx) => {
 });
 
 router.get('match', '/:id', async (ctx) => {
-  const match = await ctx.state.findById(ctx.orm.match);
-
+  const match = await ctx.state.findById(ctx.orm.match, ctx.params.id);
   const sport = await ctx.state.findById(ctx.orm.sport, match.sportId);
   const invitedPlayers = await match.getPlayers();
   const invitedTeams = await match.getTeams();

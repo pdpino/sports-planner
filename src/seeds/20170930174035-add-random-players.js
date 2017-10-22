@@ -11,7 +11,7 @@ module.exports = {
 
     for (let i = 0; i < nPlayers; i ++) {
       players.push({
-        gender: (Math.random() < 0.5) ? "masculino" : "femenino",
+        gender: (Math.random() < 0.5) ? 'masculino' : 'femenino',
         birthday: faker.date.past(),
         userId: i + startingId,
         createdAt: new Date(),

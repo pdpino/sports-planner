@@ -7,7 +7,7 @@ module.exports = {
     const players = [
       {
         // Juan perez
-        gender: "masculino",
+        gender: 'masculino',
         birthday: faker.date.past(),
         userId: id++, // Use id, then increase
         createdAt: new Date(),
@@ -15,7 +15,7 @@ module.exports = {
       },
       {
         // Pedro perez
-        gender: "masculino",
+        gender: 'masculino',
         birthday: faker.date.past(),
         userId: id++,
         createdAt: new Date(),

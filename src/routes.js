@@ -189,7 +189,7 @@ router.use((ctx, next) => {
           // HACK: through object copied in multiple places
           through: {
             where: {
-              status: { [Sequelize.Op.not]: "rejectedByAdmin" }
+              status: { [Sequelize.Op.not]: 'rejectedByAdmin' }
               // HACK: invitation status hardcoded
             }
           }

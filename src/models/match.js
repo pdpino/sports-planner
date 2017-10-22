@@ -60,7 +60,7 @@ module.exports = function definematch(sequelize, DataTypes) {
   match.afterFind(setDate);
 
   match.getDefaultName = function(player){
-    return (player.firstName) ? `Partido de ${player.firstName}` : "Partido";
+    return (player.firstName) ? `Partido de ${player.firstName}` : 'Partido';
   }
 
   // async function assertNotEmptyName(instance){

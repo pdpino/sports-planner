@@ -36,7 +36,7 @@ router.post('teamMatchCreate', '/', async (ctx) => {
   try {
     await ctx.state.team.addMatch(ctx.request.body.matchId, {
       through: {
-        status: "asked" // HACK: invitation status harcoded
+        status: 'asked' // HACK: invitation status harcoded
       }
     });
     ctx.redirect(ctx.router.url('team', { id: ctx.state.team.id }));
@@ -83,10 +83,10 @@ router.patch('teamMatchUpdate', '/:id', async (ctx) => {
       through: { status: newStatus }
     });
 
-    if(statusChanged && newStatus == "accepted"){ // HACK: status hardcoded
+    if(statusChanged && newStatus == 'accepted'){ // HACK: status hardcoded
       // Invite all of his players to the game
       await teamMatch.addPlayers(ctx.state.teamMembers, {
-        through: { status: "sent" } // HACK: invitation status harcoded
+        through: { status: 'sent' } // HACK: invitation status harcoded
       });
     }
 

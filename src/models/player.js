@@ -68,5 +68,10 @@ module.exports = function defineplayer(sequelize, DataTypes) {
 
   player.getGenders = function() { return genders; }
 
+  player.prototype.getName = function() {
+    return `${this.firstName} ${this.lastName}`;
+  }
+
+
   return player;
 };

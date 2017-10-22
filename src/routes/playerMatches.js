@@ -34,7 +34,7 @@ router.post('playerMatchCreate', '/', async (ctx) => {
   try {
     await ctx.state.player.addMatch(ctx.request.body.matchId, {
       through: {
-        status: "asked" // HACK: invitation status harcoded
+        status: 'asked' // HACK: invitation status harcoded
       }
     });
     ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));
