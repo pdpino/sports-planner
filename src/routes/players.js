@@ -200,13 +200,11 @@ router.use(
 router.use(
   '/:playerId/matches',
   async (ctx, next) => {
-    const { player, user } = await getPlayerAndUser(ctx, ctx.params.playerId);
-
     ctx.state.player = await ctx.orm.player.findById(ctx.params.playerId);
 
     ctx.state.requireModifyPermission(ctx, ctx.state.player.userId);
 
-    ctx.state.matches = await ctx.orm.match.findAll();
+    ctx.state.visibleMatches = await ctx.state.getVisibleMatches(ctx);
     ctx.state.playerMatches = await ctx.state.player.getMatches();
     await next();
   },

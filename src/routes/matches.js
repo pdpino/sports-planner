@@ -46,32 +46,16 @@ async function requireSeeMatchPermission(ctx, match){
   ctx.assert(hasSeePermission, 403, "No tienes permisos");
 }
 
-router.get('matches', '/', async (ctx) => {
-  let matches = await ctx.orm.match.findAll({
-    where: {
-      isPublic: true,
-    }
-  });
+/** Wrapper to find a match by the id and assert the match (raise not found if neccesary) **/
+async function findMatchById(ctx, matchId){
+  // TODO: create function findEntityById, to use with everything (matches, players, etc)
+  const match = await ctx.orm.match.findById(matchId || ctx.params.id);
+  ctx.assert(match, 404);
+  return match;
+}
 
-  let privateMatches = [];
-  if(ctx.state.isPlayerLoggedIn){
-    privateMatches = await ctx.orm.match.findAll({
-      include: [{
-        model: ctx.orm.player,
-        where: {
-          id: ctx.state.currentPlayer.id
-        },
-        // HACK: through object copied in multiple places
-        through: {
-          where: {
-            status: { [Sequelize.Op.not]: "rejectedByAdmin" }
-            // HACK: invitation status hardcoded
-          }
-        }
-      }]
-    });
-    matches = matches.concat(privateMatches);
-  }
+router.get('matches', '/', async (ctx) => {
+  const matches = await ctx.state.getVisibleMatches(ctx);
 
   await ctx.render('matches/index', {
     matches,
@@ -122,7 +106,7 @@ router.post('matchCreate', '/', async (ctx) => {
 });
 
 router.get('matchEdit', '/:id/edit', async (ctx) => {
-  const match = await ctx.orm.match.findById(ctx.params.id);
+  const match = await findMatchById(ctx);
   await ctx.state.requirePlayerModifyPermission(ctx, match);
 
   await ctx.render('matches/edit', {
@@ -134,7 +118,7 @@ router.get('matchEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('matchUpdate', '/:id', async (ctx) => {
-  const match = await ctx.orm.match.findById(ctx.params.id);
+  const match = await findMatchById(ctx);
   await ctx.state.requirePlayerModifyPermission(ctx, match);
 
   const params = getMatchParams(ctx);
@@ -153,7 +137,8 @@ router.patch('matchUpdate', '/:id', async (ctx) => {
 });
 
 router.get('match', '/:id', async (ctx) => {
-  const match = await ctx.orm.match.findById(ctx.params.id);
+  const match = await findMatchById(ctx);
+
   const sport = await ctx.orm.sport.findById(match.sportId);
   const invitedPlayers = await match.getPlayers();
   const invitedTeams = await match.getTeams();
@@ -183,7 +168,7 @@ router.get('match', '/:id', async (ctx) => {
 });
 
 router.delete('matchDelete', '/:id', async (ctx) => {
-  const match = await ctx.orm.match.findById(ctx.params.id);
+  const match = await findMatchById(ctx);
 
   await ctx.state.requirePlayerModifyPermission(ctx, match);
 
@@ -194,7 +179,7 @@ router.delete('matchDelete', '/:id', async (ctx) => {
 router.use(
   '/:matchId/players',
   async (ctx, next) => {
-    ctx.state.match = await ctx.orm.match.findById(ctx.params.matchId);
+    ctx.state.match = await findMatchById(ctx, ctx.params.matchId);
 
     await ctx.state.requirePlayerModifyPermission(ctx, ctx.state.match);
 
@@ -208,7 +193,7 @@ router.use(
 router.use(
   '/:matchId/teams',
   async (ctx, next) => {
-    ctx.state.match = await ctx.orm.match.findById(ctx.params.matchId);
+    ctx.state.match = await findMatchById(ctx, ctx.params.matchId);
 
     await ctx.state.requirePlayerModifyPermission(ctx, ctx.state.match);
 
