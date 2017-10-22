@@ -148,7 +148,7 @@ router.use(
 
     ctx.state.teamMembers = await ctx.state.team.getPlayers();
     ctx.state.teamMatches = await ctx.state.team.getMatches();
-    ctx.state.allMatches = await ctx.orm.match.findAll();
+    ctx.state.visibleMatches = await ctx.state.getVisibleMatches(ctx);
     await next();
   },
   teamMatchesRouter.routes(),

@@ -105,5 +105,4 @@ router.delete('playerMatchDelete', '/:id', async (ctx) => {
    ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));
  });
 
-
 module.exports = router;

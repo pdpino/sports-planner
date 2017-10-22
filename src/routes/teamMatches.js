@@ -24,7 +24,7 @@ async function findTeamMatchById(team, matchId){
 router.get('teamMatchNew', '/new', async (ctx) => {
   await ctx.render('teamMatches/new', {
     team: ctx.state.team,
-    joinableMatches: getJoinableMatches(ctx.state.allMatches, ctx.state.teamMatches),
+    joinableMatches: getJoinableMatches(ctx.state.visibleMatches, ctx.state.teamMatches),
     submitTeamMatchPath: ctx.router.url('teamMatchCreate', {
       teamId: ctx.state.team.id
     }),
@@ -44,7 +44,7 @@ router.post('teamMatchCreate', '/', async (ctx) => {
     await ctx.render('teamMatches/new', {
       team: ctx.state.team,
       errors: ctx.state.parseValidationError(validationError),
-      joinableMatches: getJoinableMatches(ctx.state.allMatches, ctx.state.teamMatches),
+      joinableMatches: getJoinableMatches(ctx.state.visibleMatches, ctx.state.teamMatches),
       submitTeamMatchPath: ctx.router.url('teamMatchCreate', {
         teamId: ctx.state.team.id
       }),
