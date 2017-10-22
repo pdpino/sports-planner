@@ -1,0 +1,58 @@
+<div class ="center">
+  <h1><%= field.name %></h1>
+  <h2><%= schedules[0].date %><h2>
+<table>
+  <tr>
+  <th>Tiempo</th>
+  <th>Precio</th>
+  <th>Status</th>
+</tr>
+<% for (i=0;i<schedules.length;i++) {%>
+  <tr>
+  <div>
+    <th> <%= schedules[i].hours %> </th>
+    <td> <%= schedules[i].price %> </td>
+
+<td>
+<form action="<%= submitSchedulePath %>" method="post">
+  <div>
+    <input type="hidden" name="_method" value="patch" />
+  </div>
+  <% if (schedules[i].status == "Accepted" || schedules[i].status == "Solicited"){ %>
+    <div>
+      <input type="radio" name="status" value="Accepted" <%= (schedules[i].status=="Accepted") ? 'checked' : '' %>>
+      Aceptar Invitación
+
+      <input type="radio" name="status" value="Available"
+      <%= (schedules[i].status=="Available") ? 'checked' : '' %>>
+      Rechazar Invitación
+
+      <input type="radio" name="status" value="Solicited" <%= (schedules[i].status=="Solicited") ? 'checked' : '' %>>
+      No responder Aún
+
+    </div>
+  <% } else if (schedules[i].status == "Available"){ %>
+    <div>
+      <p> Disponible </p>
+    </div>
+  <% } else if (schedules[i].status == "Not Available"){ %>
+    <div>
+      <p> Cerrado  </p>
+    </div>
+  <% } %>
+</td>
+<% } %>
+  <div>
+    <input type="submit" name="update" value="Guardar Cambios" />
+  </div>
+</form>
+
+
+  <form action="<%= cancelPath %>">
+      <input type="submit" value="Ir perfil cancha" />
+    </form>
+
+
+
+
+</div>

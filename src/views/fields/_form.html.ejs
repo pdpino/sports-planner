@@ -26,6 +26,7 @@
         <label for="photo">Foto</label>
         <input type="text" name="photo" value="<%= field.photo %>" />
       </div>
+      <% if(scheduleBases.length==0) {%>
       <div>
         <label for="openingHour">Hora de Entrada</label>
         <input type="text" name="openingHour" value="<%= field.openingHour %>" />
@@ -39,6 +40,7 @@
         <input type="text" name="modules" value="<%= field.modules %>" />
       </div>
       <input type="hidden" name="compoundId" value="<%=compound.id %>"
+      <%}%>
       <div>
         <label for="sportId">Deporte</label>
 

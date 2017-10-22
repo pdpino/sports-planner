@@ -7,6 +7,10 @@ function floatToStringHour(float){
   let minutesTwoDigits=false;
   let hours=Math.floor(float);
   let minutes= Math.round((float%1)*60);
+  if (minutes>=60){
+    minutes-=60;
+    hours+=1;
+  }
   let final="";
   if (hours>=24){
     hours-=24;
@@ -80,6 +84,7 @@ router.get('scheduleBaseNew', '/new', async (ctx) => {
 });
 
 router.post('scheduleBaseCreate', '/', async (ctx) => {
+  
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
   if (!ctx.state.requireOwnerModifyPermission(ctx, compoundOwner)) return;
   console.log("HOLAAA");

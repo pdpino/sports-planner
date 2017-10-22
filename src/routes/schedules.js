@@ -43,58 +43,43 @@ function arrayOfHours (field){
   return final;
 }
 
-
-router.get('scheduleBases', '/', async (ctx) => {
+router.get('schedules', '/', async (ctx) => {
+  console.log("WHY");
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
-  const scheduleBases= await ctx.state.field.getScheduleBases();
-  await ctx.render('scheduleBases/index', {
+  const schedules= await ctx.state.field.getSchedules();
+  await ctx.render('schedules/index', {
     hasModifyPermission: ctx.state.hasOwnerModifyPermission(ctx, compoundOwner),
-    scheduleBases,
+    schedules,
     newScheduleBasePath: ctx.router.url('scheduleBaseNew',{fieldId:ctx.state.field.id, compoundId:ctx.state.compound.id}),
   });
 });
 
-router.get('scheduleBaseNew', '/new', async (ctx) => {
+
+router.post('scheduleCreate', '/', async (ctx) => {
+  console.log("HOLAAA");
+
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
   if (!ctx.state.requireOwnerModifyPermission(ctx, compoundOwner)) return;
-
-  const arrayOfHour= arrayOfHours(ctx.state.field);
-    console.log(arrayOfHour[0]);
-  const daysOfWeek=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
-  const scheduleBases = []
-  for (i=0;i<7*ctx.state.field.modules;i++){
-    const scheduleBase = ctx.orm.scheduleBase.build();
-    scheduleBases.push(scheduleBase);
-  }
-  const scheduleBase = ctx.orm.scheduleBase.build();
-
-  await ctx.render('scheduleBases/new', {
-    scheduleBases,
-    arrayOfHour,
-    scheduleBase,
-    daysOfWeek,
-    field: ctx.state.field,
-    submitScheduleBasePath: ctx.router.url('scheduleBaseCreate',{compoundId:ctx.state.compound.id,fieldId:ctx.state.field.id}),
-    cancelPath: ctx.router.url('field',{id:ctx.state.field.id, compoundId:ctx.state.compound.id}),
-  });
-});
-
-router.post('scheduleGenerate', '/', async (ctx) => {
-  const compoundOwner= await ctx.state.compound.getCompoundOwner();
-  if (!ctx.state.requireOwnerModifyPermission(ctx, compoundOwner)) return;
-  let arrayOfHour = arrayOfHours(ctx.state.hours);
+  let arrayOfHour = arrayOfHours(ctx.state.field);
   let tomorrow= new Date();
+  tomorrow.setHours(0);
+  tomorrow.setMinutes(0);
+  tomorrow.setSeconds(0);
+  tomorrow.setMilliseconds(0);
+  console.log("HolAAAAAAAAAAAAAAAAAAA");
   for (i=0;i<14;i++){
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    let exist= await ctx.state.field.getSchedules({
+      where:{
+        date:tomorrow,
+        fieldId: ctx.state.field.id,
+      }
+    });
+    if (exist.length!=0){
+      continue;
+    }
     for(j=0;j<ctx.state.field.modules;j++){
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      let exist=ctx.orm.schedule.findOne({
-        where:{
-          date:tomorrow,
-          fieldId: ctx.state.field.id,
-        }
-      });
-      if (!exist){
-        let scheduleBase= await ctx.orm.scheduleBases.findOne({
+        let scheduleBase= await ctx.state.field.getScheduleBases({
           where:{
             weekday: tomorrow.getDay(),
             hours: arrayOfHour[j],
@@ -102,91 +87,98 @@ router.post('scheduleGenerate', '/', async (ctx) => {
           }
         });
         let state="Available";
-        if (!scheduleBases[0].open){
+        if (!scheduleBase[0].open){
           state="Not Available";
         }
-        await ctx.orm.schedule.create({price:scheduleBase.price,hours:arrayOfHour[j],date:tomorrow,fieldId:ctx.state.field.id,open:scheduleBase.open,status:state});
+        await ctx.orm.schedule.create({price:scheduleBase[0].price,hours:arrayOfHour[j],date:tomorrow,fieldId:ctx.state.field.id,open:scheduleBase[0].open,status:state});
       }
     }
-  }
+  ctx.redirect(ctx.router.url('field',{id: ctx.state.field.id, compoundId: ctx.state.compound.id}));
 });
 
-router.get('scheduleBaseEdit', '/:date/edit', async (ctx) => {
+router.get('scheduleEdit', '/:date/edit', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
   if (!ctx.state.requireOwnerModifyPermission(ctx, compoundOwner)) return;
-  const scheduleBases = await ctx.state.field.getScheduleBases();
-  scheduleBases.sort(function(a, b) {
+  const realDate= new Date(ctx.params.date);
+  const field= ctx.state.field;
+  realDate.setHours(0);
+  realDate.setMinutes(0);
+  realDate.setSeconds(0);
+  realDate.setMilliseconds(0);
+  realDate.setDate(realDate.getDate() + 1);
+  const schedules = await field.getSchedules({where:{date:realDate}});
+  schedules.sort(function(a, b) {
     return a.id - b.id;
 });
-  const scheduleBase= scheduleBases[0];
   const arrayOfHour= arrayOfHours(ctx.state.field);
-  const daysOfWeek=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
-  await ctx.render('scheduleBases/edit', {
-    scheduleBases,
+  const daysOfWeek=["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+  await ctx.render('schedules/edit', {
+    schedules,
     arrayOfHour,
     daysOfWeek,
-    scheduleBase,
     field:  ctx.state.field,
-    submitScheduleBasePath: ctx.router.url('scheduleBaseUpdate', {fieldId:ctx.state.field.id, compoundId:ctx.state.compound.id}),
-    deleteScheduleBasePath: ctx.router.url('scheduleBaseDelete', {fieldId:ctx.state.field.id, compoundId:ctx.state.compound.id}),
+    submitSchedulePath: ctx.router.url('scheduleUpdate', {date:ctx.params.date,fieldId:ctx.state.field.id, compoundId:ctx.state.compound.id}),
     cancelPath: ctx.router.url('field', {id:ctx.state.field.id, compoundId:ctx.state.compound.id}),
   });
 });
 
-router.patch('scheduleBaseUpdate', '/:date', async (ctx) => {
+router.patch('scheduleUpdate', '/:date', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
   if (!ctx.state.requireOwnerModifyPermission(ctx, compoundOwner)) return;
-  const scheduleBases = await ctx.state.field.getScheduleBases();
-  scheduleBases.sort(function(a, b) {
+  const schedules = await ctx.orm.schedule.findAll({where:{date:ctx.params.date,fieldId:ctx.state.field}});
+  schedules.sort(function(a, b) {
     return a.id - b.id;
 });
-  const scheduleBase= scheduleBases[0];
   const arrayOfHour= arrayOfHours(ctx.state.field);
-  const daysOfWeek=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
+  const daysOfWeek=["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
   try {
-    for (i=0; i<7*ctx.state.field.modules;i++){
-      console.log(ctx.request.body.scheduleBases[i]);
-      await scheduleBases[i].update(ctx.request.body.scheduleBases[i]);
+    for (i=0; i<ctx.state.field.modules;i++){
+      console.log(ctx.request.body.schedules[i]);
+      await schedules[i].update(ctx.request.body.schedules[i]);
     }
     ctx.redirect(ctx.router.url('field',{id: ctx.state.field.id, compoundId: ctx.state.compound.id}));
   } catch (validationError) {
     await ctx.render('scheduleBases/edit', {
-      scheduleBase,
-      scheduleBases,
+      schedules,
       arrayOfHour,
       daysOfWeek,
       field: ctx.state.field,
       errors: validationError.errors,
       submitScheduleBasePath: ctx.router.url('scheduleBaseUpdate', {fieldId:ctx.state.field.id, compoundId:ctx.state.compound.id}),
-      cancelPath: ctx.router.url('field', {fieldId:ctx.state.field.id, compoundId:ctx.state.compound.id}),
-      deleteScheduleBasePath: ctx.router.url('scheduleBaseDelete', {fieldId:ctx.state.field.id, compoundId:ctx.state.compound.id}),
+      cancelPath: ctx.router.url('field', {fieldId:ctx.state.field.id, compoundId:ctx.state.compound.id})
     });
   }
 });
 
-router.get('scheduleBase', '/', async (ctx) => {
+router.get('schedule', '/:date', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
-  //const compoundOwner=owner
-  const scheduleBase = await ctx.orm.scheduleBase.findById(ctx.params.id);
-  const field= await scheduleBase.getField();
-  await ctx.render('scheduleBases/show', {
+  const realDate= new Date(ctx.params.date);
+  const field= ctx.state.field;
+
+  realDate.setHours(0);
+  realDate.setMinutes(0);
+  realDate.setSeconds(0);
+  realDate.setMilliseconds(0);
+  realDate.setDate(realDate.getDate() + 1);
+  const schedules = await ctx.state.field.getSchedules({where:{date:realDate,fieldId:ctx.state.field.id}});
+  console.log(schedules);
+  await ctx.render('schedules/show', {
     hasModifyPermission: ctx.state.hasOwnerModifyPermission(ctx, compoundOwner),
-    scheduleBase,
-    scheduleBasesPath: ctx.router.url('scheduleBases', {fieldId: ctx.state.field.id}),
-    fieldPath: field => ctx.router.url('field', { id: field.id, compoundId:ctx.state.compound.id }),
-    editFieldPath: ctx.router.url('scheduleBaseEdit', {fieldId: ctx.state.field.id, id: scheduleBase.id}),
+    schedules,
+    editSchedulePath: ctx.router.url('scheduleEdit', {date:ctx.params.date,fieldId:ctx.state.field.id, compoundId:ctx.state.compound.id}),
+    field,
 
   });
 });
 
-router.delete('scheduleBaseDelete', '/', async (ctx) => {
-  const compoundOwner= await ctx.state.compound.getCompoundOwner();
-  if (!ctx.state.requireOwnerModifyPermission(ctx, compoundOwner)) return;
-  const scheduleBases = await ctx.state.field.getScheduleBases();
-  for (i=0; i<7*ctx.state.field.modules;i++){
-    console.log(scheduleBases[i]);
-    await scheduleBases[i].destroy();
+router.delete('scheduleDelete', '/', async (ctx) => {
+  ctx.orm.schedule.destroy({
+  where: {
+    date: {
+      [Op.lt]: new Date(),
+    }
   }
+});
   ctx.redirect(ctx.router.url('field',{id: ctx.state.field.id, compoundId: ctx.state.compound.id}));
 });
 

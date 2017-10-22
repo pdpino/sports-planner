@@ -17,6 +17,16 @@ module.exports = {
         onUpdate: 'cascade',
         onDelete: 'cascade',
       },
+      matchId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'matches',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade',
+      },
       price: {
         type: Sequelize.INTEGER,
       },
@@ -27,7 +37,7 @@ module.exports = {
         type: Sequelize.DATE,
       },
       open:{
-        type: Sequelize.BOOLEAN;
+        type: Sequelize.BOOLEAN,
       },
       status: {
         type: Sequelize.STRING,
