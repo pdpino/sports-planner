@@ -129,12 +129,6 @@
       No pertenece a ningún equipo.
     <% } %>
 
-    <% if(hasModifyPermission) { %>
-      <form action="<%= newPlayerTeamPath %>">
-          <input type="submit" value="Añadir Equipo" />
-      </form>
-    <% } %>
-
     <% if(playerMatches.length > 0) { %>
       <h4> Partidos: </h4>
       <ul>
