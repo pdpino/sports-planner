@@ -47,8 +47,8 @@ router.post('compoundCreate', '/', async (ctx) => {
 });
 
 router.get('compoundEdit', '/:id/edit', async (ctx) => {
-  const compound = await ctx.orm.compound.findById(ctx.params.id);
-  const compoundOwner = await ctx.orm.compoundOwner.findById(compound.compoundOwnerId);
+  const compound = await ctx.state.findById(ctx.orm.compound, ctx.params.id);
+  const compoundOwner = await ctx.state.findById(ctx.orm.compoundOwner, compound.compoundOwnerId);
 
   ctx.state.requireOwnerModifyPermission(ctx, compoundOwner);
 
@@ -61,8 +61,8 @@ router.get('compoundEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('compoundUpdate', '/:id', async (ctx) => {
-  const compound = await ctx.orm.compound.findById(ctx.params.id);
-  const compoundOwner = await ctx.orm.compoundOwner.findById(compound.compoundOwnerId);
+  const compound = await ctx.state.findById(ctx.orm.compound, ctx.params.id);
+  const compoundOwner = await ctx.state.findById(ctx.orm.compoundOwner, compound.compoundOwnerId);
 
   ctx.state.requireOwnerModifyPermission(ctx, compoundOwner);
 
@@ -81,10 +81,10 @@ router.patch('compoundUpdate', '/:id', async (ctx) => {
 });
 
 router.get('compound', '/:id', async (ctx) => {
-  const compound = await ctx.orm.compound.findById(ctx.params.id);
-  const compoundOwner = await ctx.orm.compoundOwner.findById(compound.compoundOwnerId);
-  const fields= await compound.getFields();
-  const compoundId= compound.id;
+  const compound = await ctx.state.findById(ctx.orm.compound, ctx.params.id);
+  const compoundOwner = await ctx.state.findById(ctx.orm.compoundOwner, compound.compoundOwnerId);
+  const fields = await compound.getFields();
+  const compoundId = compound.id;
 
   await ctx.render('compounds/show', {
     hasModifyPermission: ctx.state.hasOwnerModifyPermission(ctx, compoundOwner),
@@ -100,7 +100,7 @@ router.get('compound', '/:id', async (ctx) => {
 });
 
 router.delete('compoundDelete', '/:id', async (ctx) => {
-  const compound = await ctx.orm.compound.findById(ctx.params.id);
+  const compound = await ctx.state.findById(ctx.orm.compound, ctx.params.id);
   await compound.destroy();
   ctx.redirect(ctx.router.url('compounds'));
 });
@@ -108,11 +108,9 @@ router.delete('compoundDelete', '/:id', async (ctx) => {
 router.use(
   '/:compoundId/fields',
   async (ctx, next) => {
-
-    const compound = await ctx.orm.compound.findById(ctx.params.compoundId);
-
     ctx.state.sports = await ctx.orm.sport.findAll();
-    ctx.state.compound = compound;
+    ctx.state.compound = await ctx.state.findById(ctx.orm.compound, ctx.params.compoundId);
+    ctx.state.compoundOwner = await ctx.state.compound.getCompoundOwner();
     await next();
   },
   fieldsRouter.routes(),

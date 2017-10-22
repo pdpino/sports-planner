@@ -49,7 +49,7 @@ router.post('sportCreate', '/', async (ctx) => {
 router.get('sportEdit', '/:id/edit', async (ctx) => {
   ctx.state.requireAdmin(ctx);
 
-  const sport = await ctx.orm.sport.findById(ctx.params.id);
+  const sport = await ctx.state.findById(ctx.orm.sport, ctx.params.id);
   await ctx.render('sports/edit', {
     sport,
     submitSportPath: ctx.router.url('sportUpdate', sport.id),
@@ -61,7 +61,7 @@ router.patch('sportUpdate', '/:id', async (ctx) => {
   ctx.state.requireAdmin(ctx);
 
   fixUpdateParams(ctx.request.body);
-  const sport = await ctx.orm.sport.findById(ctx.params.id);
+  const sport = await ctx.state.findById(ctx.orm.sport, ctx.params.id);
   try {
     await sport.update(ctx.request.body);
     ctx.redirect(ctx.router.url('sport', { id: sport.id }));
@@ -76,7 +76,7 @@ router.patch('sportUpdate', '/:id', async (ctx) => {
 });
 
 router.get('sport', '/:id', async (ctx) => {
-  const sport = await ctx.orm.sport.findById(ctx.params.id);
+  const sport = await ctx.state.findById(ctx.orm.sport, ctx.params.id);
   await ctx.render('sports/show', {
     sport,
     hasModifyPermission: ctx.state.hasAdminPermission,
@@ -88,7 +88,7 @@ router.get('sport', '/:id', async (ctx) => {
 router.delete('sportDelete', '/:id', async (ctx) => {
   ctx.state.requireAdmin(ctx);
 
-  const sport = await ctx.orm.sport.findById(ctx.params.id);
+  const sport = await ctx.state.findById(ctx.orm.sport, ctx.params.id);
   await sport.destroy(); // {force: true});
   ctx.redirect(ctx.router.url('sports'));
 });

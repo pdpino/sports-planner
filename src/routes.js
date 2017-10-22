@@ -156,6 +156,13 @@ router.use((ctx, next) => {
 
 /** Add other helper functions **/
 router.use((ctx, next) => {
+  /** Wrapper to find an entity (match, team, player, etc) by the id and assert that is not null **/
+  ctx.state.findById = async function (model, id){
+    const entity = await model.findById(id);
+    ctx.assert(entity, 404);
+    return entity;
+  }
+
   /** Return the visible matches for the currentPlayer logged in **/
   ctx.state.getVisibleMatches = async function(ctx){
     if (ctx.state.hasAdminPermission){

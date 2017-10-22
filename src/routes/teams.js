@@ -57,7 +57,7 @@ router.post('teamCreate', '/', async (ctx) => {
 });
 
 router.get('teamEdit', '/:id/edit', async (ctx) => {
-  const team = await ctx.orm.team.findById(ctx.params.id);
+  const team = await ctx.state.findById(ctx.orm.team, ctx.params.id);
 
   await ctx.state.requirePlayerModifyPermission(ctx, team);
 
@@ -70,7 +70,7 @@ router.get('teamEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('teamUpdate', '/:id', async (ctx) => {
-  const team = await ctx.orm.team.findById(ctx.params.id);
+  const team = await ctx.state.findById(ctx.orm.team, ctx.params.id);
 
   await ctx.state.requirePlayerModifyPermission(ctx, team);
 
@@ -89,8 +89,8 @@ router.patch('teamUpdate', '/:id', async (ctx) => {
 });
 
 router.get('team', '/:id', async (ctx) => {
-  const team = await ctx.orm.team.findById(ctx.params.id);
-  const sport = await ctx.orm.sport.findById(team.sportId);
+  const team = await ctx.state.findById(ctx.orm.team, ctx.params.id);
+  const sport = await ctx.state.findById(ctx.orm.sport, team.sportId);
   const teamMembers = await team.getPlayers();
   const teamMatches = await team.getMatches();
   const hasModifyPermission = await team.hasModifyPermission(ctx.state.currentPlayer);
@@ -117,7 +117,7 @@ router.get('team', '/:id', async (ctx) => {
 });
 
 router.delete('teamDelete', '/:id', async (ctx) => {
-  const team = await ctx.orm.team.findById(ctx.params.id);
+  const team = await ctx.state.findById(ctx.orm.team, ctx.params.id);
 
   await ctx.state.requirePlayerModifyPermission(ctx, team);
 
@@ -128,7 +128,7 @@ router.delete('teamDelete', '/:id', async (ctx) => {
 router.use(
   '/:teamId/players',
   async (ctx, next) => {
-    ctx.state.team = await ctx.orm.team.findById(ctx.params.teamId);
+    ctx.state.team = await ctx.state.findById(ctx.orm.team, ctx.params.teamId);
 
     await ctx.state.requirePlayerModifyPermission(ctx, ctx.state.team);
 
@@ -142,7 +142,7 @@ router.use(
 router.use(
   '/:teamId/matches',
   async (ctx, next) => {
-    ctx.state.team = await ctx.orm.team.findById(ctx.params.teamId);
+    ctx.state.team = await ctx.state.findById(ctx.orm.team, ctx.params.teamId);
 
     await ctx.state.requirePlayerModifyPermission(ctx, ctx.state.team);
 
