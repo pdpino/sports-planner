@@ -47,14 +47,12 @@ async function requireSeeMatchPermission(ctx, match){
 }
 
 router.get('matches', '/', async (ctx) => {
-  const publicMatches = await ctx.orm.match.findAll({
+  let matches = await ctx.orm.match.findAll({
     where: {
       isPublic: true,
     }
   });
 
-  // REVIEW: is there a way to concat public and private matches?
-  // concat() doesn't work
   let privateMatches = [];
   if(ctx.state.isPlayerLoggedIn){
     privateMatches = await ctx.orm.match.findAll({
@@ -72,11 +70,11 @@ router.get('matches', '/', async (ctx) => {
         }
       }]
     });
+    matches = matches.concat(privateMatches);
   }
 
   await ctx.render('matches/index', {
-    publicMatches,
-    privateMatches,
+    matches,
     sports: ctx.state.sports,
     hasCreatePermission: ctx.state.isPlayerLoggedIn,
     matchPath: match => ctx.router.url('match', { id: match.id }),
