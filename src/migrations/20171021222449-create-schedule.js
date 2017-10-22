@@ -19,7 +19,6 @@ module.exports = {
       },
       matchId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
         references: {
           model: 'matches',
           key: 'id',

@@ -19,7 +19,7 @@
       <% } %>
       <div>
         <label for="name">Nombre</label>
-        <input type="text" name="name" value="<%= match.name %>"> </input> 
+        <input type="text" name="name" value="<%= match.name %>"> </input>
       </div>
       <div>
         <label for="isPublic">Público?</label>
@@ -45,6 +45,12 @@
       </div>
     </form>
   </div>
+
+  <% if(!match.isNewRecord) { %>
+    <form action="<%= selectCompoundPath %>" method="get">
+    <input type="submit" value="Pedir Cancha" />
+    </form>
+    <%}%>
 
   <form action="<%= cancelPath %>" method="get">
       <input class"deletebutton" type="submit" value="Cancelar"/>

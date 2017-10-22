@@ -123,29 +123,39 @@ router.get('scheduleEdit', '/:date/edit', async (ctx) => {
 });
 
 router.patch('scheduleUpdate', '/:date', async (ctx) => {
+
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
   if (!ctx.state.requireOwnerModifyPermission(ctx, compoundOwner)) return;
-  const schedules = await ctx.orm.schedule.findAll({where:{date:ctx.params.date,fieldId:ctx.state.field}});
+  const realDate= new Date(ctx.params.date);
+  realDate.setHours(0);
+  realDate.setMinutes(0);
+  realDate.setSeconds(0);
+  realDate.setMilliseconds(0);
+  realDate.setDate(realDate.getDate() + 1);
+  const schedules = await ctx.state.field.getSchedules({where:{date:realDate}});
   schedules.sort(function(a, b) {
     return a.id - b.id;
 });
+console.log("WOOO");
   const arrayOfHour= arrayOfHours(ctx.state.field);
   const daysOfWeek=["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
   try {
     for (i=0; i<ctx.state.field.modules;i++){
-      console.log(ctx.request.body.schedules[i]);
+      console.log(ctx.request.body);
       await schedules[i].update(ctx.request.body.schedules[i]);
     }
     ctx.redirect(ctx.router.url('field',{id: ctx.state.field.id, compoundId: ctx.state.compound.id}));
   } catch (validationError) {
-    await ctx.render('scheduleBases/edit', {
+    await ctx.render('schedules/show', {
       schedules,
       arrayOfHour,
+      hasModifyPermission: ctx.state.hasOwnerModifyPermission(ctx, compoundOwner),
+      editSchedulePath: ctx.router.url('scheduleEdit', {date:ctx.params.date,fieldId:ctx.state.field.id, compoundId:ctx.state.compound.id}),
       daysOfWeek,
       field: ctx.state.field,
       errors: validationError.errors,
-      submitScheduleBasePath: ctx.router.url('scheduleBaseUpdate', {fieldId:ctx.state.field.id, compoundId:ctx.state.compound.id}),
-      cancelPath: ctx.router.url('field', {fieldId:ctx.state.field.id, compoundId:ctx.state.compound.id})
+      submitSchedulePath: ctx.router.url('scheduleBaseUpdate', {date:ctx.params.date,fieldId:ctx.state.field.id, compoundId:ctx.state.compound.id}),
+      cancelPath: ctx.router.url('field', {id:ctx.state.field.id, compoundId:ctx.state.compound.id})
     });
   }
 });
