@@ -13,7 +13,7 @@
       <% } %>
       <div>
         <label for="name">Nombre</label>
-        <input type="text" name="name" value="<%= field.name %>" />
+        <input type="text" name="name" value="<%= field.name %>" required/>
       </div>
       <div>
         <label for="photo">Foto</label>
@@ -27,12 +27,12 @@
         <label for="schedule">Horario</label>
         <input type="text" name="schedule" value="<%= field.schedule %>" />
       </div>
-      <input type="hidden" name="compoundId" value="<%=compound.id %>"
+      <input type="hidden" name="compoundId" value="<%= compound.id %>"
       <div>
         <label for="sportId">Deporte</label>
 
         <% sports.forEach((sport) => { %>
-          <input type="radio" name="sportId" value="<%= sport.id %>"
+          <input type="radio" name="sportId" value="<%= sport.id %>" required
           <%= (sport.id === field.sportId) ? 'checked' : '' %> >
           <%= sport.name %>
 

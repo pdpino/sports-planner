@@ -17,6 +17,11 @@ function getMatchParams(ctx){
   // Build date
   filteredParams.date = moment(`${params.dateYear} ${params.dateMonth} ${params.dateDay} ${params.dateHour} ${params.dateMinute}`, "YYYY MM DD H:mm");
 
+  if(!filteredParams.date.isValid()){
+    // REVIEW: shouldn't this be in the model?
+    filteredParams.date = null;
+  }
+
   // checkbox input passes 'on' when checked and null when not-checked. Parse this to boolean
   filteredParams.isPublic = Boolean(filteredParams.isPublic);
 
@@ -31,7 +36,7 @@ router.get('matches', '/', async (ctx) => {
   await ctx.render('matches/index', {
     matches,
     sports: ctx.state.sports,
-    hasCreatePermission: ctx.state.isLoggedIn,
+    hasCreatePermission: ctx.state.isPlayerLoggedIn,
     matchPath: match => ctx.router.url('match', { id: match.id }),
     newMatchPath: ctx.router.url('matchNew'),
   });
