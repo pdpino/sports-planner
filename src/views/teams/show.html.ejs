@@ -8,18 +8,9 @@
   </p>
 
   <% if (hasModifyPermission) { %>
-    <form action=<%= editTeamPath %>>
-        <input type="submit" value="Editar"/>
-    </form>
+    <%- include('../_buttons/edit', { editPath: editTeamPath }) %>
 
-    <form action="<%= deleteTeamPath %>" method="post">
-      <div>
-        <input type="hidden" name="_method" value="delete" />
-      </div>
-      <div>
-        <input type="submit" name="delete" value="Eliminar" />
-      </div>
-    </form>
+    <%- include('../_buttons/delete', { deletePath: deleteTeamPath }) %>
   <% } %>
 
   <div>
@@ -29,14 +20,15 @@
         <% teamMembers.forEach( (teamMember) => { %>
           <li>
               <a class="lilink" href="<%= getPlayerPath(teamMember) %>"%>>
-              <img src=<%=teamMember.photo%> widt"h="32" height="32"/>
+              <img src="<%=teamMember.photo%>" class="small-logo"/>
               <div id="margincustom">
                <%= teamMember.firstName %> <%= (teamMember.isMember.isCaptain ? '-- capitán del equipo' : '' )%>
              </div>
              <% if (hasModifyPermission) { %>
-               <form action=<%= editTeamMemberPath(teamMember) %>>
-                   <input type="submit" value="Editar" />
-               </form>
+               <%- include('../_buttons/edit', {
+                 editPath: editTeamMemberPath(teamMember),
+                 message: 'Editar información personal',
+               }) %>
              <% } %>
             </a>
           </li>
@@ -64,16 +56,14 @@
 
           <li>
               <a class="lilink" href="<%= getMatchPath(match) %>">%>
-              <img src=<%=match.photo%> widt"h="32" height="32"/>
-              <div id="margincustom">
-               <%= match.name %>
-             </div>
-             <% if (hasModifyPermission) { %>
-               <form action=<%= editTeamMatchPath(match) %>>
-                   <input type="submit" value="Editar" />
-               </form>
-             <% } %>
-            </a>
+                <img src="<%=match.photo%>" class="small-logo"/>
+                <div id="margincustom">
+                  <%= match.name %>
+                </div>
+                <% if (hasModifyPermission) { %>
+                 <%- include('../_buttons/edit', { editPath: editTeamMatchPath(match) }) %>
+               <% } %>
+             </a>
           </li>
         <% }) %>
       </ul>
@@ -89,9 +79,6 @@
 
   </div>
 
+  <%- include('../_buttons/back', { backPath: teamsPath, message: 'Volver a todos los equipos' }) %>
 
-
-  <form action=<%= teamsPath %>>
-      <input type="submit" value="Volver a todos los equipos"/>
-  </form>
 </div>

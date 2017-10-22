@@ -2,6 +2,30 @@
 
   <h1><%= player.firstName %> <%= player.lastName %></h1>
 
+  <% if (canAddFriend) { %>
+    <form action="<%= addFriendPath(player) %>" method="post">
+      <input type="submit" value="Añadir Amigo" />
+    </form>
+  <% } else if(canDeleteFriend) { %>
+    <%- include('../_buttons/delete', {
+      deletePath: deleteFriendPath(player),
+      message: 'Eliminar de mis amigos'
+    }) %>
+  <% } else if(canAcceptFriend) { %>
+    <form action="<%= acceptFriendPath(player) %>" method="post">
+      <div>
+        <input type="hidden" name="_method" value="patch" />
+      </div>
+      <div>
+        <input type="submit" value="Aceptar Amigo" />
+      </div>
+    </form>
+  <% } else if(waitingFriend) { %>
+    <p>
+      Esperando confirmación
+    </p>
+  <% } %>
+
   <div>
     <h4>Información personal</h4>
     <img src=<%= player.photo %> >
@@ -15,10 +39,32 @@
     <p> Género: <%= player.gender %> </p>
 
     <% if(hasModifyPermission) { %>
-      <form action="<%= editPlayerPath %>">
-          <input type="submit" value="Editar Información personal" />
-      </form>
+      <%- include('../_buttons/edit', {
+        editPath: editPlayerPath,
+        message: 'Editar información personal',
+      }) %>
     <% } %>
+  </div>
+
+  <div>
+    <% if(friends.length > 0) { %>
+      <h4>Amigos:</h4>
+      <ul>
+        <% friends.forEach((friend) => { %>
+          <li>
+            <a class="lilink" href="<%= getPlayerPath(friend) %>">
+              <div>
+                <%= friend.getName() %>
+              </div>
+
+            </a>
+          </li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      No tiene amigos.
+    <% } %>
+
   </div>
 
   <div>
@@ -27,23 +73,22 @@
       <ul>
         <% playerSports.forEach((sport) => { %>
           <li>
-                <a class="lilink" href="<%= getSportPath(sport) %>">
-                <img src=<%=sport.logo%> width="32" height="32"/>
-                <div>
+            <a class="lilink" href="<%= getSportPath(sport) %>">
+              <img class="small-logo" src="<%= sport.logo %>"/>
+              <div>
                 <%= sport.name %>
-               </div>
-               <div class="position">
-              posición (es): <%= sport.plays.position %>
-
-            <% if(hasModifyPermission) { %>
-              <form action="<%= editPlayerSportPath(sport) %>">
-                  <input class="editin" type="submit" value="Editar deporte" />
-              </form>
-            <% } %>
-          </a>
-          </div>
-        </li>
-
+              </div>
+              <div class="position">
+                posición (es): <%= sport.plays.position %>
+                <% if(hasModifyPermission) { %>
+                  <%- include('../_buttons/edit', {
+                    editPath: editPlayerSportPath(sport),
+                    message: 'Editar deporte'
+                  }) %>
+                <% } %>
+              </div>
+            </a>
+          </li>
         <% }) %>
       </ul>
     <% } else { %>
@@ -65,22 +110,19 @@
         <% playerTeams.forEach((team) => { %>
 
           <li>
-
-                <a class="lilink" href="<%= getTeamPath(team) %>">
-                <img src=<%=team.logo%> width="32" height="32"/>
-                <div>
+            <a class="lilink" href="<%= getTeamPath(team) %>">
+              <img class="small-logo" src="<%=team.logo%>"/>
+              <div>
                 <%= team.name %> <%= (team.isMember.isCaptain) ? '-- Capitán del equipo' : '' %>
-               </div>
-
-
+              </div>
               <% if(hasModifyPermission) { %>
-                <form action="<%= deletePlayerTeamPath(team) %>" method="post">
-                  <input type="hidden" name="_method" value="delete" />
-                  <input type="submit" value="Abandonar equipo" />
-                </form>
+                <%- include('../_buttons/delete', {
+                  deletePath: deletePlayerTeamPath(team),
+                  message: 'Abandonar equipo',
+                }) %>
               <% } %>
             </a>
-        </li>
+          </li>
         <% }) %>
       </ul>
     <% } else { %>
@@ -98,27 +140,20 @@
       <ul>
         <% playerMatches.forEach((match) => { %>
           <li>
-                <a class="lilink" href="<%= getMatchPath(match) %>">
-                <img src=<%=match.photo%> width="32" height="32"/>
+              <a class="lilink" href="<%= getMatchPath(match) %>">
                 <div>
-                <%= match.name %>
-               </div>
-               <div>
-                 <%= match.date %>
-                 </div>
-               <div>
-                   <%= (match.isPlayerInvited.isAdmin) ? 'Usted es Admin del partido' : '' %>
-                 </div>
+                  <%= match.name %>
+                </div>
+                <div>
+                  <%= match.date %>
+                </div>
+                <div>
+                  <%= (match.isPlayerInvited.isAdmin) ? 'Usted es Admin del partido' : '' %>
+                </div>
 
-
-
-                 <% if(hasModifyPermission) { %>
-
-                   <form action="<%= editPlayerMatchPath(match) %>">
-                       <input type="submit" value="Editar" />
-                   </form>
-
-                 <% } %>
+                <% if(hasModifyPermission) { %>
+                  <%- include('../_buttons/edit', { editPath: editPlayerMatchPath(match) }) %>
+                <% } %>
             </a>
         </li>
         <% }) %>
@@ -126,8 +161,6 @@
     <% } else { %>
       No pertenece a ningún partido.
     <% } %>
-
-
 
 
     <% if(hasModifyPermission) { %>
@@ -138,9 +171,6 @@
 
   </div>
 
+  <%- include('../_buttons/back', { backPath: playersPath }) %>
 
-
-  <form action="<%= playersPath %>">
-      <input type="submit" value="Volver" />
-  </form>
 </div>

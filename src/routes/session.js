@@ -3,7 +3,7 @@ const KoaRouter = require('koa-router');
 const router = new KoaRouter();
 
 router.get('sessionNew', '/new', async (ctx) => {
-  if (!ctx.state.requireNoLogin(ctx)) return;
+  ctx.state.requireNoLogin(ctx);
 
   return ctx.render('session/new', {
     email: '',
@@ -14,8 +14,8 @@ router.get('sessionNew', '/new', async (ctx) => {
 });
 
 router.put('sessionCreate', '/', async (ctx) => {
-  if (!ctx.state.requireNoLogin(ctx)) return;
-  
+  ctx.state.requireNoLogin(ctx);
+
   const { email, password } = ctx.request.body;
   const user = await ctx.orm.user.find({ where: { email } });
   if (user) {

@@ -7,18 +7,9 @@
   </p>
 
   <% if (hasModifyPermission) { %>
-  <form action=<%= editMatchPath %>>
-      <input type="submit" value="Editar"/>
-  </form>
+    <%- include('../_buttons/edit', { editPath: editMatchPath }) %>
 
-  <form action="<%= deleteMatchPath %>" method="post">
-    <div>
-      <input type="hidden" name="_method" value="delete" />
-    </div>
-    <div>
-      <input type="submit" name="delete" value="Eliminar" />
-    </div>
-  </form>
+    <%- include('../_buttons/delete', { deletePath: deleteMatchPath }) %>
   <% } %>
 
 
@@ -33,17 +24,11 @@
           </a>
 
           <%= (player.isPlayerInvited.isAdmin) ? '-- Admin del partido' : '' %>
-
           --
-          <%= getStatusMessage(player.isPlayerInvited.status) %>
-
+          <%= invitationToString(player.isPlayerInvited.status) %>
 
           <% if(hasModifyPermission) { %>
-
-            <form action="<%= editInvitedPlayerPath(player) %>">
-                <input type="submit" value="Editar" />
-            </form>
-
+            <%- include('../_buttons/edit', { editPath: editInvitedPlayerPath(player) }) %>
           <% } %>
         </li>
       <% }) %>
@@ -69,12 +54,13 @@
           </a>
 
           --
-          <%= getStatusMessage(team.isTeamInvited.status) %>
+          <%= invitationToString(team.isTeamInvited.status) %>
 
           <% if(hasModifyPermission) { %>
-            <form action="<%= editInvitedTeamPath(team) %>">
-                <input type="submit" value="Editar Invitación" />
-            </form>
+            <%- include('../_buttons/edit', {
+              editPath: editInvitedTeamPath(team),
+              message: 'Editar invitación',
+            }) %>
           <% } %>
 
         </li>
@@ -90,7 +76,6 @@
     </form>
   <% } %>
 
-  <form action=<%= matchesPath %>>
-      <input type="submit" value="Volver a todos los partidos"/>
-  </form>
+  <%- include('../_buttons/back', { backPath: matchesPath, message: 'Volver a todos los partidos' }) %>
+
 </div>

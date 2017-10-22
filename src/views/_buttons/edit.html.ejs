@@ -1,0 +1,6 @@
+<%# Must provide: editPath
+    optional: message %>
+
+<form action="<%= editPath %>">
+  <input class="edit-button" type="submit" value="<%= locals.message || 'Editar' %>"/>
+</form>

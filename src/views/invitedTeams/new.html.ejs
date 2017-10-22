@@ -13,7 +13,6 @@
         <% }) %>
       </div>
 
-
       <div>
         <input type="submit" name="create" value="Invitar" />
       </div>
@@ -27,7 +26,5 @@
     </div>
   <% } %>
 
-  <form action="<%= cancelPath %>" method="get">
-      <input type="submit" value="Cancelar"/>
-  </form>
+  <%- include('../_buttons/cancel', { cancelPath }) %>
 </div>

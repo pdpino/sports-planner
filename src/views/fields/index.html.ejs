@@ -1,24 +1,12 @@
-<div class ="center">
+<div class="center">
 
   <h1>Canchas en Jugamos</h1>
 
-
   <% if(hasModifyPermission) { %>
-  <form action=<%= newFieldPath %>>
-      <input type="submit" value="Crear cancha"/>
-  </form>
+    <form action=<%= newFieldPath %>>
+        <input type="submit" value="Crear cancha"/>
+    </form>
   <%}%>
 
-  <ul>
-    <% fields.forEach((field) => { %>
-      <li>
-          <a class="lilink" href=<%= fieldPath(field) %>>
-          <img src=<%=field.photo%> width="128" height="128"/>
-          <div>
-           <%= field.name %>
-         </div>
-       </a>
-      </li>
-    <% }) %>
-  </ul>
+  <%- include('index-snippet', { fields, logoClassName: "large-logo" }) %>
 </div>

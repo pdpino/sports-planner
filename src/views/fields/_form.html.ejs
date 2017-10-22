@@ -1,17 +1,10 @@
-<div class ="center">
+<div class="center">
 
   <h1> <%= (field.isNewRecord) ? 'Nueva Cancha' : 'Editar cancha' %></h1>
+
+  <%- include('../_error/snippet', { errors: locals.errors }) %>
+
   <div>
-    <% if (locals.errors) { %>
-      <div class="errors">
-        Necesitas arreglar los siguiente errores:
-        <ul>
-          <% errors.forEach(error => { %>
-            <li><%= error.message %></li>
-          <% }); %>
-        </ul>
-      </div>
-    <% } %>
     <form action="<%= submitFieldPath %>" method="post">
       <% if(!field.isNewRecord) { %>
         <div>
@@ -20,7 +13,7 @@
       <% } %>
       <div>
         <label for="name">Nombre</label>
-        <input type="text" name="name" value="<%= field.name %>" />
+        <input type="text" name="name" value="<%= field.name %>" required/>
       </div>
       <div>
         <label for="photo">Foto</label>
@@ -28,20 +21,26 @@
       </div>
       <div>
         <label for="prices">Precios</label>
-        <input type="text" name="address" value="<%= field.precio %>" />
+        <input type="text" name="prices" value="<%= field.prices %>" />
       </div>
       <div>
         <label for="schedule">Horario</label>
         <input type="text" name="schedule" value="<%= field.schedule %>" />
       </div>
-      <input type="hidden" name="compoundId" value="<%=compound.id %>"
+      <div>
+        <input type="hidden" name="compoundId" value="<%= compound.id %>" />
+      </div>
       <div>
         <label for="sportId">Deporte</label>
 
         <% sports.forEach((sport) => { %>
-          <input type="radio" name="sportId" value="<%= sport.id %>" <%= (sport.id === field.sportId) ? 'checked' : '' %> > <%= sport.name %>
+          <input type="radio" name="sportId" value="<%= sport.id %>" required
+          <%= (sport.id === field.sportId) ? 'checked' : '' %> >
+          <%= sport.name %>
+
         <% }) %>
       </div>
+      <div>
         <% if(field.isNewRecord) { %>
           <input type="submit" name="create" value="Crear" />
         <% } else { %>
@@ -53,17 +52,8 @@
 
 
   <% if(!field.isNewRecord) { %>
-    <form action="<%= deleteFieldPath %>" method="post">
-      <div>
-        <input type="hidden" name="_method" value="delete" />
-      </div>
-      <div>
-        <input class"deletebutton" type="submit" name="delete" value="Eliminar" />
-      </div>
-    </form>
+    <%- include('../_buttons/delete', { deletePath: deleteFieldPath }) %>
   <% } %>
 
-  <form action="<%= cancelPath %>" method="get">
-      <input type="submit" value="Cancelar"/>
-  </form>
+  <%- include('../_buttons/cancel', { cancelPath }) %>
 </div>

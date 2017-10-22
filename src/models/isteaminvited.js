@@ -1,8 +1,11 @@
 module.exports = function defineisTeamInvited(sequelize, DataTypes) {
+  // HACK: invitation statuses
+  const possibleStatus = ['sent', 'asked', 'rejectedByAdmin', 'rejectedByUser', 'accepted'];
+
   const isTeamInvited = sequelize.define('isTeamInvited', {
     status: {
       type: DataTypes.ENUM,
-      values: ['sentToTeam', 'sentByTeam', 'teamRejected', 'rejectedByTeam', 'accepted'], // HACK: copied in migration
+      values: possibleStatus,
       allowNull: false,
       validate: {
         notEmpty: {
@@ -12,8 +15,10 @@ module.exports = function defineisTeamInvited(sequelize, DataTypes) {
     },
     score: DataTypes.INTEGER,
   });
+
   isTeamInvited.associate = function associate(models) {
-    
+
   };
+
   return isTeamInvited;
 };

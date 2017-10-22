@@ -1,16 +1,9 @@
 <div class ="center">
   <h1><%= sport.isNewRecord ? 'Nuevo deporte' : 'Editar deporte' %></h1>
+
+  <%- include('../_error/snippet', { errors: locals.errors }) %>
+
   <div>
-    <% if (locals.errors) { %>
-      <div class="errors">
-        Necesitas arreglar los siguiente errores:
-        <ul>
-          <% errors.forEach(error => { %>
-            <li><%= error.message %></li>
-          <% }); %>
-        </ul>
-      </div>
-    <% } %>
     <form action="<%= submitSportPath %>" method="post">
       <% if(!sport.isNewRecord) { %>
         <div>
@@ -19,7 +12,7 @@
       <% } %>
       <div>
         <label for="name">Nombre</label>
-        <input type="text" name="name" value="<%= sport.name %>" />
+        <input type="text" name="name" value="<%= sport.name %>" required/>
       </div>
       <div>
         <label for="logo">Logo</label>
@@ -39,7 +32,5 @@
     </form>
   </div>
 
-  <form action="<%= cancelPath %>" method="get">
-      <input type="submit" value="Cancelar"/>
-  </form>
+  <%- include('../_buttons/cancel', { cancelPath }) %>
 </div>
