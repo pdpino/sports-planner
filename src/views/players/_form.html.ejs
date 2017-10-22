@@ -16,12 +16,12 @@
 
       <div>
         <label for="birthday">Cumpleaños</label>
-        <input type="date" name="birthday" value="<%= player.birthday %>" />
+        <input type="date" name="birthday" value="<%= player.birthday %>" required/>
       </div>
       <label for="gender">Género</label>
       <% genders.forEach( (gender) => { %>
         <div>
-          <input type="radio" name="gender" value="<%= gender %>"
+          <input type="radio" name="gender" value="<%= gender %>" required
           <%= (player.gender == gender) ? 'checked' : '' %>/>
           <%= gender %>
         </div>

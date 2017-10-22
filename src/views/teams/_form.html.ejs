@@ -12,7 +12,7 @@
       <% } %>
       <div>
         <label for="name">Nombre</label>
-        <input type="text" name="name" value="<%= team.name %>" />
+        <input type="text" name="name" value="<%= team.name %>" required/>
       </div>
       <div>
         <label for="logo">Logo</label>
@@ -22,7 +22,9 @@
         <label for="sportId">Deporte</label>
 
         <% sports.forEach((sport) => { %>
-          <input type="radio" name="sportId" value="<%= sport.id %>" <%= (sport.id === team.sportId) ? 'checked' : '' %> > <%= sport.name %>
+          <input type="radio" name="sportId" value="<%= sport.id %>" required
+          <%= (sport.id === team.sportId) ? 'checked' : '' %> >
+          <%= sport.name %>
         <% }) %>
       </div>
       <div>
