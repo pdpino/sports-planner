@@ -90,7 +90,7 @@ router.patch('teamUpdate', '/:id', async (ctx) => {
 
 router.get('team', '/:id', async (ctx) => {
   const team = await ctx.state.findById(ctx.orm.team, ctx.params.id);
-  const sport = await ctx.state.findById(ctx.orm.sport, team.sportId);
+  const sport = await team.getSport();
   const teamMembers = await team.getPlayers();
   const teamMatches = await team.getMatches();
   const hasModifyPermission = await team.hasModifyPermission(ctx.state.currentPlayer);

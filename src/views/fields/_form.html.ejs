@@ -21,13 +21,15 @@
       </div>
       <div>
         <label for="prices">Precios</label>
-        <input type="text" name="address" value="<%= field.precio %>" />
+        <input type="text" name="prices" value="<%= field.prices %>" />
       </div>
       <div>
         <label for="schedule">Horario</label>
         <input type="text" name="schedule" value="<%= field.schedule %>" />
       </div>
-      <input type="hidden" name="compoundId" value="<%= compound.id %>"
+      <div>
+        <input type="hidden" name="compoundId" value="<%= compound.id %>" />
+      </div>
       <div>
         <label for="sportId">Deporte</label>
 
@@ -38,6 +40,7 @@
 
         <% }) %>
       </div>
+      <div>
         <% if(field.isNewRecord) { %>
           <input type="submit" name="create" value="Crear" />
         <% } else { %>
@@ -49,9 +52,7 @@
 
 
   <% if(!field.isNewRecord) { %>
-    <%- include('../_buttons/delete', {
-      deletePath: deleteFieldPath,
-    }) %>
+    <%- include('../_buttons/delete', { deletePath: deleteFieldPath }) %>
   <% } %>
 
   <%- include('../_buttons/cancel', { cancelPath }) %>

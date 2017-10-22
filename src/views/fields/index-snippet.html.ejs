@@ -1,0 +1,14 @@
+<ul>
+  <% fields.forEach((field) => { %>
+    <li>
+      <a class="lilink" href=<%= fieldPath(field) %>>
+        <img src=<%=field.photo%> width="<%= size %>" height="<%= size %>"/>
+        <div>
+          <%= field.name %>
+          <br />
+          <%= field.prices %>
+        </div>
+      </a>
+    </li>
+  <% }) %>
+</ul>
