@@ -1,17 +1,16 @@
-<div class ="center">
+<div class="center">
 <h1>Players en Jugamos</h1>
 
 <ul>
   <% players.forEach((player) => { %>
-
     <li>
-        <a class="lilink" href=<%= playerPath(player) %>>
-        <img src=<%=player.photo%> width="128" height="128"/>
+      <a class="lilink" href="<%= getPlayerPath(player) %>">
+        <img class="large-logo" src="<%= player.photo %>"/>
         <div>
-         <%= player.firstName %> <%= player.lastName %>
-       </div>
-       <div>
-        <%= player.email %>
+          <%= player.firstName %> <%= player.lastName %>
+        </div>
+        <div>
+          <%= player.email %>
         </div>
       </a>
     </li>

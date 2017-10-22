@@ -20,7 +20,7 @@
         <% teamMembers.forEach( (teamMember) => { %>
           <li>
               <a class="lilink" href="<%= getPlayerPath(teamMember) %>"%>>
-              <img src="<%=teamMember.photo%>" width="32" height="32"/>
+              <img src="<%=teamMember.photo%>" class="small-logo"/>
               <div id="margincustom">
                <%= teamMember.firstName %> <%= (teamMember.isMember.isCaptain ? '-- capitán del equipo' : '' )%>
              </div>
@@ -56,7 +56,7 @@
 
           <li>
               <a class="lilink" href="<%= getMatchPath(match) %>">%>
-                <img src="<%=match.photo%>" width="32" height="32"/>
+                <img src="<%=match.photo%>" class="small-logo"/>
                 <div id="margincustom">
                   <%= match.name %>
                 </div>

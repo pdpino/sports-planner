@@ -199,7 +199,7 @@ li {
   line-height: 24px;
   margin: 0 0 24px;
   text-justify: inter-word;
-  color:black;
+  color: black;
   text-decoration: none;
   &:hover {
     display: block;
@@ -208,7 +208,7 @@ li {
     line-height: 24px;
     margin: 0 0 24px;
     text-justify: inter-word;
-    color:black;
+    color: black;
     text-decoration: none;
   }
 }
@@ -222,4 +222,19 @@ li {
 
 #separar {
   margin-top: 30px;
+}
+
+img {
+  .small-logo {
+    width: 32;
+    height: 32;
+  }
+  .medium-logo {
+    width: 64;
+    height: 64;
+  }
+  .large-logo {
+    width: 128;
+    height: 128;
+  }
 }

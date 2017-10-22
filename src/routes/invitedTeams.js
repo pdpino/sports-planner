@@ -111,5 +111,4 @@ router.delete('invitedTeamDelete', '/:id', async (ctx) => {
    ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
  });
 
-
 module.exports = router;
