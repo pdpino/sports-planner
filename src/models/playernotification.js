@@ -33,5 +33,19 @@ module.exports = function defineplayerNotification(sequelize, DataTypes) {
     playerNotification.belongsTo(models.player);
   };
 
+  playerNotification.prototype.toString = function(){
+    // const messages = {
+    //   'friendshipAsked',
+    //   'friendshipAccepted',
+    //   'addedToTeam',
+    //   'playerInvitedToMatch',
+    //   'playerAcceptedInMatch',
+    //   'teamInvitedToMatch',
+    //   'teamAcceptedInMatch',
+    // }
+
+    return this.kind;
+  }
+
   return playerNotification;
 };

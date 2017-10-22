@@ -9,7 +9,8 @@ html, body {
   margin-right: 20px;
 }
 
-h1 { color: #111;
+h1 {
+  color: #111;
   font-family: 'Helvetica Neue', sans-serif;
   font-size: 50px;
   font-weight: bold;
@@ -60,7 +61,7 @@ header {
 }
 
 a {
-  color: 	#1E90FF;
+  color: #1E90FF;
   &:hover {
     color: hotpink;
   }
@@ -70,38 +71,38 @@ a {
 }
 
 input[type=text], input[type=password] {
-    border: 2px solid black;
-    border-radius: 4px;
+  border: 2px solid black;
+  border-radius: 4px;
 }
 
 
 input[type=text]:focus, input[type=password]:focus {
-    background-color: #F0F8FF;
+  background-color: #F0F8FF;
 }
 
 
 input[type=button], input[type=submit], input[type=reset] {
-    background-color: #006400;
-    border: none;
-    color: white;
-    padding: 16px 32px;
-    text-decoration: none;
-    font-family: "Lucida Console", Arial, sans-serif;
-    font-weight: bold;
-    margin: 4px 2px;
-    cursor: pointer;
+  background-color: #006400;
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-decoration: none;
+  font-family: "Lucida Console", Arial, sans-serif;
+  font-weight: bold;
+  margin: 4px 2px;
+  cursor: pointer;
 }
 
 input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
-    background-color:  	 	#228B22;
-    border: none;
-    color: white;
-    padding: 16px 32px;
-    text-decoration: none;
-    font-family: "Lucida Console", Arial, sans-serif;
-    font-weight: bold;
-    margin: 4px 2px;
-    cursor: pointer;
+  background-color: #228B22;
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-decoration: none;
+  font-family: "Lucida Console", Arial, sans-serif;
+  font-weight: bold;
+  margin: 4px 2px;
+  cursor: pointer;
 }
 
 .username {
@@ -113,7 +114,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
 }
 
 .bar {
-  float:left;
+  float: left;
   box-sizing: border-box;
   color: white;
 }
@@ -163,13 +164,15 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
   cursor: pointer;
 }
 
-
 .center {
-    background-color: #fff;
-    margin: 0 auto;
-    width: 50%;
-    text-align: center;
-    min-height:100%;
+  position: absolute;
+  // top: 100px;
+  left: 25%;
+  background-color: #fff;
+  margin: 0 auto;
+  width: 50%;
+  text-align: center;
+  min-height: 100%;
 }
 
 ul {

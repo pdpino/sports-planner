@@ -22,41 +22,40 @@
         </a>
       </div>
 
+      <div id="user-bar">
+        <% if (currentUser) { %>
+          <div class=bar>
+            <img class="small-logo" src="<%= currentUser.photo %>"/>
+          </div>
+          <span class="username" class="name"> Hola <%= currentUser.firstName %></span>
 
-    <div id="user-bar">
-      <% if (currentUser) { %>
-        <div class=bar>
-        <img class="small-logo" src="<%= currentUser.photo %>"/>
-      </div>
-        <span class="username" class="name"> Hola <%= currentUser.firstName %></span>
+          <% if (!hasAdminPermission) { %>
+            <form  class="bar" action="<%= profilePath %>" method="get">
+              <input type="submit" value="Mi Perfil" />
+            </form>
+          <% } %>
 
-        <% if (!hasAdminPermission) { %>
-          <form  class="bar" action="<%= profilePath %>" method="get">
-            <input type="submit" value="Mi Perfil" />
+          <%- include('_buttons/delete', {
+            deletePath: destroySessionPath,
+            message: 'Salir',
+            className: 'bar',
+          }) %>
+
+        <% } else { %>
+          <span class="username" class="name">Hola Invitado</span>
+
+          <form class="bar" action="<%= newSessionPath %>" method="get">
+            <input type="submit" value="Iniciar sesión" />
           </form>
+          <form class="bar" action="<%= signUpPlayerPath %>" method="get">
+            <input type="submit" value="Regístrate como jugador" />
+          </form>
+          <form class="bar" action="<%= signUpOwnerPath %>" method="get">
+            <input type="submit" value="Regístrate como dueño de recintos deportivos" />
+          </form>
+
         <% } %>
-
-        <%- include('_buttons/delete', {
-          deletePath: destroySessionPath,
-          message: 'Salir',
-          className: 'bar',
-        }) %>
-
-      <% } else { %>
-        <span class="username" class="name">Hola Invitado</span>
-
-        <form class="bar" action="<%= newSessionPath %>" method="get">
-          <input type="submit" value="Iniciar sesión" />
-        </form>
-        <form class="bar" action="<%= signUpPlayerPath %>" method="get">
-          <input type="submit" value="Regístrate como jugador" />
-        </form>
-        <form class="bar" action="<%= signUpOwnerPath %>" method="get">
-          <input type="submit" value="Regístrate como dueño de recintos deportivos" />
-        </form>
-
-      <% } %>
-    </div>
+      </div>
     </header>
     <%- body %>
     <script src="/assets/app.js"></script>

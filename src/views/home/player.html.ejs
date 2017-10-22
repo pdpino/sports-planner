@@ -1,0 +1,36 @@
+<div class="center">
+
+  <%# REFACTOR: COPIED FROM index %>
+  <h1>Jugamos</h1>
+
+  <form class="indexbutton" action="<%= sportsPath %>" method="get">
+      <input type="submit" value="Ver deportes"/>
+  </form>
+
+  <form class="indexbutton" action="<%= playersPath %>" method="get">
+      <input type="submit" value="Ver jugadores"/>
+  </form>
+
+  <form class="indexbutton" action="<%= teamsPath %>" method="get">
+      <input type="submit" value="Ver equipos"/>
+  </form>
+
+  <form class="indexbutton" action="<%= matchesPath %>" method="get">
+      <input type="submit" value="Ver partidos"/>
+  </form>
+
+  <form class="indexbutton" action="<%= compoundOwnersPath %>" method="get">
+      <input type="submit" value="Ver dueños de recinto"/>
+  </form>
+
+  <form class="indexbutton" action="<%= compoundsPath %>" method="get">
+      <input type="submit" value="Ver recintos"/>
+  </form>
+
+  <div>
+    <h2>Notificaciones</h2>
+    <% notifications.forEach((notification) => { %>
+      <%= notification.toString() %>
+    <% }); %>
+  </div>
+</div>
