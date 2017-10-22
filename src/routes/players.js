@@ -144,6 +144,15 @@ router.get('player', '/:id', async (ctx) => {
   const playerMatches = await player.getMatches();
   const playerAge = calculateAge(player.birthday);
 
+  // const player2 = await ctx.state.findById(ctx.orm.player, 1);
+  // await player.addFriend(player2, {
+  //   through: {
+  //     isAccepted: false,
+  //   }
+  // });
+  // const friends = await player.getFriends();
+  // console.log("PLAYER: ", friends);
+
   await ctx.render('players/show', {
     hasModifyPermission: ctx.state.hasModifyPermission(ctx, player.userId),
     player,

@@ -36,7 +36,6 @@ router.post('compoundCreate', '/', async (ctx) => {
 
     ctx.redirect(ctx.router.url('compound', { id: compound.id }));
   } catch (validationError) {
-    console.log("ERROR EN VALIDACION COMPOUND: ", validationError);
     await ctx.render('compounds/new', {
       compound: ctx.orm.compound.build(ctx.request.body),
       errors: ctx.state.parseValidationError(validationError),

@@ -49,15 +49,21 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     player.belongsToMany(models.team, { through: models.isMember });
 
     player.belongsToMany(models.match, { through: models.isPlayerInvited });
+
+    player.belongsToMany(player, {
+      as: { singular: 'friend', plural: 'friends' },
+      through: models.friendship,
+    });
   };
 
   /** Load user info (email, names and photo) into player object **/
   player.afterFind(async function loadUser(result, options) {
     // REVIEW: avoid DB query?
     if(!result){
-      console.log("Loading no players, options:", options);
       return;
-    } else if(result.constructor == Array) {
+    }
+
+    if(result.constructor == Array) {
       for (let i = 0; i < result.length; i++) {
           Object.assign(result[i], await getUserObject(sequelize.models, result[i].userId));
       }
@@ -71,7 +77,6 @@ module.exports = function defineplayer(sequelize, DataTypes) {
   player.prototype.getName = function() {
     return `${this.firstName} ${this.lastName}`;
   }
-
 
   return player;
 };

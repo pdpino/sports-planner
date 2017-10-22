@@ -37,7 +37,6 @@ router.post('playerSportCreate', '/', async (ctx) => {
     await ctx.state.player.addSport(ctx.request.body.sportId, { through: { position: ctx.request.body.position }});
     ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));
   } catch (validationError) {
-    console.log("###### validation error when creating player-sport: ", validationError); // DEBUG
     await ctx.render('playerSports/new', {
       player: ctx.state.player,
       sportsNotPlayed: getSportsNotPlayed(ctx.state.sports, ctx.state.playerSports),
@@ -65,7 +64,6 @@ router.patch('playerSportUpdate', '/:id', async (ctx) => {
     await ctx.state.player.addSport(playSport, { through: { position: ctx.request.body.position }});
     ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));
   } catch (validationError) {
-    console.log("###### validation error when updating player-sport: ", validationError); // DEBUG
     await ctx.render('playerSports/edit', {
       player: ctx.state.player,
       playSport,
