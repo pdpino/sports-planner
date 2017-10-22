@@ -10,9 +10,9 @@ module.exports = {
       'teamInvitedToMatch',
       'teamAcceptedInMatch',
     ];
-    return queryInterface.addConstraint('playerNotifications', ['kind'], {
+    return queryInterface.addConstraint('notifications', ['kind'], {
       type: 'check',
-      name: 'playerNotification_kind',
+      name: 'notification_kind',
       where: {
         kind: notificationKinds,
       }
@@ -20,6 +20,6 @@ module.exports = {
   },
 
   down(queryInterface, Sequelize) {
-    return queryInterface.removeConstraint('playerNotifications', 'playerNotification_kind');
+    return queryInterface.removeConstraint('notifications', 'notification_kind');
   },
 };

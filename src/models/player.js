@@ -65,8 +65,6 @@ module.exports = function defineplayer(sequelize, DataTypes) {
       as: { singular: 'friend', plural: 'friends' },
       through: models.friendship,
     });
-
-    player.hasMany(models.playerNotification);
   };
 
   /** Load user info (email, names and photo) into player object **/

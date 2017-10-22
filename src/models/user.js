@@ -63,9 +63,10 @@ module.exports = function defineuser(sequelize, DataTypes) {
   });
 
   user.associate = function associate(models) {
-    // associations can be defined here
+    player.hasMany(models.notification, { as: 'sentNotification' });
+    player.hasMany(models.notification, { as: 'receivedNotification' });
   };
-  
+
   user.beforeUpdate(buildPasswordHash);
   user.beforeCreate(buildPasswordHash);
 

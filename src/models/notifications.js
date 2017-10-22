@@ -1,4 +1,4 @@
-module.exports = function defineplayerNotification(sequelize, DataTypes) {
+module.exports = function definenotification(sequelize, DataTypes) {
   // copied in migration
   const notificationKinds = [
     'friendshipAsked', // Someone added me as a friend
@@ -11,7 +11,7 @@ module.exports = function defineplayerNotification(sequelize, DataTypes) {
     // Faltan las de recintos
   ];
 
-  const playerNotification = sequelize.define('playerNotification', {
+  const notification = sequelize.define('notification', {
     wasRead: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
@@ -29,11 +29,12 @@ module.exports = function defineplayerNotification(sequelize, DataTypes) {
     },
   });
 
-  playerNotification.associate = function associate(models) {
-    playerNotification.belongsTo(models.player);
+  notification.associate = function associate(models) {
+    notification.belongsTo(models.user, { as: 'sender' });
+    notification.belongsTo(models.user, { as: 'receiver' });
   };
 
-  playerNotification.prototype.toString = function(){
+  notification.prototype.toString = function(){
     // const messages = {
     //   'friendshipAsked',
     //   'friendshipAccepted',
@@ -47,5 +48,5 @@ module.exports = function defineplayerNotification(sequelize, DataTypes) {
     return this.kind;
   }
 
-  return playerNotification;
+  return notification;
 };
