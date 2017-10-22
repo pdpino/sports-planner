@@ -22,7 +22,7 @@ function getCompoundOwnerParams(params){
 /** Load the owner and his user from the database **/
 async function getOwnerAndUser(ctx, compoundOwnerId){
   // REVIEW: apparently not all calls of this need both user and compoundOwner
-  const compoundOwner = await ctx.orm.compoundOwner.findById(compoundOwnerId);
+  const compoundOwner = await ctx.state.findById(ctx.orm.compoundOwner, compoundOwnerId);
   const user = compoundOwner && await compoundOwner.getUser();
   return { compoundOwner, user };
 }
@@ -71,7 +71,7 @@ router.post('compoundOwnerCreate', '/', async (ctx) => {
 });
 
 router.get('compoundOwnerEdit', '/:id/edit', async (ctx) => {
-  const compoundOwner = await ctx.orm.compoundOwner.findById(ctx.params.id);
+  const compoundOwner = await ctx.state.findById(ctx.orm.compoundOwner, ctx.params.id);
 
   ctx.state.requireModifyPermission(ctx, compoundOwner.userId);
 
@@ -107,7 +107,7 @@ router.patch('compoundOwnerUpdate', '/:id', async (ctx) => {
 });
 
 router.get('compoundOwner', '/:id', async (ctx) => {
-  const compoundOwner = await ctx.orm.compoundOwner.findById(ctx.params.id);
+  const compoundOwner = await ctx.state.findById(ctx.orm.compoundOwner, ctx.params.id);
   const compounds = await compoundOwner.getCompounds();
 
   await ctx.render('compoundOwners/show', {

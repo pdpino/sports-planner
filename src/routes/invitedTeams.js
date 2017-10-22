@@ -1,3 +1,4 @@
+const sendInvitationTeamMail = require('../mailers/invitation-team');
 const KoaRouter = require('koa-router');
 
 const router = new KoaRouter();
@@ -9,7 +10,7 @@ function isTeamInvited(searchedTeam, invitedTeams){
 
 /** Return the invitable teams (all but the ones already invited) **/
 function getInvitableTeams(allTeams, invitedTeams){
-  // OPTIMIZE ???
+  // OPTIMIZE
   return allTeams.filter( (anyTeam) => {
     return !isTeamInvited(anyTeam, invitedTeams);
   });
@@ -32,10 +33,21 @@ router.get('invitedTeamNew', '/new', async (ctx) => {
 });
 
 router.post('invitedTeamCreate', '/', async (ctx) => {
+  const team = await ctx.state.findById(ctx.orm.team, ctx.request.body.teamId);
+  const teamCaptain = await team.getCaptain();
+
   try {
-    await ctx.state.match.addTeam(ctx.request.body.teamId, {
-      through: { status: "sent" } // HACK: invitation status harcoded
+    await ctx.state.match.addTeam(team, {
+      through: { status: 'sent' } // HACK: invitation status harcoded
     });
+    if(teamCaptain){
+      sendInvitationTeamMail(ctx, teamCaptain.email, {
+        eventType: 'Partido',
+        eventName: ctx.state.match.name,
+        invitedBy: ctx.state.currentPlayer.getName(),
+        teamName: team.name,
+      });
+    }
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
   } catch (validationError) {
     await ctx.render('invitedTeams/new', {
@@ -95,7 +107,7 @@ router.patch('invitedTeamUpdate', '/:id', async (ctx) => {
 });
 
 router.delete('invitedTeamDelete', '/:id', async (ctx) => {
-   await ctx.state.match.removePlayer(ctx.params.id);
+   await ctx.state.match.removeTeam(ctx.params.id);
    ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
  });
 

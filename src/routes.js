@@ -1,4 +1,5 @@
 const KoaRouter = require('koa-router');
+const Sequelize = require('sequelize');
 
 const index = require('./routes/index');
 const sports = require('./routes/sports');
@@ -148,6 +149,60 @@ router.use((ctx, next) => {
     }
 
     return null; // Is not in his hands to respond the invitation
+  }
+
+  return next();
+});
+
+/** Add other helper functions **/
+router.use((ctx, next) => {
+  /** Wrapper to find an entity (match, team, player, etc) by the id and assert that is not null **/
+  ctx.state.findById = async function (model, id){
+    const entity = await model.findById(id);
+    ctx.assert(entity, 404);
+    return entity;
+  }
+
+  /** Return the visible matches for the currentPlayer logged in **/
+  ctx.state.getVisibleMatches = async function(ctx){
+    if (ctx.state.hasAdminPermission){
+      const allMatches = await ctx.orm.match.findAll();
+      return allMatches;
+    }
+
+    let visibleMatches = await ctx.orm.match.findAll({
+      where: {
+        isPublic: true,
+      }
+    });
+
+    if(ctx.state.isPlayerLoggedIn){
+      const privateMatches = await ctx.orm.match.findAll({
+        where: {
+          isPublic: false,
+        },
+        include: [{
+          model: ctx.orm.player,
+          where: {
+            id: ctx.state.currentPlayer.id,
+          },
+          // HACK: through object copied in multiple places
+          through: {
+            where: {
+              status: { [Sequelize.Op.not]: 'rejectedByAdmin' }
+              // HACK: invitation status hardcoded
+            }
+          }
+        }]
+      });
+      visibleMatches = visibleMatches.concat(privateMatches);
+
+      // NOTE: something like this could be used:
+      // const _ = require('lodash');
+      // visibleMatches = _.unionWith(visibleMatches, privateMatches, function(a, b) { return a.id === b.id; });
+    }
+
+    return visibleMatches;
   }
 
   return next();

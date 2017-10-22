@@ -17,7 +17,6 @@ function getInvitableMatches(allMatches, playerMatches){
 
 /** Return the match played by player, searching with matchId **/
 async function findPlayerMatchById(player, matchId){
-  // OPTIMIZE? use a model function?
   const playerMatches = await player.getMatches( { where: { id: matchId } } );
   return (playerMatches.length == 1) ? playerMatches[0] : null;
 }
@@ -25,7 +24,7 @@ async function findPlayerMatchById(player, matchId){
 router.get('playerMatchNew', '/new', async (ctx) => {
   await ctx.render('playerMatches/new', {
     player: ctx.state.player,
-    invitableMatches: getInvitableMatches(ctx.state.matches, ctx.state.playerMatches),
+    invitableMatches: getInvitableMatches(ctx.state.visibleMatches, ctx.state.playerMatches),
     submitPlayerMatchPath: ctx.router.url('playerMatchCreate', { playerId: ctx.state.player.id }),
     cancelPath: ctx.router.url('player', { id: ctx.state.player.id })
   });
@@ -35,14 +34,14 @@ router.post('playerMatchCreate', '/', async (ctx) => {
   try {
     await ctx.state.player.addMatch(ctx.request.body.matchId, {
       through: {
-        status: "asked" // HACK: invitation status harcoded
+        status: 'asked' // HACK: invitation status harcoded
       }
     });
     ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));
   } catch (validationError) {
     await ctx.render('playerMatches/new', {
       player: ctx.state.player,
-      invitableMatches: getInvitableMatches(ctx.state.matches, ctx.state.playerMatches),
+      invitableMatches: getInvitableMatches(ctx.state.visibleMatches, ctx.state.playerMatches),
       errors: ctx.state.parseValidationError(validationError),
       submitPlayerMatchPath: ctx.router.url('playerMatchCreate', { playerId: ctx.state.player.id }),
       cancelPath: ctx.router.url('player', { id: ctx.state.player.id })
@@ -105,6 +104,5 @@ router.delete('playerMatchDelete', '/:id', async (ctx) => {
    await ctx.state.player.removeMatch(ctx.params.id);
    ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));
  });
-
 
 module.exports = router;

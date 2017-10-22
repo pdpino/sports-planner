@@ -24,7 +24,7 @@ async function findTeamMatchById(team, matchId){
 router.get('teamMatchNew', '/new', async (ctx) => {
   await ctx.render('teamMatches/new', {
     team: ctx.state.team,
-    joinableMatches: getJoinableMatches(ctx.state.allMatches, ctx.state.teamMatches),
+    joinableMatches: getJoinableMatches(ctx.state.visibleMatches, ctx.state.teamMatches),
     submitTeamMatchPath: ctx.router.url('teamMatchCreate', {
       teamId: ctx.state.team.id
     }),
@@ -36,7 +36,7 @@ router.post('teamMatchCreate', '/', async (ctx) => {
   try {
     await ctx.state.team.addMatch(ctx.request.body.matchId, {
       through: {
-        status: "asked" // HACK: invitation status harcoded
+        status: 'asked' // HACK: invitation status harcoded
       }
     });
     ctx.redirect(ctx.router.url('team', { id: ctx.state.team.id }));
@@ -44,7 +44,7 @@ router.post('teamMatchCreate', '/', async (ctx) => {
     await ctx.render('teamMatches/new', {
       team: ctx.state.team,
       errors: ctx.state.parseValidationError(validationError),
-      joinableMatches: getJoinableMatches(ctx.state.allMatches, ctx.state.teamMatches),
+      joinableMatches: getJoinableMatches(ctx.state.visibleMatches, ctx.state.teamMatches),
       submitTeamMatchPath: ctx.router.url('teamMatchCreate', {
         teamId: ctx.state.team.id
       }),
@@ -83,10 +83,10 @@ router.patch('teamMatchUpdate', '/:id', async (ctx) => {
       through: { status: newStatus }
     });
 
-    if(statusChanged && newStatus == "accepted"){ // HACK: status hardcoded
+    if(statusChanged && newStatus == 'accepted'){ // HACK: status hardcoded
       // Invite all of his players to the game
       await teamMatch.addPlayers(ctx.state.teamMembers, {
-        through: { status: "sent" } // HACK: invitation status harcoded
+        through: { status: 'sent' } // HACK: invitation status harcoded
       });
     }
 

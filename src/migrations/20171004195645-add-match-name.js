@@ -2,7 +2,7 @@ module.exports = {
   up(queryInterface, Sequelize) {
     return queryInterface.addColumn('matches', 'name', {
       allowNull: false,
-      defaultValue: "",
+      defaultValue: '',
       type: Sequelize.STRING
     });
   },

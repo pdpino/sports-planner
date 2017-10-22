@@ -9,6 +9,7 @@ async function getUserObject(models, userId){
 }
 
 module.exports = function defineplayer(sequelize, DataTypes) {
+  const genders = ['masculino', 'femenino'];
   const player = sequelize.define('player', {
     birthday: {
       type: DataTypes.DATEONLY,
@@ -28,7 +29,7 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     },
     gender: {
       type: DataTypes.ENUM,
-      values: ['masculino', 'femenino'], // HACK: copied in migration (and probably in routes/players)
+      values: genders, // HACK: copied in migration (and probably in routes/players)
       allowNull: false,
       validate: {
         // NOTE: notNull has been deprecated, a warning is raised
@@ -41,6 +42,7 @@ module.exports = function defineplayer(sequelize, DataTypes) {
       },
     },
   });
+
   player.associate = function associate(models) {
     player.belongsTo(models.user);
     player.belongsToMany(models.sport, { through: models.plays });
@@ -62,8 +64,14 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     } else {
       Object.assign(result, await getUserObject(sequelize.models, result.userId));
     }
-
   });
+
+  player.getGenders = function() { return genders; }
+
+  player.prototype.getName = function() {
+    return `${this.firstName} ${this.lastName}`;
+  }
+
 
   return player;
 };

@@ -5,10 +5,6 @@ const playerMatchesRouter = require('./playerMatches');
 
 const router = new KoaRouter();
 
-// HACK: this is copied from models.players
-// (how to access those values using models.player? look up the docs)
-const genders = ["masculino", "femenino"];
-
 /** Calculate the age of the player given his birthday**/
 function calculateAge(birthday){
   // OPTIMIZE this function? dates can be substracted
@@ -46,8 +42,8 @@ function getPlayerParams(params){
 /** Load the player and the user from the database **/
 async function getPlayerAndUser(ctx, playerId){
   // REVIEW: apparently not all calls of this need both user and player
-  const player = await ctx.orm.player.findById(playerId);
-  const user = player && await player.getUser();
+  const player = await ctx.state.findById(ctx.orm.player, playerId);
+  const user = await player.getUser();
   return { player, user };
 }
 
@@ -68,7 +64,7 @@ router.get('playerNew', '/new', async (ctx) => {
 
   await ctx.render('players/new', {
     player,
-    genders,
+    genders: ctx.orm.player.getGenders(),
     submitPlayerPath: ctx.router.url('playerCreate'),
     cancelPath : ctx.router.url('players'),
   });
@@ -95,7 +91,7 @@ router.post('playerCreate', '/', async (ctx) => {
 
     await ctx.render('players/new', {
       player: ctx.orm.player.build(ctx.request.body),
-      genders,
+      genders: ctx.orm.player.getGenders(),
       errors: ctx.state.parseValidationError(validationError),
       submitPlayerPath: ctx.router.url('playerCreate'),
       cancelPath: ctx.router.url('players'),
@@ -104,13 +100,13 @@ router.post('playerCreate', '/', async (ctx) => {
 });
 
 router.get('playerEdit', '/:id/edit', async (ctx) => {
-  const player = await ctx.orm.player.findById(ctx.params.id);
+  const player = await ctx.state.findById(ctx.orm.player, ctx.params.id);
 
   ctx.state.requireModifyPermission(ctx, player.userId);
 
   await ctx.render('players/edit', {
     player,
-    genders,
+    genders: ctx.orm.player.getGenders(),
     submitPlayerPath: ctx.router.url('playerUpdate', player.id),
     deletePlayerPath: ctx.router.url('playerDelete', player.id),
     cancelPath: ctx.router.url('player', { id: player.id }),
@@ -132,7 +128,7 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
   } catch (validationError) {
     await ctx.render('players/edit', {
       player,
-      genders,
+      genders: ctx.orm.player.getGenders(),
       errors: ctx.state.parseValidationError(validationError),
       submitPlayerPath: ctx.router.url('playerUpdate', player.id),
       deletePlayerPath: ctx.router.url('playerDelete', player.id),
@@ -142,7 +138,7 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
 });
 
 router.get('player', '/:id', async (ctx) => {
-  const player = await ctx.orm.player.findById(ctx.params.id);
+  const player = await ctx.state.findById(ctx.orm.player, ctx.params.id);
   const playerSports = await player.getSports();
   const playerTeams = await player.getTeams();
   const playerMatches = await player.getMatches();
@@ -186,7 +182,7 @@ router.delete('playerDelete', '/:id', async (ctx) => {
 router.use(
   '/:playerId/teams',
   async (ctx, next) => {
-    ctx.state.player = await ctx.orm.player.findById(ctx.params.playerId);
+    ctx.state.player = await ctx.state.findById(ctx.orm.player, ctx.params.playerId);
 
     ctx.state.requireModifyPermission(ctx, ctx.state.player.userId);
 
@@ -200,13 +196,11 @@ router.use(
 router.use(
   '/:playerId/matches',
   async (ctx, next) => {
-    const { player, user } = await getPlayerAndUser(ctx, ctx.params.playerId);
-
-    ctx.state.player = await ctx.orm.player.findById(ctx.params.playerId);
+    ctx.state.player = await ctx.state.findById(ctx.orm.player, ctx.params.playerId);
 
     ctx.state.requireModifyPermission(ctx, ctx.state.player.userId);
 
-    ctx.state.matches = await ctx.orm.match.findAll();
+    ctx.state.visibleMatches = await ctx.state.getVisibleMatches(ctx);
     ctx.state.playerMatches = await ctx.state.player.getMatches();
     await next();
   },
@@ -216,7 +210,7 @@ router.use(
 router.use(
   '/:playerId/sports',
   async (ctx, next) => {
-    ctx.state.player = await ctx.orm.player.findById(ctx.params.playerId);
+    ctx.state.player = await ctx.state.findById(ctx.orm.player, ctx.params.playerId);
 
     ctx.state.requireModifyPermission(ctx, ctx.state.player.userId);
 

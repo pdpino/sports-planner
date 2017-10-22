@@ -4,7 +4,7 @@ module.exports = {
       type: 'check',
       name: 'isPlayerInvited_status',
       where: {
-        status: ['sent', 'asked', 'rejectedByAdmin', 'rejectedByUser', "accepted"]
+        status: ['sent', 'asked', 'rejectedByAdmin', 'rejectedByUser', 'accepted']
         // HACK: invitation statuses copied
       }
     });
