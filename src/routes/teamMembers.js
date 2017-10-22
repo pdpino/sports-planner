@@ -8,7 +8,7 @@ function isTeamMember(searchedPlayer, teamMembers){
 }
 
 /** Return the difference between allTeams and playTeams **/
-function getInvitablePlayers(allPlayers, teamMembers){ // CHGME: 'invitable' word does not exist
+function getInvitablePlayers(allPlayers, teamMembers){
   // OPTIMIZE ? use model functions?
   return allPlayers.filter( (anyPlayer) => {
     return !isTeamMember(anyPlayer, teamMembers);

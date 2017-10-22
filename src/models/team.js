@@ -29,5 +29,16 @@ module.exports = function defineteam(sequelize, DataTypes) {
     });
   }
 
+  team.prototype.getCaptain = async function(){
+    const teamCaptains = await this.getPlayers({
+      through: {
+        where: {
+          isCaptain: true
+        }
+      }
+    });
+    return (teamCaptains && teamCaptains.length > 0) ? teamCaptains[0] : null;
+  }
+
   return team;
 };
