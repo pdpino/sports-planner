@@ -146,7 +146,7 @@ router.get('player', '/:id', async (ctx) => {
   const playerTeams = await player.getTeams();
   const playerMatches = await player.getMatches();
   const playerAge = calculateAge(player.birthday);
-  const friends = await player.getFriends();
+  const friends = await player.getAllFriends();
 
   const friendshipStatus = (ctx.state.isPlayerLoggedIn
     && await ctx.state.currentPlayer.getFriendshipStatus(player));

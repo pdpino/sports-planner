@@ -5,7 +5,7 @@
   <% players.forEach((player) => { %>
     <li>
       <a class="lilink" href="<%= getPlayerPath(player) %>">
-        <img src="<%=player.photo%>" class="large-logo"/>
+        <img class="large-logo" src="<%= player.photo %>"/>
         <div>
           <%= player.firstName %> <%= player.lastName %>
         </div>
