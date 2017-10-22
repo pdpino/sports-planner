@@ -2,12 +2,14 @@ const KoaRouter = require('koa-router');
 const playerSportsRouter = require('./playerSports');
 const playerTeamsRouter = require('./playerTeams');
 const playerMatchesRouter = require('./playerMatches');
+const friendshipsRouter = require('./friendships');
 
 const router = new KoaRouter();
 
 /** Calculate the age of the player given his birthday**/
 function calculateAge(birthday){
   // OPTIMIZE this function? dates can be substracted
+  // TODO: move this to model
   const today = new Date();
 
   const year = birthday.substring(0,4);
@@ -52,7 +54,6 @@ router.get('players', '/', async (ctx) => {
 
   await ctx.render('players/index', {
     players,
-    playerPath: player => ctx.router.url('player', { id: player.id }),
   });
 });
 
@@ -138,20 +139,17 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
 });
 
 router.get('player', '/:id', async (ctx) => {
+  // console.log("PLAYER/ PARAMS ID: ", ctx.params);
+  // FIXME: sometimes the ctx.params.id is 'width="32"'
   const player = await ctx.state.findById(ctx.orm.player, ctx.params.id);
   const playerSports = await player.getSports();
   const playerTeams = await player.getTeams();
   const playerMatches = await player.getMatches();
   const playerAge = calculateAge(player.birthday);
+  const friends = await player.getFriends();
 
-  // const player2 = await ctx.state.findById(ctx.orm.player, 1);
-  // await player.addFriend(player2, {
-  //   through: {
-  //     isAccepted: false,
-  //   }
-  // });
-  // const friends = await player.getFriends();
-  // console.log("PLAYER: ", friends);
+  const friendshipStatus = (ctx.state.isPlayerLoggedIn
+    && await ctx.state.currentPlayer.getFriendshipStatus(player));
 
   await ctx.render('players/show', {
     hasModifyPermission: ctx.state.hasModifyPermission(ctx, player.userId),
@@ -160,7 +158,25 @@ router.get('player', '/:id', async (ctx) => {
     playerSports,
     playerTeams,
     playerMatches,
+    friends,
     editPlayerPath: ctx.router.url('playerEdit', player.id),
+    // REFACTOR:
+    canAddFriend: ctx.orm.player.canAddFriend(friendshipStatus),
+    canDeleteFriend: ctx.orm.player.canDeleteFriend(friendshipStatus),
+    canAcceptFriend: ctx.orm.player.canAcceptFriend(friendshipStatus),
+    waitingFriend: ctx.orm.player.waitingFriend(friendshipStatus),
+    addFriendPath: (friend) => ctx.router.url('friendNew', {
+      playerId: ctx.state.currentPlayer.id,
+      friendId: friend.id,
+    }),
+    deleteFriendPath: (friend) => ctx.router.url('friendDelete', {
+      playerId: ctx.state.currentPlayer.id,
+      friendId: friend.id,
+    }),
+    acceptFriendPath: (friend) => ctx.router.url('friendAccept', {
+      playerId: ctx.state.currentPlayer.id,
+      friendId: friend.id,
+    }),
     newPlayerTeamPath: ctx.router.url('playerTeamNew', { playerId: player.id } ),
     deletePlayerTeamPath: (team) => ctx.router.url('playerTeamDelete', {
       playerId: player.id,
@@ -228,6 +244,18 @@ router.use(
     await next();
   },
   playerSportsRouter.routes(),
+);
+
+router.use(
+  '/:playerId/friendships',
+  async (ctx, next) => {
+    ctx.state.player = await ctx.state.findById(ctx.orm.player, ctx.params.playerId);
+
+    ctx.state.requireModifyPermission(ctx, ctx.state.player.userId);
+
+    await next();
+  },
+  friendshipsRouter.routes(),
 );
 
 module.exports = router;

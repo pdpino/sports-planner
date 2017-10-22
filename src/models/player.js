@@ -1,3 +1,6 @@
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+
 async function getUserObject(models, userId){
   const user = await models.user.findById(userId);
   return { // REVIEW: replace this by a js method (like assign)?
@@ -9,6 +12,13 @@ async function getUserObject(models, userId){
 }
 
 module.exports = function defineplayer(sequelize, DataTypes) {
+  const friendStatus = [
+    'not',
+    'sent',
+    'waiting',
+    'accepted',
+  ];
+
   const genders = ['masculino', 'femenino'];
   const player = sequelize.define('player', {
     birthday: {
@@ -77,6 +87,48 @@ module.exports = function defineplayer(sequelize, DataTypes) {
   player.prototype.getName = function() {
     return `${this.firstName} ${this.lastName}`;
   }
+
+  player.prototype.getFriendshipStatus = async function(friend){
+    if (this.id === friend.id){
+      return false;
+    }
+    const results = await player.findAll({
+      include: [{
+        model: player,
+        as: 'friends',
+        required: true, // With this is an inner join and not a left outer
+        through: {
+          where: {
+            [Op.or]: [{
+                playerId: this.id,
+                friendId: friend.id,
+              },
+              {
+                playerId: friend.id,
+                friendId: this.id,
+              }],
+          },
+        }
+      }]
+    });
+
+    if(results.length === 0){
+      return 'not';
+    }
+    const sendingPlayer = results[0];
+    const receivingPlayer = sendingPlayer.friends[0];
+
+    if (receivingPlayer.friendship.isAccepted){
+      return 'accepted';
+    } else { // Not accepted yet, who sent it?
+      return (sendingPlayer.id === this.id) ? 'waiting' : 'sent';
+    }
+  }
+
+  player.canAddFriend = function(status){ return status === 'not' };
+  player.canDeleteFriend = function(status){ return status === 'accepted' };
+  player.canAcceptFriend = function(status){ return status === 'sent' };
+  player.waitingFriend = function(status){ return status === 'waiting' };
 
   return player;
 };

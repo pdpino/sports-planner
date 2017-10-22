@@ -48,7 +48,7 @@ router.use(async (ctx, next) => {
     getPlayerPath: (player) => ctx.router.url('player', player.id),
     getCompoundOwnerPath: (compoundOwner) => ctx.router.url('compoundOwner', compoundOwner.id),
     getCompoundPath: (compound) => ctx.router.url('compound', compound.id),
-    fieldPath: (field) => ctx.router.url('field', { compoundId: field.compoundId, id: field.id }),
+    getFieldPath: (field) => ctx.router.url('field', { compoundId: field.compoundId, id: field.id }),
     getTeamPath: (team) => ctx.router.url('team', team.id),
     getMatchPath: (match) => ctx.router.url('match', match.id),
     sportsPath: ctx.router.url('sports'),
