@@ -50,6 +50,12 @@ router.post('teamMemberCreate', '/', async (ctx) => {
         isCaptain: params.isCaptain
       }
     });
+    await ctx.state.sendNotification(ctx.state.currentPlayer, player, {
+      kind: 'addedToTeam',
+      entityName: ctx.state.currentPlayer.getName(),
+      eventName: ctx.state.team.name,
+    });
+
     sendInvitationPlayerMail(ctx, player.email, {
       eventType: 'Equipo',
       eventName: ctx.state.team.name,

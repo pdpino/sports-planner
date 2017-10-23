@@ -74,6 +74,7 @@ router.get('teamMatchEdit', '/:id/edit', async (ctx) => {
 
 router.patch('teamMatchUpdate', '/:id', async (ctx) => {
   const teamMatch = await findTeamMatchById(ctx.state.team, ctx.params.id);
+  const matchAdmin = await teamMatch.getAdmin();
 
   const newStatus = ctx.request.body.status || teamMatch.isTeamInvited.status;
   const statusChanged = newStatus !== teamMatch.isTeamInvited.status;
@@ -87,6 +88,12 @@ router.patch('teamMatchUpdate', '/:id', async (ctx) => {
       // Invite all of his players to the game
       await teamMatch.addPlayers(ctx.state.teamMembers, {
         through: { status: 'sent' } // HACK: invitation status harcoded
+      });
+
+      ctx.state.sendNotification(ctx.state.currentPlayer, matchAdmin, {
+        kind: 'teamAcceptedMatch',
+        entityName: ctx.state.team.name,
+        eventName: teamMatch.name,
       });
     }
 

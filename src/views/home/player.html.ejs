@@ -29,8 +29,10 @@
 
   <div>
     <h2>Notificaciones</h2>
-    <% notifications.forEach((notification) => { %>
-      <%= notification.toString() %>
-    <% }); %>
+    <ul>
+      <% notifications.forEach((notification) => { %>
+        <li> <%= notification.toString() %> </li>
+      <% }); %>
+    </ul>
   </div>
 </div>

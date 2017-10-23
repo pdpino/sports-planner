@@ -63,8 +63,8 @@ module.exports = function defineuser(sequelize, DataTypes) {
   });
 
   user.associate = function associate(models) {
-    player.hasMany(models.notification, { as: 'sentNotification' });
-    player.hasMany(models.notification, { as: 'receivedNotification' });
+    user.hasMany(models.notification, { as: 'sentNotifications', foreignKey: 'senderId' });
+    user.hasMany(models.notification, { as: 'receivedNotifications', foreignKey: 'receiverId' });
   };
 
   user.beforeUpdate(buildPasswordHash);

@@ -39,6 +39,11 @@ router.post('invitedPlayerCreate', '/', async (ctx) => {
     await ctx.state.match.addPlayer(player, {
       through: { status: 'sent' }, // HACK: invitation status harcoded
     });
+    await ctx.state.sendNotification(ctx.state.currentPlayer, player, {
+      kind: 'playerInvitedToMatch',
+      entityName: ctx.state.currentPlayer.getName(),
+      eventName: ctx.state.match.name,
+    });
     sendInvitationPlayerMail(ctx, player.email, {
       eventType: 'Partido',
       eventName: ctx.state.match.name,

@@ -6,9 +6,9 @@ module.exports = {
       'friendshipAccepted',
       'addedToTeam',
       'playerInvitedToMatch',
-      'playerAcceptedInMatch',
+      'playerAcceptedMatch',
       'teamInvitedToMatch',
-      'teamAcceptedInMatch',
+      'teamAcceptedMatch',
     ];
     return queryInterface.addConstraint('notifications', ['kind'], {
       type: 'check',

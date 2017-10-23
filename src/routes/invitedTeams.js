@@ -41,6 +41,12 @@ router.post('invitedTeamCreate', '/', async (ctx) => {
       through: { status: 'sent' } // HACK: invitation status harcoded
     });
     if(teamCaptain){
+      await ctx.state.sendNotification(ctx.state.currentPlayer, teamCaptain, {
+        kind: 'teamInvitedToMatch',
+        entityName: team.name,
+        eventName: ctx.state.match.name,
+      });
+
       sendInvitationTeamMail(ctx, teamCaptain.email, {
         eventType: 'Partido',
         eventName: ctx.state.match.name,

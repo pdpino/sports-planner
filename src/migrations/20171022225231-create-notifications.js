@@ -15,11 +15,23 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      playerId: {
+      entityName: Sequelize.STRING,
+      eventName: Sequelize.STRING,
+      senderId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'players',
+          model: 'users',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade',
+      },
+      receiverId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'users',
           key: 'id',
         },
         onUpdate: 'cascade',

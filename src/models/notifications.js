@@ -5,9 +5,9 @@ module.exports = function definenotification(sequelize, DataTypes) {
     'friendshipAccepted',
     'addedToTeam',
     'playerInvitedToMatch',
-    'playerAcceptedInMatch',
+    'playerAcceptedMatch',
     'teamInvitedToMatch',
-    'teamAcceptedInMatch',
+    'teamAcceptedMatch',
     // Faltan las de recintos
   ];
 
@@ -27,6 +27,14 @@ module.exports = function definenotification(sequelize, DataTypes) {
         },
       },
     },
+    entityName: {
+      type: DataTypes.STRING,
+      defaultValue: '',
+    },
+    eventName: {
+      type: DataTypes.STRING,
+      defaultValue: '',
+    }
   });
 
   notification.associate = function associate(models) {
@@ -34,18 +42,26 @@ module.exports = function definenotification(sequelize, DataTypes) {
     notification.belongsTo(models.user, { as: 'receiver' });
   };
 
-  notification.prototype.toString = function(){
-    // const messages = {
-    //   'friendshipAsked',
-    //   'friendshipAccepted',
-    //   'addedToTeam',
-    //   'playerInvitedToMatch',
-    //   'playerAcceptedInMatch',
-    //   'teamInvitedToMatch',
-    //   'teamAcceptedInMatch',
-    // }
+  // REFACTOR: merge this with notificationKinds
+  const parseNotification = {
+    'friendshipAsked': (entityName, eventName) =>
+        `${entityName} te envió una solicitud de amistad`,
+    'friendshipAccepted': (entityName, eventName) =>
+        `${entityName} aceptó tu solicitud de amistad`,
+    'addedToTeam': (entityName, eventName) =>
+        `${entityName} te agregó al equipo '${eventName}'`,
+    'playerInvitedToMatch': (entityName, eventName) =>
+        `${entityName} te invitó al partido '${eventName}'`,
+    'playerAcceptedMatch': (entityName, eventName) =>
+        `${entityName} aceptó la invitación al partido '${eventName}'`,
+    'teamInvitedToMatch': (entityName, eventName) =>
+        `Tu equipo '${entityName}' fue invitado al partido '${eventName}'`,
+    'teamAcceptedMatch': (entityName, eventName) =>
+        `El equipo '${entityName}' aceptó ir al partido '${eventName}'`,
+  };
 
-    return this.kind;
+  notification.prototype.toString = function(){
+    return parseNotification[this.kind](this.entityName, this.eventName);
   }
 
   return notification;
