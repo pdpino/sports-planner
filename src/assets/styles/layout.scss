@@ -9,7 +9,6 @@ html, body {
   margin-right: 20px;
 }
 
-
 table {
     display:inline-block;
     max-height: 88%;
@@ -19,7 +18,8 @@ table {
     width:90%;
 }
 
-h1 { color: #111;
+h1 {
+  color: #111;
   font-family: 'Helvetica Neue', sans-serif;
   font-size: 50px;
   font-weight: bold;
@@ -174,8 +174,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
 }
 
 .center {
-
-  position: absolute;
+  // position: absolute;
   // top: 100px;
   left: 25%;
   background-color: #fff;

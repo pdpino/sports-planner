@@ -73,7 +73,7 @@ router.get('matchNew', '/new', async (ctx) => {
 });
 
 router.get('selectCompound', '/:id/selectCompound', async (ctx) => {
-  if (!ctx.state.requirePlayerLogin(ctx)) return;
+  ctx.state.requirePlayerLoggedIn(ctx);
 
   const match = await ctx.orm.match.findById(ctx.params.id);
   const compounds = await ctx.orm.compound.findAll();
@@ -88,12 +88,11 @@ router.get('selectCompound', '/:id/selectCompound', async (ctx) => {
 });
 
 router.get('selectField', '/:id/:compoundId/selectField', async (ctx) => {
-  if (!ctx.state.requirePlayerLogin(ctx)) return;
+  ctx.state.requirePlayerLoggedIn(ctx);
 
   const match = await ctx.orm.match.findById(ctx.params.id);
   const compound = await ctx.orm.compound.findById(ctx.params.compoundId);
   const fields= await compound.getFields();
-
 
   await ctx.render('matches/selectField', {
     match,
@@ -106,7 +105,7 @@ router.get('selectField', '/:id/:compoundId/selectField', async (ctx) => {
 });
 
 router.get('selectSchedule', '/:id/:compoundId/:fieldId/selectSchedule', async (ctx) => {
-  if (!ctx.state.requirePlayerLogin(ctx)) return;
+  ctx.state.requirePlayerLoggedIn(ctx);
 
   const match = await ctx.orm.match.findById(ctx.params.id);
   const compound = await ctx.orm.compound.findById(ctx.params.compoundId);
@@ -128,18 +127,26 @@ router.get('selectSchedule', '/:id/:compoundId/:fieldId/selectSchedule', async (
 });
 
 router.patch('addSchedule', '/:id/:compoundId/:fieldId/selectSchedule', async (ctx) => {
-  if (!ctx.state.requirePlayerLogin(ctx)) return;
-
-
-  console.log("ctx.request");
-  const match = await ctx.orm.match.findById(ctx.params.id);
-  const sport = await ctx.orm.sport.findById(match.sportId);
-  const compound = await ctx.orm.compound.findById(ctx.params.compoundId);
-  const fields= await compound.getFields({id:ctx.params.fieldId});
-  const field= fields[0];
-  const schedules= await field.getSchedules({where:{id:ctx.request.body.scheduleId}});
-  const schedule=schedules[0];
-  await schedule.update({id:schedule.id,price:schedule.price,fieldId:schedule.fieldId,matchId:match.id,hours:schedule.hours,date:schedule.date,open:schedule.open,status:"Solicited",createdAt:schedule.createdAt,updatedAt:new Date()});
+  ctx.state.requirePlayerLoggedIn(ctx);
+  const match = await ctx.state.findById(ctx.orm.match, ctx.params.id);
+  const sport = await ctx.state.findById(ctx.orm.sport, match.sportId);
+  const compound = await ctx.state.findById(ctx.orm.compound, ctx.params.compoundId);
+  const fields = await compound.getFields({id:ctx.params.fieldId});
+  const field = fields[0];
+  const schedules = await field.getSchedules({where:{id:ctx.request.body.scheduleId}});
+  const schedule = schedules[0];
+  await schedule.update({
+    id: schedule.id,
+    price: schedule.price,
+    fieldId: schedule.fieldId,
+    matchId: match.id,
+    hours: schedule.hours,
+    date: schedule.date,
+    open: schedule.open,
+    status: "Solicited",
+    createdAt: schedule.createdAt,
+    updatedAt: new Date()
+  });
 
 
   await ctx.render('matches/edit', {
@@ -154,7 +161,6 @@ router.patch('addSchedule', '/:id/:compoundId/:fieldId/selectSchedule', async (c
     cancelPath: ctx.router.url('matches'),
   });
 });
-
 
 router.post('matchCreate', '/', async (ctx) => {
   ctx.state.requirePlayerLoggedIn(ctx);
@@ -195,7 +201,6 @@ router.get('matchEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('matchUpdate', '/:id', async (ctx) => {
-
   const match = await ctx.state.findById(ctx.orm.match, ctx.params.id);
   await ctx.state.requirePlayerModifyPermission(ctx, match);
 

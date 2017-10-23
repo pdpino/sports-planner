@@ -7,8 +7,8 @@ module.exports = function definefield(sequelize, DataTypes) {
         notEmpty: {
           msg: "Debe tener un nombre"
         },
-    }
-  },
+      }
+    },
     openingHour: {
       type:DataTypes.STRING,
       allowNull:false,
