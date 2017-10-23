@@ -71,9 +71,15 @@ router.get('playerMatchEdit', '/:id/edit', async (ctx) => {
 
 router.patch('playerMatchUpdate', '/:id', async (ctx) => {
   const playerMatch = await findPlayerMatchById(ctx.state.player, ctx.params.id);
+  const matchAdmin = await playerMatch.getAdmin();
   const chooseStatuses = ctx.state.eligibleStatuses(playerMatch.isPlayerInvited.status, false);
 
-  // TODO: check that the user has permission to modify this, it could be requested with curl
+  // TODO: parse values from params
+
+  const newStatus = ctx.request.body.status || playerMatch.isPlayerInvited.status;
+  const statusChanged = newStatus !== playerMatch.isPlayerInvited.status;
+
+  // FIXME: check that the user has permission to modify this, it could be requested with curl
   const isAdmin = Boolean(ctx.request.body.isAdmin);
 
   try {
@@ -81,6 +87,15 @@ router.patch('playerMatchUpdate', '/:id', async (ctx) => {
       status: ctx.request.body.status,
       isAdmin,
     }});
+
+    if(statusChanged && newStatus == 'accepted'){ // HACK: status hardcoded
+      ctx.state.sendNotification(ctx.state.currentPlayer, matchAdmin, {
+        kind: 'playerAcceptedMatch',
+        entityName: ctx.state.currentPlayer.getName(),
+        eventName: playerMatch.name,
+      });
+    }
+
     ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));
   } catch (validationError) {
     await ctx.render('playerMatches/edit', {

@@ -206,6 +206,23 @@ router.use((ctx, next) => {
     return visibleMatches;
   }
 
+  /**
+   * Send a notification
+   * sender and receiver are a player or a owner (must have an userId property)
+   **/
+  ctx.state.sendNotification = async function(sender, receiver, options){
+    // options = {
+    //    kind: 'notifKind',
+    //    entityName: 'Juanito', // Puede ser un equipo o un nombre de jugador
+    //    eventName: 'Partido de juanito',
+    // }
+    await ctx.orm.notification.create({
+      ...options,
+      wasRead: false,
+      senderId: sender.userId,
+      receiverId: receiver.userId,
+    });
+  }
   return next();
 });
 

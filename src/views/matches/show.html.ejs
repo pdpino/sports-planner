@@ -1,4 +1,4 @@
-<div class ="center">
+<div class="center">
   <h1><%= match.name %></h1>
   <p>
     Fecha: <%= match.date%>
@@ -38,7 +38,7 @@
   <% } %>
 
   <% if (hasModifyPermission) { %>
-    <form action=<%= newInvitedPlayerPath %>>
+    <form action="<%= newInvitedPlayerPath %>">
         <input type="submit" value="Añadir Jugador" />
     </form>
   <% } %>
@@ -71,7 +71,7 @@
   <% } %>
 
   <% if (hasModifyPermission) { %>
-    <form action=<%= newInvitedTeamPath %>>
+    <form action="<%= newInvitedTeamPath %>">
         <input type="submit" value="Invitar equipo" />
     </form>
   <% } %>
