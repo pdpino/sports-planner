@@ -160,7 +160,7 @@ router.use(
   async (ctx, next) => {
     ctx.state.sports = await ctx.orm.sport.findAll();
     ctx.state.field = await ctx.state.findById(ctx.orm.field, ctx.params.fieldId);
-    ctx.state.compound = await field.getCompound();
+    ctx.state.compound = await ctx.state.field.getCompound();
     await next();
   },
   scheduleBasesRouter.routes(),
@@ -171,7 +171,7 @@ router.use(
   async (ctx, next) => {
     ctx.state.sports = await ctx.orm.sport.findAll();
     ctx.state.field = await ctx.state.findById(ctx.orm.field, ctx.params.fieldId);
-    ctx.state.compound = await field.getCompound();
+    ctx.state.compound = await ctx.state.field.getCompound();
     await next();
   },
   schedulesRouter.routes(),
