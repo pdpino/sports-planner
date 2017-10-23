@@ -11,11 +11,20 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      prices: {
-        type: Sequelize.STRING,
+      openingHour: {
+        type:Sequelize.STRING,
+        allowNull:false,
+        defaultValue:"00:00",
       },
-      schedule: {
-        type: Sequelize.STRING,
+      closingHour: {
+        type:Sequelize.STRING,
+        allowNull:false,
+        defaultValue:"23:59",
+      },
+      modules: {
+        type: Sequelize.INTEGER,
+        defaultValue:1,
+        allowNull:false,
       },
       photo: {
         type: Sequelize.STRING,

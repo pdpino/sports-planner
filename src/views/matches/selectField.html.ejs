@@ -1,0 +1,24 @@
+<div class ="center">
+
+
+
+
+  <ul>
+    <% fields.forEach((field) => { %>
+      <li>
+          <a class="lilink" href=<%= fieldPath(field) %>>
+          <img src=<%=field.photo%> width="128" height="128"/>
+          <div>
+           <%= field.name %>
+         </div>
+       </a>
+      </li>
+    <% }) %>
+  </ul>
+
+
+
+  <form action="<%= cancelPath %>" method="get">
+      <input class"deletebutton" type="submit" value="Cancelar"/>
+  </form>
+</div>

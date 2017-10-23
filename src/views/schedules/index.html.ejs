@@ -1,0 +1,23 @@
+<div class ="center">
+
+  <h1>Horario Bases en Jugamos</h1>
+
+
+  <% if(hasModifyPermission) { %>
+  <form action=<%= newScheduleBasePath %>>
+      <input type="submit" value="Crear Horario Base"/>
+  </form>
+  <%}%>
+
+  <ul>
+    <% schedules.forEach((scheduleBase) => { %>
+      <li>
+          <a class="lilink" href=<%= scheduleBasePath(scheduleBase) %>>
+          <div>
+           <%=schedules.weekday %> - <%= schedules.hours %>
+         </div>
+       </a>
+      </li>
+    <% }) %>
+  </ul>
+</div>
