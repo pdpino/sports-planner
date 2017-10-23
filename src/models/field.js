@@ -7,16 +7,35 @@ module.exports = function definefield(sequelize, DataTypes) {
         notEmpty: {
           msg: "Debe tener un nombre"
         },
-      }
+    }
+  },
+    openingHour: {
+      type:DataTypes.STRING,
+      allowNull:false,
+      defaultValue:"00:00",
     },
-    prices: DataTypes.STRING,
-    schedule: DataTypes.STRING,
+    closingHour: {
+      type:DataTypes.STRING,
+      allowNull:false,
+      defaultValue:"00:00",
+    },
+    modules:{
+      type:DataTypes.INTEGER,
+      allowNull:false,
+      defaultValue:1,
+      validate:{
+        min:1,
+        }
+      },
+
     photo: DataTypes.STRING,
   });
 
   field.associate = function associate(models) {
     field.belongsTo(models.sport);
     field.belongsTo(models.compound);
+    field.hasMany(models.scheduleBase);
+    field.hasMany(models.schedule);
   };
 
   return field;

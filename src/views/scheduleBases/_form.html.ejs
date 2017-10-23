@@ -1,0 +1,96 @@
+<div class ="schedule">
+
+  <h1> <%= (scheduleBase.isNewRecord) ? 'Nuevo Horario Base' : 'Editar Horario Base' %></h1>
+  <div>
+    <% if (locals.errors) { %>
+      <div class="errors">
+        Necesitas arreglar los siguiente errores:
+        <ul>
+          <% errors.forEach(error => { %>
+            <li><%= error.message %></li>
+          <% }); %>
+        </ul>
+      </div>
+    <% } %>
+    <form action="<%= submitScheduleBasePath %>" method="post">
+      <% if(!scheduleBase.isNewRecord) { %>
+        <div>
+          <input type="hidden" name="_method" value="patch" />
+        </div>
+      <% } %>
+      <table>
+        <tr>
+        <th>Tiempo</th>
+        <th>Domingo</th>
+        <th>Lunes</th>
+        <th>Martes</th>
+        <th>Miércoles</th>
+        <th>Jueves</th>
+        <th>Viernes</th>
+        <th>Sábado</th>
+
+    </tr>
+
+
+
+        <% for (j=0;j<field.modules;j++) { %>
+            <tr>
+              <th>   <label for="hours"><%=arrayOfHour[j]%></label> </th>
+
+            <% for (i=0;i<7;i++) { %>
+
+
+      <td>
+      <div>
+        <input type="hidden" name="scheduleBases[<%= field.modules*i + j %>][weekday]" value="<%=i%>" />
+      </div>
+      <div>
+
+        <input type="hidden" name="scheduleBases[<%= field.modules*i + j %>][hours]" value="<%= arrayOfHour[j]%>" />
+      </div>
+      <div>
+        <input type="hidden" name="scheduleBases[<%= field.modules*i + j %>][priority]" value="<%= 1 %>" />
+      </div>
+      <div>
+
+        <label for="open">Disponible?</label>
+          <input type="checkbox" name="scheduleBases[<%= field.modules*i + j %>][open]"  <%= scheduleBases[field.modules*i + j].open ? 'checked' : '' %> ></input>
+      </div>
+      <div>
+        <input type="hidden" name="scheduleBases[<%= field.modules*i + j %>][fieldId]" value="<%= field.id %>" />
+      </div>
+        <div id="price">
+        <input type="number" class="price" name="scheduleBases[<%= field.modules*i + j %>][price]" value="<%=scheduleBases[field.modules*i + j].price %>"
+      </div>
+      </td>
+      <% } %>
+    </tr>
+        <% } %>
+      </table>
+        <div>
+        <% if(scheduleBase.isNewRecord) { %>
+          <input type="submit" name="create" value="Crear" />
+        <% } else { %>
+          <input type="submit" name="update" value="Guardar Cambios" />
+        <% } %>
+      </div>
+    </form>
+
+
+
+
+  <% if(!scheduleBase.isNewRecord) { %>
+    <form action="<%= deleteScheduleBasePath %>" method="post">
+      <div>
+        <input type="hidden" name="_method" value="delete" />
+      </div>
+      <div>
+        <input class"deletebutton" type="submit" name="delete" value="Eliminar" />
+      </div>
+    </form>
+  <% } %>
+
+  <form action="<%= cancelPath %>" method="get">
+      <input type="submit" value="Cancelar"/>
+  </form>
+</div>
