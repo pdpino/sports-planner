@@ -1,0 +1,21 @@
+<%# Must provide: fields
+    Can provide: logoClassName %>
+
+<ul>
+  <% fields.forEach((field) => { %>
+    <li>
+      <a class="lilink" href=<%= getFieldPath(field) %>>
+        <img
+        <% if(locals.logoClassName) { %>
+          class="<%= logoClassName %>"
+        <% } %>
+        src=<%=field.photo%> width="<%= size %>" height="<%= size %>"/>
+        <div>
+          <%= field.name %>
+          <br />
+          <%= field.prices %>
+        </div>
+      </a>
+    </li>
+  <% }) %>
+</ul>

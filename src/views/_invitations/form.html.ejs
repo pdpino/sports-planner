@@ -1,0 +1,31 @@
+<% if (locals.chooseStatuses && locals.submitPath) { %>
+  <form action="<%= submitPath %>" method="post">
+    <div>
+      <input type="hidden" name="_method" value="patch" />
+    </div>
+
+    <div>
+      <% chooseStatuses.forEach((status) => { %>
+        <input type="radio" name="status" value="<%= status %>"
+        <%= (invitation.status == status) ? 'checked' : '' %>
+        > <%= invitationToString(status) %>
+      <% }); %>
+    </div>
+
+    <div>
+      <% if (hasAdminPermission) { %>
+        <label for="isAdmin"> </label>
+        <input type="checkbox" name="isAdmin" <%= (invitation.isAdmin) ? 'checked' : '' %> /> Administrador
+      <% } %>
+    </div>
+
+    <div>
+      <input type="submit" name="update" value="Guardar Cambios" />
+    </div>
+
+  </form>
+<% } else { %>
+  <div>
+    <p> <%= invitationToString(invitation.status) %> </p>
+  </div>
+<% } %>

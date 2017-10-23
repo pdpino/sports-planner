@@ -1,6 +1,6 @@
 module.exports = function definefield(sequelize, DataTypes) {
   const field = sequelize.define('field', {
-    name:  {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
@@ -27,13 +27,16 @@ module.exports = function definefield(sequelize, DataTypes) {
         min:1,
         }
       },
+
     photo: DataTypes.STRING,
   });
+
   field.associate = function associate(models) {
     field.belongsTo(models.sport);
     field.belongsTo(models.compound);
     field.hasMany(models.scheduleBase);
     field.hasMany(models.schedule);
   };
+
   return field;
 };

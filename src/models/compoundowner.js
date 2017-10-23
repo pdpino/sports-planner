@@ -18,8 +18,10 @@ module.exports = function definecompoundOwner(sequelize, DataTypes) {
     compoundOwner.hasMany(models.compound);
   };
 
-  /** Load user info (email, names and photo) into player object
-   HACK: copied from models/player**/
+  /**
+   * Load user info (email, names and photo) into player object
+   * HACK: copied from models/player
+   **/
   compoundOwner.afterFind(async function loadUser(result) {
     // REVIEW: avoid DB query?
     if(result.constructor == Array) {

@@ -4,60 +4,40 @@
   <h1><%= compound.name %></h1>
 
   <div>
-    <h4>Información personal</h4>
+    <h4>Información del recinto</h4>
     <img src=<%= compound.photo %> >
 
-    <p> E-mail: <%= compound.localemail %> </p>
-
-
-
-    <p> Teléfono: <%= compound.localphone %> </p>
+    <p> E-mail: <%= compound.localEmail %> </p>
+    <p> Teléfono: <%= compound.localPhone %> </p>
     <p> Dirección: <%= compound.address %> </p>
     <p> Dueño: <%= compoundOwner.email %>
 
-      <form action="<%= getCompoundOwnerPath(compoundOwner) %>">
-        <input type="submit" value="Ir perfil dueño" />
-      </form>
-    </br>
+    <% if(hasModifyPermission) { %>
+      <%- include('../_buttons/edit', {
+        editPath: editCompoundPath,
+        message: 'Editar información del recinto',
+      }) %>
+    <% } %>
+
     <% if(fields.length > 0) { %>
       <h4> Canchas que dispone: </h4>
-      <ul>
-        <% fields.forEach((field) => { %>
-          <li>
-              <a class="lilink" href=<%= getFieldPath(field) %>>
-              <img src=<%=field.photo%> width="64" height="64"/>
-              <div>
-               <%= field.name %>
-             </div>
-           </a>
-          </li>
-        <% }) %>
-      </ul>
+      <%- include('../fields/index-snippet', { fields, logoClassName: "medium-logo" }) %>
     <% } else { %>
       No contiene canchas.
     <% } %>
 
     <% if(hasModifyPermission) { %>
-
       <form action="<%= newFieldPath %>">
           <input type="submit" value="Crear Cancha" />
       </form>
-
-
-
-      <% } %>
-
-    <% if(hasModifyPermission) { %>
-      <form action="<%= editCompoundPath %>">
-          <input type="submit" value="Editar información del recinto" />
-      </form>
     <% } %>
+
+    <form action="<%= getCompoundOwnerPath(compoundOwner) %>">
+      <input type="submit" value="Ir perfil dueño" />
+    </form>
 
   </div>
 
+  <%- include('../_buttons/back', { backPath: compoundsPath }) %>
 
-
-  <form action="<%= compoundsPath %>">
-      <input type="submit" value="Volver" />
-  </form>
 </div>

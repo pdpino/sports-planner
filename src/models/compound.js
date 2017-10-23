@@ -1,6 +1,6 @@
 module.exports = function definecompound(sequelize, DataTypes) {
   const compound = sequelize.define('compound', {
-    localemail: DataTypes.STRING,
+    localEmail: DataTypes.STRING,
     photo: DataTypes.STRING,
     name: {
       type: DataTypes.STRING,
@@ -9,14 +9,16 @@ module.exports = function definecompound(sequelize, DataTypes) {
         notEmpty: {
           msg: "Debe tener un nombre"
         },
-    }
-  },
+      }
+    },
     address: DataTypes.STRING,
-    localphone: DataTypes.STRING,
+    localPhone: DataTypes.STRING,
   });
+
   compound.associate = function associate(models) {
     compound.belongsTo(models.compoundOwner);
     compound.hasMany(models.field);
   };
+
   return compound;
 };

@@ -11,31 +11,13 @@ function findSportName(sportId, allSports){
   return (sportsFound[0]) ? sportsFound[0].name : null;
 }
 
-/** Given a team and the currentPlayer logged in, boolean indicating modify permission **/
-async function hasModifyTeamPermission(team, currentPlayer){
-  return currentPlayer && await team.hasPlayer(currentPlayer, {
-    through: {
-      where: { isCaptain: true }
-    }
-  });
-}
-
-/** Require modify team permissions, else redirect to home **/
-async function requireModifyTeamPermission(ctx, team){
-  const hasModifyPermission = await hasModifyTeamPermission(team, ctx.state.currentPlayer);
-  if(!hasModifyPermission){
-    ctx.redirect('/');
-    return false; // Require failed
-  }
-  return true; // Require passed
-}
-
 router.get('teams', '/', async (ctx) => {
   const teams = await ctx.orm.team.findAll();
+
   await ctx.render('teams/index', {
     teams,
     sports: ctx.state.sports,
-    hasCreatePermission: ctx.state.isLoggedIn,
+    hasCreatePermission: ctx.state.isPlayerLoggedIn,
     getTeamSport: (team) => findSportName(team.sportId, ctx.state.sports),
     teamPath: team => ctx.router.url('team', { id: team.id }),
     newTeamPath: ctx.router.url('teamNew'),
@@ -43,7 +25,7 @@ router.get('teams', '/', async (ctx) => {
 });
 
 router.get('teamNew', '/new', async (ctx) => {
-  if (!ctx.state.requirePlayerLogin(ctx)) return;
+  ctx.state.requirePlayerLoggedIn(ctx);
 
   const team = ctx.orm.team.build();
   await ctx.render('teams/new', {
@@ -55,7 +37,7 @@ router.get('teamNew', '/new', async (ctx) => {
 });
 
 router.post('teamCreate', '/', async (ctx) => {
-  if (!ctx.state.requirePlayerLogin(ctx)) return;
+  ctx.state.requirePlayerLoggedIn(ctx);
 
   try {
     const team = await ctx.orm.team.create(ctx.request.body);
@@ -66,7 +48,7 @@ router.post('teamCreate', '/', async (ctx) => {
   } catch (validationError) {
     await ctx.render('teams/new', {
       team: ctx.orm.team.build(ctx.request.body),
-      errors: validationError.errors,
+      errors: ctx.state.parseValidationError(validationError),
       sports: ctx.state.sports,
       submitTeamPath: ctx.router.url('teamCreate'),
       cancelPath: ctx.router.url('teams'),
@@ -75,9 +57,9 @@ router.post('teamCreate', '/', async (ctx) => {
 });
 
 router.get('teamEdit', '/:id/edit', async (ctx) => {
-  const team = await ctx.orm.team.findById(ctx.params.id);
+  const team = await ctx.state.findById(ctx.orm.team, ctx.params.id);
 
-  if (! await requireModifyTeamPermission(ctx, team)) return;
+  await ctx.state.requirePlayerModifyPermission(ctx, team);
 
   await ctx.render('teams/edit', {
     team,
@@ -88,9 +70,9 @@ router.get('teamEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('teamUpdate', '/:id', async (ctx) => {
-  const team = await ctx.orm.team.findById(ctx.params.id);
+  const team = await ctx.state.findById(ctx.orm.team, ctx.params.id);
 
-  if (! await requireModifyTeamPermission(ctx, team)) return;
+  await ctx.state.requirePlayerModifyPermission(ctx, team);
 
   try {
     await team.update(ctx.request.body);
@@ -98,7 +80,7 @@ router.patch('teamUpdate', '/:id', async (ctx) => {
   } catch (validationError) {
     await ctx.render('teams/edit', {
       team,
-      errors: validationError.errors,
+      errors: ctx.state.parseValidationError(validationError),
       sports: ctx.state.sports,
       submitTeamPath: ctx.router.url('teamUpdate', team.id),
       cancelPath: ctx.router.url('team', { id: ctx.params.id }),
@@ -107,11 +89,11 @@ router.patch('teamUpdate', '/:id', async (ctx) => {
 });
 
 router.get('team', '/:id', async (ctx) => {
-  const team = await ctx.orm.team.findById(ctx.params.id);
-  const sport = await ctx.orm.sport.findById(team.sportId);
+  const team = await ctx.state.findById(ctx.orm.team, ctx.params.id);
+  const sport = await team.getSport();
   const teamMembers = await team.getPlayers();
   const teamMatches = await team.getMatches();
-  const hasModifyPermission = await hasModifyTeamPermission(team, ctx.state.currentPlayer);
+  const hasModifyPermission = await team.hasModifyPermission(ctx.state.currentPlayer);
 
   await ctx.render('teams/show', {
     team,
@@ -135,9 +117,9 @@ router.get('team', '/:id', async (ctx) => {
 });
 
 router.delete('teamDelete', '/:id', async (ctx) => {
-  const team = await ctx.orm.team.findById(ctx.params.id);
+  const team = await ctx.state.findById(ctx.orm.team, ctx.params.id);
 
-  if (! await requireModifyTeamPermission(ctx, team)) return;
+  await ctx.state.requirePlayerModifyPermission(ctx, team);
 
   await team.destroy();
   ctx.redirect(ctx.router.url('teams'));
@@ -146,13 +128,12 @@ router.delete('teamDelete', '/:id', async (ctx) => {
 router.use(
   '/:teamId/players',
   async (ctx, next) => {
-    const team = await ctx.orm.team.findById(ctx.params.teamId);
+    ctx.state.team = await ctx.state.findById(ctx.orm.team, ctx.params.teamId);
 
-    if (! await requireModifyTeamPermission(ctx, team)) return;
+    await ctx.state.requirePlayerModifyPermission(ctx, ctx.state.team);
 
-    ctx.state.team = team;
     ctx.state.teamMembers = await ctx.state.team.getPlayers();
-    ctx.state.players = await ctx.orm.player.findAll();
+    ctx.state.invitablePlayers = await ctx.state.currentPlayer.getAllFriends();
     await next();
   },
   teamMembersRouter.routes(),
@@ -161,14 +142,13 @@ router.use(
 router.use(
   '/:teamId/matches',
   async (ctx, next) => {
-    const team = await ctx.orm.team.findById(ctx.params.teamId);
+    ctx.state.team = await ctx.state.findById(ctx.orm.team, ctx.params.teamId);
 
-    if (! await requireModifyTeamPermission(ctx, team)) return;
+    await ctx.state.requirePlayerModifyPermission(ctx, ctx.state.team);
 
-    ctx.state.team = team;
     ctx.state.teamMembers = await ctx.state.team.getPlayers();
     ctx.state.teamMatches = await ctx.state.team.getMatches();
-    ctx.state.allMatches = await ctx.orm.match.findAll();
+    ctx.state.visibleMatches = await ctx.state.getVisibleMatches(ctx);
     await next();
   },
   teamMatchesRouter.routes(),

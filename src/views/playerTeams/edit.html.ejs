@@ -1,18 +1,10 @@
 <div class ="center">
 
   <h1> Editar equipo al que pertenezco %></h1>
-  <div>
-    <% if (locals.errors) { %>
-      <div class="errors">
-        Necesitas arreglar los siguiente errores:
-        <ul>
-          <% errors.forEach(error => { %>
-            <li><%= error.message %></li>
-          <% }); %>
-        </ul>
-      </div>
-    <% } %>
 
+  <%- include('../_error/snippet', { errors: locals.errors }) %>
+
+  <div>
     <%= playerTeam.name %>
     <form action="<%= submitPlayerTeamPath %>" method="post">
       <div>
@@ -28,16 +20,7 @@
     </form>
   </div>
 
-  <form action="<%= deletePlayerTeamPath %>" method="post">
-    <div>
-      <input type="hidden" name="_method" value="delete" />
-    </div>
-    <div>
-      <input  class"deletebutton" type="submit" name="delete" value="Eliminar" />
-    </div>
-  </form>
+  <%- include('../_buttons/delete', { deletePath: deletePlayerTeamPath }) %>
 
-  <form action=<%= cancelPath %>>
-    <input type="submit" value="Cancelar"/>
-  </form>
+  <%- include('../_buttons/cancel', { cancelPath }) %>
 </div>

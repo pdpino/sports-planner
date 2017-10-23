@@ -1,16 +1,9 @@
 <div class ="center">
   <h1><%= match.isNewRecord ? 'Nuevo Partido' : 'Editar Partido' %></h1>
+
+  <%- include('../_error/snippet', { errors: locals.errors }) %>
+
   <div>
-    <% if (locals.errors) { %>
-      <div class="errors">
-        Necesitas arreglar los siguiente errores:
-        <ul>
-          <% errors.forEach(error => { %>
-            <li><%= error.message %></li>
-          <% }); %>
-        </ul>
-      </div>
-    <% } %>
     <form action="<%= submitMatchPath %>" method="post">
       <% if(!match.isNewRecord) { %>
         <div>
@@ -26,14 +19,30 @@
         <input type="checkbox" name="isPublic" <%= match.isPublic ? 'checked' : '' %> ></input>
       </div>
       <div>
-        <label for="date">Fecha y Hora</label>
-        <input type="datetime-local" name="date" value="<%= match.date %>"></input>
+        <h3>Fecha y hora</h3>
+        <div>
+          <label for="dateYear">Año</label>
+          <input class="input-date-long" type="number" name="dateYear" value="<%= match.dateYear %>"></input>
+
+          <label for="dateMonth">Mes</label>
+          <input class="input-date" type="number" name="dateMonth" value="<%= match.dateMonth %>"></input>
+
+          <label for="dateDay">Día</label>
+          <input class="input-date" type="number" name="dateDay" value="<%= match.dateDay %>"></input>
+        </div>
+        <div>
+          <label for="dateHour">Hora</label>
+          <input class="input-date" type="number" name="dateHour" value="<%= match.dateHour %>"></input>
+          <input class="input-date" type="number" name="dateMinute" value="<%= match.dateMinute %>"></input>
       </div>
+
       <div>
         <label for="sportId">Deporte</label>
 
         <% sports.forEach((sport) => { %>
-          <input type="radio" name="sportId" value="<%= sport.id %>" <%= (sport.id === match.sportId) ? 'checked' : '' %> > <%= sport.name %>
+          <input type="radio" name="sportId" value="<%= sport.id %>" required
+          <%= (sport.id === match.sportId) ? 'checked' : '' %> >
+          <%= sport.name %>
         <% }) %>
       </div>
       <div>
@@ -52,7 +61,6 @@
     </form>
     <%}%>
 
-  <form action="<%= cancelPath %>" method="get">
-      <input class"deletebutton" type="submit" value="Cancelar"/>
-  </form>
+  <%- include('../_buttons/cancel', { cancelPath }) %>
+
 </div>

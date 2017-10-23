@@ -1,0 +1,6 @@
+<%# Must provide: backPath
+    optional: message %>
+
+<form action="<%= backPath %>" method="get">
+    <input type="submit" value="<%= locals.message || 'Volver' %>" />
+</form>

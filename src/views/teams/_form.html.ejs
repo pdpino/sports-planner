@@ -1,16 +1,9 @@
 <div class ="center">
   <h1><%= team.isNewRecord ? 'Nuevo equipo' : 'Editar equipo' %></h1>
+
+  <%- include('../_error/snippet', { errors: locals.errors }) %>
+
   <div>
-    <% if (locals.errors) { %>
-      <div class="errors">
-        Necesitas arreglar los siguiente errores:
-        <ul>
-          <% errors.forEach(error => { %>
-            <li><%= error.message %></li>
-          <% }); %>
-        </ul>
-      </div>
-    <% } %>
     <form action="<%= submitTeamPath %>" method="post">
       <% if(!team.isNewRecord) { %>
         <div>
@@ -19,7 +12,7 @@
       <% } %>
       <div>
         <label for="name">Nombre</label>
-        <input type="text" name="name" value="<%= team.name %>" />
+        <input type="text" name="name" value="<%= team.name %>" required/>
       </div>
       <div>
         <label for="logo">Logo</label>
@@ -29,7 +22,9 @@
         <label for="sportId">Deporte</label>
 
         <% sports.forEach((sport) => { %>
-          <input type="radio" name="sportId" value="<%= sport.id %>" <%= (sport.id === team.sportId) ? 'checked' : '' %> > <%= sport.name %>
+          <input type="radio" name="sportId" value="<%= sport.id %>" required
+          <%= (sport.id === team.sportId) ? 'checked' : '' %> >
+          <%= sport.name %>
         <% }) %>
       </div>
       <div>
@@ -42,7 +37,5 @@
     </form>
   </div>
 
-  <form action="<%= cancelPath %>" method="get">
-      <input type="submit" value="Cancelar"/>
-  </form>
+  <%- include('../_buttons/cancel', { cancelPath }) %>
 </div>

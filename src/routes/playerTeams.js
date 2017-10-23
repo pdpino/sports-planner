@@ -39,11 +39,10 @@ const router = new KoaRouter();
 //     });
 //     ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));
 //   } catch (validationError) {
-//     console.log("###### validation error when creating player-team: ", validationError); // DEBUG
 //     await ctx.render('playerTeams/new', {
 //       player: ctx.state.player,
 //       joinableTeams: getJoinableTeams(ctx.state.teams, ctx.state.playerTeams),
-//       errors: validationError.errors,
+//       errors: ctx.state.parseValidationError(validationError),
 //       submitPlayerTeamPath: ctx.router.url('playerTeamCreate', { playerId: ctx.state.player.id }),
 //       cancelPath: ctx.router.url('player', ctx.state.player.id)
 //     });
@@ -80,11 +79,10 @@ const router = new KoaRouter();
 //     });
 //     ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));
 //   } catch (validationError) {
-//     console.log("###### validation error when updating player-team: ", validationError); // DEBUG
 //     await ctx.render('playerTeams/edit', {
 //       player: ctx.state.player,
 //       playerTeam,
-//       errors: validationError.errors,
+//       errors: ctx.state.parseValidationError(validationError),
 //       submitPlayerTeamPath: ctx.router.url('playerTeamUpdate', {
 //         playerId: ctx.state.player.id,
 //         id: playerTeam.id

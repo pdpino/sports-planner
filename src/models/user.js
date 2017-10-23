@@ -61,9 +61,11 @@ module.exports = function defineuser(sequelize, DataTypes) {
     },
     photo: DataTypes.STRING,
   });
+
   user.associate = function associate(models) {
     // associations can be defined here
   };
+  
   user.beforeUpdate(buildPasswordHash);
   user.beforeCreate(buildPasswordHash);
 

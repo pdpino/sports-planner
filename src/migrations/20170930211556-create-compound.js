@@ -7,7 +7,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      localemail: {
+      localEmail: {
         type: Sequelize.STRING,
       },
       photo: {
@@ -22,7 +22,7 @@ module.exports = {
       address: {
         type: Sequelize.STRING,
       },
-      localphone: {
+      localPhone: {
         type: Sequelize.STRING,
       },
       createdAt: {

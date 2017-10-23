@@ -7,6 +7,7 @@ const koaStatic = require('koa-static');
 const render = require('koa-ejs');
 const session = require('koa-session');
 const override = require('koa-override-method');
+const mailer = require('./mailers');
 const routes = require('./routes');
 const orm = require('./models');
 
@@ -79,6 +80,33 @@ render(app, {
   root: path.join(__dirname, 'views'),
   viewExt: 'html.ejs',
   cache: !developmentMode,
+});
+
+mailer(app);
+
+// Handle errors
+app.use(async (ctx, next) => {
+  try{
+    await next();
+  } catch(error) {
+    console.log("ERROR RECEIVED: ", error); // DEBUG
+    if (error.name === 'NotFoundError') {
+      await ctx.render('_error/page', {
+        message: error.message,
+        details: error.details,
+      });
+    } else if (error.name === 'ForbiddenError') {
+      // TODO: Render home or same page where the user was, but with errors
+      await ctx.render('_error/page', {
+        message: error.message,
+        details: error.details,
+      });
+    } else {
+      console.log("ERROR NOT RECOGNIZED"); // DEBUG
+      throw error; // Upper middleware can handle it
+    }
+
+  }
 });
 
 // Routing middleware
