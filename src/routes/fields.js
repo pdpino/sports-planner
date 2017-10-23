@@ -159,8 +159,8 @@ router.use(
   '/:fieldId/scheduleBases',
   async (ctx, next) => {
     ctx.state.sports = await ctx.orm.sport.findAll();
-    ctx.state.compound = await field.getCompound();
     ctx.state.field = await ctx.state.findById(ctx.orm.field, ctx.params.fieldId);
+    ctx.state.compound = await field.getCompound();
     await next();
   },
   scheduleBasesRouter.routes(),
@@ -170,8 +170,8 @@ router.use(
   '/:fieldId/schedules',
   async (ctx, next) => {
     ctx.state.sports = await ctx.orm.sport.findAll();
-    ctx.state.compound = await field.getCompound();
     ctx.state.field = await ctx.state.findById(ctx.orm.field, ctx.params.fieldId);
+    ctx.state.compound = await field.getCompound();
     await next();
   },
   schedulesRouter.routes(),
