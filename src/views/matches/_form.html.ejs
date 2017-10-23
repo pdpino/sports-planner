@@ -55,5 +55,12 @@
     </form>
   </div>
 
+  <% if(!match.isNewRecord) { %>
+    <form action="<%= selectCompoundPath %>" method="get">
+    <input type="submit" value="Pedir Cancha" />
+    </form>
+    <%}%>
+
   <%- include('../_buttons/cancel', { cancelPath }) %>
+
 </div>

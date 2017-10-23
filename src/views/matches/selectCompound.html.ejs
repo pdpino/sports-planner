@@ -1,0 +1,24 @@
+<div class ="center">
+
+
+
+
+  <ul>
+    <% compounds.forEach((compound) => { %>
+      <li>
+          <a class="lilink" href=<%= compoundPath(compound) %>>
+          <img src=<%=compound.photo%> width="128" height="128"/>
+          <div>
+           <%= compound.name %>
+         </div>
+       </a>
+      </li>
+    <% }) %>
+  </ul>
+
+
+
+  <form action="<%= cancelPath %>" method="get">
+      <input class"deletebutton" type="submit" value="Cancelar"/>
+  </form>
+</div>

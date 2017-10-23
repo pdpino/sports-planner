@@ -1,0 +1,34 @@
+<div class ="center">
+  <h1><%= match.isNewRecord ? 'Nuevo Partido' : 'Editar Partido' %></h1>
+  <div>
+    <% if (locals.errors) { %>
+      <div class="errors">
+        Necesitas arreglar los siguiente errores:
+        <ul>
+          <% errors.forEach(error => { %>
+            <li><%= error.message %></li>
+          <% }); %>
+        </ul>
+      </div>
+    <% } %>
+    <form action="<%= submitSchedulePath %>" method="post">
+      <input type="hidden" name="_method" value="patch" />
+<ul>
+
+        <% schedules.forEach((schedule) => { %>
+          <li>
+          <input type="radio" name="scheduleId" value="<%= schedule.id %>"  'checked' : '' > <%= schedule.date %> - <%= schedule.hours %> - <%=schedule.price%>
+        </li>
+        <% }) %>
+      </div>
+    </ul>
+      <div>
+          <input type="submit" value="Terminar" />
+      </div>
+    </form>
+  </div>
+
+  <form action="<%= cancelPath %>" method="get">
+
+  </form>
+</div>
