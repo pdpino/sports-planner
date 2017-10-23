@@ -1,12 +1,7 @@
-
 <div class="center">
 
-
+  <%# REFACTOR: COPIED FROM index %>
   <h1>Jugamos</h1>
-
-  <p>
-    Organiza encuentros deportivos con tus amigos!
-  </p>
 
   <form class="indexbutton" action="<%= sportsPath %>" method="get">
       <input type="submit" value="Ver deportes"/>
@@ -31,4 +26,13 @@
   <form class="indexbutton" action="<%= compoundsPath %>" method="get">
       <input type="submit" value="Ver recintos"/>
   </form>
+
+  <div>
+    <h2>Notificaciones</h2>
+    <ul>
+      <% notifications.forEach((notification) => { %>
+        <li> <%= notification.toString() %> </li>
+      <% }); %>
+    </ul>
+  </div>
 </div>

@@ -63,6 +63,17 @@ module.exports = function definematch(sequelize, DataTypes) {
     return (player.firstName) ? `Partido de ${player.firstName}` : 'Partido';
   }
 
+  match.prototype.getAdmin = async function(){
+    const matchAdmins = await this.getPlayers({
+      through: {
+        where: {
+          isAdmin: true
+        }
+      }
+    });
+    return (matchAdmins && matchAdmins.length > 0) ? matchAdmins[0] : null;
+  }
+
   // async function assertNotEmptyName(instance){
   //   if (!instance.name){
   //     const sport = await sequelize.models.sport.findById(instance.sportId);
