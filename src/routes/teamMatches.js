@@ -1,3 +1,4 @@
+const notifications = require('../services/notifications');
 const KoaRouter = require('koa-router');
 
 const router = new KoaRouter();
@@ -34,11 +35,7 @@ router.get('teamMatchNew', '/new', async (ctx) => {
 
 router.post('teamMatchCreate', '/', async (ctx) => {
   try {
-    await ctx.state.team.addMatch(ctx.request.body.matchId, {
-      through: {
-        status: 'asked' // HACK: invitation status harcoded
-      }
-    });
+    await ctx.state.team.askForMatch(ctx.request.body.matchId);
     ctx.redirect(ctx.router.url('team', { id: ctx.state.team.id }));
   } catch (validationError) {
     await ctx.render('teamMatches/new', {
@@ -55,6 +52,7 @@ router.post('teamMatchCreate', '/', async (ctx) => {
 
 router.get('teamMatchEdit', '/:id/edit', async (ctx) => {
   const teamMatch = await findTeamMatchById(ctx.state.team, ctx.params.id);
+  ctx.assert(teamMatch, 404);
 
   await ctx.render('teamMatches/edit', {
     team: ctx.state.team,
@@ -74,27 +72,23 @@ router.get('teamMatchEdit', '/:id/edit', async (ctx) => {
 
 router.patch('teamMatchUpdate', '/:id', async (ctx) => {
   const teamMatch = await findTeamMatchById(ctx.state.team, ctx.params.id);
-  const matchAdmin = await teamMatch.getAdmin();
-
+  ctx.assert(teamMatch, 404);
+  
+  const matchAdmins = await teamMatch.getAdmins();
   const newStatus = ctx.request.body.status || teamMatch.isTeamInvited.status;
   const statusChanged = newStatus !== teamMatch.isTeamInvited.status;
 
   try {
     await ctx.state.team.addMatch(teamMatch, {
-      through: { status: newStatus }
+      through: {
+        status: newStatus
+      }
     });
 
     if(statusChanged && newStatus == 'accepted'){ // HACK: status hardcoded
       // Invite all of his players to the game
-      await teamMatch.addPlayers(ctx.state.teamMembers, {
-        through: { status: 'sent' } // HACK: invitation status harcoded
-      });
-
-      ctx.state.sendNotification(ctx.state.currentPlayer, matchAdmin, {
-        kind: 'teamAcceptedMatch',
-        entityName: ctx.state.team.name,
-        eventName: teamMatch.name,
-      });
+      await teamMatch.invitePlayers(ctx.state.teamMembers);
+      await notifications.teamAcceptMatch(ctx, ctx.state.currentPlayer, matchAdmins, ctx.state.team, teamMatch);
     }
 
     ctx.redirect(ctx.router.url('team', { id: ctx.state.team.id }));

@@ -40,5 +40,29 @@ module.exports = function defineteam(sequelize, DataTypes) {
     return (teamCaptains && teamCaptains.length > 0) ? teamCaptains[0] : null;
   }
 
+  team.prototype.invitePlayer = async function(player, isCaptain){
+    await this.addPlayer(player, {
+      through: {
+        isCaptain,
+      }
+    });
+  }
+
+  team.prototype.askForMatch = async function(match){
+    await this.addMatch(match, {
+      through: {
+        status: 'asked' // HACK: invitation status harcoded
+      }
+    });
+  }
+
+  // team.prototype.askForMatch = async function(match){
+  //   await this.addMatch(match, {
+  //     through: {
+  //       status: 'asked' // HACK: invitation status harcoded
+  //     }
+  //   });
+  // }
+
   return team;
 };

@@ -159,5 +159,21 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     return _.unionWith(friendsSide1, friendsSide2, function(a, b) { return a.id === b.id; });
   }
 
+  player.prototype.askForMatch = async function(match){
+    await this.addMatch(match, {
+      through: {
+        status: 'asked' // HACK: invitation status harcoded
+      }
+    });
+  }
+
+  player.prototype.playSport = async function(sport, position){
+    await this.addSport(sport, {
+      through: {
+        position,
+      }
+    });
+  }
+
   return player;
 };

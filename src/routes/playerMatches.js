@@ -1,3 +1,4 @@
+const notifications = require('../services/notifications');
 const KoaRouter = require('koa-router');
 
 const router = new KoaRouter();
@@ -32,11 +33,7 @@ router.get('playerMatchNew', '/new', async (ctx) => {
 
 router.post('playerMatchCreate', '/', async (ctx) => {
   try {
-    await ctx.state.player.addMatch(ctx.request.body.matchId, {
-      through: {
-        status: 'asked' // HACK: invitation status harcoded
-      }
-    });
+    await ctx.state.player.askForMatch(ctx.request.body.matchId);
     ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));
   } catch (validationError) {
     await ctx.render('playerMatches/new', {
@@ -71,7 +68,7 @@ router.get('playerMatchEdit', '/:id/edit', async (ctx) => {
 
 router.patch('playerMatchUpdate', '/:id', async (ctx) => {
   const playerMatch = await findPlayerMatchById(ctx.state.player, ctx.params.id);
-  const matchAdmin = await playerMatch.getAdmin();
+  const matchAdmin = await playerMatch.getAdmins();
   const chooseStatuses = ctx.state.eligibleStatuses(playerMatch.isPlayerInvited.status, false);
 
   // TODO: parse values from params
@@ -79,21 +76,22 @@ router.patch('playerMatchUpdate', '/:id', async (ctx) => {
   const newStatus = ctx.request.body.status || playerMatch.isPlayerInvited.status;
   const statusChanged = newStatus !== playerMatch.isPlayerInvited.status;
 
-  // FIXME: check that the user has permission to modify this, it could be requested with curl
   const isAdmin = Boolean(ctx.request.body.isAdmin);
+  if (isAdmin){
+    // FIXME: check that the user has permission to modify this, it could be requested with curl
+    // ctx.state.requireAdminMatchPermission();
+  }
 
   try {
-    await ctx.state.player.addMatch(playerMatch, { through: {
-      status: ctx.request.body.status,
-      isAdmin,
-    }});
+    await ctx.state.player.addMatch(playerMatch, {
+      through: {
+        status: newStatus,
+        isAdmin,
+      }
+    });
 
     if(statusChanged && newStatus == 'accepted'){ // HACK: status hardcoded
-      ctx.state.sendNotification(ctx.state.currentPlayer, matchAdmin, {
-        kind: 'playerAcceptedMatch',
-        entityName: ctx.state.currentPlayer.getName(),
-        eventName: playerMatch.name,
-      });
+      await notifications.playerAcceptMatch(ctx, ctx.state.currentPlayer, matchAdmins, playerMatch);
     }
 
     ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));

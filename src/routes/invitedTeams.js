@@ -1,4 +1,4 @@
-const sendInvitationTeamMail = require('../mailers/invitation-team');
+const notifications = require('../services/notifications');
 const KoaRouter = require('koa-router');
 
 const router = new KoaRouter();
@@ -37,22 +37,9 @@ router.post('invitedTeamCreate', '/', async (ctx) => {
   const teamCaptain = await team.getCaptain();
 
   try {
-    await ctx.state.match.addTeam(team, {
-      through: { status: 'sent' } // HACK: invitation status harcoded
-    });
+    await ctx.state.match.inviteTeam(team);
     if(teamCaptain){
-      await ctx.state.sendNotification(ctx.state.currentPlayer, teamCaptain, {
-        kind: 'teamInvitedToMatch',
-        entityName: team.name,
-        eventName: ctx.state.match.name,
-      });
-
-      sendInvitationTeamMail(ctx, teamCaptain.email, {
-        eventType: 'Partido',
-        eventName: ctx.state.match.name,
-        invitedBy: ctx.state.currentPlayer.getName(),
-        teamName: team.name,
-      });
+      await notifications.inviteTeamToMatch(ctx, ctx.state.currentPlayer, team, teamCaptain, ctx.state.match);
     }
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
   } catch (validationError) {
@@ -88,10 +75,8 @@ router.get('invitedTeamEdit', '/:id/edit', async (ctx) => {
 router.patch('invitedTeamUpdate', '/:id', async (ctx) => {
   const invitedTeam = await findInvitedTeamById(ctx.state.match, ctx.params.id);
 
-  const newStatus = ctx.request.body.status || invitedTeam.isTeamInvited.status;
-
   try {
-    await ctx.state.match.addTeam(invitedTeam, { through: { status: newStatus }});
+    await ctx.state.match.updateTeamInvitation(invitedTeam, ctx.request.body.status);
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
   } catch (validationError) {
     await ctx.render('invitedTeams/edit', {

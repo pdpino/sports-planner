@@ -56,6 +56,48 @@ module.exports = function definematch(sequelize, DataTypes) {
     });
   }
 
+  match.prototype.invitePlayer = async function(player){
+    await this.addPlayer(player, {
+      through: {
+        status: 'sent' // HACK: invitation status harcoded
+      }
+    });
+  }
+
+  match.prototype.invitePlayers = async function(players){
+    // TODO: merge with invitePlayer function (use duck typing)
+    await this.addPlayers(players, {
+      through: {
+        status: 'sent' // HACK: invitation status harcoded
+      }
+    });
+  }
+
+  match.prototype.updatePlayerInvitation = async function(player, status, isAdmin){
+    await this.addPlayer(player, {
+      through: {
+        status: status || player.isPlayerInvited.status,
+        isAdmin,
+      }
+    });
+  }
+
+  match.prototype.inviteTeam = async function(team){
+    await this.addTeam(team, {
+      through: {
+        status: 'sent' // HACK: invitation status harcoded
+      }
+    });
+  }
+
+  match.prototype.updateTeamInvitation = async function(team, newStatus){
+    await this.addTeam(team, {
+      through: {
+        status: newStatus || team.isTeamInvited.status
+      }
+    });
+  }
+
   match.afterCreate(setDate); // FIXME: not working for build()
   match.afterFind(setDate);
 
@@ -63,7 +105,7 @@ module.exports = function definematch(sequelize, DataTypes) {
     return (player.firstName) ? `Partido de ${player.firstName}` : 'Partido';
   }
 
-  match.prototype.getAdmin = async function(){
+  match.prototype.getAdmins = async function(){
     const matchAdmins = await this.getPlayers({
       through: {
         where: {
@@ -71,7 +113,7 @@ module.exports = function definematch(sequelize, DataTypes) {
         }
       }
     });
-    return (matchAdmins && matchAdmins.length > 0) ? matchAdmins[0] : null;
+    return matchAdmins || [];
   }
 
   // async function assertNotEmptyName(instance){

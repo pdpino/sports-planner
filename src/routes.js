@@ -112,13 +112,19 @@ router.use((ctx, next) => {
     ctx.assert(!ctx.state.isLoggedIn, 403, "Ya iniciaste sesión", {});
   }
 
+  ctx.state.requirePlaysSport = function(ctx, sport){
+    ctx.assert(sport, 404, "No practicas ese deporte");
+  }
+
   /**
    * Wrapper to parse validation errors from sequelize
    * If the error is from the model everything is ok with validationError.errors
    * If is from the DB errors is undefined, HACK: put it to an array in a object with a message (as if it came from the model)
    **/
   ctx.state.parseValidationError = function(validationError){
-    return validationError.errors || [ { message: validationError.toString() } ]
+    const errorMessage = validationError.errors || [ { message: validationError.toString() } ];
+    console.log("ERROR FOUND!: ", validationError);
+    return errorMessage;
   }
 
   return next();
@@ -198,7 +204,7 @@ router.use((ctx, next) => {
       });
       visibleMatches = visibleMatches.concat(privateMatches);
 
-      // NOTE: something like this could be used:
+      // NOTE: something like this could be used, but the public and private matches should be disjuncts:
       // const _ = require('lodash');
       // visibleMatches = _.unionWith(visibleMatches, privateMatches, function(a, b) { return a.id === b.id; });
     }
@@ -206,23 +212,6 @@ router.use((ctx, next) => {
     return visibleMatches;
   }
 
-  /**
-   * Send a notification
-   * sender and receiver are a player or a owner (must have an userId property)
-   **/
-  ctx.state.sendNotification = async function(sender, receiver, options){
-    // options = {
-    //    kind: 'notifKind',
-    //    entityName: 'Juanito', // Puede ser un equipo o un nombre de jugador
-    //    eventName: 'Partido de juanito',
-    // }
-    await ctx.orm.notification.create({
-      ...options,
-      wasRead: false,
-      senderId: sender.userId,
-      receiverId: receiver.userId,
-    });
-  }
   return next();
 });
 

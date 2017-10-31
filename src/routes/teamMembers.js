@@ -1,5 +1,5 @@
+const notifications = require('../services/notifications');
 const _ = require('lodash');
-const sendInvitationPlayerMail = require('../mailers/invitation-player');
 const KoaRouter = require('koa-router');
 
 const router = new KoaRouter();
@@ -23,7 +23,7 @@ async function findTeamMemberById(team, playerId){
   return (teamMembersFound.length == 1) ? teamMembersFound[0] : null;
 }
 
-function filterSubmitParams(params){
+function getParams(params){
   const filteredParams = _.pick(params, 'isCaptain', 'playerId');
   /** Parse isCaptain to boolean, html form passes it as 'on' or null **/
   filteredParams.isCaptain = Boolean(filteredParams.isCaptain);
@@ -42,25 +42,11 @@ router.get('teamMemberNew', '/new', async (ctx) => {
 });
 
 router.post('teamMemberCreate', '/', async (ctx) => {
-  const params = filterSubmitParams(ctx.request.body);
+  const params = getParams(ctx.request.body);
   const player = await ctx.state.findById(ctx.orm.player, params.playerId);
   try {
-    await ctx.state.team.addPlayer(player, {
-      through: {
-        isCaptain: params.isCaptain
-      }
-    });
-    await ctx.state.sendNotification(ctx.state.currentPlayer, player, {
-      kind: 'addedToTeam',
-      entityName: ctx.state.currentPlayer.getName(),
-      eventName: ctx.state.team.name,
-    });
-
-    sendInvitationPlayerMail(ctx, player.email, {
-      eventType: 'Equipo',
-      eventName: ctx.state.team.name,
-      invitedBy: ctx.state.currentPlayer.getName(),
-    });
+    await ctx.state.team.invitePlayer(player, params.isCaptain);
+    await notifications.invitePlayerToTeam(ctx, ctx.state.currentPlayer, player, ctx.state.team);
     ctx.redirect(ctx.router.url('team', { id: ctx.state.team.id }));
   } catch (validationError) {
     await ctx.render('teamMembers/new', {
@@ -93,14 +79,10 @@ router.get('teamMemberEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('teamMemberUpdate', '/:id', async (ctx) => {
-  const params = filterSubmitParams(ctx.request.body);
+  const params = getParams(ctx.request.body);
   const teamMember = await findTeamMemberById(ctx.state.team, ctx.params.id);
   try {
-    await ctx.state.team.addPlayer(teamMember, {
-      through: {
-        isCaptain: params.isCaptain
-      }
-    });
+    await ctx.state.team.invitePlayer(teamMember, params.isCaptain);
     ctx.redirect(ctx.router.url('team', { id: ctx.state.team.id }));
   } catch (validationError) {
     await ctx.render('teamMembers/edit', {
