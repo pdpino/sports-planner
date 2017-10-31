@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const notifications = require('../services/notifications');
 const moment = require('moment');
 const KoaRouter = require('koa-router');
 const Sequelize = require('sequelize');
@@ -135,6 +136,7 @@ router.patch('addSchedule', '/:id/:compoundId/:fieldId/selectSchedule', async (c
   const field = fields[0];
   const schedules = await field.getSchedules({where:{id:ctx.request.body.scheduleId}});
   const schedule = schedules[0];
+  ctx.assert(schedule, 404);
   await schedule.update({
     id: schedule.id,
     price: schedule.price,
@@ -143,11 +145,12 @@ router.patch('addSchedule', '/:id/:compoundId/:fieldId/selectSchedule', async (c
     hours: schedule.hours,
     date: schedule.date,
     open: schedule.open,
-    status: "Solicited",
+    status: 'Solicited',
     createdAt: schedule.createdAt,
     updatedAt: new Date()
   });
 
+  // await notifications.
 
   await ctx.render('matches/edit', {
     match,
@@ -221,12 +224,13 @@ router.patch('matchUpdate', '/:id', async (ctx) => {
 
 router.get('match', '/:id', async (ctx) => {
   const match = await ctx.state.findById(ctx.orm.match, ctx.params.id);
+  await requireSeeMatchPermission(ctx, match);
+
   const sport = await ctx.state.findById(ctx.orm.sport, match.sportId);
   const invitedPlayers = await match.getPlayers();
   const invitedTeams = await match.getTeams();
   const hasModifyPermission = await match.hasModifyPermission(ctx.state.currentPlayer);
-
-  await requireSeeMatchPermission(ctx, match);
+  // const schedules = await match.getSchedule();
 
   await ctx.render('matches/show', {
     match,
@@ -234,6 +238,7 @@ router.get('match', '/:id', async (ctx) => {
     hasModifyPermission,
     sport: sport.name,
     invitedTeams,
+    schedule: null, // TODO: get match schedule
     editMatchPath: ctx.router.url('matchEdit', match.id),
     newInvitedPlayerPath: ctx.router.url('invitedPlayerNew', { matchId: match.id } ),
     newInvitedTeamPath: ctx.router.url('invitedTeamNew', { matchId: match.id } ),

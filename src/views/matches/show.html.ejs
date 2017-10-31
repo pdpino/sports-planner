@@ -76,6 +76,13 @@
     </form>
   <% } %>
 
+  <% if(schedule) { %>
+    <h4> Horario: </h4>
+    <% schedule.fieldId %>
+  <% } else { %>
+    No hay canchas pedidas.
+  <% } %>
+
   <%- include('../_buttons/back', { backPath: matchesPath, message: 'Volver a todos los partidos' }) %>
 
 </div>
