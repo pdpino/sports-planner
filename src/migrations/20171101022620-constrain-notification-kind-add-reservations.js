@@ -1,7 +1,11 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     // Remove previous constraint
-    await queryInterface.removeConstraint('notifications', 'notification_kind');
+    try{
+      await queryInterface.removeConstraint('notifications', 'notification_kind');
+    } catch(error){
+      // Constraint does not exist
+    }
 
     // HACK: copied from model
     const notificationKinds = [
@@ -12,7 +16,8 @@ module.exports = {
       'playerAcceptedMatch',
       'teamInvitedToMatch',
       'teamAcceptedMatch',
-      'playerAskedField',
+      'playerReserveField',
+      'ownerAcceptFieldReservation'
     ];
     return queryInterface.addConstraint('notifications', ['kind'], {
       type: 'check',

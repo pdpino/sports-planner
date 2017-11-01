@@ -1,4 +1,4 @@
-module.exports = function sendReservationField(ctx, to, invitationInfo) {
+module.exports = function sendFieldReservation(ctx, to, invitationInfo) {
   // example for info:
   // invitationInfo = {
   //   playerName,

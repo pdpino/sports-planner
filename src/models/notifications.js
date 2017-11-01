@@ -15,8 +15,10 @@ module.exports = function definenotification(sequelize, DataTypes) {
         `Tu equipo '${entityName}' fue invitado al partido '${eventName}'`,
     teamAcceptedMatch: (entityName, eventName) =>
         `El equipo '${entityName}' aceptó ir al partido '${eventName}'`,
-    playerAskedField: (entityName, eventName) =>
+    playerReserveField: (entityName, eventName) =>
         `El jugador '${entityName}' solicitó una reserva en '${eventName}'`,
+    ownerAcceptFieldReservation: (entityName, eventName) =>
+        `El dueño de la cancha '${entityName}' aceptó tu solicitud para '${eventName}'`,
   };
   const notificationKinds = Object.keys(nofiticationMessages);
 
