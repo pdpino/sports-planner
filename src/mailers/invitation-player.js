@@ -7,6 +7,6 @@ module.exports = function sendInvitationPlayerMail(ctx, to, invitationInfo) {
   // }
 
   console.log(`MAILERS: (player) mail sent to ${to}`); // DEBUG
-  const subject = `Invitación a ${invitationInfo.eventType}`
+  const subject = `Invitación a ${invitationInfo.eventType}`;
   return ctx.sendMail('invitation-player', { to, subject }, invitationInfo);
 };

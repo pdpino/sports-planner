@@ -1,5 +1,6 @@
 const sendInvitationPlayerMail = require('../mailers/invitation-player');
 const sendInvitationTeamMail = require('../mailers/invitation-team');
+const sendReservationField = require('../mailers/reservation-field');
 
 /**
  * Send a notification
@@ -105,10 +106,17 @@ async function playerAcceptMatch(ctx, sender, receivers, match){
  * A player asks for a field
  */
 async function askForField(ctx, player, owner, field){
+  const playerName = player.getName();
+
   await sendNotification(ctx, player, owner, {
     kind: 'playerAskedField',
-    entityName: player.getName(),
+    entityName: playerName,
     eventName: field.name,
+  });
+
+  sendReservationField(ctx, owner.email, {
+    playerName,
+    fieldName: field.name,
   });
 }
 

@@ -8,6 +8,6 @@ module.exports = function sendInvitationTeamMail(ctx, to, invitationInfo) {
   // }
 
   console.log(`MAILERS: (team) mail sent to ${to}`); // DEBUG
-  const subject = `Invitación a ${invitationInfo.eventType}`
+  const subject = `Invitación a ${invitationInfo.eventType}`;
   return ctx.sendMail('invitation-team', { to, subject }, invitationInfo);
 };
