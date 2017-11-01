@@ -1,6 +1,13 @@
 module.exports = {
-  up(queryInterface, Sequelize) {
-    // DEPRECATED: this constraint is deleted in the next migration
+  async up(queryInterface, Sequelize) {
+    // Remove previous constraint
+    try{
+      await queryInterface.removeConstraint('notifications', 'notification_kind');
+    } catch(error){
+      // Constraint does not exist
+    }
+
+    // HACK: copied from model
     const notificationKinds = [
       'friendshipAsked',
       'friendshipAccepted',
@@ -9,6 +16,8 @@ module.exports = {
       'playerAcceptedMatch',
       'teamInvitedToMatch',
       'teamAcceptedMatch',
+      'playerReserveField',
+      'ownerAcceptFieldReservation'
     ];
     return queryInterface.addConstraint('notifications', ['kind'], {
       type: 'check',

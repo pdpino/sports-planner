@@ -10,13 +10,14 @@ function DateArray(){
   tomorrow.setMinutes(0);
   tomorrow.setSeconds(0);
   let array=[];
-  for (i=0;i<14;i++){
+  for (let i=0;i<14;i++){
     tomorrow.setDate(tomorrow.getDate() + 1);
     let string=tomorrow.getFullYear().toString() + "-"+(tomorrow.getMonth()+1).toString()+"-"+tomorrow.getDate().toString();
     array.push(string);
   }
   return array;
 }
+
 router.get('fields', '/', async (ctx) => {
   const fields = await ctx.state.compound.getFields();
   await ctx.render('fields/index', {

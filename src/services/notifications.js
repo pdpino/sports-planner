@@ -1,5 +1,10 @@
 const sendInvitationPlayerMail = require('../mailers/invitation-player');
 const sendInvitationTeamMail = require('../mailers/invitation-team');
+const sendFieldReservation = require('../mailers/reservation-field');
+
+/*
+ * NOTE: functions receive the context to comply to a standard and because they may be moved to the ctx.state in the future
+ */
 
 /**
  * Send a notification
@@ -79,8 +84,8 @@ async function invitePlayerToTeam(ctx, sender, receiver, team){
  * sender is a player, receivers is a list of players
  */
 async function teamAcceptMatch(ctx, sender, receivers, team, match){
-  receivers.each((receiver) => {
-    sendNotification(ctx, sender, receiver, {
+  receivers.forEach(async (receiver) => {
+    await sendNotification(ctx, sender, receiver, {
       kind: 'teamAcceptedMatch',
       entityName: team.name,
       eventName: match.name,
@@ -92,10 +97,41 @@ async function teamAcceptMatch(ctx, sender, receivers, team, match){
  * sender is a player, receivers is a list of players
  */
 async function playerAcceptMatch(ctx, sender, receivers, match){
-  receivers.each((receiver) => {
-    sendNotification(ctx, sender, receiver, {
+  receivers.forEach(async (receiver) => {
+    await sendNotification(ctx, sender, receiver, {
       kind: 'playerAcceptedMatch',
       entityName: sender.getName(),
+      eventName: match.name,
+    });
+  });
+}
+
+/*
+ * A player asks for a field
+ */
+async function reserveField(ctx, player, owner, field){
+  const playerName = player.getName();
+
+  await sendNotification(ctx, player, owner, {
+    kind: 'playerReserveField',
+    entityName: playerName,
+    eventName: field.name,
+  });
+
+  sendFieldReservation(ctx, owner.email, {
+    playerName,
+    fieldName: field.name,
+  });
+}
+
+/*
+ * An owner accepts a field reservation
+ */
+async function acceptFieldReservation(ctx, owner, matchAdmins, match, field){
+  matchAdmins.forEach(async (matchAdmin) => {
+    await sendNotification(ctx, owner, matchAdmin, {
+      kind: 'ownerAcceptFieldReservation',
+      entityName: field.name,
       eventName: match.name,
     });
   });
@@ -107,4 +143,6 @@ module.exports = {
   invitePlayerToTeam,
   teamAcceptMatch,
   playerAcceptMatch,
+  reserveField,
+  acceptFieldReservation
 };
