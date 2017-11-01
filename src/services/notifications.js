@@ -101,10 +101,22 @@ async function playerAcceptMatch(ctx, sender, receivers, match){
   });
 }
 
+/*
+ * A player asks for a field
+ */
+async function askForField(ctx, player, owner, field){
+  await sendNotification(ctx, player, owner, {
+    kind: 'playerAskedField',
+    entityName: player.getName(),
+    eventName: field.name,
+  });
+}
+
 module.exports = {
   invitePlayerToMatch,
   inviteTeamToMatch,
   invitePlayerToTeam,
   teamAcceptMatch,
   playerAcceptMatch,
+  askForField,
 };

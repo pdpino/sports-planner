@@ -132,11 +132,15 @@ router.patch('addSchedule', '/:id/:compoundId/:fieldId/selectSchedule', async (c
   const match = await ctx.state.findById(ctx.orm.match, ctx.params.id);
   const sport = await ctx.state.findById(ctx.orm.sport, match.sportId);
   const compound = await ctx.state.findById(ctx.orm.compound, ctx.params.compoundId);
-  const fields = await compound.getFields({id:ctx.params.fieldId});
+  const compoundOwner = await ctx.state.findById(ctx.orm.compoundOwner, compound.compoundOwnerId);
+  const fields = await compound.getFields({ id: ctx.params.fieldId });
   const field = fields[0];
-  const schedules = await field.getSchedules({where:{id:ctx.request.body.scheduleId}});
+  const schedules = await field.getSchedules({ where: { id: ctx.request.body.scheduleId }});
   const schedule = schedules[0];
-  ctx.assert(schedule, 404);
+  ctx.assert(schedule && field, 404);
+
+  // REVIEW: necesario poner id: schedule.id, y otros que se mantienen igual???
+  // necesario updatedAt ?
   await schedule.update({
     id: schedule.id,
     price: schedule.price,
@@ -150,19 +154,20 @@ router.patch('addSchedule', '/:id/:compoundId/:fieldId/selectSchedule', async (c
     updatedAt: new Date()
   });
 
-  // await notifications.
+  await notifications.askForField(ctx, ctx.state.currentPlayer, compoundOwner, field);
 
-  await ctx.render('matches/edit', {
-    match,
-    sport: sport.name,
-    compound,
-    field,
-    schedules,
-    sports: ctx.state.sports,
-    submitMatchPath: ctx.router.url('matchUpdate', match.id),
-    selectCompoundPath: ctx.router.url('selectCompound', {id: ctx.params.id}),
-    cancelPath: ctx.router.url('matches'),
-  });
+  ctx.redirect(ctx.router.url('match', match.id));
+  // await ctx.render('matches/edit', {
+  //   match,
+  //   sport: sport.name,
+  //   compound,
+  //   field,
+  //   schedules,
+  //   sports: ctx.state.sports,
+  //   submitMatchPath: ctx.router.url('matchUpdate', match.id),
+  //   selectCompoundPath: ctx.router.url('selectCompound', {id: ctx.params.id}),
+  //   cancelPath: ctx.router.url('matches'),
+  // });
 });
 
 router.post('matchCreate', '/', async (ctx) => {
