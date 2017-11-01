@@ -230,7 +230,8 @@ router.get('match', '/:id', async (ctx) => {
   const invitedPlayers = await match.getPlayers();
   const invitedTeams = await match.getTeams();
   const hasModifyPermission = await match.hasModifyPermission(ctx.state.currentPlayer);
-  // const schedules = await match.getSchedule();
+  const schedule = await match.getSchedule();
+  const field = schedule && await ctx.orm.field.findById(schedule.fieldId);
 
   await ctx.render('matches/show', {
     match,
@@ -238,7 +239,8 @@ router.get('match', '/:id', async (ctx) => {
     hasModifyPermission,
     sport: sport.name,
     invitedTeams,
-    schedule: null, // TODO: get match schedule
+    schedule,
+    field,
     editMatchPath: ctx.router.url('matchEdit', match.id),
     newInvitedPlayerPath: ctx.router.url('invitedPlayerNew', { matchId: match.id } ),
     newInvitedTeamPath: ctx.router.url('invitedTeamNew', { matchId: match.id } ),

@@ -76,9 +76,11 @@
     </form>
   <% } %>
 
-  <% if(schedule) { %>
-    <h4> Horario: </h4>
-    <% schedule.fieldId %>
+  <% if(schedule && field) { %>
+    <h4> Cancha para el partido: </h4>
+    <%= field.name %>
+    <%= schedule.status %>
+    <%= schedule.hours %>
   <% } else { %>
     No hay canchas pedidas.
   <% } %>

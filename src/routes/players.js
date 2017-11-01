@@ -151,10 +151,6 @@ router.get('player', '/:id', async (ctx) => {
   const friendshipStatus = (ctx.state.isPlayerLoggedIn
     && await ctx.state.currentPlayer.getFriendshipStatus(player));
 
-  const user = await player.getUser();
-  const notif = await user.getReceivedNotifications();
-  console.log("NOTIF: ", notif);
-
   await ctx.render('players/show', {
     hasModifyPermission: ctx.state.hasModifyPermission(ctx, player.userId),
     player,
