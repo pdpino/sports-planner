@@ -1,0 +1,22 @@
+<%# Provide:
+  commenters,
+  isPublic,
+  %>
+
+<div>
+  <% if(commenters.length > 0) { %>
+    <h4>Comentarios <%= (isPublic) ? 'públicos' : 'privados' %>:</h4>
+    <ul>
+      <% commenters.forEach( (commenter) => { %>
+        <li>
+          <%= commenter.getName() %>, <%= commenter.teamComment.prettyTimestamp() %>:
+          <br>
+          <%= commenter.teamComment.content %>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    No hay comentarios privados
+  <% } %>
+
+</div>

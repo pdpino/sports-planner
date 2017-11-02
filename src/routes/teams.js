@@ -1,5 +1,6 @@
 const KoaRouter = require('koa-router');
 const teamMembersRouter = require('./teamMembers');
+const teamCommentsRouter = require('./teamComments');
 const teamMatchesRouter = require('./teamMatches');
 
 const router = new KoaRouter();
@@ -94,12 +95,18 @@ router.get('team', '/:id', async (ctx) => {
   const teamMembers = await team.getPlayers();
   const teamMatches = await team.getMatches();
   const hasModifyPermission = await team.hasModifyPermission(ctx.state.currentPlayer);
+  const privateCommenters = await team.getPrivateComments();
+  const publicCommenters = await team.getPublicComments();
 
   await ctx.render('teams/show', {
     team,
     teamMembers,
     teamMatches,
     hasModifyPermission,
+    hasCreatePermission: ctx.state.isPlayerLoggedIn,
+    privateCommenters,
+    publicCommenters,
+    createTeamCommentPath: ctx.router.url('teamCommentCreate', { teamId: team.id }),
     sport: sport.name,
     editTeamPath: ctx.router.url('teamEdit', team.id),
     deleteTeamPath: ctx.router.url('teamDelete', team.id),
@@ -152,6 +159,15 @@ router.use(
     await next();
   },
   teamMatchesRouter.routes(),
+);
+
+router.use(
+  '/:teamId/comments',
+  async (ctx, next) => {
+    ctx.state.team = await ctx.state.findById(ctx.orm.team, ctx.params.teamId);
+    await next();
+  },
+  teamCommentsRouter.routes(),
 );
 
 module.exports = router;

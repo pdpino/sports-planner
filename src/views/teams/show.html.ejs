@@ -78,6 +78,14 @@
 
   </div>
 
+
+  <%- include('../comments/index', { commenters: privateCommenters, isPublic: false }) %>
+  <%- include('../comments/new', { isPublic: false }) %>
+
+  <%- include('../comments/index', { commenters: publicCommenters, isPublic: true }) %>
+  <%- include('../comments/new', { isPublic: true }) %>
+
+
   <%- include('../_buttons/back', { backPath: teamsPath, message: 'Volver a todos los equipos' }) %>
 
 </div>

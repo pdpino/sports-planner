@@ -1,0 +1,19 @@
+<%# Provide:
+  isPublic
+  %>
+
+<%# Must exist: hasCreatePermission, createTeamCommentPath %>
+
+<div>
+  <% if (hasCreatePermission) { %>
+    <form action="<%= createTeamCommentPath %>" method="post">
+      <div>
+        <input type="hidden" name="isPublic" value=<%= isPublic %> />
+      </div>
+      <div>
+        <input type="textarea" name="content" />
+      </div>
+      <input type="submit" value="Comentar" />
+    </form>
+  <% } %>
+</div>

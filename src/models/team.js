@@ -57,13 +57,31 @@ module.exports = function defineteam(sequelize, DataTypes) {
     });
   }
 
-  // team.prototype.askForMatch = async function(match){
-  //   await this.addMatch(match, {
-  //     through: {
-  //       status: 'asked' // HACK: invitation status harcoded
-  //     }
-  //   });
-  // }
+  team.prototype.makeComment = async function(player, params){
+    await sequelize.models.teamComment.create({
+      playerId: player.id,
+      teamId: this.id,
+      content: params.content,
+      isPublic: params.isPublic,
+    });
+  }
+
+  function getComments(team, isPublic){
+    return team.getComments({
+      through: {
+        order: [
+          ['createdAt', 'DESC']
+        ],
+        where: {
+          isPublic,
+        }
+      }
+    });
+  }
+
+  team.prototype.getPublicComments = function(){ return getComments(this, true); }
+
+  team.prototype.getPrivateComments = function(){ return getComments(this, false); }
 
   return team;
 };
