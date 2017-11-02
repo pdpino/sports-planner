@@ -21,6 +21,7 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     'accepted',
   ];
   const genders = ['masculino', 'femenino'];
+
   const player = sequelize.define('player', {
     birthday: {
       type: DataTypes.DATEONLY,
@@ -65,6 +66,9 @@ module.exports = function defineplayer(sequelize, DataTypes) {
       as: { singular: 'friend', plural: 'friends' },
       through: models.friendship,
     });
+
+    player.belongsToMany(models.team, { through: models.teamComment, as: 'comments' });
+
   };
 
   /** Load user info (email, names and photo) into player object **/

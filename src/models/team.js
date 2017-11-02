@@ -16,6 +16,7 @@ module.exports = function defineteam(sequelize, DataTypes) {
     team.belongsTo(models.sport);
     team.belongsToMany(models.player, { through: models.isMember });
     team.belongsToMany(models.match, { through: models.isTeamInvited });
+    team.belongsToMany(models.player, { through: models.teamComment, as: 'comments' });
   };
 
   /** Boolean indicating if the player has modify permission on the team **/
