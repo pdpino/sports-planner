@@ -40,7 +40,7 @@ router.post('teamMatchCreate', '/', async (ctx) => {
   } catch (validationError) {
     await ctx.render('teamMatches/new', {
       team: ctx.state.team,
-      errors: ctx.state.parseValidationError(validationError),
+      errors: ctx.parseValidationError(validationError),
       joinableMatches: getJoinableMatches(ctx.state.visibleMatches, ctx.state.teamMatches),
       submitTeamMatchPath: ctx.router.url('teamMatchCreate', {
         teamId: ctx.state.team.id
@@ -57,7 +57,7 @@ router.get('teamMatchEdit', '/:id/edit', async (ctx) => {
   await ctx.render('teamMatches/edit', {
     team: ctx.state.team,
     teamMatch,
-    chooseStatuses: ctx.state.eligibleStatuses(teamMatch.isTeamInvited.status, false),
+    chooseStatuses: ctx.eligibleStatuses(teamMatch.isTeamInvited.status, false),
     submitTeamMatchPath: ctx.router.url('teamMatchUpdate', {
       teamId: ctx.state.team.id,
       id: teamMatch.id
@@ -96,8 +96,8 @@ router.patch('teamMatchUpdate', '/:id', async (ctx) => {
     await ctx.render('teamMatches/edit', {
       team: ctx.state.team,
       teamMatch,
-      chooseStatuses: ctx.state.eligibleStatuses(teamMatch.isTeamInvited.status, false),
-      errors: ctx.state.parseValidationError(validationError),
+      chooseStatuses: ctx.eligibleStatuses(teamMatch.isTeamInvited.status, false),
+      errors: ctx.parseValidationError(validationError),
       submitTeamMatchPath: ctx.router.url('teamMatchUpdate', {
         teamId: ctx.state.team.id,
         id: teamMatch.id

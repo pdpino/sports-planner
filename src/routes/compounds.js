@@ -13,7 +13,7 @@ router.get('compounds', '/', async (ctx) => {
 });
 
 router.get('compoundNew', '/new', async (ctx) => {
-  ctx.state.requireOwnerLoggedIn(ctx);
+  ctx.requireOwnerLoggedIn();
 
   const compound = ctx.orm.compound.build();
 
@@ -25,7 +25,7 @@ router.get('compoundNew', '/new', async (ctx) => {
 });
 
 router.post('compoundCreate', '/', async (ctx) => {
-  ctx.state.requireOwnerLoggedIn(ctx);
+  ctx.requireOwnerLoggedIn();
 
   const params = ctx.request.body; // TODO: parse, permit and require
   // ctx.state.currentOwner.addCompound(compound);
@@ -38,7 +38,7 @@ router.post('compoundCreate', '/', async (ctx) => {
   } catch (validationError) {
     await ctx.render('compounds/new', {
       compound: ctx.orm.compound.build(ctx.request.body),
-      errors: ctx.state.parseValidationError(validationError),
+      errors: ctx.parseValidationError(validationError),
       submitCompoundPath: ctx.router.url('compoundCreate'),
       cancelPath: ctx.router.url('compounds'),
     });
@@ -46,10 +46,10 @@ router.post('compoundCreate', '/', async (ctx) => {
 });
 
 router.get('compoundEdit', '/:id/edit', async (ctx) => {
-  const compound = await ctx.state.findById(ctx.orm.compound, ctx.params.id);
-  const compoundOwner = await ctx.state.findById(ctx.orm.compoundOwner, compound.compoundOwnerId);
+  const compound = await ctx.findById(ctx.orm.compound, ctx.params.id);
+  const compoundOwner = await ctx.findById(ctx.orm.compoundOwner, compound.compoundOwnerId);
 
-  ctx.state.requireOwnerModifyPermission(ctx, compoundOwner);
+  ctx.requireOwnerModifyPermission(compoundOwner);
 
   await ctx.render('compounds/edit', {
     compound,
@@ -60,10 +60,10 @@ router.get('compoundEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('compoundUpdate', '/:id', async (ctx) => {
-  const compound = await ctx.state.findById(ctx.orm.compound, ctx.params.id);
-  const compoundOwner = await ctx.state.findById(ctx.orm.compoundOwner, compound.compoundOwnerId);
+  const compound = await ctx.findById(ctx.orm.compound, ctx.params.id);
+  const compoundOwner = await ctx.findById(ctx.orm.compoundOwner, compound.compoundOwnerId);
 
-  ctx.state.requireOwnerModifyPermission(ctx, compoundOwner);
+  ctx.requireOwnerModifyPermission(compoundOwner);
 
   try {
     await compound.update(ctx.request.body);
@@ -71,7 +71,7 @@ router.patch('compoundUpdate', '/:id', async (ctx) => {
   } catch (validationError) {
     await ctx.render('compounds/edit', {
       compound,
-      errors: ctx.state.parseValidationError(validationError),
+      errors: ctx.parseValidationError(validationError),
       submitCompoundPath: ctx.router.url('compoundUpdate', compound.id),
       cancelPath: ctx.router.url('compound', { id: ctx.params.id }),
       deleteCompoundPath: ctx.router.url('compoundDelete', compound.id),
@@ -80,8 +80,8 @@ router.patch('compoundUpdate', '/:id', async (ctx) => {
 });
 
 router.get('compound', '/:id', async (ctx) => {
-  const compound = await ctx.state.findById(ctx.orm.compound, ctx.params.id);
-  const compoundOwner = await ctx.state.findById(ctx.orm.compoundOwner, compound.compoundOwnerId);
+  const compound = await ctx.findById(ctx.orm.compound, ctx.params.id);
+  const compoundOwner = await ctx.findById(ctx.orm.compoundOwner, compound.compoundOwnerId);
   const fields = await compound.getFields();
   const compoundId = compound.id;
 
@@ -99,7 +99,7 @@ router.get('compound', '/:id', async (ctx) => {
 });
 
 router.delete('compoundDelete', '/:id', async (ctx) => {
-  const compound = await ctx.state.findById(ctx.orm.compound, ctx.params.id);
+  const compound = await ctx.findById(ctx.orm.compound, ctx.params.id);
   await compound.destroy();
   ctx.redirect(ctx.router.url('compounds'));
 });
@@ -108,7 +108,7 @@ router.use(
   '/:compoundId/fields',
   async (ctx, next) => {
     ctx.state.sports = await ctx.orm.sport.findAll();
-    ctx.state.compound = await ctx.state.findById(ctx.orm.compound, ctx.params.compoundId);
+    ctx.state.compound = await ctx.findById(ctx.orm.compound, ctx.params.compoundId);
     ctx.state.compoundOwner = await ctx.state.compound.getCompoundOwner();
     await next();
   },

@@ -26,7 +26,7 @@ router.get('teams', '/', async (ctx) => {
 });
 
 router.get('teamNew', '/new', async (ctx) => {
-  ctx.state.requirePlayerLoggedIn(ctx);
+  ctx.requirePlayerLoggedIn();
 
   const team = ctx.orm.team.build();
   await ctx.render('teams/new', {
@@ -38,7 +38,7 @@ router.get('teamNew', '/new', async (ctx) => {
 });
 
 router.post('teamCreate', '/', async (ctx) => {
-  ctx.state.requirePlayerLoggedIn(ctx);
+  ctx.requirePlayerLoggedIn();
 
   try {
     const team = await ctx.orm.team.create(ctx.request.body);
@@ -49,7 +49,7 @@ router.post('teamCreate', '/', async (ctx) => {
   } catch (validationError) {
     await ctx.render('teams/new', {
       team: ctx.orm.team.build(ctx.request.body),
-      errors: ctx.state.parseValidationError(validationError),
+      errors: ctx.parseValidationError(validationError),
       sports: ctx.state.sports,
       submitTeamPath: ctx.router.url('teamCreate'),
       cancelPath: ctx.router.url('teams'),
@@ -58,9 +58,9 @@ router.post('teamCreate', '/', async (ctx) => {
 });
 
 router.get('teamEdit', '/:id/edit', async (ctx) => {
-  const team = await ctx.state.findById(ctx.orm.team, ctx.params.id);
+  const team = await ctx.findById(ctx.orm.team, ctx.params.id);
 
-  await ctx.state.requirePlayerModifyPermission(ctx, team);
+  await ctx.requirePlayerModifyPermission(team);
 
   await ctx.render('teams/edit', {
     team,
@@ -71,9 +71,9 @@ router.get('teamEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('teamUpdate', '/:id', async (ctx) => {
-  const team = await ctx.state.findById(ctx.orm.team, ctx.params.id);
+  const team = await ctx.findById(ctx.orm.team, ctx.params.id);
 
-  await ctx.state.requirePlayerModifyPermission(ctx, team);
+  await ctx.requirePlayerModifyPermission(team);
 
   try {
     await team.update(ctx.request.body);
@@ -81,7 +81,7 @@ router.patch('teamUpdate', '/:id', async (ctx) => {
   } catch (validationError) {
     await ctx.render('teams/edit', {
       team,
-      errors: ctx.state.parseValidationError(validationError),
+      errors: ctx.parseValidationError(validationError),
       sports: ctx.state.sports,
       submitTeamPath: ctx.router.url('teamUpdate', team.id),
       cancelPath: ctx.router.url('team', { id: ctx.params.id }),
@@ -90,7 +90,7 @@ router.patch('teamUpdate', '/:id', async (ctx) => {
 });
 
 router.get('team', '/:id', async (ctx) => {
-  const team = await ctx.state.findById(ctx.orm.team, ctx.params.id);
+  const team = await ctx.findById(ctx.orm.team, ctx.params.id);
   const sport = await team.getSport();
   const teamMembers = await team.getPlayers();
   const teamMatches = await team.getMatches();
@@ -124,9 +124,9 @@ router.get('team', '/:id', async (ctx) => {
 });
 
 router.delete('teamDelete', '/:id', async (ctx) => {
-  const team = await ctx.state.findById(ctx.orm.team, ctx.params.id);
+  const team = await ctx.findById(ctx.orm.team, ctx.params.id);
 
-  await ctx.state.requirePlayerModifyPermission(ctx, team);
+  await ctx.requirePlayerModifyPermission(team);
 
   await team.destroy();
   ctx.redirect(ctx.router.url('teams'));
@@ -135,9 +135,9 @@ router.delete('teamDelete', '/:id', async (ctx) => {
 router.use(
   '/:teamId/players',
   async (ctx, next) => {
-    ctx.state.team = await ctx.state.findById(ctx.orm.team, ctx.params.teamId);
+    ctx.state.team = await ctx.findById(ctx.orm.team, ctx.params.teamId);
 
-    await ctx.state.requirePlayerModifyPermission(ctx, ctx.state.team);
+    await ctx.requirePlayerModifyPermission(ctx.state.team);
 
     ctx.state.teamMembers = await ctx.state.team.getPlayers();
     ctx.state.invitablePlayers = await ctx.state.currentPlayer.getAllFriends();
@@ -149,13 +149,13 @@ router.use(
 router.use(
   '/:teamId/matches',
   async (ctx, next) => {
-    ctx.state.team = await ctx.state.findById(ctx.orm.team, ctx.params.teamId);
+    ctx.state.team = await ctx.findById(ctx.orm.team, ctx.params.teamId);
 
-    await ctx.state.requirePlayerModifyPermission(ctx, ctx.state.team);
+    await ctx.requirePlayerModifyPermission(ctx.state.team);
 
     ctx.state.teamMembers = await ctx.state.team.getPlayers();
     ctx.state.teamMatches = await ctx.state.team.getMatches();
-    ctx.state.visibleMatches = await ctx.state.getVisibleMatches(ctx);
+    ctx.state.visibleMatches = await ctx.getVisibleMatches();
     await next();
   },
   teamMatchesRouter.routes(),
@@ -164,7 +164,7 @@ router.use(
 router.use(
   '/:teamId/comments',
   async (ctx, next) => {
-    ctx.state.team = await ctx.state.findById(ctx.orm.team, ctx.params.teamId);
+    ctx.state.team = await ctx.findById(ctx.orm.team, ctx.params.teamId);
     await next();
   },
   teamCommentsRouter.routes(),

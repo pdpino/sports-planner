@@ -19,7 +19,7 @@ router.get('sports', '/', async (ctx) => {
 });
 
 router.get('sportNew', '/new', async (ctx) => {
-  ctx.state.requireAdmin(ctx);
+  ctx.requireAdmin();
 
   const sport = ctx.orm.sport.build();
   await ctx.render('sports/new', {
@@ -30,7 +30,7 @@ router.get('sportNew', '/new', async (ctx) => {
 });
 
 router.post('sportCreate', '/', async (ctx) => {
-  ctx.state.requireAdmin(ctx);
+  ctx.requireAdmin();
 
   fixUpdateParams(ctx.request.body);
   try {
@@ -39,7 +39,7 @@ router.post('sportCreate', '/', async (ctx) => {
   } catch (validationError) {
     await ctx.render('sports/new', {
       sport: ctx.orm.sport.build(ctx.request.body),
-      errors: ctx.state.parseValidationError(validationError),
+      errors: ctx.parseValidationError(validationError),
       submitSportPath: ctx.router.url('sportCreate'),
       cancelPath: ctx.router.url('sports'),
     });
@@ -47,9 +47,9 @@ router.post('sportCreate', '/', async (ctx) => {
 });
 
 router.get('sportEdit', '/:id/edit', async (ctx) => {
-  ctx.state.requireAdmin(ctx);
+  ctx.requireAdmin();
 
-  const sport = await ctx.state.findById(ctx.orm.sport, ctx.params.id);
+  const sport = await ctx.findById(ctx.orm.sport, ctx.params.id);
   await ctx.render('sports/edit', {
     sport,
     submitSportPath: ctx.router.url('sportUpdate', sport.id),
@@ -58,17 +58,17 @@ router.get('sportEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('sportUpdate', '/:id', async (ctx) => {
-  ctx.state.requireAdmin(ctx);
+  ctx.requireAdmin();
 
   fixUpdateParams(ctx.request.body);
-  const sport = await ctx.state.findById(ctx.orm.sport, ctx.params.id);
+  const sport = await ctx.findById(ctx.orm.sport, ctx.params.id);
   try {
     await sport.update(ctx.request.body);
     ctx.redirect(ctx.router.url('sport', { id: sport.id }));
   } catch (validationError) {
     await ctx.render('sports/edit', {
       sport,
-      errors: ctx.state.parseValidationError(validationError),
+      errors: ctx.parseValidationError(validationError),
       submitSportPath: ctx.router.url('sportUpdate', sport.id),
       cancelPath: ctx.router.url('sport', { id: ctx.params.id }),
     });
@@ -76,7 +76,7 @@ router.patch('sportUpdate', '/:id', async (ctx) => {
 });
 
 router.get('sport', '/:id', async (ctx) => {
-  const sport = await ctx.state.findById(ctx.orm.sport, ctx.params.id);
+  const sport = await ctx.findById(ctx.orm.sport, ctx.params.id);
   await ctx.render('sports/show', {
     sport,
     hasModifyPermission: ctx.state.hasAdminPermission,
@@ -86,9 +86,9 @@ router.get('sport', '/:id', async (ctx) => {
 });
 
 router.delete('sportDelete', '/:id', async (ctx) => {
-  ctx.state.requireAdmin(ctx);
+  ctx.requireAdmin();
 
-  const sport = await ctx.state.findById(ctx.orm.sport, ctx.params.id);
+  const sport = await ctx.findById(ctx.orm.sport, ctx.params.id);
   await sport.destroy(); // {force: true});
   ctx.redirect(ctx.router.url('sports'));
 });

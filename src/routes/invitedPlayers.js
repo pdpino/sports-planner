@@ -41,7 +41,7 @@ router.get('invitedPlayerNew', '/new', async (ctx) => {
 });
 
 router.post('invitedPlayerCreate', '/', async (ctx) => {
-  const player = await ctx.state.findById(ctx.orm.player, ctx.request.body.playerId);
+  const player = await ctx.findById(ctx.orm.player, ctx.request.body.playerId);
   try {
     await ctx.state.match.invitePlayer(player);
     await notifications.invitePlayerToMatch(ctx, ctx.state.currentPlayer, player, ctx.state.match);
@@ -50,7 +50,7 @@ router.post('invitedPlayerCreate', '/', async (ctx) => {
     await ctx.render('invitedPlayers/new', {
       match: ctx.state.match,
       invitablePlayers: getInvitablePlayers(ctx.state.invitablePlayers, ctx.state.invitedPlayers),
-      errors: ctx.state.parseValidationError(validationError),
+      errors: ctx.parseValidationError(validationError),
       submitInvitedPlayerPath: ctx.router.url('invitedPlayerCreate', { matchId: ctx.state.match.id }),
       cancelPath: ctx.router.url('match', { id: ctx.state.match.id }),
     });
@@ -59,7 +59,7 @@ router.post('invitedPlayerCreate', '/', async (ctx) => {
 
 router.get('invitedPlayerEdit', '/:id/edit', async (ctx) => {
   const invitedPlayer = await findInvitedPlayerById(ctx.state.match, ctx.params.id);
-  const chooseStatuses = ctx.state.eligibleStatuses(invitedPlayer.isPlayerInvited.status, true);
+  const chooseStatuses = ctx.eligibleStatuses(invitedPlayer.isPlayerInvited.status, true);
 
   await ctx.render('invitedPlayers/edit', {
     match: ctx.state.match,
@@ -79,7 +79,7 @@ router.get('invitedPlayerEdit', '/:id/edit', async (ctx) => {
 
 router.patch('invitedPlayerUpdate', '/:id', async (ctx) => {
   const invitedPlayer = await findInvitedPlayerById(ctx.state.match, ctx.params.id);
-  const chooseStatuses = ctx.state.eligibleStatuses(invitedPlayer.isPlayerInvited.status, true);
+  const chooseStatuses = ctx.eligibleStatuses(invitedPlayer.isPlayerInvited.status, true);
   const params = getParams(ctx.request.body);
 
   try {
@@ -90,7 +90,7 @@ router.patch('invitedPlayerUpdate', '/:id', async (ctx) => {
       match: ctx.state.match,
       invitedPlayer,
       chooseStatuses,
-      errors: ctx.state.parseValidationError(validationError),
+      errors: ctx.parseValidationError(validationError),
       submitInvitedPlayerPath: ctx.router.url('invitedPlayerUpdate', {
         matchId: ctx.state.match.id,
         id: invitedPlayer.id

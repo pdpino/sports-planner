@@ -8,7 +8,7 @@ function getParams(params){
 }
 
 router.post('teamCommentCreate', '/', async (ctx) => {
-  ctx.state.requirePlayerLoggedIn(ctx);
+  ctx.requirePlayerLoggedIn();
 
   const params = getParams(ctx.request.body);
   await ctx.state.team.makeComment(ctx.state.currentPlayer, params);

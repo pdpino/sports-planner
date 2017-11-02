@@ -40,7 +40,7 @@ router.post('playerSportCreate', '/', async (ctx) => {
     await ctx.render('playerSports/new', {
       player: ctx.state.player,
       sportsNotPlayed: getSportsNotPlayed(ctx.state.sports, ctx.state.playerSports),
-      errors: ctx.state.parseValidationError(validationError),
+      errors: ctx.parseValidationError(validationError),
       submitPlayerSportPath: ctx.router.url('playerSportCreate', { playerId: ctx.state.player.id }),
       cancelPath: ctx.router.url('player', { id: ctx.state.player.id })
     });
@@ -49,7 +49,8 @@ router.post('playerSportCreate', '/', async (ctx) => {
 
 router.get('playerSportEdit', '/:id/edit', async (ctx) => {
   const playSport = await findPlayerSportById(ctx.state.player, ctx.params.id);
-  ctx.state.requirePlaysSport(ctx, playSport);
+  ctx.assert(playSport, 404);
+
   await ctx.render('playerSports/edit', {
     player: ctx.state.player,
     playSport,
@@ -67,7 +68,8 @@ router.get('playerSportEdit', '/:id/edit', async (ctx) => {
 
 router.patch('playerSportUpdate', '/:id', async (ctx) => {
   const playSport = await findPlayerSportById(ctx.state.player, ctx.params.id);
-  ctx.state.requirePlaysSport(ctx, playSport);
+  ctx.assert(playSport, 404);
+
   try {
     await ctx.state.player.playSport(playSport, ctx.request.body.position);
     ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));
@@ -75,7 +77,7 @@ router.patch('playerSportUpdate', '/:id', async (ctx) => {
     await ctx.render('playerSports/edit', {
       player: ctx.state.player,
       playSport,
-      errors: ctx.state.parseValidationError(validationError),
+      errors: ctx.parseValidationError(validationError),
       submitPlayerSportPath: ctx.router.url('playerSportUpdate', {
         playerId: ctx.state.player.id,
         id: playSport.id

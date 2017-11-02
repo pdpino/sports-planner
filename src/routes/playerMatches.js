@@ -39,7 +39,7 @@ router.post('playerMatchCreate', '/', async (ctx) => {
     await ctx.render('playerMatches/new', {
       player: ctx.state.player,
       invitableMatches: getInvitableMatches(ctx.state.visibleMatches, ctx.state.playerMatches),
-      errors: ctx.state.parseValidationError(validationError),
+      errors: ctx.parseValidationError(validationError),
       submitPlayerMatchPath: ctx.router.url('playerMatchCreate', { playerId: ctx.state.player.id }),
       cancelPath: ctx.router.url('player', { id: ctx.state.player.id })
     });
@@ -48,7 +48,7 @@ router.post('playerMatchCreate', '/', async (ctx) => {
 
 router.get('playerMatchEdit', '/:id/edit', async (ctx) => {
   const playerMatch = await findPlayerMatchById(ctx.state.player, ctx.params.id);
-  const chooseStatuses = ctx.state.eligibleStatuses(playerMatch.isPlayerInvited.status, false);
+  const chooseStatuses = ctx.eligibleStatuses(playerMatch.isPlayerInvited.status, false);
 
   await ctx.render('playerMatches/edit', {
     player: ctx.state.player,
@@ -69,7 +69,7 @@ router.get('playerMatchEdit', '/:id/edit', async (ctx) => {
 router.patch('playerMatchUpdate', '/:id', async (ctx) => {
   const playerMatch = await findPlayerMatchById(ctx.state.player, ctx.params.id);
   const matchAdmin = await playerMatch.getAdmins();
-  const chooseStatuses = ctx.state.eligibleStatuses(playerMatch.isPlayerInvited.status, false);
+  const chooseStatuses = ctx.eligibleStatuses(playerMatch.isPlayerInvited.status, false);
 
   // TODO: parse values from params
 
@@ -100,7 +100,7 @@ router.patch('playerMatchUpdate', '/:id', async (ctx) => {
       player: ctx.state.player,
       match: playerMatch,
       chooseStatuses,
-      errors: ctx.state.parseValidationError(validationError),
+      errors: ctx.parseValidationError(validationError),
       submitPlayerMatchPath: ctx.router.url('playerMatchUpdate', {
         playerId: ctx.state.player.id,
         id: playerMatch.id

@@ -43,7 +43,7 @@ router.get('teamMemberNew', '/new', async (ctx) => {
 
 router.post('teamMemberCreate', '/', async (ctx) => {
   const params = getParams(ctx.request.body);
-  const player = await ctx.state.findById(ctx.orm.player, params.playerId);
+  const player = await ctx.findById(ctx.orm.player, params.playerId);
   try {
     await ctx.state.team.invitePlayer(player, params.isCaptain);
     await notifications.invitePlayerToTeam(ctx, ctx.state.currentPlayer, player, ctx.state.team);
@@ -51,7 +51,7 @@ router.post('teamMemberCreate', '/', async (ctx) => {
   } catch (validationError) {
     await ctx.render('teamMembers/new', {
       team: ctx.state.team,
-      errors: ctx.state.parseValidationError(validationError),
+      errors: ctx.parseValidationError(validationError),
       invitablePlayers: getInvitablePlayers(ctx.state.invitablePlayers, ctx.state.teamMembers),
       submitTeamMemberPath: ctx.router.url('teamMemberCreate', {
         teamId: ctx.state.team.id
@@ -88,7 +88,7 @@ router.patch('teamMemberUpdate', '/:id', async (ctx) => {
     await ctx.render('teamMembers/edit', {
       team: ctx.state.team,
       teamMember,
-      errors: ctx.state.parseValidationError(validationError),
+      errors: ctx.parseValidationError(validationError),
       submitTeamMemberPath: ctx.router.url('teamMemberUpdate', {
         teamId: ctx.state.team.id,
         id: teamMember.id

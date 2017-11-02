@@ -15,8 +15,7 @@ module.exports = function defineteamComment(sequelize, DataTypes) {
   };
 
   teamComment.prototype.prettyTimestamp = function(){
-    const a = moment(this.createdAt);
-    return a.format('YYYY-MMM-d H:mm');
+    return moment(this.createdAt).format('YYYY-MMM-d H:mm');
   }
   return teamComment;
 };

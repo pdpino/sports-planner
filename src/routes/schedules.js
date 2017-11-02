@@ -58,7 +58,7 @@ router.post('scheduleCreate', '/', async (ctx) => {
   console.log("HOLAAA");
 
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
-  ctx.state.requireOwnerModifyPermission(ctx, compoundOwner);
+  ctx.requireOwnerModifyPermission(compoundOwner);
   let arrayOfHour = arrayOfHours(ctx.state.field);
   let tomorrow= new Date();
   tomorrow.setHours(0);
@@ -97,7 +97,7 @@ router.post('scheduleCreate', '/', async (ctx) => {
 
 router.get('scheduleEdit', '/:date/edit', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
-  ctx.state.requireOwnerModifyPermission(ctx, compoundOwner);
+  ctx.requireOwnerModifyPermission(compoundOwner);
   const realDate= new Date(ctx.params.date);
   const field= ctx.state.field;
   realDate.setHours(0);
@@ -130,7 +130,7 @@ router.get('scheduleEdit', '/:date/edit', async (ctx) => {
 
 router.patch('scheduleUpdate', '/:date', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
-  ctx.state.requireOwnerModifyPermission(ctx, compoundOwner);
+  ctx.requireOwnerModifyPermission(compoundOwner);
   const realDate= new Date(ctx.params.date);
   realDate.setHours(0);
   realDate.setMinutes(0);

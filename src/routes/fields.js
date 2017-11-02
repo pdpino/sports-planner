@@ -28,7 +28,7 @@ router.get('fields', '/', async (ctx) => {
 });
 
 router.get('fieldNew', '/new', async (ctx) => {
-  ctx.state.requireOwnerModifyPermission(ctx, ctx.state.compoundOwner);
+  ctx.requireOwnerModifyPermission(ctx.state.compoundOwner);
   const field = ctx.orm.field.build();
   const scheduleBases=[];
   await ctx.render('fields/new', {
@@ -42,7 +42,7 @@ router.get('fieldNew', '/new', async (ctx) => {
 });
 
 router.post('fieldCreate', '/', async (ctx) => {
-  ctx.state.requireOwnerModifyPermission(ctx, ctx.state.compoundOwner);
+  ctx.requireOwnerModifyPermission(ctx.state.compoundOwner);
   try {
     const field = await ctx.orm.field.create(ctx.request.body);
 
@@ -53,7 +53,7 @@ router.post('fieldCreate', '/', async (ctx) => {
       scheduleBases:[],
       sports: ctx.state.sports,
       field: ctx.orm.field.build(ctx.request.body),
-      errors: ctx.state.parseValidationError(validationError),
+      errors: ctx.parseValidationError(validationError),
       submitFieldPath: ctx.router.url('fieldCreate',{compoundId:ctx.state.compound.id}),
       cancelPath: ctx.router.url('compound',{id:ctx.state.compound.id}),
     });
@@ -61,8 +61,8 @@ router.post('fieldCreate', '/', async (ctx) => {
 });
 
 router.get('fieldEdit', '/:id/edit', async (ctx) => {
-  ctx.state.requireOwnerModifyPermission(ctx, ctx.state.compoundOwner);
-  const field = await ctx.state.findById(ctx.orm.field, ctx.params.id);
+  ctx.requireOwnerModifyPermission(ctx.state.compoundOwner);
+  const field = await ctx.findById(ctx.orm.field, ctx.params.id);
   const scheduleBases = await field.getScheduleBases();
 
   await ctx.render('fields/edit', {
@@ -86,8 +86,8 @@ router.get('fieldEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('fieldUpdate', '/:id', async (ctx) => {
-  ctx.state.requireOwnerModifyPermission(ctx, ctx.state.compoundOwner);
-  const field = await ctx.state.findById(ctx.orm.field, ctx.params.id);
+  ctx.requireOwnerModifyPermission(ctx.state.compoundOwner);
+  const field = await ctx.findById(ctx.orm.field, ctx.params.id);
   try {
     await field.update(ctx.request.body);
     ctx.redirect(ctx.router.url('field', {
@@ -101,7 +101,7 @@ router.patch('fieldUpdate', '/:id', async (ctx) => {
       scheduleBases,
       sports: ctx.state.sports,
       compound: ctx.state.compound,
-      errors: ctx.state.parseValidationError(validationError),
+      errors: ctx.parseValidationError(validationError),
       submitFieldPath: ctx.router.url('fieldUpdate', {
         id:field.id,
         compoundId: ctx.state.compound.id,
@@ -119,7 +119,7 @@ router.patch('fieldUpdate', '/:id', async (ctx) => {
 });
 
 router.get('field', '/:id', async (ctx) => {
-  const field = await ctx.state.findById(ctx.orm.field, ctx.params.id);
+  const field = await ctx.findById(ctx.orm.field, ctx.params.id);
   const sport = await field.getSport();
   const schedules = DateArray();
   const schedules2 = await field.getSchedules();
@@ -150,8 +150,8 @@ router.get('field', '/:id', async (ctx) => {
 });
 
 router.delete('fieldDelete', '/:id', async (ctx) => {
-  ctx.state.requireOwnerModifyPermission(ctx, ctx.state.compoundOwner);
-  const field = await ctx.state.findById(ctx.orm.field, ctx.params.id);
+  ctx.requireOwnerModifyPermission(ctx.state.compoundOwner);
+  const field = await ctx.findById(ctx.orm.field, ctx.params.id);
   await field.destroy();
   ctx.redirect(ctx.router.url('compound', { id: ctx.state.compound.id }));
 });
@@ -160,7 +160,7 @@ router.use(
   '/:fieldId/scheduleBases',
   async (ctx, next) => {
     ctx.state.sports = await ctx.orm.sport.findAll();
-    ctx.state.field = await ctx.state.findById(ctx.orm.field, ctx.params.fieldId);
+    ctx.state.field = await ctx.findById(ctx.orm.field, ctx.params.fieldId);
     ctx.state.compound = await ctx.state.field.getCompound();
     await next();
   },
@@ -171,7 +171,7 @@ router.use(
   '/:fieldId/schedules',
   async (ctx, next) => {
     ctx.state.sports = await ctx.orm.sport.findAll();
-    ctx.state.field = await ctx.state.findById(ctx.orm.field, ctx.params.fieldId);
+    ctx.state.field = await ctx.findById(ctx.orm.field, ctx.params.fieldId);
     ctx.state.compound = await ctx.state.field.getCompound();
     await next();
   },
