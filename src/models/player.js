@@ -67,7 +67,7 @@ module.exports = function defineplayer(sequelize, DataTypes) {
       through: models.friendship,
     });
 
-    player.belongsToMany(models.team, { through: models.teamComment, as: 'comments' });
+    player.belongsToMany(models.team, { through: models.teamComment, as: 'teamComments' });
 
   };
 
