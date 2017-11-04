@@ -6,6 +6,8 @@ const teamHelpers = require('./teams');
 const invitationHelpers = require('./invitations');
 const commentHelpers = require('./comments');
 
+// NOTE:
+// See https://github.com/embbnux/kails (koa in rails style) for examples on helper functions
 module.exports = function helpers(app) {
   /** Wrapper to find an entity (match, team, player, etc) by the id and assert that is not null **/
   app.context.findById = async function(model, id) {

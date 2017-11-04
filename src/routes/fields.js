@@ -22,7 +22,7 @@ function DateArray(){
 router.get('fields', '/', async (ctx) => {
   const fields = await ctx.state.compound.getFields();
   await ctx.render('fields/index', {
-    hasModifyPermission: ctx.state.hasOwnerModifyPermission(ctx, ctx.state.compoundOwner),
+    hasModifyPermission: ctx.hasModifyPermission(ctx.state.compoundOwner),
     fields,
     newFieldPath: ctx.router.url('fieldNew', { compoundId: ctx.state.compound.id }),
   });
@@ -132,7 +132,7 @@ router.get('field', '/:id', async (ctx) => {
   const scheduleBases= await field.getScheduleBases();
 
   await ctx.render('fields/show', {
-    hasModifyPermission: ctx.state.hasOwnerModifyPermission(ctx, ctx.state.compoundOwner),
+    hasModifyPermission: ctx.hasModifyPermission(ctx.state.compoundOwner),
     field,
     schedules,
     schedules2,

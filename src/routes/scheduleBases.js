@@ -52,7 +52,7 @@ router.get('scheduleBases', '/', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
   const scheduleBases= await ctx.state.field.getScheduleBases();
   await ctx.render('scheduleBases/index', {
-    hasModifyPermission: ctx.state.hasOwnerModifyPermission(ctx, compoundOwner),
+    hasModifyPermission: ctx.hasModifyPermission(compoundOwner),
     scheduleBases,
     newScheduleBasePath: ctx.router.url('scheduleBaseNew',{fieldId:ctx.state.field.id, compoundId:ctx.state.compound.id}),
   });
@@ -174,7 +174,7 @@ router.get('scheduleBase', '/', async (ctx) => {
   const scheduleBase = await ctx.orm.scheduleBase.findById(ctx.params.id);
   const field= await scheduleBase.getField();
   await ctx.render('scheduleBases/show', {
-    hasModifyPermission: ctx.state.hasOwnerModifyPermission(ctx, compoundOwner),
+    hasModifyPermission: ctx.hasModifyPermission(compoundOwner),
     scheduleBase,
     scheduleBasesPath: ctx.router.url('scheduleBases', {fieldId: ctx.state.field.id}),
     fieldPath: field => ctx.router.url('field', { id: field.id, compoundId:ctx.state.compound.id }),

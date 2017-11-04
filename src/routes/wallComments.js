@@ -25,7 +25,7 @@ router.post('wallCommentCreate', '/', async (ctx) => {
 router.delete('wallCommentDelete', '/:id', async (ctx) => {
   const comment = await ctx.findById(ctx.orm.wallComment, ctx.params.id);
 
-  ctx.requireModifyPermission(comment.commenter.userId);
+  ctx.requireModifyPermission(comment.commenter);
 
   await comment.destroy();
   ctx.redirect(ctx.router.url('player', ctx.state.player.id));

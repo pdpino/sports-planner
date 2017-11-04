@@ -15,7 +15,7 @@ router.get('sports', '/', async (ctx) => {
   const sports = await ctx.orm.sport.findAll();
   await ctx.render('sports/index', {
     sports,
-    hasModifyPermission: ctx.state.hasAdminPermission,
+    hasModifyPermission: ctx.hasAdminPermission(),
     sportPath: sport => ctx.router.url('sport', { id: sport.id }),
     newSportPath: ctx.router.url('sportNew'),
   });
@@ -86,7 +86,7 @@ router.get('sport', '/:id', async (ctx) => {
   const sport = await ctx.findById(ctx.orm.sport, ctx.params.id);
   await ctx.render('sports/show', {
     sport,
-    hasModifyPermission: ctx.state.hasAdminPermission,
+    hasModifyPermission: ctx.hasAdminPermission(),
     editSportPath: ctx.router.url('sportEdit', sport.id),
     deleteSportPath: ctx.router.url('sportDelete', sport.id),
   });

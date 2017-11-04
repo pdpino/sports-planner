@@ -22,7 +22,7 @@ router.post('teamCommentCreate', '/', async (ctx) => {
 router.delete('teamCommentDelete', '/:id', async (ctx) => {
   const comment = await ctx.findById(ctx.orm.teamComment, ctx.params.id);
 
-  ctx.requireModifyPermission(comment.player.userId);
+  ctx.requireModifyPermission(comment.player);
 
   await comment.destroy();
   ctx.redirect(ctx.router.url('team', ctx.state.team.id));

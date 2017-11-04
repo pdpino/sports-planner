@@ -48,7 +48,7 @@ router.get('schedules', '/', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
   const schedules= await ctx.state.field.getSchedules();
   await ctx.render('schedules/index', {
-    hasModifyPermission: ctx.state.hasOwnerModifyPermission(ctx, compoundOwner),
+    hasModifyPermission: ctx.hasModifyPermission(compoundOwner),
     schedules,
     newScheduleBasePath: ctx.router.url('scheduleBaseNew',{fieldId:ctx.state.field.id, compoundId:ctx.state.compound.id}),
   });
@@ -164,7 +164,7 @@ router.patch('scheduleUpdate', '/:date', async (ctx) => {
     await ctx.render('schedules/show', {
       schedules,
       arrayOfHour,
-      hasModifyPermission: ctx.state.hasOwnerModifyPermission(ctx, compoundOwner),
+      hasModifyPermission: ctx.hasModifyPermission(compoundOwner),
       editSchedulePath: ctx.router.url('scheduleEdit', {
         date: ctx.params.date,
         fieldId: ctx.state.field.id,
@@ -203,7 +203,7 @@ router.get('schedule', '/:date', async (ctx) => {
     }
   });
   await ctx.render('schedules/show', {
-    hasModifyPermission: ctx.state.hasOwnerModifyPermission(ctx, compoundOwner),
+    hasModifyPermission: ctx.hasModifyPermission(compoundOwner),
     schedules,
     editSchedulePath: ctx.router.url('scheduleEdit', {
       date:ctx.params.date,

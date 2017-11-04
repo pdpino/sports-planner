@@ -92,7 +92,7 @@ router.get('compound', '/:id', async (ctx) => {
   const compoundId = compound.id;
 
   await ctx.render('compounds/show', {
-    hasModifyPermission: ctx.state.hasOwnerModifyPermission(ctx, compoundOwner),
+    hasModifyPermission: ctx.hasModifyPermission(compoundOwner),
     compound,
     compoundId,
     fields,

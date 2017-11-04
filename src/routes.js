@@ -38,6 +38,9 @@ router.use(async (ctx, next) => {
     currentUser,
     currentPlayer,
     currentOwner,
+    isLoggedIn: Boolean(currentUser),
+    isPlayerLoggedIn: Boolean(currentPlayer),
+    isOwnerLoggedIn: Boolean(currentOwner),
     profilePath,
     newSessionPath: ctx.router.url('sessionNew'),
     signUpPlayerPath: ctx.router.url('playerNew'),
@@ -60,21 +63,8 @@ router.use(async (ctx, next) => {
     // HACK: ctx.router.url('home') not working (returns '//' and page goes to about:blank)
     // path hardcoded
   });
-  return next();
-});
 
-/** Add helper require and login functions
- * See https://github.com/embbnux/kails (koa in rails style) for examples on helper functions
- **/
-router.use((ctx, next) => {
-  Object.assign(ctx.state, {
-    hasAdminPermission: ctx.state.currentUser && ctx.state.currentUser.role == 'admin',
-    hasModifyPermission: (ctx, userId) => ctx.state.currentUser.id == userId,
-    hasOwnerModifyPermission: (ctx, owner) => ctx.state.currentOwner && ctx.state.currentOwner.id == owner.id,
-    isLoggedIn: Boolean(ctx.state.currentUser),
-    isPlayerLoggedIn: Boolean(ctx.state.currentPlayer),
-    isOwnerLoggedIn: Boolean(ctx.state.currentOwner),
-  });
+  ctx.state.isAdminLoggedIn = ctx.hasAdminPermission();
 
   return next();
 });
