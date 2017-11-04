@@ -4,12 +4,6 @@ const notifications = require('../services/notifications');
 
 const router = new KoaRouter();
 
-/** Return the match played by player, searching with matchId */
-async function findInvitedPlayerById(match, playerId) {
-  const invitedPlayers = await match.getPlayers({ where: { id: playerId } });
-  return (invitedPlayers.length === 1) ? invitedPlayers[0] : null;
-}
-
 function getParams(params){
   const filteredParams = _.pick(params, 'isAdmin', 'status');
   filteredParams.isAdmin = Boolean(filteredParams.isAdmin);
@@ -45,7 +39,7 @@ router.post('invitedPlayerCreate', '/', async (ctx) => {
 });
 
 router.get('invitedPlayerEdit', '/:id/edit', async (ctx) => {
-  const invitedPlayer = await findInvitedPlayerById(ctx.state.match, ctx.params.id);
+  const invitedPlayer = await ctx.findAssociatedById(ctx.state.match, 'getPlayers', ctx.params.id);
   const chooseStatuses = ctx.eligibleStatuses(invitedPlayer.isPlayerInvited.status, true);
 
   await ctx.render('invitedPlayers/edit', {
@@ -65,7 +59,8 @@ router.get('invitedPlayerEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('invitedPlayerUpdate', '/:id', async (ctx) => {
-  const invitedPlayer = await findInvitedPlayerById(ctx.state.match, ctx.params.id);
+  const invitedPlayer = await ctx.findAssociatedById(ctx.state.match, 'getPlayers', ctx.params.id);
+
   const chooseStatuses = ctx.eligibleStatuses(invitedPlayer.isPlayerInvited.status, true);
   const params = getParams(ctx.request.body);
 

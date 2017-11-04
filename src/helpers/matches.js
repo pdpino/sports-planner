@@ -46,7 +46,7 @@ module.exports = function matchHelpers(app) {
   app.context.requireSeeMatchPermission = async function(match){
     const hasSeePermission = match.isPublic || (this.state.currentPlayer &&
       await match.hasPlayer(this.state.currentPlayer, {
-        // HACK: through object copied in multiple places
+        // HACK: through object copied in multiple places (where??)
         through: {
           where: {
             status: { [Sequelize.Op.not]: 'rejectedByAdmin' }

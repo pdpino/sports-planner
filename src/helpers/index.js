@@ -12,6 +12,16 @@ module.exports = function helpers(app) {
     return entity;
   };
 
+  /** Wrapper to get one element of a many-associated model (hasMany or belongsToMany) **/
+  app.context.findAssociatedById = async function(entity, getter, id) {
+    // example: findAssociatedById(match, 'getPlayers', playerId)
+    const elements = await entity[getter]({ where: { id } });
+    return (elements.length === 1) ? elements[0] : null;
+
+    // NOTE: if the getter is a function instead of a string, then this should be done first:
+    // const bindedGetter = getter.bind(entity);
+  }
+
   /**
    * Wrapper to parse validation errors from sequelize
    * If the error is from the model: everything is ok with validationError.errors

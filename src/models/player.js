@@ -178,6 +178,15 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     });
   }
 
+  player.prototype.updateMatch = async function(match, params){
+    await this.addMatch(match, {
+      through: {
+        status: params.status || match.isPlayerInvited.status,
+        isAdmin: params.isAdmin,
+      }
+    });
+  }
+
   player.prototype.playSport = async function(sport, position){
     await this.addSport(sport, {
       through: {

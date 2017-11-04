@@ -3,12 +3,6 @@ const notifications = require('../services/notifications');
 
 const router = new KoaRouter();
 
-/** Wrapper to find a specific team match **/
-async function findTeamMatchById(team, matchId){
-  const teamMatchesFound = await team.getMatches( { where: { id: matchId } } );
-  return (teamMatchesFound.length == 1) ? teamMatchesFound[0] : null;
-}
-
 router.get('teamMatchNew', '/new', async (ctx) => {
   await ctx.render('teamMatches/new', {
     team: ctx.state.team,
@@ -38,7 +32,7 @@ router.post('teamMatchCreate', '/', async (ctx) => {
 });
 
 router.get('teamMatchEdit', '/:id/edit', async (ctx) => {
-  const teamMatch = await findTeamMatchById(ctx.state.team, ctx.params.id);
+  const teamMatch = await ctx.findAssociatedById(ctx.state.team, 'getMatches', ctx.params.id);
   ctx.assert(teamMatch, 404);
 
   await ctx.render('teamMatches/edit', {
@@ -58,7 +52,7 @@ router.get('teamMatchEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('teamMatchUpdate', '/:id', async (ctx) => {
-  const teamMatch = await findTeamMatchById(ctx.state.team, ctx.params.id);
+  const teamMatch = await ctx.findAssociatedById(ctx.state.team, 'getMatches', ctx.params.id);
   ctx.assert(teamMatch, 404);
 
   const matchAdmins = await teamMatch.getAdmins();

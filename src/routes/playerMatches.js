@@ -1,12 +1,14 @@
 const KoaRouter = require('koa-router');
+const _ = require('lodash');
 const notifications = require('../services/notifications');
 
 const router = new KoaRouter();
 
-/** Return the match played by player, searching with matchId **/
-async function findPlayerMatchById(player, matchId){
-  const playerMatches = await player.getMatches( { where: { id: matchId } } );
-  return (playerMatches.length == 1) ? playerMatches[0] : null;
+function getParams(params){
+  return {
+    isAdmin: Boolean(params.isAdmin),
+    status: params.status,
+  }
 }
 
 router.get('playerMatchNew', '/new', async (ctx) => {
@@ -34,7 +36,7 @@ router.post('playerMatchCreate', '/', async (ctx) => {
 });
 
 router.get('playerMatchEdit', '/:id/edit', async (ctx) => {
-  const playerMatch = await findPlayerMatchById(ctx.state.player, ctx.params.id);
+  const playerMatch = await ctx.findAssociatedById(ctx.state.player, 'getMatches', ctx.params.id);
   const chooseStatuses = ctx.eligibleStatuses(playerMatch.isPlayerInvited.status, false);
 
   await ctx.render('playerMatches/edit', {
@@ -54,30 +56,25 @@ router.get('playerMatchEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('playerMatchUpdate', '/:id', async (ctx) => {
-  const playerMatch = await findPlayerMatchById(ctx.state.player, ctx.params.id);
-  const matchAdmin = await playerMatch.getAdmins();
+  const playerMatch = await ctx.findAssociatedById(ctx.state.player, 'getMatches', ctx.params.id);
+  const matchAdmins = await playerMatch.getAdmins();
   const chooseStatuses = ctx.eligibleStatuses(playerMatch.isPlayerInvited.status, false);
 
-  // TODO: parse values from params
+  const params = getParams(ctx.request.body);
+  const statusChanged = params.status !== playerMatch.isPlayerInvited.status;
 
-  const newStatus = ctx.request.body.status || playerMatch.isPlayerInvited.status;
-  const statusChanged = newStatus !== playerMatch.isPlayerInvited.status;
+  const isCurrentPlayerAdmin = _.find(matchAdmins, (admin) => {
+    admin.id === ctx.state.currentPlayer.id
+  });
 
-  const isAdmin = Boolean(ctx.request.body.isAdmin);
-  if (isAdmin){
-    // FIXME: check that the user has permission to modify this, it could be requested with curl
-    // ctx.state.requireAdminMatchPermission();
+  if (params.isAdmin && !isCurrentPlayerAdmin){
+    params.isAdmin = false;
   }
 
   try {
-    await ctx.state.player.addMatch(playerMatch, {
-      through: {
-        status: newStatus,
-        isAdmin,
-      }
-    });
+    await ctx.state.player.updateMatch(playerMatch, params);
 
-    if(statusChanged && newStatus == 'accepted'){ // HACK: status hardcoded
+    if(statusChanged && params.status == 'accepted'){ // HACK: status hardcoded
       await notifications.playerAcceptMatch(ctx, ctx.state.currentPlayer, matchAdmins, playerMatch);
     }
 

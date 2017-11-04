@@ -2,13 +2,6 @@ const KoaRouter = require('koa-router');
 
 const router = new KoaRouter();
 
-/** Return the sport played by player, searching with sportId **/
-async function findPlayerSportById(player, sportId){
-  // OPTIMIZE? use a model function?
-  const playerSports = await player.getSports( { where: { id: sportId } } );
-  return (playerSports.length == 1) ? playerSports[0] : null;
-}
-
 router.get('playerSportNew', '/new', async (ctx) => {
   await ctx.render('playerSports/new', {
     player: ctx.state.player,
@@ -19,7 +12,6 @@ router.get('playerSportNew', '/new', async (ctx) => {
 });
 
 router.post('playerSportCreate', '/', async (ctx) => {
-  const playSport = await findPlayerSportById(ctx.state.player, ctx.params.id);
   try {
     await ctx.state.player.playSport(ctx.request.body.sportId, ctx.request.body.position);
     ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));
@@ -35,7 +27,7 @@ router.post('playerSportCreate', '/', async (ctx) => {
 });
 
 router.get('playerSportEdit', '/:id/edit', async (ctx) => {
-  const playSport = await findPlayerSportById(ctx.state.player, ctx.params.id);
+  const playSport = await ctx.findAssociatedById(ctx.state.player, 'getSport', ctx.params.id);
   ctx.assert(playSport, 404);
 
   await ctx.render('playerSports/edit', {
@@ -54,7 +46,7 @@ router.get('playerSportEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('playerSportUpdate', '/:id', async (ctx) => {
-  const playSport = await findPlayerSportById(ctx.state.player, ctx.params.id);
+  const playSport = await ctx.findAssociatedById(ctx.state.player, 'getSport', ctx.params.id);
   ctx.assert(playSport, 404);
 
   try {

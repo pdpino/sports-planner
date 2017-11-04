@@ -3,13 +3,6 @@ const notifications = require('../services/notifications');
 
 const router = new KoaRouter();
 
-/** Wrapper to find an specific invited team **/
-async function findInvitedTeamById(match, teamId){
-  // OPTIMIZE?
-  const invitedTeams = await match.getTeams( { where: { id: teamId } } );
-  return (invitedTeams.length == 1) ? invitedTeams[0] : null;
-}
-
 router.get('invitedTeamNew', '/new', async (ctx) => {
   await ctx.render('invitedTeams/new', {
     match: ctx.state.match,
@@ -41,7 +34,7 @@ router.post('invitedTeamCreate', '/', async (ctx) => {
 });
 
 router.get('invitedTeamEdit', '/:id/edit', async (ctx) => {
-  const invitedTeam = await findInvitedTeamById(ctx.state.match, ctx.params.id);
+  const invitedTeam = await ctx.findAssociatedById(ctx.state.match, 'getTeams', ctx.params.id);
 
   await ctx.render('invitedTeams/edit', {
     match: ctx.state.match,
@@ -60,7 +53,7 @@ router.get('invitedTeamEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('invitedTeamUpdate', '/:id', async (ctx) => {
-  const invitedTeam = await findInvitedTeamById(ctx.state.match, ctx.params.id);
+  const invitedTeam = await ctx.findAssociatedById(ctx.state.match, 'getTeams', ctx.params.id);
 
   try {
     await ctx.state.match.updateTeamInvitation(invitedTeam, ctx.request.body.status);

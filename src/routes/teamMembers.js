@@ -4,12 +4,6 @@ const notifications = require('../services/notifications');
 
 const router = new KoaRouter();
 
-/** Wrapper to find a team member **/
-async function findTeamMemberById(team, playerId){
-  const teamMembersFound = await team.getPlayers( { where: { id: playerId } } );
-  return (teamMembersFound.length == 1) ? teamMembersFound[0] : null;
-}
-
 function getParams(params){
   const filteredParams = _.pick(params, 'isCaptain', 'playerId');
   /** Parse isCaptain to boolean, html form passes it as 'on' or null **/
@@ -49,7 +43,7 @@ router.post('teamMemberCreate', '/', async (ctx) => {
 });
 
 router.get('teamMemberEdit', '/:id/edit', async (ctx) => {
-  const teamMember = await findTeamMemberById(ctx.state.team, ctx.params.id);
+  const teamMember = await ctx.findAssociatedById(ctx.state.team, 'getPlayers', ctx.params.id);
   await ctx.render('teamMembers/edit', {
     team: ctx.state.team,
     teamMember,
@@ -67,7 +61,7 @@ router.get('teamMemberEdit', '/:id/edit', async (ctx) => {
 
 router.patch('teamMemberUpdate', '/:id', async (ctx) => {
   const params = getParams(ctx.request.body);
-  const teamMember = await findTeamMemberById(ctx.state.team, ctx.params.id);
+  const teamMember = await ctx.findAssociatedById(ctx.state.team, 'getPlayers', ctx.params.id);
   try {
     await ctx.state.team.invitePlayer(teamMember, params.isCaptain);
     ctx.redirect(ctx.router.url('team', { id: ctx.state.team.id }));
