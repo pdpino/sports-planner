@@ -6,22 +6,6 @@ const friendshipsRouter = require('./friendships');
 
 const router = new KoaRouter();
 
-/** Calculate the age of the player given his birthday**/
-function calculateAge(birthday){
-  // OPTIMIZE this function? dates can be substracted
-  // TODO: move this to model
-  const today = new Date();
-
-  const year = birthday.substring(0,4);
-  const month = birthday.substring(5,7);
-  const day = birthday.substring(8,10);
-
-  const dateBirthday = new Date(year, month-1, day);
-  const diff =  today - dateBirthday;
-  const age = Math.floor(diff/(1000*60*60*24*365.25));
-  return age;
-}
-
 /** Extract the User parameters from a params object (such as request.body) **/
 function getUserParams(params){
   return {
@@ -39,14 +23,6 @@ function getPlayerParams(params){
     gender: params.gender || '', // HACK: Avoids null value reaching the model, ugly error message (the notEmpty msg should be used)
     birthday: params.birthday,
   };
-}
-
-/** Load the player and the user from the database **/
-async function getPlayerAndUser(ctx, playerId){
-  // REVIEW: apparently not all calls of this need both user and player
-  const player = await ctx.findById(ctx.orm.player, playerId);
-  const user = await player.getUser();
-  return { player, user };
 }
 
 router.get('players', '/', async (ctx) => {
@@ -115,15 +91,15 @@ router.get('playerEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('playerUpdate', '/:id', async (ctx) => {
-  const { player, user } = await getPlayerAndUser(ctx, ctx.params.id);
+  const player = await ctx.findById(ctx.orm.player, ctx.params.id);
 
-  ctx.requireModifyPermission(user.id);
+  ctx.requireModifyPermission(player.userId);
 
   const userParams = getUserParams(ctx.request.body);
   const playerParams = getPlayerParams(ctx.request.body);
 
   try {
-    await user.update(userParams);
+    await player.user.update(userParams);
     await player.update(playerParams);
     ctx.redirect(ctx.router.url('player', { id: player.id }));
   } catch (validationError) {
@@ -145,7 +121,6 @@ router.get('player', '/:id', async (ctx) => {
   const playerSports = await player.getSports();
   const playerTeams = await player.getTeams();
   const playerMatches = await player.getMatches();
-  const playerAge = calculateAge(player.birthday);
   const friends = await player.getAllFriends();
 
   const friendshipStatus = (ctx.state.isPlayerLoggedIn
@@ -154,7 +129,6 @@ router.get('player', '/:id', async (ctx) => {
   await ctx.render('players/show', {
     hasModifyPermission: ctx.state.hasModifyPermission(ctx, player.userId),
     player,
-    playerAge,
     playerSports,
     playerTeams,
     playerMatches,
@@ -196,11 +170,11 @@ router.get('player', '/:id', async (ctx) => {
 });
 
 router.delete('playerDelete', '/:id', async (ctx) => {
-  const { player, user } = await getPlayerAndUser(ctx, ctx.params.id);
+  const player = await ctx.findById(ctx.orm.player, ctx.params.id);
 
-  ctx.requireModifyPermission(user.id);
+  ctx.requireModifyPermission(player.userId);
 
-  await user.destroy(); // NOTE: player.destroy() is not neccesary beause onDelete: cascade
+  await player.user.destroy(); // NOTE: player.destroy() is not neccesary beause onDelete: cascade
   ctx.redirect(ctx.router.url('players'));
 });
 

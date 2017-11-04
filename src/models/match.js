@@ -1,6 +1,7 @@
 const moment = require('moment');
+const helpers = require('./helpers');
 
-function unFoldDate(fullDate){
+const unWrapDate = helpers.getHookFunction(function (fullDate){
   const date = moment(fullDate, "YYYY MM DD H:mm");
   return {
     dateYear: date.format('YYYY'),
@@ -9,21 +10,7 @@ function unFoldDate(fullDate){
     dateHour: date.format('H'),
     dateMinute: date.format('mm'),
   };
-}
-
-async function setDate(result, options) {
-  if (!result) {
-    return;
-  }
-
-  if (result.constructor == Array) {
-    for (let i = 0; i < result.length; i++) {
-      Object.assign(result[i], unFoldDate(result[i].date));
-    }
-  } else {
-    Object.assign(result, unFoldDate(result.date));
-  }
-}
+});
 
 module.exports = function definematch(sequelize, DataTypes) {
   const match = sequelize.define('match', {
@@ -99,8 +86,8 @@ module.exports = function definematch(sequelize, DataTypes) {
     });
   }
 
-  match.afterCreate(setDate); // FIXME: not working for build()
-  match.afterFind(setDate);
+  match.afterCreate(unWrapDate); // FIXME: not working for build()
+  match.afterFind(unWrapDate);
 
   match.getDefaultName = function(player){
     return (player.firstName) ? `Partido de ${player.firstName}` : 'Partido';

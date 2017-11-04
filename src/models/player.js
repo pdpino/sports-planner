@@ -1,9 +1,20 @@
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const _ = require('lodash');
+const helpers = require('./helpers');
 
-function unWrapUser(player){
-  return _.pick(player.user, 'firstName', 'lastName', 'email', 'photo');
+function calculateAge(player){
+  // OPTIMIZE this function? dates can be substracted
+  const today = new Date();
+
+  const year = player.birthday.substring(0,4);
+  const month = player.birthday.substring(5,7);
+  const day = player.birthday.substring(8,10);
+
+  const dateBirthday = new Date(year, month-1, day);
+  const diff = today - dateBirthday;
+
+  player.age = Math.floor(diff/(1000*60*60*24*365.25));
 }
 
 module.exports = function defineplayer(sequelize, DataTypes) {
@@ -72,20 +83,9 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     });
   };
 
-  /** Copy user info (email, names and photo) into player object, so is more accesible **/
-  player.afterFind(function copyUserInfo(result, options) {
-    if(!result){
-      return;
-    }
+  player.afterFind(helpers.copyUserInfo);
 
-    if(result.constructor == Array) {
-      for (let i = 0; i < result.length; i++) {
-          Object.assign(result[i], unWrapUser(result[i]));
-      }
-    } else {
-      Object.assign(result, unWrapUser(result));
-    }
-  });
+  player.afterFind(helpers.getHookFunction(calculateAge));
 
   player.getGenders = function() { return genders; }
 

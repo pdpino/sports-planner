@@ -22,7 +22,7 @@ module.exports = function defineteamComment(sequelize, DataTypes) {
 
     teamComment.addScope('defaultScope', {
       include: [{
-        model: sequelize.models.user
+        model: sequelize.models.player
       }]
     }, {
       override: true
