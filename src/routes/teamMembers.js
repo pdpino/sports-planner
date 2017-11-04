@@ -1,21 +1,8 @@
-const notifications = require('../services/notifications');
-const _ = require('lodash');
 const KoaRouter = require('koa-router');
+const _ = require('lodash');
+const notifications = require('../services/notifications');
 
 const router = new KoaRouter();
-
-/** Check if a player is in a list of teamMembers **/
-function isTeamMember(searchedPlayer, teamMembers){
-  return Boolean(teamMembers.find((player) => player.id == searchedPlayer.id));
-}
-
-/** Return the difference between allTeams and playTeams **/
-function getInvitablePlayers(allPlayers, teamMembers){
-  // OPTIMIZE ? use model functions?
-  return allPlayers.filter( (anyPlayer) => {
-    return !isTeamMember(anyPlayer, teamMembers);
-  });
-}
 
 /** Wrapper to find a team member **/
 async function findTeamMemberById(team, playerId){
@@ -33,7 +20,7 @@ function getParams(params){
 router.get('teamMemberNew', '/new', async (ctx) => {
   await ctx.render('teamMembers/new', {
     team: ctx.state.team,
-    invitablePlayers: getInvitablePlayers(ctx.state.invitablePlayers, ctx.state.teamMembers),
+    // invitablePlayers: ctx.state.invitablePlayers, // state is already visible in views
     submitTeamMemberPath: ctx.router.url('teamMemberCreate', {
       teamId: ctx.state.team.id
     }),
@@ -52,7 +39,7 @@ router.post('teamMemberCreate', '/', async (ctx) => {
     await ctx.render('teamMembers/new', {
       team: ctx.state.team,
       errors: ctx.parseValidationError(validationError),
-      invitablePlayers: getInvitablePlayers(ctx.state.invitablePlayers, ctx.state.teamMembers),
+      // invitablePlayers: ctx.state.invitablePlayers, // state is already visible in views
       submitTeamMemberPath: ctx.router.url('teamMemberCreate', {
         teamId: ctx.state.team.id
       }),

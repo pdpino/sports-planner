@@ -1,20 +1,7 @@
-const notifications = require('../services/notifications');
 const KoaRouter = require('koa-router');
+const notifications = require('../services/notifications');
 
 const router = new KoaRouter();
-
-/** Check if a match is the list of matches of the team **/
-function isTeamInvited(searchedMatch, teamMatches){
-  return Boolean(teamMatches.find((match) => match.id == searchedMatch.id));
-}
-
-/** Return the difference between allMatches and the matches of the team **/
-function getJoinableMatches(allMatches, teamMatches){
-  // OPTIMIZE ?
-  return allMatches.filter( (match) => {
-    return !isTeamInvited(match, teamMatches);
-  });
-}
 
 /** Wrapper to find a specific team match **/
 async function findTeamMatchById(team, matchId){
@@ -25,7 +12,7 @@ async function findTeamMatchById(team, matchId){
 router.get('teamMatchNew', '/new', async (ctx) => {
   await ctx.render('teamMatches/new', {
     team: ctx.state.team,
-    joinableMatches: getJoinableMatches(ctx.state.visibleMatches, ctx.state.teamMatches),
+    // joinableMatches: ctx.state.joinableMatches,
     submitTeamMatchPath: ctx.router.url('teamMatchCreate', {
       teamId: ctx.state.team.id
     }),
@@ -41,7 +28,7 @@ router.post('teamMatchCreate', '/', async (ctx) => {
     await ctx.render('teamMatches/new', {
       team: ctx.state.team,
       errors: ctx.parseValidationError(validationError),
-      joinableMatches: getJoinableMatches(ctx.state.visibleMatches, ctx.state.teamMatches),
+      // joinableMatches: ctx.state.joinableMatches,
       submitTeamMatchPath: ctx.router.url('teamMatchCreate', {
         teamId: ctx.state.team.id
       }),
@@ -73,7 +60,7 @@ router.get('teamMatchEdit', '/:id/edit', async (ctx) => {
 router.patch('teamMatchUpdate', '/:id', async (ctx) => {
   const teamMatch = await findTeamMatchById(ctx.state.team, ctx.params.id);
   ctx.assert(teamMatch, 404);
-  
+
   const matchAdmins = await teamMatch.getAdmins();
   const newStatus = ctx.request.body.status || teamMatch.isTeamInvited.status;
   const statusChanged = newStatus !== teamMatch.isTeamInvited.status;

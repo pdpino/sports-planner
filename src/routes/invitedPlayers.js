@@ -1,21 +1,8 @@
+const KoaRouter = require('koa-router');
 const _ = require('lodash');
 const notifications = require('../services/notifications');
-const KoaRouter = require('koa-router');
 
 const router = new KoaRouter();
-
-/** Boolean if searchedMatch is in invitedPlayers **/
-function isPlayerInvited(searchedPlayer, invitedPlayers){
-  return Boolean(invitedPlayers.find((player) => player.id == searchedPlayer.id));
-}
-
-/** Return the difference between allPlayers and invitedPlayers **/
-function getInvitablePlayers(allPlayers, invitedPlayers){
-  // OPTIMIZE ???
-  return allPlayers.filter( (anyPlayer) => {
-    return !isPlayerInvited(anyPlayer, invitedPlayers);
-  });
-}
 
 /** Return the match played by player, searching with matchId */
 async function findInvitedPlayerById(match, playerId) {
@@ -32,7 +19,7 @@ function getParams(params){
 router.get('invitedPlayerNew', '/new', async (ctx) => {
   await ctx.render('invitedPlayers/new', {
     match: ctx.state.match,
-    invitablePlayers: getInvitablePlayers(ctx.state.invitablePlayers, ctx.state.invitedPlayers),
+    // invitablePlayers: ctx.state.invitablePlayers,
     submitInvitedPlayerPath: ctx.router.url('invitedPlayerCreate', {
       matchId: ctx.state.match.id
     }),
@@ -49,7 +36,7 @@ router.post('invitedPlayerCreate', '/', async (ctx) => {
   } catch (validationError) {
     await ctx.render('invitedPlayers/new', {
       match: ctx.state.match,
-      invitablePlayers: getInvitablePlayers(ctx.state.invitablePlayers, ctx.state.invitedPlayers),
+      // invitablePlayers: ctx.state.invitablePlayers,
       errors: ctx.parseValidationError(validationError),
       submitInvitedPlayerPath: ctx.router.url('invitedPlayerCreate', { matchId: ctx.state.match.id }),
       cancelPath: ctx.router.url('match', { id: ctx.state.match.id }),

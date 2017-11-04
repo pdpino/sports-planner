@@ -43,4 +43,17 @@ module.exports = function matchHelpers(app) {
     return visibleMatches;
   }
 
+  app.context.requireSeeMatchPermission = async function(match){
+    const hasSeePermission = match.isPublic || (this.state.currentPlayer &&
+      await match.hasPlayer(this.state.currentPlayer, {
+        // HACK: through object copied in multiple places
+        through: {
+          where: {
+            status: { [Sequelize.Op.not]: 'rejectedByAdmin' }
+            // HACK: invitation status hardcoded
+          }
+        }
+      }));
+    this.assert(hasSeePermission, 403, "No tienes permisos");
+  }
 };

@@ -137,9 +137,11 @@ router.use(
 
     await ctx.requirePlayerModifyPermission(ctx.state.team);
 
-    ctx.state.teamMembers = await ctx.state.team.getPlayers();
-    ctx.state.invitablePlayers = await ctx.state.currentPlayer.getAllFriends();
-    await next();
+    const friends = await ctx.state.currentPlayer.getAllFriends();
+    const teamMembers = await ctx.state.team.getPlayers();
+    ctx.state.invitablePlayers = ctx.substract(friends, teamMembers);
+
+    return next();
   },
   teamMembersRouter.routes(),
 );
@@ -152,9 +154,11 @@ router.use(
     await ctx.requirePlayerModifyPermission(ctx.state.team);
 
     ctx.state.teamMembers = await ctx.state.team.getPlayers();
-    ctx.state.teamMatches = await ctx.state.team.getMatches();
-    ctx.state.visibleMatches = await ctx.getVisibleMatches();
-    await next();
+
+    const visibleMatches = await ctx.getVisibleMatches();
+    const teamMatches = await ctx.state.team.getMatches();
+    ctx.state.joinableMatches = ctx.substract(visibleMatches, teamMatches);
+    return next();
   },
   teamMatchesRouter.routes(),
 );
@@ -163,7 +167,7 @@ router.use(
   '/:teamId/comments',
   async (ctx, next) => {
     ctx.state.team = await ctx.findById(ctx.orm.team, ctx.params.teamId);
-    await next();
+    return next();
   },
   teamCommentsRouter.routes(),
 );

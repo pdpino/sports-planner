@@ -19,15 +19,6 @@ function getCompoundOwnerParams(params){
   };
 }
 
-/** Load the owner and his user from the database **/
-async function getOwnerAndUser(ctx, compoundOwnerId){
-  // REVIEW: apparently not all calls of this need both user and compoundOwner
-  const compoundOwner = await ctx.findById(ctx.orm.compoundOwner, compoundOwnerId);
-  const user = compoundOwner && await compoundOwner.getUser();
-  return { compoundOwner, user };
-}
-
-
 router.get('compoundOwners', '/', async (ctx) => {
   const compoundOwners = await ctx.orm.compoundOwner.findAll();
 
@@ -84,15 +75,15 @@ router.get('compoundOwnerEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('compoundOwnerUpdate', '/:id', async (ctx) => {
-  const { compoundOwner, user } = await getOwnerAndUser(ctx, ctx.params.id);
+  const compoundOwner = await ctx.findById(ctx.orm.compoundOwner, ctx.params.id);
 
-  ctx.requireModifyPermission(user.id);
+  ctx.requireModifyPermission(compoundOwner.userId);
 
   const userParams = getUserParams(ctx.request.body);
   const compoundOwnerParams = getCompoundOwnerParams(ctx.request.body);
 
   try {
-    await user.update(userParams);
+    await compoundOwner.user.update(userParams);
     await compoundOwner.update(compoundOwnerParams);
     ctx.redirect(ctx.router.url('compoundOwner', { id: compoundOwner.id }));
   } catch (validationError) {
@@ -119,11 +110,11 @@ router.get('compoundOwner', '/:id', async (ctx) => {
 });
 
 router.delete('compoundOwnerDelete', '/:id', async (ctx) => {
-  const { compoundOwner, user } = await getOwnerAndUser(ctx, ctx.params.id);
+  const compoundOwner = await ctx.findById(ctx.orm.compoundOwner, ctx.params.id);
 
-  ctx.requireModifyPermission(user.id);
+  ctx.requireModifyPermission(compoundOwner.userId);
 
-  await user.destroy(); // NOTE: compoundOwner.destroy() is not neccesary beause onDelete: cascade
+  await compoundOwner.user.destroy(); // NOTE: compoundOwner.destroy() is not neccesary beause onDelete: cascade
   ctx.redirect(ctx.router.url('compoundOwners'));
 });
 

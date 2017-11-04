@@ -1,5 +1,7 @@
+const _ = require('lodash');
 const permissionHelpers = require('./permissions');
 const matchHelpers = require('./matches');
+const teamHelpers = require('./teams');
 const invitationHelpers = require('./invitations');
 
 module.exports = function helpers(app) {
@@ -21,7 +23,15 @@ module.exports = function helpers(app) {
     return errorMessage;
   }
 
+  /**
+   * Wrapper to get the difference of two collection of objects by its id
+   */
+  app.context.substract = function(collection1, collection2){
+    return _.differenceBy(collection1, collection2, (element) => element.id);
+  }
+
   permissionHelpers(app);
   matchHelpers(app);
+  teamHelpers(app);
   invitationHelpers(app);
 };

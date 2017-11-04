@@ -1,11 +1,11 @@
-const _ = require('lodash');
-const notifications = require('../services/notifications');
-const moment = require('moment');
 const KoaRouter = require('koa-router');
 const Sequelize = require('sequelize');
-
+const moment = require('moment');
+const _ = require('lodash');
+const notifications = require('../services/notifications');
 const invitedPlayersRouter = require('./invitedPlayers');
 const invitedTeamsRouter = require('./invitedTeams');
+
 const router = new KoaRouter();
 
 /**
@@ -31,20 +31,6 @@ function getMatchParams(ctx){
   filteredParams.name = filteredParams.name || ctx.orm.match.getDefaultName(ctx.state.currentPlayer);
 
   return filteredParams;
-}
-
-async function requireSeeMatchPermission(ctx, match){
-  const hasSeePermission = match.isPublic || (ctx.state.currentPlayer &&
-    await match.hasPlayer(ctx.state.currentPlayer, {
-      // HACK: through object copied in multiple places
-      through: {
-        where: {
-          status: { [Sequelize.Op.not]: 'rejectedByAdmin' }
-          // HACK: invitation status hardcoded
-        }
-      }
-    }));
-  ctx.assert(hasSeePermission, 403, "No tienes permisos");
 }
 
 router.get('matches', '/', async (ctx) => {
@@ -229,7 +215,7 @@ router.patch('matchUpdate', '/:id', async (ctx) => {
 
 router.get('match', '/:id', async (ctx) => {
   const match = await ctx.findById(ctx.orm.match, ctx.params.id);
-  await requireSeeMatchPermission(ctx, match);
+  await ctx.requireSeeMatchPermission(match);
 
   const sport = await ctx.findById(ctx.orm.sport, match.sportId);
   const invitedPlayers = await match.getPlayers();
@@ -277,8 +263,9 @@ router.use(
 
     await ctx.requirePlayerModifyPermission(ctx.state.match);
 
-    ctx.state.invitablePlayers = await ctx.state.currentPlayer.getAllFriends();
-    ctx.state.invitedPlayers = await ctx.state.match.getPlayers();
+    const friends = await ctx.state.currentPlayer.getAllFriends();
+    const invitedPlayers = await ctx.state.match.getPlayers();
+    ctx.state.invitablePlayers = ctx.substract(friends, invitedPlayers);
     await next();
   },
   invitedPlayersRouter.routes(),
@@ -291,8 +278,9 @@ router.use(
 
     await ctx.requirePlayerModifyPermission(ctx.state.match);
 
-    ctx.state.teams = await ctx.orm.team.findAll();
-    ctx.state.invitedTeams = await ctx.state.match.getTeams();
+    const allTeams = await ctx.orm.team.findAll();
+    const invitedTeams = await ctx.state.match.getTeams();
+    ctx.state.invitableTeams = ctx.substract(allTeams, invitedTeams);
     await next();
   },
   invitedTeamsRouter.routes(),

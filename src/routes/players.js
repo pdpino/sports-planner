@@ -199,8 +199,9 @@ router.use(
 
     ctx.requireModifyPermission(ctx.state.player.userId);
 
-    ctx.state.visibleMatches = await ctx.getVisibleMatches();
-    ctx.state.playerMatches = await ctx.state.player.getMatches();
+    const visibleMatches = await ctx.getVisibleMatches();
+    const playerMatches = await ctx.state.player.getMatches();
+    ctx.state.invitableMatches = ctx.substract(visibleMatches, playerMatches);
     await next();
   },
   playerMatchesRouter.routes(),
@@ -213,8 +214,9 @@ router.use(
 
     ctx.requireModifyPermission(ctx.state.player.userId);
 
-    ctx.state.sports = await ctx.orm.sport.findAll();
-    ctx.state.playerSports = await ctx.state.player.getSports();
+    const allSports = await ctx.orm.sport.findAll();
+    const playerSports = await ctx.state.player.getSports();
+    ctx.state.sportsNotPlayed = ctx.substract(allSports, playerSports),
     await next();
   },
   playerSportsRouter.routes(),

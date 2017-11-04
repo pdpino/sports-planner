@@ -1,11 +1,12 @@
 const KoaRouter = require('koa-router');
-
+const _ = require('lodash');
 const router = new KoaRouter();
 
-/**Fix the parameters passed by the sports/_form.html.ejs (used when creating and when editing a sport)*/
-function fixUpdateParams(body){
+function getParams(params){
+  const filteredParams = _.pick(params, 'name', 'logo', 'isIndividual');
   /* checkbox input passes 'on' when checked and null when not-checked. Parse this to boolean */
-  body.isIndividual = Boolean(body.isIndividual);
+  filteredParams.isIndividual = Boolean(filteredParams.isIndividual);
+  return filteredParams;
 }
 
 router.get('sports', '/', async (ctx) => {
@@ -32,13 +33,13 @@ router.get('sportNew', '/new', async (ctx) => {
 router.post('sportCreate', '/', async (ctx) => {
   ctx.requireAdmin();
 
-  fixUpdateParams(ctx.request.body);
+  const params = getParams(ctx.request.body);
   try {
-    const sport = await ctx.orm.sport.create(ctx.request.body);
+    const sport = await ctx.orm.sport.create(params);
     ctx.redirect(ctx.router.url('sport', { id: sport.id }));
   } catch (validationError) {
     await ctx.render('sports/new', {
-      sport: ctx.orm.sport.build(ctx.request.body),
+      sport: ctx.orm.sport.build(params),
       errors: ctx.parseValidationError(validationError),
       submitSportPath: ctx.router.url('sportCreate'),
       cancelPath: ctx.router.url('sports'),
@@ -60,10 +61,10 @@ router.get('sportEdit', '/:id/edit', async (ctx) => {
 router.patch('sportUpdate', '/:id', async (ctx) => {
   ctx.requireAdmin();
 
-  fixUpdateParams(ctx.request.body);
   const sport = await ctx.findById(ctx.orm.sport, ctx.params.id);
+  const params = getParams(ctx.request.body);
   try {
-    await sport.update(ctx.request.body);
+    await sport.update(params);
     ctx.redirect(ctx.router.url('sport', { id: sport.id }));
   } catch (validationError) {
     await ctx.render('sports/edit', {

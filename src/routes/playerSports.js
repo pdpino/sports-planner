@@ -2,19 +2,6 @@ const KoaRouter = require('koa-router');
 
 const router = new KoaRouter();
 
-/** Boolean if searchedSport is in playerSports **/
-function doesPlayerPlay(searchedSport, playerSports){
-  return Boolean(playerSports.find((sport) => sport.id == searchedSport.id));
-}
-
-/** Return the difference between allSports and playerSports **/
-function getSportsNotPlayed(allSports, playerSports){
-  // OPTIMIZE ???
-  return allSports.filter( (anySport) => {
-    return !doesPlayerPlay(anySport, playerSports);
-  });
-}
-
 /** Return the sport played by player, searching with sportId **/
 async function findPlayerSportById(player, sportId){
   // OPTIMIZE? use a model function?
@@ -25,7 +12,7 @@ async function findPlayerSportById(player, sportId){
 router.get('playerSportNew', '/new', async (ctx) => {
   await ctx.render('playerSports/new', {
     player: ctx.state.player,
-    sportsNotPlayed: getSportsNotPlayed(ctx.state.sports, ctx.state.playerSports),
+    // sportsNotPlayed: ctx.state.sportsNotPlayed,
     submitPlayerSportPath: ctx.router.url('playerSportCreate', { playerId: ctx.state.player.id }),
     cancelPath: ctx.router.url('player', { id: ctx.state.player.id })
   });
@@ -39,7 +26,7 @@ router.post('playerSportCreate', '/', async (ctx) => {
   } catch (validationError) {
     await ctx.render('playerSports/new', {
       player: ctx.state.player,
-      sportsNotPlayed: getSportsNotPlayed(ctx.state.sports, ctx.state.playerSports),
+      // sportsNotPlayed: ctx.state.sportsNotPlayed,
       errors: ctx.parseValidationError(validationError),
       submitPlayerSportPath: ctx.router.url('playerSportCreate', { playerId: ctx.state.player.id }),
       cancelPath: ctx.router.url('player', { id: ctx.state.player.id })
