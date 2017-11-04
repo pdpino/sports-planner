@@ -39,7 +39,7 @@ router.post('invitedPlayerCreate', '/', async (ctx) => {
 });
 
 router.get('invitedPlayerEdit', '/:id/edit', async (ctx) => {
-  const invitedPlayer = await ctx.findAssociatedById(ctx.state.match, 'getPlayers', ctx.params.id);
+  const invitedPlayer = await ctx.state.match.getPlayer(ctx.params.id);
   const chooseStatuses = ctx.eligibleStatuses(invitedPlayer.isPlayerInvited.status, true);
 
   await ctx.render('invitedPlayers/edit', {
@@ -59,7 +59,7 @@ router.get('invitedPlayerEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('invitedPlayerUpdate', '/:id', async (ctx) => {
-  const invitedPlayer = await ctx.findAssociatedById(ctx.state.match, 'getPlayers', ctx.params.id);
+  const invitedPlayer = await ctx.state.match.getPlayer(ctx.params.id);
 
   const chooseStatuses = ctx.eligibleStatuses(invitedPlayer.isPlayerInvited.status, true);
   const params = getParams(ctx.request.body);

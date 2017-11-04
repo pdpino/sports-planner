@@ -27,7 +27,7 @@ router.post('playerSportCreate', '/', async (ctx) => {
 });
 
 router.get('playerSportEdit', '/:id/edit', async (ctx) => {
-  const playSport = await ctx.findAssociatedById(ctx.state.player, 'getSport', ctx.params.id);
+  const playSport = await ctx.state.player.getSport(ctx.params.id);
   ctx.assert(playSport, 404);
 
   await ctx.render('playerSports/edit', {
@@ -46,7 +46,7 @@ router.get('playerSportEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('playerSportUpdate', '/:id', async (ctx) => {
-  const playSport = await ctx.findAssociatedById(ctx.state.player, 'getSport', ctx.params.id);
+  const playSport = await ctx.state.player.getSport(ctx.params.id);
   ctx.assert(playSport, 404);
 
   try {

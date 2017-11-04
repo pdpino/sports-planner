@@ -195,5 +195,13 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     });
   }
 
+  player.prototype.getMatch = function(matchId){
+    return helpers.findOneAssociatedById(this, 'getMatches', matchId);
+  }
+
+  player.prototype.getSport = function(sportId){
+    return helpers.findOneAssociatedById(this, 'getSports', sportId);
+  }
+
   return player;
 };

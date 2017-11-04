@@ -32,7 +32,7 @@ router.post('teamMatchCreate', '/', async (ctx) => {
 });
 
 router.get('teamMatchEdit', '/:id/edit', async (ctx) => {
-  const teamMatch = await ctx.findAssociatedById(ctx.state.team, 'getMatches', ctx.params.id);
+  const teamMatch = await ctx.state.team.getMatch(ctx.params.id);
   ctx.assert(teamMatch, 404);
 
   await ctx.render('teamMatches/edit', {
@@ -52,7 +52,7 @@ router.get('teamMatchEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('teamMatchUpdate', '/:id', async (ctx) => {
-  const teamMatch = await ctx.findAssociatedById(ctx.state.team, 'getMatches', ctx.params.id);
+  const teamMatch = await ctx.state.team.getMatch(ctx.params.id);
   ctx.assert(teamMatch, 404);
 
   const matchAdmins = await teamMatch.getAdmins();

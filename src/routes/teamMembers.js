@@ -43,7 +43,7 @@ router.post('teamMemberCreate', '/', async (ctx) => {
 });
 
 router.get('teamMemberEdit', '/:id/edit', async (ctx) => {
-  const teamMember = await ctx.findAssociatedById(ctx.state.team, 'getPlayers', ctx.params.id);
+  const teamMember = await ctx.state.team.getPlayer(ctx.params.id);
   await ctx.render('teamMembers/edit', {
     team: ctx.state.team,
     teamMember,
@@ -61,7 +61,7 @@ router.get('teamMemberEdit', '/:id/edit', async (ctx) => {
 
 router.patch('teamMemberUpdate', '/:id', async (ctx) => {
   const params = getParams(ctx.request.body);
-  const teamMember = await ctx.findAssociatedById(ctx.state.team, 'getPlayers', ctx.params.id);
+  const teamMember = await ctx.state.team.getPlayer(ctx.params.id);
   try {
     await ctx.state.team.invitePlayer(teamMember, params.isCaptain);
     ctx.redirect(ctx.router.url('team', { id: ctx.state.team.id }));

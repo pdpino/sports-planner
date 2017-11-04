@@ -84,5 +84,13 @@ module.exports = function defineteam(sequelize, DataTypes) {
 
   team.prototype.getPrivateComments = function(){ return getComments(this, false); }
 
+  team.prototype.getMatch = function(matchId){
+    return helpers.findOneAssociatedById(this, 'getMatches', matchId);
+  }
+
+  team.prototype.getPlayer = function(player){
+    return helpers.findOneAssociatedById(this, 'getPlayers', player);
+  }
+
   return team;
 };

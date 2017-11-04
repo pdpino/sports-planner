@@ -104,6 +104,14 @@ module.exports = function definematch(sequelize, DataTypes) {
     return matchAdmins || [];
   }
 
+  match.prototype.getPlayer = function(playerId){
+    return helpers.findOneAssociatedById(this, 'getPlayers', playerId);
+  }
+
+  match.prototype.getTeam = function(teamId){
+    return helpers.findOneAssociatedById(this, 'getTeams', teamId);
+  }
+
   // async function assertNotEmptyName(instance){
   //   if (!instance.name){
   //     const sport = await sequelize.models.sport.findById(instance.sportId);
