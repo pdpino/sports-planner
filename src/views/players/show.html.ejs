@@ -165,6 +165,12 @@
 
   </div>
 
+  <% if (hasCommentPermission) { %>
+    <%- include('../comments/index', { comments: wallComments }) %>
+    <%- include('../comments/new') %>
+  <% } %>
+
+
   <%- include('../_buttons/back', { backPath: playersPath }) %>
 
 </div>

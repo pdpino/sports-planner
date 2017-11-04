@@ -3,6 +3,7 @@ const playerSportsRouter = require('./playerSports');
 const playerTeamsRouter = require('./playerTeams');
 const playerMatchesRouter = require('./playerMatches');
 const friendshipsRouter = require('./friendships');
+const wallCommentsRouter = require('./wallComments');
 
 const router = new KoaRouter();
 
@@ -126,7 +127,8 @@ router.get('player', '/:id', async (ctx) => {
   const friendshipStatus = (ctx.state.isPlayerLoggedIn
     && await ctx.state.currentPlayer.getFriendshipStatus(player));
 
-  // const wallComments = await player.getMyWallComments();
+  const hasCommentPermission = ctx.orm.player.hasCommentPermission(friendshipStatus);
+  const wallComments = hasCommentPermission && await player.getMyWallComments();
 
   await ctx.render('players/show', {
     hasModifyPermission: ctx.state.hasModifyPermission(ctx, player.userId),
@@ -135,8 +137,15 @@ router.get('player', '/:id', async (ctx) => {
     playerTeams,
     playerMatches,
     friends,
-    editPlayerPath: ctx.router.url('playerEdit', player.id),
-    // REFACTOR:
+    wallComments,
+    hasCreatePermission: ctx.state.isPlayerLoggedIn,
+    hasCommentPermission,
+    createCommentPath: ctx.router.url('wallCommentCreate', { playerId: player.id }),
+    deleteCommentPath: (comment) => ctx.router.url('wallCommentDelete', {
+      playerId: player.id,
+      id: comment.id
+    }),
+    // REFACTOR?:
     canAddFriend: ctx.orm.player.canAddFriend(friendshipStatus),
     canDeleteFriend: ctx.orm.player.canDeleteFriend(friendshipStatus),
     canAcceptFriend: ctx.orm.player.canAcceptFriend(friendshipStatus),
@@ -145,6 +154,7 @@ router.get('player', '/:id', async (ctx) => {
       playerId: ctx.state.currentPlayer.id,
       friendId: friend.id,
     }),
+    editPlayerPath: ctx.router.url('playerEdit', player.id),
     deleteFriendPath: (friend) => ctx.router.url('friendDelete', {
       playerId: ctx.state.currentPlayer.id,
       friendId: friend.id,
@@ -234,6 +244,16 @@ router.use(
     return next();
   },
   friendshipsRouter.routes(),
+);
+
+router.use(
+  '/:playerId/comments',
+  async (ctx, next) => {
+    ctx.state.player = await ctx.findById(ctx.orm.player, ctx.params.playerId);
+
+    return next();
+  },
+  wallCommentsRouter.routes(),
 );
 
 module.exports = router;

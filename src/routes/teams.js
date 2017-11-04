@@ -81,7 +81,7 @@ router.patch('teamUpdate', '/:id', async (ctx) => {
 });
 
 router.get('team', '/:id', async (ctx) => {
-  const team = await ctx.findById(ctx.orm.team, ctx.params.id);
+  const team = await ctx.findById(ctx.orm.team.scope('withSport'), ctx.params.id);
   const sport = await team.getSport();
   const teamMembers = await team.getPlayers();
   const teamMatches = await team.getMatches();
@@ -94,7 +94,6 @@ router.get('team', '/:id', async (ctx) => {
     team,
     teamMembers,
     teamMatches,
-    sport: sport.name,
     hasModifyPermission,
     hasCreatePermission: ctx.state.isPlayerLoggedIn,
     canSeePrivateComments,

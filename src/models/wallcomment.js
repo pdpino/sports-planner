@@ -24,5 +24,9 @@ module.exports = function definewallComment(sequelize, DataTypes) {
       override: true
     });
   };
+
+  wallComment.prototype.getCommenter = function(){
+    return this.commenter;
+  }
   return wallComment;
 };

@@ -24,5 +24,9 @@ module.exports = function defineteamComment(sequelize, DataTypes) {
     });
   };
 
+  teamComment.prototype.getCommenter = function(){
+    return this.player;
+  }
+
   return teamComment;
 };

@@ -2,10 +2,12 @@
   comments,
   deleteCommentPath,
   isPublic (optional),
+  title (optional),
   %>
 
 <div>
-  <h4>Comentarios
+  <h4>
+  <%= locals.title || 'Comentarios' %>
   <% if (locals.isPublic) { %>
     <%= (isPublic) ? 'públicos' : 'privados' %>
   <% } %>
@@ -15,7 +17,7 @@
     <ul>
       <% comments.forEach( (comment) => { %>
         <li>
-          <%= comment.player.getName() %>, <%= createdAtTimestamp(comment) %>:
+          <%= comment.getCommenter().getName() %>, <%= createdAtTimestamp(comment) %>:
           <br>
           <%= comment.content %>
           <% if (canDeleteComment(comment)) { %>

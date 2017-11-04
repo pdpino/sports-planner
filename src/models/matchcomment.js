@@ -17,5 +17,9 @@ module.exports = function definematchComment(sequelize, DataTypes) {
       override: true
     });
   };
+
+  matchComment.prototype.getCommenter = function(){
+    return this.player;
+  }
   return matchComment;
 };

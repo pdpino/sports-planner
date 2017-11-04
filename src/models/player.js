@@ -35,9 +35,6 @@ module.exports = function defineplayer(sequelize, DataTypes) {
         notEmpty: {
           msg: "Debes ingresar tu fecha de nacimiento"
         },
-        // notEmpty: { // notNull?
-        //   msg: "Debes ingresar una fecha de nacimiento válida"
-        // },
         isBefore: {
           args: [ String(new Date()) ],
           msg: "No puedes ingresar una fecha de nacimiento en el futuro"
@@ -110,14 +107,15 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     return '';
   }
 
-  player.canAddFriend = function(status){ return status === 'not' };
-  player.canDeleteFriend = function(status){ return status === 'accepted' };
-  player.canAcceptFriend = function(status){ return status === 'sent' };
-  player.waitingFriend = function(status){ return status === 'waiting' };
+  player.canAddFriend = (status) => status === 'not';
+  player.canDeleteFriend = (status) => status === 'accepted';
+  player.canAcceptFriend = (status) => status === 'sent';
+  player.waitingFriend = (status) => status === 'waiting';
+  player.hasCommentPermission = (status) => status === 'self' || status === 'accepted';
 
   player.prototype.getFriendshipStatus = async function(friend){
     if (this.id === friend.id){
-      return false;
+      return 'self';
     }
     const results = await player.findAll({
       include: [{
@@ -212,6 +210,14 @@ module.exports = function defineplayer(sequelize, DataTypes) {
   player.prototype.getSport = function(sportId){
     return helpers.findOneAssociatedById(this, 'getSports', sportId);
   }
+
+  player.prototype.receiveWallComment = function(commenter, params){
+    return this.createMyWallComment({
+      commenterId: commenter.id,
+      content: params.content,
+    });
+  }
+
 
   return player;
 };
