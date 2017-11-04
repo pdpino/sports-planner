@@ -33,7 +33,7 @@ router.get('sportNew', '/new', async (ctx) => {
 });
 
 router.post('sportCreate', '/', async (ctx) => {
-  ctx.state.requireAdmin(ctx);
+  ctx.requireAdmin();
 
   const params = getParams(ctx.request.body.fields);
   try {

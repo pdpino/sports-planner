@@ -69,7 +69,7 @@ router.use(async (ctx, next) => {
 router.use((ctx, next) => {
   Object.assign(ctx.state, {
     hasAdminPermission: ctx.state.currentUser && ctx.state.currentUser.role == 'admin',
-    hasModifyPermission: (ctx, userId) => ctx.session.userId == userId,
+    hasModifyPermission: (ctx, userId) => ctx.state.currentUser.id == userId,
     hasOwnerModifyPermission: (ctx, owner) => ctx.state.currentOwner && ctx.state.currentOwner.id == owner.id,
     isLoggedIn: Boolean(ctx.state.currentUser),
     isPlayerLoggedIn: Boolean(ctx.state.currentPlayer),

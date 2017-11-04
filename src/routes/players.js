@@ -58,11 +58,11 @@ router.post('playerCreate', '/', async (ctx) => {
   let user = null;
   try {
     user = await ctx.orm.user.create(userParams);
-    userParams.photo=FileStorage.url("user"+user.id,{});
+    userParams.photo = FileStorage.url("user" + user.id,{});
     await user.update(userParams);
     playerParams.userId = user.id;
-    FileStorage.upload(ctx.request.body.files.photo, "user"+user.id);
     const player = await ctx.orm.player.create(playerParams);
+    FileStorage.upload(ctx.request.body.files.photo, "user" + user.id);
     ctx.redirect(ctx.router.url('players'));
   } catch (validationError) {
     if (user){ // User was created correctly, delete it
@@ -104,9 +104,9 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
   const playerParams = getPlayerParams(ctx.request.body.fields);
 
   try {
-    userParams.photo=FileStorage.url("user"+user.id,{});
+    userParams.photo=FileStorage.url("user"+player.user.id,{});
     await player.user.update(userParams);
-    FileStorage.upload(ctx.request.body.files.photo, "user"+user.id);
+    FileStorage.upload(ctx.request.body.files.photo, "user"+player.user.id);
     await player.update(playerParams);
     ctx.redirect(ctx.router.url('player', { id: player.id }));
   } catch (validationError) {
