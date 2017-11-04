@@ -79,10 +79,12 @@
   </div>
 
 
-  <%- include('../comments/index', { commenters: privateCommenters, isPublic: false }) %>
-  <%- include('../comments/new', { isPublic: false }) %>
+  <% if (canSeePrivateComments) { %>
+    <%- include('../comments/index', { comments: privateComments, isPublic: false }) %>
+    <%- include('../comments/new', { isPublic: false }) %>
+  <% } %>
 
-  <%- include('../comments/index', { commenters: publicCommenters, isPublic: true }) %>
+  <%- include('../comments/index', { comments: publicComments, isPublic: true }) %>
   <%- include('../comments/new', { isPublic: true }) %>
 
 

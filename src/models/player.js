@@ -2,14 +2,8 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const _ = require('lodash');
 
-async function getUserObject(models, userId){
-  const user = await models.user.findById(userId);
-  return { // REVIEW: replace this by a js method (like assign)?
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    photo: user.photo,
-  };
+function unWrapUser(player){
+  return _.pick(player.user, 'firstName', 'lastName', 'email', 'photo');
 }
 
 module.exports = function defineplayer(sequelize, DataTypes) {
@@ -67,30 +61,43 @@ module.exports = function defineplayer(sequelize, DataTypes) {
       through: models.friendship,
     });
 
-    player.belongsToMany(models.team, { through: models.teamComment, as: 'teamComments' });
+    player.hasMany(models.teamComment);
 
+    player.addScope('defaultScope', {
+      include: [
+        { model: sequelize.models.user }
+      ]
+    }, {
+      override: true
+    });
   };
 
-  /** Load user info (email, names and photo) into player object **/
-  player.afterFind(async function loadUser(result, options) {
-    // REVIEW: avoid DB query?
+  /** Copy user info (email, names and photo) into player object, so is more accesible **/
+  player.afterFind(function copyUserInfo(result, options) {
     if(!result){
       return;
     }
 
     if(result.constructor == Array) {
       for (let i = 0; i < result.length; i++) {
-          Object.assign(result[i], await getUserObject(sequelize.models, result[i].userId));
+          Object.assign(result[i], unWrapUser(result[i]));
       }
     } else {
-      Object.assign(result, await getUserObject(sequelize.models, result.userId));
+      Object.assign(result, unWrapUser(result));
     }
   });
 
   player.getGenders = function() { return genders; }
 
   player.prototype.getName = function() {
-    return `${this.firstName} ${this.lastName}`;
+    // NOTE: if the player was found using find(), firstName and lastName are copied into the player
+    // if not, then try to use the user's names
+    if (this.firstName){
+      return `${this.firstName} ${this.lastName}`;
+    } else if (this.user) {
+      return `${this.user.firstName} ${this.user.lastName}`;
+    }
+    return '';
   }
 
   player.canAddFriend = function(status){ return status === 'not' };

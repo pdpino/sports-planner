@@ -1,5 +1,4 @@
 const KoaRouter = require('koa-router');
-const Sequelize = require('sequelize');
 
 const index = require('./routes/index');
 const sports = require('./routes/sports');

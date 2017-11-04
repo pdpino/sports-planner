@@ -16,7 +16,7 @@ module.exports = function defineteam(sequelize, DataTypes) {
     team.belongsTo(models.sport);
     team.belongsToMany(models.player, { through: models.isMember });
     team.belongsToMany(models.match, { through: models.isTeamInvited });
-    team.belongsToMany(models.player, { through: models.teamComment, as: 'comments' });
+    team.hasMany(models.teamComment, { as: 'comments' });
   };
 
   /** Boolean indicating if the player has modify permission on the team **/
@@ -68,14 +68,9 @@ module.exports = function defineteam(sequelize, DataTypes) {
 
   function getComments(team, isPublic){
     return team.getComments({
-      through: {
-        order: [
-          ['createdAt', 'DESC']
-        ],
-        where: {
-          isPublic,
-        }
-      }
+      where: {
+        isPublic,
+      },
     });
   }
 

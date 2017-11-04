@@ -7,23 +7,29 @@ function getParams(params){
   return _.pick(params, 'isPublic', 'content');
 }
 
+async function requirePlayerInTeam(ctx){
+  const isInTeam = await ctx.state.team.hasPlayer(ctx.state.currentPlayer);
+  ctx.assert(isInTeam, 404);
+}
+
 router.post('teamCommentCreate', '/', async (ctx) => {
   ctx.requirePlayerLoggedIn();
 
   const params = getParams(ctx.request.body);
+  if (!params.isPublic){
+    await requirePlayerInTeam();
+  }
+
   await ctx.state.team.makeComment(ctx.state.currentPlayer, params);
   ctx.redirect(ctx.router.url('team', ctx.state.team.id));
 });
 
-// router.patch('teamCommentUpdate', '/:id', async (ctx) => {
-//   // TODO
-// });
-
 router.delete('teamCommentDelete', '/:id', async (ctx) => {
-  // ctx.requirePlayerLoggedIn(ctx);
-  // TODO: require correct user
+  const comment = await ctx.findById(ctx.orm.teamComment, ctx.params.id);
 
-  await ctx.state.team.removeComment(ctx.params.id);
+  ctx.requireModifyPermission(comment.player.userId);
+
+  await comment.destroy();
   ctx.redirect(ctx.router.url('team', ctx.state.team.id));
 });
 

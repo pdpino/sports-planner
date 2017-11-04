@@ -1,22 +1,25 @@
 <%# Provide:
-  commenters,
+  comments,
   isPublic,
   %>
 
 <div>
-  <% if(commenters.length > 0) { %>
-    <h4>Comentarios <%= (isPublic) ? 'públicos' : 'privados' %>:</h4>
+  <h4>Comentarios <%= (isPublic) ? 'públicos' : 'privados' %>:</h4>
+  <% if(comments.length > 0) { %>
     <ul>
-      <% commenters.forEach( (commenter) => { %>
+      <% comments.forEach( (comment) => { %>
         <li>
-          <%= commenter.getName() %>, <%= commenter.teamComment.prettyTimestamp() %>:
+          <%= comment.player.getName() %>, <%= comment.prettyTimestamp() %>:
           <br>
-          <%= commenter.teamComment.content %>
+          <%= comment.content %>
+          <% if (currentPlayer.id === comment.player.id) { %>
+            <%- include('../_buttons/delete', { deletePath: deleteTeamCommentPath(comment) }) %>
+          <% } %>
         </li>
       <% }) %>
     </ul>
   <% } else { %>
-    No hay comentarios privados
+    No hay comentarios
   <% } %>
 
 </div>

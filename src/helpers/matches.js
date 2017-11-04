@@ -1,3 +1,5 @@
+const Sequelize = require('sequelize');
+
 module.exports = function matchHelpers(app) {
   /** Return the visible matches for the currentPlayer logged in **/
   app.context.getVisibleMatches = async function(){

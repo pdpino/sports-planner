@@ -9,9 +9,24 @@ module.exports = function defineteamComment(sequelize, DataTypes) {
     content: {
       type: DataTypes.TEXT,
     },
+  }, {
+    defaultScope: {
+      order: [
+        ['createdAt', 'DESC']
+      ],
+    }
   });
   teamComment.associate = function associate(models) {
-    // associations can be defined here
+    teamComment.belongsTo(models.team);
+    teamComment.belongsTo(models.player);
+
+    teamComment.addScope('defaultScope', {
+      include: [
+        { model: sequelize.models.player }
+      ]
+    }, {
+      override: true
+    });
   };
 
   teamComment.prototype.prettyTimestamp = function(){

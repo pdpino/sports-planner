@@ -95,19 +95,25 @@ router.get('team', '/:id', async (ctx) => {
   const teamMembers = await team.getPlayers();
   const teamMatches = await team.getMatches();
   const hasModifyPermission = await team.hasModifyPermission(ctx.state.currentPlayer);
-  const privateCommenters = await team.getPrivateComments();
-  const publicCommenters = await team.getPublicComments();
+  const publicComments = await team.getPublicComments();
+  const privateComments = await team.getPrivateComments();
+  const canSeePrivateComments = await team.hasPlayer(ctx.state.currentPlayer);
 
   await ctx.render('teams/show', {
     team,
     teamMembers,
     teamMatches,
+    sport: sport.name,
     hasModifyPermission,
     hasCreatePermission: ctx.state.isPlayerLoggedIn,
-    privateCommenters,
-    publicCommenters,
+    privateComments,
+    publicComments,
+    canSeePrivateComments,
     createTeamCommentPath: ctx.router.url('teamCommentCreate', { teamId: team.id }),
-    sport: sport.name,
+    deleteTeamCommentPath: (comment) => ctx.router.url('teamCommentDelete', {
+      teamId: team.id,
+      id: comment.id
+    }),
     editTeamPath: ctx.router.url('teamEdit', team.id),
     deleteTeamPath: ctx.router.url('teamDelete', team.id),
     newTeamMemberPath: ctx.router.url('teamMemberNew', { teamId: team.id } ),
