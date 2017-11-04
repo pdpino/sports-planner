@@ -4,7 +4,7 @@
   <p>
     Logo: <%= team.logo %>
 
-    Deporte: <%= sport %>
+    Deporte: <%= team.sport.name %>
   </p>
 
   <% if (hasModifyPermission) { %>
@@ -78,6 +78,19 @@
 
   </div>
 
-  <%- include('../_buttons/back', { backPath: teamsPath, message: 'Volver a todos los equipos' }) %>
+
+  <% if (canSeePrivateComments) { %>
+    <%- include('../comments/index', { comments: privateComments, isPublic: false }) %>
+    <%- include('../comments/new', { isPublic: false }) %>
+  <% } %>
+
+  <%- include('../comments/index', { comments: publicComments, isPublic: true }) %>
+  <%- include('../comments/new', { isPublic: true }) %>
+
+
+  <%- include('../_buttons/back', {
+    backPath: teamsPath,
+    message: 'Volver a todos los equipos'
+  }) %>
 
 </div>

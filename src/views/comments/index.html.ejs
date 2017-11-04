@@ -1,0 +1,33 @@
+<%# Provide:
+  comments,
+  deleteCommentPath,
+  isPublic (optional),
+  title (optional),
+  %>
+
+<div>
+  <h4>
+  <%= locals.title || 'Comentarios' %>
+  <% if (locals.isPublic) { %>
+    <%= (isPublic) ? 'públicos' : 'privados' %>
+  <% } %>
+  :</h4>
+
+  <% if(comments.length > 0) { %>
+    <ul>
+      <% comments.forEach( (comment) => { %>
+        <li>
+          <%= comment.getCommenter().getName() %>, <%= createdAtTimestamp(comment) %>:
+          <br>
+          <%= comment.content %>
+          <% if (canDeleteComment(comment)) { %>
+            <%- include('../_buttons/delete', { deletePath: deleteCommentPath(comment) }) %>
+          <% } %>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    No hay comentarios
+  <% } %>
+
+</div>

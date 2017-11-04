@@ -1,0 +1,22 @@
+<%# Provide:
+  createCommentPath,
+  isPublic (optional)
+  %>
+
+<%# Must exist: canComment, createTeamCommentPath %>
+
+<div>
+  <% if (canComment) { %>
+    <form action="<%= createCommentPath %>" method="post">
+      <% if (locals.isPublic !== undefined) { %>
+        <div>
+          <input type="hidden" name="isPublic" value=<%= isPublic %> />
+        </div>
+      <% } %>
+      <div>
+        <input type="textarea" name="content" />
+      </div>
+      <input type="submit" value="Comentar" />
+    </form>
+  <% } %>
+</div>

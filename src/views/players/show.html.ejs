@@ -34,7 +34,7 @@
 
     <p> Cumpleaños: <%= player.birthday %> </p>
 
-    <p> Edad: <%= playerAge %> </p>
+    <p> Edad: <%= player.age %> </p>
 
     <p> Género: <%= player.gender %> </p>
 
@@ -164,6 +164,11 @@
     <% } %>
 
   </div>
+
+  <% if (canSeeComments) { %>
+    <%- include('../comments/index', { comments: wallComments }) %>
+  <% } %>
+  <%- include('../comments/new') %>
 
   <%- include('../_buttons/back', { backPath: playersPath }) %>
 

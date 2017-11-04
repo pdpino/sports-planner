@@ -4,7 +4,7 @@ const router = new KoaRouter();
 
 /** Wrapper to get the friend and the friendship status **/
 async function getFriendAndStatus(ctx){
-  const friend = await ctx.state.findById(ctx.orm.player, ctx.params.friendId);
+  const friend = await ctx.findById(ctx.orm.player, ctx.params.friendId);
   const friendshipStatus = await ctx.state.player.getFriendshipStatus(friend);
 
   return { friend, friendshipStatus };
@@ -23,7 +23,7 @@ router.post('friendNew', '/:friendId', async (ctx) => {
     });
     ctx.redirect(ctx.router.url('player', { id: friend.id }));
   } catch (validationError) {
-    const error = ctx.state.parseValidationError(validationError);
+    const error = ctx.parseValidationError(validationError);
     ctx.throw(400, `No se pudo agregar amigo: ${error}`);
   }
 });
@@ -42,7 +42,7 @@ router.patch('friendAccept', '/:friendId', async (ctx) => {
     });
     ctx.redirect(ctx.router.url('player', { id: friend.id }));
   } catch (validationError) {
-    const error = ctx.state.parseValidationError(validationError);
+    const error = ctx.parseValidationError(validationError);
     ctx.throw(400, `No se pudo aceptar amigo: ${error}`);
   }
 });

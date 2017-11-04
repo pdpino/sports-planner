@@ -3,26 +3,11 @@ const playerSportsRouter = require('./playerSports');
 const playerTeamsRouter = require('./playerTeams');
 const playerMatchesRouter = require('./playerMatches');
 const friendshipsRouter = require('./friendships');
+const wallCommentsRouter = require('./wallComments');
 const FileStorage= require('../services/file-storage');
 
 
 const router = new KoaRouter();
-
-/** Calculate the age of the player given his birthday**/
-function calculateAge(birthday){
-  // OPTIMIZE this function? dates can be substracted
-  // TODO: move this to model
-  const today = new Date();
-
-  const year = birthday.substring(0,4);
-  const month = birthday.substring(5,7);
-  const day = birthday.substring(8,10);
-
-  const dateBirthday = new Date(year, month-1, day);
-  const diff =  today - dateBirthday;
-  const age = Math.floor(diff/(1000*60*60*24*365.25));
-  return age;
-}
 
 /** Extract the User parameters from a params object (such as request.body) **/
 function getUserParams(params){
@@ -43,14 +28,6 @@ function getPlayerParams(params){
   };
 }
 
-/** Load the player and the user from the database **/
-async function getPlayerAndUser(ctx, playerId){
-  // REVIEW: apparently not all calls of this need both user and player
-  const player = await ctx.state.findById(ctx.orm.player, playerId);
-  const user = await player.getUser();
-  return { player, user };
-}
-
 router.get('players', '/', async (ctx) => {
   const players = await ctx.orm.player.findAll();
 
@@ -60,7 +37,7 @@ router.get('players', '/', async (ctx) => {
 });
 
 router.get('playerNew', '/new', async (ctx) => {
-  ctx.state.requireNoLogin(ctx);
+  ctx.requireNoLogin();
 
   const user = ctx.orm.user.build(); // (ctx.request.body);
   const player = ctx.orm.player.build(); // (ctx.request.body);
@@ -74,7 +51,7 @@ router.get('playerNew', '/new', async (ctx) => {
 });
 
 router.post('playerCreate', '/', async (ctx) => {
-  ctx.state.requireNoLogin(ctx);
+  ctx.requireNoLogin();
   const userParams = getUserParams(ctx.request.body.fields);
   const playerParams = getPlayerParams(ctx.request.body.fields);
 
@@ -85,12 +62,7 @@ router.post('playerCreate', '/', async (ctx) => {
     await user.update(userParams);
     playerParams.userId = user.id;
     FileStorage.upload(ctx.request.body.files.photo, "user"+user.id);
-
-
-
-  const player = await ctx.orm.player.create(playerParams);
-
-
+    const player = await ctx.orm.player.create(playerParams);
     ctx.redirect(ctx.router.url('players'));
   } catch (validationError) {
     if (user){ // User was created correctly, delete it
@@ -102,7 +74,7 @@ router.post('playerCreate', '/', async (ctx) => {
     await ctx.render('players/new', {
       player: ctx.orm.player.build(ctx.request.body),
       genders: ctx.orm.player.getGenders(),
-      errors: ctx.state.parseValidationError(validationError),
+      errors: ctx.parseValidationError(validationError),
       submitPlayerPath: ctx.router.url('playerCreate'),
       cancelPath: ctx.router.url('players'),
     });
@@ -110,10 +82,9 @@ router.post('playerCreate', '/', async (ctx) => {
 });
 
 router.get('playerEdit', '/:id/edit', async (ctx) => {
-  const player = await ctx.state.findById(ctx.orm.player, ctx.params.id);
+  const player = await ctx.findById(ctx.orm.player, ctx.params.id);
 
-  ctx.state.requireModifyPermission(ctx, player.userId);
-  console.log("lool");
+  ctx.requireModifyPermission(player.userId);
 
   await ctx.render('players/edit', {
     player,
@@ -121,21 +92,20 @@ router.get('playerEdit', '/:id/edit', async (ctx) => {
     submitPlayerPath: ctx.router.url('playerUpdate', player.id),
     deletePlayerPath: ctx.router.url('playerDelete', player.id),
     cancelPath: ctx.router.url('player', { id: player.id }),
-
   });
 });
 
 router.patch('playerUpdate', '/:id', async (ctx) => {
-  const { player, user } = await getPlayerAndUser(ctx, ctx.params.id);
+  const player = await ctx.findById(ctx.orm.player, ctx.params.id);
 
-  ctx.state.requireModifyPermission(ctx, user.id);
+  ctx.requireModifyPermission(player.userId);
 
   const userParams = getUserParams(ctx.request.body.fields);
   const playerParams = getPlayerParams(ctx.request.body.fields);
 
   try {
     userParams.photo=FileStorage.url("user"+user.id,{});
-    await user.update(userParams);
+    await player.user.update(userParams);
     FileStorage.upload(ctx.request.body.files.photo, "user"+user.id);
     await player.update(playerParams);
     ctx.redirect(ctx.router.url('player', { id: player.id }));
@@ -143,7 +113,7 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
     await ctx.render('players/edit', {
       player,
       genders: ctx.orm.player.getGenders(),
-      errors: ctx.state.parseValidationError(validationError),
+      errors: ctx.parseValidationError(validationError),
       submitPlayerPath: ctx.router.url('playerUpdate', player.id),
       deletePlayerPath: ctx.router.url('playerDelete', player.id),
       cancelPath: ctx.router.url('player', { id: player.id }),
@@ -154,26 +124,34 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
 router.get('player', '/:id', async (ctx) => {
   // console.log("PLAYER/ PARAMS ID: ", ctx.params);
   // FIXME: sometimes the ctx.params.id is 'width="32"'
-  const player = await ctx.state.findById(ctx.orm.player, ctx.params.id);
+  const player = await ctx.findById(ctx.orm.player, ctx.params.id);
   const playerSports = await player.getSports();
   const playerTeams = await player.getTeams();
   const playerMatches = await player.getMatches();
-  const playerAge = calculateAge(player.birthday);
   const friends = await player.getAllFriends();
 
   const friendshipStatus = (ctx.state.isPlayerLoggedIn
     && await ctx.state.currentPlayer.getFriendshipStatus(player));
 
+  const hasCommentPermission = ctx.orm.player.hasCommentPermission(friendshipStatus);
+  const wallComments = hasCommentPermission && await player.getMyWallComments();
+
   await ctx.render('players/show', {
     hasModifyPermission: ctx.state.hasModifyPermission(ctx, player.userId),
     player,
-    playerAge,
     playerSports,
     playerTeams,
     playerMatches,
     friends,
-    editPlayerPath: ctx.router.url('playerEdit', player.id),
-    // REFACTOR:
+    wallComments,
+    canComment: hasCommentPermission,
+    canSeeComments: hasCommentPermission,
+    createCommentPath: ctx.router.url('wallCommentCreate', { playerId: player.id }),
+    deleteCommentPath: (comment) => ctx.router.url('wallCommentDelete', {
+      playerId: player.id,
+      id: comment.id
+    }),
+    // REFACTOR?:
     canAddFriend: ctx.orm.player.canAddFriend(friendshipStatus),
     canDeleteFriend: ctx.orm.player.canDeleteFriend(friendshipStatus),
     canAcceptFriend: ctx.orm.player.canAcceptFriend(friendshipStatus),
@@ -182,6 +160,7 @@ router.get('player', '/:id', async (ctx) => {
       playerId: ctx.state.currentPlayer.id,
       friendId: friend.id,
     }),
+    editPlayerPath: ctx.router.url('playerEdit', player.id),
     deleteFriendPath: (friend) => ctx.router.url('friendDelete', {
       playerId: ctx.state.currentPlayer.id,
       friendId: friend.id,
@@ -209,24 +188,24 @@ router.get('player', '/:id', async (ctx) => {
 });
 
 router.delete('playerDelete', '/:id', async (ctx) => {
-  const { player, user } = await getPlayerAndUser(ctx, ctx.params.id);
+  const player = await ctx.findById(ctx.orm.player, ctx.params.id);
 
-  ctx.state.requireModifyPermission(ctx, user.id);
+  ctx.requireModifyPermission(player.userId);
   FileStorage.destroy(user.email);
-  await user.destroy(); // NOTE: player.destroy() is not neccesary beause onDelete: cascade
+  await player.user.destroy(); // NOTE: player.destroy() is not neccesary beause onDelete: cascade
   ctx.redirect(ctx.router.url('players'));
 });
 
 router.use(
   '/:playerId/teams',
   async (ctx, next) => {
-    ctx.state.player = await ctx.state.findById(ctx.orm.player, ctx.params.playerId);
+    ctx.state.player = await ctx.findById(ctx.orm.player, ctx.params.playerId);
 
-    ctx.state.requireModifyPermission(ctx, ctx.state.player.userId);
+    ctx.requireModifyPermission(ctx.state.player.userId);
 
     ctx.state.teams = await ctx.orm.team.findAll();
     ctx.state.playerTeams = await ctx.state.player.getTeams();
-    await next();
+    return next();
   },
   playerTeamsRouter.routes(),
 );
@@ -234,13 +213,14 @@ router.use(
 router.use(
   '/:playerId/matches',
   async (ctx, next) => {
-    ctx.state.player = await ctx.state.findById(ctx.orm.player, ctx.params.playerId);
+    ctx.state.player = await ctx.findById(ctx.orm.player, ctx.params.playerId);
 
-    ctx.state.requireModifyPermission(ctx, ctx.state.player.userId);
+    ctx.requireModifyPermission(ctx.state.player.userId);
 
-    ctx.state.visibleMatches = await ctx.state.getVisibleMatches(ctx);
-    ctx.state.playerMatches = await ctx.state.player.getMatches();
-    await next();
+    const visibleMatches = await ctx.getVisibleMatches();
+    const playerMatches = await ctx.state.player.getMatches();
+    ctx.state.invitableMatches = ctx.substract(visibleMatches, playerMatches);
+    return next();
   },
   playerMatchesRouter.routes(),
 );
@@ -248,13 +228,14 @@ router.use(
 router.use(
   '/:playerId/sports',
   async (ctx, next) => {
-    ctx.state.player = await ctx.state.findById(ctx.orm.player, ctx.params.playerId);
+    ctx.state.player = await ctx.findById(ctx.orm.player, ctx.params.playerId);
 
-    ctx.state.requireModifyPermission(ctx, ctx.state.player.userId);
+    ctx.requireModifyPermission(ctx.state.player.userId);
 
-    ctx.state.sports = await ctx.orm.sport.findAll();
-    ctx.state.playerSports = await ctx.state.player.getSports();
-    await next();
+    const allSports = await ctx.orm.sport.findAll();
+    const playerSports = await ctx.state.player.getSports();
+    ctx.state.sportsNotPlayed = ctx.substract(allSports, playerSports);
+    return next();
   },
   playerSportsRouter.routes(),
 );
@@ -262,13 +243,23 @@ router.use(
 router.use(
   '/:playerId/friendships',
   async (ctx, next) => {
-    ctx.state.player = await ctx.state.findById(ctx.orm.player, ctx.params.playerId);
+    ctx.state.player = await ctx.findById(ctx.orm.player, ctx.params.playerId);
 
-    ctx.state.requireModifyPermission(ctx, ctx.state.player.userId);
+    ctx.requireModifyPermission(ctx.state.player.userId);
 
-    await next();
+    return next();
   },
   friendshipsRouter.routes(),
+);
+
+router.use(
+  '/:playerId/comments',
+  async (ctx, next) => {
+    ctx.state.player = await ctx.findById(ctx.orm.player, ctx.params.playerId);
+
+    return next();
+  },
+  wallCommentsRouter.routes(),
 );
 
 module.exports = router;

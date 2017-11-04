@@ -1,39 +1,19 @@
-const notifications = require('../services/notifications');
 const KoaRouter = require('koa-router');
+const notifications = require('../services/notifications');
 
 const router = new KoaRouter();
-
-/** Boolean if searchedTeam is in invitedTeams **/
-function isTeamInvited(searchedTeam, invitedTeams){
-  return Boolean(invitedTeams.find((team) => team.id == searchedTeam.id));
-}
-
-/** Return the invitable teams (all but the ones already invited) **/
-function getInvitableTeams(allTeams, invitedTeams){
-  // OPTIMIZE
-  return allTeams.filter( (anyTeam) => {
-    return !isTeamInvited(anyTeam, invitedTeams);
-  });
-}
-
-/** Wrapper to find an specific invited team **/
-async function findInvitedTeamById(match, teamId){
-  // OPTIMIZE?
-  const invitedTeams = await match.getTeams( { where: { id: teamId } } );
-  return (invitedTeams.length == 1) ? invitedTeams[0] : null;
-}
 
 router.get('invitedTeamNew', '/new', async (ctx) => {
   await ctx.render('invitedTeams/new', {
     match: ctx.state.match,
-    invitableTeams: getInvitableTeams(ctx.state.teams, ctx.state.invitedTeams),
+    // invitableTeams: ctx.state.invitableTeams,
     submitInvitedTeamPath: ctx.router.url('invitedTeamCreate', { matchId: ctx.state.match.id }),
     cancelPath: ctx.router.url('match', { id: ctx.state.match.id })
   });
 });
 
 router.post('invitedTeamCreate', '/', async (ctx) => {
-  const team = await ctx.state.findById(ctx.orm.team, ctx.request.body.teamId);
+  const team = await ctx.findById(ctx.orm.team, ctx.request.body.teamId);
   const teamCaptain = await team.getCaptain();
 
   try {
@@ -45,8 +25,8 @@ router.post('invitedTeamCreate', '/', async (ctx) => {
   } catch (validationError) {
     await ctx.render('invitedTeams/new', {
       match: ctx.state.match,
-      invitableTeams: getInvitableTeams(ctx.state.teams, ctx.state.invitedTeams),
-      errors: ctx.state.parseValidationError(validationError),
+      // invitableTeams: ctx.state.invitableTeams,
+      errors: ctx.parseValidationError(validationError),
       submitInvitedTeamPath: ctx.router.url('invitedTeamCreate', { matchId: ctx.state.match.id }),
       cancelPath: ctx.router.url('match', { id: ctx.state.match.id })
     });
@@ -54,12 +34,12 @@ router.post('invitedTeamCreate', '/', async (ctx) => {
 });
 
 router.get('invitedTeamEdit', '/:id/edit', async (ctx) => {
-  const invitedTeam = await findInvitedTeamById(ctx.state.match, ctx.params.id);
+  const invitedTeam = await ctx.state.match.getTeam(ctx.params.id);
 
   await ctx.render('invitedTeams/edit', {
     match: ctx.state.match,
     team: invitedTeam,
-    chooseStatuses: ctx.state.eligibleStatuses(invitedTeam.isTeamInvited.status, true),
+    chooseStatuses: ctx.eligibleStatuses(invitedTeam.isTeamInvited.status, true),
     submitInvitedTeamPath: ctx.router.url('invitedTeamUpdate', {
       matchId: ctx.state.match.id,
       id: invitedTeam.id
@@ -73,7 +53,7 @@ router.get('invitedTeamEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('invitedTeamUpdate', '/:id', async (ctx) => {
-  const invitedTeam = await findInvitedTeamById(ctx.state.match, ctx.params.id);
+  const invitedTeam = await ctx.state.match.getTeam(ctx.params.id);
 
   try {
     await ctx.state.match.updateTeamInvitation(invitedTeam, ctx.request.body.status);
@@ -82,8 +62,8 @@ router.patch('invitedTeamUpdate', '/:id', async (ctx) => {
     await ctx.render('invitedTeams/edit', {
       match: ctx.state.match,
       team: invitedTeam,
-      chooseStatuses: ctx.state.eligibleStatuses(invitedTeam.isTeamInvited.status, true),
-      errors: ctx.state.parseValidationError(validationError),
+      chooseStatuses: ctx.eligibleStatuses(invitedTeam.isTeamInvited.status, true),
+      errors: ctx.parseValidationError(validationError),
       submitInvitedTeamPath: ctx.router.url('invitedTeamUpdate', {
         matchId: ctx.state.match.id,
         id: invitedTeam.id

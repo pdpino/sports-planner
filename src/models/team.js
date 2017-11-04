@@ -16,6 +16,13 @@ module.exports = function defineteam(sequelize, DataTypes) {
     team.belongsTo(models.sport);
     team.belongsToMany(models.player, { through: models.isMember });
     team.belongsToMany(models.match, { through: models.isTeamInvited });
+    team.hasMany(models.teamComment, { as: 'comments' });
+
+    team.addScope('withSport', {
+      include: [{
+        model: sequelize.models.sport
+      }]
+    });
   };
 
   /** Boolean indicating if the player has modify permission on the team **/
@@ -56,13 +63,33 @@ module.exports = function defineteam(sequelize, DataTypes) {
     });
   }
 
-  // team.prototype.askForMatch = async function(match){
-  //   await this.addMatch(match, {
-  //     through: {
-  //       status: 'asked' // HACK: invitation status harcoded
-  //     }
-  //   });
-  // }
+  team.prototype.makeComment = function(player, params){
+    return this.createComment({
+      playerId: player.id,
+      content: params.content,
+      isPublic: params.isPublic,
+    });
+  }
+
+  function getComments(team, isPublic){
+    return team.getComments({
+      where: {
+        isPublic,
+      },
+    });
+  }
+
+  team.prototype.getPublicComments = function(){ return getComments(this, true); }
+
+  team.prototype.getPrivateComments = function(){ return getComments(this, false); }
+
+  team.prototype.getMatch = function(matchId){
+    return helpers.findOneAssociatedById(this, 'getMatches', matchId);
+  }
+
+  team.prototype.getPlayer = function(player){
+    return helpers.findOneAssociatedById(this, 'getPlayers', player);
+  }
 
   return team;
 };

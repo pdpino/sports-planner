@@ -1,6 +1,8 @@
+const Sequelize = require('sequelize');
 const moment = require('moment');
+const helpers = require('./helpers');
 
-function unFoldDate(fullDate){
+const unWrapDate = helpers.getHookFunction(function (fullDate){
   const date = moment(fullDate, "YYYY MM DD H:mm");
   return {
     dateYear: date.format('YYYY'),
@@ -9,21 +11,7 @@ function unFoldDate(fullDate){
     dateHour: date.format('H'),
     dateMinute: date.format('mm'),
   };
-}
-
-async function setDate(result, options) {
-  if (!result) {
-    return;
-  }
-
-  if (result.constructor == Array) {
-    for (let i = 0; i < result.length; i++) {
-      Object.assign(result[i], unFoldDate(result[i].date));
-    }
-  } else {
-    Object.assign(result, unFoldDate(result.date));
-  }
-}
+});
 
 module.exports = function definematch(sequelize, DataTypes) {
   const match = sequelize.define('match', {
@@ -44,6 +32,40 @@ module.exports = function definematch(sequelize, DataTypes) {
     match.belongsToMany(models.player, { through: models.isPlayerInvited });
     match.belongsToMany(models.team, { through: models.isTeamInvited });
     match.hasOne(models.schedule);
+
+    match.hasMany(models.matchComment, { as: 'comments' });
+
+    match.addScope('withSport', {
+      include: [{
+        model: models.sport
+      }]
+    });
+
+    match.addScope('public', {
+      where: {
+        isPublic: true
+      }
+    });
+
+    match.addScope('private', function(playerId){
+      return {
+        where: {
+          isPublic: false
+        },
+        include: [{
+          model: models.player,
+          where: {
+            id: playerId,
+          },
+          through: {
+            where: {
+              status: { [Sequelize.Op.not]: 'rejectedByAdmin' }
+              // HACK: invitation status hardcoded
+            }
+          }
+        }]
+      };
+    });
   };
 
   /** Boolean indicating if the player has modify permission on the match **/
@@ -99,8 +121,8 @@ module.exports = function definematch(sequelize, DataTypes) {
     });
   }
 
-  match.afterCreate(setDate); // FIXME: not working for build()
-  match.afterFind(setDate);
+  match.afterCreate(unWrapDate); // FIXME: not working for build()
+  match.afterFind(unWrapDate);
 
   match.getDefaultName = function(player){
     return (player.firstName) ? `Partido de ${player.firstName}` : 'Partido';
@@ -116,6 +138,35 @@ module.exports = function definematch(sequelize, DataTypes) {
     });
     return matchAdmins || [];
   }
+
+  match.prototype.getPlayer = function(playerId){
+    return helpers.findOneAssociatedById(this, 'getPlayers', playerId);
+  }
+
+  match.prototype.getTeam = function(teamId){
+    return helpers.findOneAssociatedById(this, 'getTeams', teamId);
+  }
+
+  match.prototype.makeComment = function(player, params){
+    return this.createComment({
+      playerId: player.id,
+      content: params.content,
+    });
+  }
+
+  match.prototype.isPlayerInvited = async function(player){
+    const isPlayerInvited = player &&
+      await this.hasPlayer(player, {
+        through: {
+          where: {
+            status: { [Sequelize.Op.not]: 'rejectedByAdmin' }
+            // HACK: invitation status hardcoded
+          }
+        }
+      });
+    return isPlayerInvited;
+  }
+
 
   // async function assertNotEmptyName(instance){
   //   if (!instance.name){
