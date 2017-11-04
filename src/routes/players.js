@@ -138,8 +138,8 @@ router.get('player', '/:id', async (ctx) => {
     playerMatches,
     friends,
     wallComments,
-    hasCreatePermission: ctx.state.isPlayerLoggedIn,
-    hasCommentPermission,
+    canComment: hasCommentPermission,
+    canSeeComments: hasCommentPermission,
     createCommentPath: ctx.router.url('wallCommentCreate', { playerId: player.id }),
     deleteCommentPath: (comment) => ctx.router.url('wallCommentDelete', {
       playerId: player.id,

@@ -8,52 +8,22 @@ module.exports = function matchHelpers(app) {
       return allMatches;
     }
 
-    let visibleMatches = await this.orm.match.findAll({
-      where: {
-        isPublic: true,
-      }
-    });
+    let visibleMatches = await this.orm.match.scope('public').findAll();
 
     if(this.state.isPlayerLoggedIn){
-      const privateMatches = await this.orm.match.findAll({
-        where: {
-          isPublic: false,
-        },
-        include: [{
-          model: this.orm.player,
-          where: {
-            id: this.state.currentPlayer.id,
-          },
-          // HACK: through object copied in multiple places
-          through: {
-            where: {
-              status: { [Sequelize.Op.not]: 'rejectedByAdmin' }
-              // HACK: invitation status hardcoded
-            }
-          }
-        }]
-      });
+      const privateMatches = await this.orm.match.scope({
+        method: ['private', this.state.currentPlayer.id]
+      }).findAll();
+      
       visibleMatches = visibleMatches.concat(privateMatches);
-
-      // NOTE: something like this could be used, but the public and private matches should be disjuncts:
-      // const _ = require('lodash');
-      // visibleMatches = _.unionWith(visibleMatches, privateMatches, function(a, b) { return a.id === b.id; });
     }
 
     return visibleMatches;
   }
 
   app.context.requireSeeMatchPermission = async function(match){
-    const hasSeePermission = match.isPublic || (this.state.currentPlayer &&
-      await match.hasPlayer(this.state.currentPlayer, {
-        // HACK: through object copied in multiple places (where??)
-        through: {
-          where: {
-            status: { [Sequelize.Op.not]: 'rejectedByAdmin' }
-            // HACK: invitation status hardcoded
-          }
-        }
-      }));
+    const hasSeePermission = match.isPublic
+      || await match.isPlayerInvited(this.state.currentPlayer);
     this.assert(hasSeePermission, 403, "No tienes permisos");
   }
 };

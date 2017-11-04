@@ -1,3 +1,4 @@
+const Sequelize = require('sequelize');
 const moment = require('moment');
 const helpers = require('./helpers');
 
@@ -36,8 +37,34 @@ module.exports = function definematch(sequelize, DataTypes) {
 
     match.addScope('withSport', {
       include: [{
-        model: sequelize.models.sport
+        model: models.sport
       }]
+    });
+
+    match.addScope('public', {
+      where: {
+        isPublic: true
+      }
+    });
+
+    match.addScope('private', function(playerId){
+      return {
+        where: {
+          isPublic: false
+        },
+        include: [{
+          model: models.player,
+          where: {
+            id: playerId,
+          },
+          through: {
+            where: {
+              status: { [Sequelize.Op.not]: 'rejectedByAdmin' }
+              // HACK: invitation status hardcoded
+            }
+          }
+        }]
+      };
     });
   };
 
@@ -126,6 +153,20 @@ module.exports = function definematch(sequelize, DataTypes) {
       content: params.content,
     });
   }
+
+  match.prototype.isPlayerInvited = async function(player){
+    const isPlayerInvited = player &&
+      await this.hasPlayer(player, {
+        through: {
+          where: {
+            status: { [Sequelize.Op.not]: 'rejectedByAdmin' }
+            // HACK: invitation status hardcoded
+          }
+        }
+      });
+    return isPlayerInvited;
+  }
+
 
   // async function assertNotEmptyName(instance){
   //   if (!instance.name){

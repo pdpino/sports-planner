@@ -95,7 +95,7 @@ router.get('team', '/:id', async (ctx) => {
     teamMembers,
     teamMatches,
     hasModifyPermission,
-    hasCreatePermission: ctx.state.isPlayerLoggedIn,
+    canComment: ctx.state.isPlayerLoggedIn,
     canSeePrivateComments,
     publicComments,
     privateComments,

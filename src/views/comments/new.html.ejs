@@ -3,10 +3,10 @@
   isPublic (optional)
   %>
 
-<%# Must exist: hasCreatePermission, createTeamCommentPath %>
+<%# Must exist: canComment, createTeamCommentPath %>
 
 <div>
-  <% if (hasCreatePermission) { %>
+  <% if (canComment) { %>
     <form action="<%= createCommentPath %>" method="post">
       <% if (locals.isPublic) { %>
         <div>

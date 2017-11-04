@@ -165,11 +165,10 @@
 
   </div>
 
-  <% if (hasCommentPermission) { %>
+  <% if (canSeeComments) { %>
     <%- include('../comments/index', { comments: wallComments }) %>
-    <%- include('../comments/new') %>
   <% } %>
-
+  <%- include('../comments/new') %>
 
   <%- include('../_buttons/back', { backPath: playersPath }) %>
 

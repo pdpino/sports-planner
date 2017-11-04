@@ -231,7 +231,7 @@ router.get('match', '/:id', async (ctx) => {
     invitedTeams,
     schedule,
     field,
-    hasCreatePermission: ctx.state.isPlayerLoggedIn,
+    canComment: ctx.state.isPlayerLoggedIn,
     comments,
     createCommentPath: ctx.router.url('matchCommentCreate', { matchId: match.id }),
     deleteCommentPath: (comment) => ctx.router.url('matchCommentDelete', {
