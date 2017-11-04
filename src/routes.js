@@ -94,7 +94,7 @@ router.use(
   '/teams',
   async (ctx, next) => {
     ctx.state.sports = await ctx.orm.sport.findAll();
-    await next();
+    return next();
   },
   teams.routes(),
 );
@@ -103,8 +103,8 @@ router.use('/players', players.routes());
 router.use(
   '/matches',
   async (ctx, next) => {
-    ctx.state.sports = await ctx.orm.sport.findAll();
-    await next();
+    ctx.state.allSports = await ctx.orm.sport.findAll();
+    return next();
   },
   matches.routes(),
 );

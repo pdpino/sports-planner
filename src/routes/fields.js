@@ -162,7 +162,7 @@ router.use(
     ctx.state.sports = await ctx.orm.sport.findAll();
     ctx.state.field = await ctx.findById(ctx.orm.field, ctx.params.fieldId);
     ctx.state.compound = await ctx.state.field.getCompound();
-    await next();
+    return next();
   },
   scheduleBasesRouter.routes(),
 );
@@ -173,7 +173,7 @@ router.use(
     ctx.state.sports = await ctx.orm.sport.findAll();
     ctx.state.field = await ctx.findById(ctx.orm.field, ctx.params.fieldId);
     ctx.state.compound = await ctx.state.field.getCompound();
-    await next();
+    return next();
   },
   schedulesRouter.routes(),
 );

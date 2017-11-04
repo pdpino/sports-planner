@@ -10,7 +10,6 @@ router.get('teams', '/', async (ctx) => {
 
   await ctx.render('teams/index', {
     teams,
-    sports: ctx.state.sports,
     hasCreatePermission: ctx.state.isPlayerLoggedIn,
     teamPath: team => ctx.router.url('team', { id: team.id }),
     newTeamPath: ctx.router.url('teamNew'),
@@ -23,7 +22,7 @@ router.get('teamNew', '/new', async (ctx) => {
   const team = ctx.orm.team.build();
   await ctx.render('teams/new', {
     team,
-    sports: ctx.state.sports,
+    sports: ctx.state.allSports,
     submitTeamPath: ctx.router.url('teamCreate'),
     cancelPath: ctx.router.url('teams'),
   });
@@ -42,7 +41,7 @@ router.post('teamCreate', '/', async (ctx) => {
     await ctx.render('teams/new', {
       team: ctx.orm.team.build(ctx.request.body),
       errors: ctx.parseValidationError(validationError),
-      sports: ctx.state.sports,
+      sports: ctx.state.allSports,
       submitTeamPath: ctx.router.url('teamCreate'),
       cancelPath: ctx.router.url('teams'),
     });
@@ -56,7 +55,7 @@ router.get('teamEdit', '/:id/edit', async (ctx) => {
 
   await ctx.render('teams/edit', {
     team,
-    sports: ctx.state.sports,
+    sports: ctx.state.allSports,
     submitTeamPath: ctx.router.url('teamUpdate', team.id),
     cancelPath: ctx.router.url('team', { id: ctx.params.id }),
   });
@@ -74,7 +73,7 @@ router.patch('teamUpdate', '/:id', async (ctx) => {
     await ctx.render('teams/edit', {
       team,
       errors: ctx.parseValidationError(validationError),
-      sports: ctx.state.sports,
+      sports: ctx.state.allSports,
       submitTeamPath: ctx.router.url('teamUpdate', team.id),
       cancelPath: ctx.router.url('team', { id: ctx.params.id }),
     });

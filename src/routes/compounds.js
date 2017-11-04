@@ -110,7 +110,7 @@ router.use(
     ctx.state.sports = await ctx.orm.sport.findAll();
     ctx.state.compound = await ctx.findById(ctx.orm.compound, ctx.params.compoundId);
     ctx.state.compoundOwner = await ctx.state.compound.getCompoundOwner();
-    await next();
+    return next();
   },
   fieldsRouter.routes(),
 );

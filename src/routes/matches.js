@@ -12,7 +12,7 @@ const router = new KoaRouter();
  * Filter the parameters passed by the matches/_form.html.ejs (create or edit a match)
  * Assumes that there is a player logged in (ctx.state.currentPlayer is defined)
  */
-function getMatchParams(ctx){
+function getParams(ctx){
   const params = ctx.request.body;
   const filteredParams = _.pick(params, 'name', 'isPublic', 'sportId', 'dateYear', 'dateMonth', 'dateDay', 'dateHour', 'dateMinute');
 
@@ -38,7 +38,6 @@ router.get('matches', '/', async (ctx) => {
 
   await ctx.render('matches/index', {
     matches,
-    sports: ctx.state.sports,
     hasCreatePermission: ctx.state.isPlayerLoggedIn,
     matchPath: match => ctx.router.url('match', { id: match.id }),
     newMatchPath: ctx.router.url('matchNew'),
@@ -53,7 +52,7 @@ router.get('matchNew', '/new', async (ctx) => {
 
   await ctx.render('matches/new', {
     match,
-    sports: ctx.state.sports,
+    sports: ctx.state.allSports,
     submitMatchPath: ctx.router.url('matchCreate'),
     cancelPath: ctx.router.url('matches'),
   });
@@ -68,7 +67,7 @@ router.get('selectCompound', '/:id/selectCompound', async (ctx) => {
   await ctx.render('matches/selectCompound', {
     match,
     compounds,
-    sports: ctx.state.sports,
+    sports: ctx.state.allSports,
     compoundPath: compound => ctx.router.url('selectField',{id:match.id,compoundId: compound.id}),
     cancelPath: ctx.router.url('match',{id:ctx.params.id}),
   });
@@ -85,7 +84,7 @@ router.get('selectField', '/:id/:compoundId/selectField', async (ctx) => {
     match,
     compound,
     fields,
-    sports: ctx.state.sports,
+    sports: ctx.state.allSports,
     fieldPath: field => ctx.router.url('selectSchedule',{id:match.id,compoundId: compound.id, fieldId: field.id}),
     cancelPath: ctx.router.url('matches'),
   });
@@ -107,7 +106,7 @@ router.get('selectSchedule', '/:id/:compoundId/:fieldId/selectSchedule', async (
     fields,
     field,
     schedules,
-    sports: ctx.state.sports,
+    sports: ctx.state.allSports,
     submitSchedulePath:ctx.router.url('addSchedule',{id:match.id,compoundId: compound.id, fieldId: field.id}),
     cancelPath: ctx.router.url('matches'),
   });
@@ -149,7 +148,7 @@ router.patch('addSchedule', '/:id/:compoundId/:fieldId/selectSchedule', async (c
   //   compound,
   //   field,
   //   schedules,
-  //   sports: ctx.state.sports,
+  //   sports: ctx.state.allSports,
   //   submitMatchPath: ctx.router.url('matchUpdate', match.id),
   //   selectCompoundPath: ctx.router.url('selectCompound', {id: ctx.params.id}),
   //   cancelPath: ctx.router.url('matches'),
@@ -159,7 +158,7 @@ router.patch('addSchedule', '/:id/:compoundId/:fieldId/selectSchedule', async (c
 router.post('matchCreate', '/', async (ctx) => {
   ctx.requirePlayerLoggedIn();
 
-  const params = getMatchParams(ctx);
+  const params = getParams(ctx);
 
   try {
     const match = await ctx.orm.match.create(params);
@@ -174,7 +173,7 @@ router.post('matchCreate', '/', async (ctx) => {
     await ctx.render('matches/new', {
       match: ctx.orm.match.build(params),
       errors: ctx.parseValidationError(validationError),
-      sports: ctx.state.sports,
+      sports: ctx.state.allSports,
       submitMatchPath: ctx.router.url('matchCreate'),
       cancelPath: ctx.router.url('matches'),
     });
@@ -187,7 +186,7 @@ router.get('matchEdit', '/:id/edit', async (ctx) => {
 
   await ctx.render('matches/edit', {
     match,
-    sports: ctx.state.sports,
+    sports: ctx.state.allSports,
     submitMatchPath: ctx.router.url('matchUpdate', match.id),
     selectCompoundPath: ctx.router.url('selectCompound', {id: ctx.params.id}),
     cancelPath: ctx.router.url('match', { id: ctx.params.id }),
@@ -198,7 +197,7 @@ router.patch('matchUpdate', '/:id', async (ctx) => {
   const match = await ctx.findById(ctx.orm.match, ctx.params.id);
   await ctx.requirePlayerModifyPermission(match);
 
-  const params = getMatchParams(ctx);
+  const params = getParams(ctx);
   try {
     await match.update(params);
     ctx.redirect(ctx.router.url('match', { id: match.id }));
@@ -206,7 +205,7 @@ router.patch('matchUpdate', '/:id', async (ctx) => {
     await ctx.render('matches/edit', {
       match,
       errors: ctx.parseValidationError(validationError),
-      sports: ctx.state.sports,
+      sports: ctx.state.allSports,
       submitMatchPath: ctx.router.url('matchUpdate', match.id),
       cancelPath: ctx.router.url('match', { id: ctx.params.id }),
     });
@@ -264,7 +263,7 @@ router.use(
     const friends = await ctx.state.currentPlayer.getAllFriends();
     const invitedPlayers = await ctx.state.match.getPlayers();
     ctx.state.invitablePlayers = ctx.substract(friends, invitedPlayers);
-    await next();
+    return next();
   },
   invitedPlayersRouter.routes(),
 );
@@ -279,7 +278,7 @@ router.use(
     const allTeams = await ctx.orm.team.findAll();
     const invitedTeams = await ctx.state.match.getTeams();
     ctx.state.invitableTeams = ctx.substract(allTeams, invitedTeams);
-    await next();
+    return next();
   },
   invitedTeamsRouter.routes(),
 );
