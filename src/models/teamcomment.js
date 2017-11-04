@@ -21,9 +21,9 @@ module.exports = function defineteamComment(sequelize, DataTypes) {
     teamComment.belongsTo(models.player);
 
     teamComment.addScope('defaultScope', {
-      include: [
-        { model: sequelize.models.player }
-      ]
+      include: [{
+        model: sequelize.models.user
+      }]
     }, {
       override: true
     });

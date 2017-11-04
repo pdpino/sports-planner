@@ -64,9 +64,9 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     player.hasMany(models.teamComment);
 
     player.addScope('defaultScope', {
-      include: [
-        { model: sequelize.models.user }
-      ]
+      include: [{
+        model: sequelize.models.user
+      }]
     }, {
       override: true
     });
