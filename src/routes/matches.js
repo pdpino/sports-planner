@@ -5,6 +5,7 @@ const _ = require('lodash');
 const notifications = require('../services/notifications');
 const invitedPlayersRouter = require('./invitedPlayers');
 const invitedTeamsRouter = require('./invitedTeams');
+const matchCommentsRouter = require('./matchComments');
 
 const router = new KoaRouter();
 
@@ -281,6 +282,16 @@ router.use(
     return next();
   },
   invitedTeamsRouter.routes(),
+);
+
+router.use(
+  '/:matchId/comments',
+  async (ctx, next) => {
+    ctx.state.match = await ctx.findById(ctx.orm.match, ctx.params.matchId);
+    await ctx.requireSeeMatchPermission(ctx.state.match);
+    return next();
+  },
+  matchCommentsRouter.routes(),
 );
 
 module.exports = router;

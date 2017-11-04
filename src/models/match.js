@@ -120,6 +120,13 @@ module.exports = function definematch(sequelize, DataTypes) {
     return helpers.findOneAssociatedById(this, 'getTeams', teamId);
   }
 
+  match.prototype.makeComment = function(player, params){
+    return this.createComment({
+      playerId: player.id,
+      content: params.content,
+    });
+  }
+
   // async function assertNotEmptyName(instance){
   //   if (!instance.name){
   //     const sport = await sequelize.models.sport.findById(instance.sportId);

@@ -63,10 +63,9 @@ module.exports = function defineteam(sequelize, DataTypes) {
     });
   }
 
-  team.prototype.makeComment = async function(player, params){
-    await sequelize.models.teamComment.create({
+  team.prototype.makeComment = function(player, params){
+    return this.createComment({
       playerId: player.id,
-      teamId: this.id,
       content: params.content,
       isPublic: params.isPublic,
     });

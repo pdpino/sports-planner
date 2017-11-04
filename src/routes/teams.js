@@ -1,7 +1,7 @@
 const KoaRouter = require('koa-router');
 const teamMembersRouter = require('./teamMembers');
-const teamCommentsRouter = require('./teamComments');
 const teamMatchesRouter = require('./teamMatches');
+const teamCommentsRouter = require('./teamComments');
 
 const router = new KoaRouter();
 
