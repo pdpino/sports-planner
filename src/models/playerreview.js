@@ -10,7 +10,7 @@ module.exports = function defineplayerReview(sequelize, DataTypes) {
         min: 1,
       },
     },
-    comment: DataTypes.TEXT,
+    content: DataTypes.TEXT,
   });
   playerReview.associate = function associate(models) {
     playerReview.belongsTo(models.player, { as: 'reviewed' });
