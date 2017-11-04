@@ -81,7 +81,12 @@ router.use((ctx, next) => {
 
 /** Expose methods to the views **/
 router.use((ctx, next) => {
+  // NOTE: if the function uses 'this' you must bind it so 'this' is the ctx instance
+  // example: ctx.state.f = ctx.f.bind(ctx);
+
   ctx.state.invitationToString = ctx.invitationToString;
+  ctx.state.createdAtTimestamp = ctx.createdAtTimestamp;
+  ctx.state.canDeleteComment = ctx.canDeleteComment.bind(ctx);
 
   return next();
 });

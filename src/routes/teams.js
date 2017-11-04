@@ -100,8 +100,8 @@ router.get('team', '/:id', async (ctx) => {
     canSeePrivateComments,
     publicComments,
     privateComments,
-    createTeamCommentPath: ctx.router.url('teamCommentCreate', { teamId: team.id }),
-    deleteTeamCommentPath: (comment) => ctx.router.url('teamCommentDelete', {
+    createCommentPath: ctx.router.url('teamCommentCreate', { teamId: team.id }),
+    deleteCommentPath: (comment) => ctx.router.url('teamCommentDelete', {
       teamId: team.id,
       id: comment.id
     }),

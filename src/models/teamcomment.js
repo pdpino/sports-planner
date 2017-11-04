@@ -1,5 +1,3 @@
-const moment = require('moment');
-
 module.exports = function defineteamComment(sequelize, DataTypes) {
   const teamComment = sequelize.define('teamComment', {
     isPublic: {
@@ -26,8 +24,5 @@ module.exports = function defineteamComment(sequelize, DataTypes) {
     });
   };
 
-  teamComment.prototype.prettyTimestamp = function(){
-    return moment(this.createdAt).format('YYYY-MMM-d H:mm');
-  }
   return teamComment;
 };

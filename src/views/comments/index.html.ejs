@@ -1,19 +1,25 @@
 <%# Provide:
   comments,
-  isPublic,
+  deleteCommentPath,
+  isPublic (optional),
   %>
 
 <div>
-  <h4>Comentarios <%= (isPublic) ? 'públicos' : 'privados' %>:</h4>
+  <h4>Comentarios
+  <% if (locals.isPublic) { %>
+    <%= (isPublic) ? 'públicos' : 'privados' %>
+  <% } %>
+  :</h4>
+
   <% if(comments.length > 0) { %>
     <ul>
       <% comments.forEach( (comment) => { %>
         <li>
-          <%= comment.player.getName() %>, <%= comment.prettyTimestamp() %>:
+          <%= comment.player.getName() %>, <%= createdAtTimestamp(comment) %>:
           <br>
           <%= comment.content %>
-          <% if (currentPlayer.id === comment.player.id) { %>
-            <%- include('../_buttons/delete', { deletePath: deleteTeamCommentPath(comment) }) %>
+          <% if (canDeleteComment(comment)) { %>
+            <%- include('../_buttons/delete', { deletePath: deleteCommentPath(comment) }) %>
           <% } %>
         </li>
       <% }) %>

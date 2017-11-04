@@ -85,6 +85,10 @@
     No hay canchas pedidas.
   <% } %>
 
+  <%- include('../comments/index', { comments }) %>
+  <%- include('../comments/new') %>
+
+
   <%- include('../_buttons/back', { backPath: matchesPath, message: 'Volver a todos los partidos' }) %>
 
 </div>

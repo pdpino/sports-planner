@@ -15,7 +15,6 @@ router.post('matchCommentCreate', '/', async (ctx) => {
 
 router.delete('matchCommentDelete', '/:id', async (ctx) => {
   const comment = await ctx.findById(ctx.orm.matchComment, ctx.params.id);
-
   ctx.requireModifyPermission(comment.player.userId);
 
   await comment.destroy();

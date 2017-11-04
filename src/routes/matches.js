@@ -222,14 +222,22 @@ router.get('match', '/:id', async (ctx) => {
   const hasModifyPermission = await match.hasModifyPermission(ctx.state.currentPlayer);
   const schedule = await match.getSchedule();
   const field = schedule && await ctx.orm.field.findById(schedule.fieldId);
+  const comments = await match.getComments();
 
   await ctx.render('matches/show', {
     match,
-    invitedPlayers,
     hasModifyPermission,
+    invitedPlayers,
     invitedTeams,
     schedule,
     field,
+    hasCreatePermission: ctx.state.isPlayerLoggedIn,
+    comments,
+    createCommentPath: ctx.router.url('matchCommentCreate', { matchId: match.id }),
+    deleteCommentPath: (comment) => ctx.router.url('matchCommentDelete', {
+      matchId: match.id,
+      id: comment.id
+    }),
     editMatchPath: ctx.router.url('matchEdit', match.id),
     newInvitedPlayerPath: ctx.router.url('invitedPlayerNew', { matchId: match.id } ),
     newInvitedTeamPath: ctx.router.url('invitedTeamNew', { matchId: match.id } ),

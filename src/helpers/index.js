@@ -1,8 +1,10 @@
+const moment = require('moment');
 const _ = require('lodash');
 const permissionHelpers = require('./permissions');
 const matchHelpers = require('./matches');
 const teamHelpers = require('./teams');
 const invitationHelpers = require('./invitations');
+const commentHelpers = require('./comments');
 
 module.exports = function helpers(app) {
   /** Wrapper to find an entity (match, team, player, etc) by the id and assert that is not null **/
@@ -30,8 +32,13 @@ module.exports = function helpers(app) {
     return _.differenceBy(collection1, collection2, (element) => element.id);
   }
 
+  app.context.createdAtTimestamp = function(element){
+    return moment(element.createdAt).format('YYYY-MMM-d H:mm');
+  }
+
   permissionHelpers(app);
   matchHelpers(app);
   teamHelpers(app);
   invitationHelpers(app);
+  commentHelpers(app);
 };
