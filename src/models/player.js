@@ -73,6 +73,7 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     });
 
     player.hasMany(models.teamComment);
+    player.hasMany(models.matchComment);
 
     player.addScope('defaultScope', {
       include: [{

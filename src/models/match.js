@@ -31,6 +31,8 @@ module.exports = function definematch(sequelize, DataTypes) {
     match.belongsToMany(models.player, { through: models.isPlayerInvited });
     match.belongsToMany(models.team, { through: models.isTeamInvited });
     match.hasOne(models.schedule);
+
+    match.hasMany(models.matchComment, { as: 'comments' });
   };
 
   /** Boolean indicating if the player has modify permission on the match **/
