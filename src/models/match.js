@@ -33,6 +33,12 @@ module.exports = function definematch(sequelize, DataTypes) {
     match.hasOne(models.schedule);
 
     match.hasMany(models.matchComment, { as: 'comments' });
+
+    match.addScope('withSport', {
+      include: [{
+        model: sequelize.models.sport
+      }]
+    });
   };
 
   /** Boolean indicating if the player has modify permission on the match **/

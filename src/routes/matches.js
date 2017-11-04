@@ -214,10 +214,9 @@ router.patch('matchUpdate', '/:id', async (ctx) => {
 });
 
 router.get('match', '/:id', async (ctx) => {
-  const match = await ctx.findById(ctx.orm.match, ctx.params.id);
+  const match = await ctx.findById(ctx.orm.match.scope('withSport'), ctx.params.id);
   await ctx.requireSeeMatchPermission(match);
 
-  const sport = await ctx.findById(ctx.orm.sport, match.sportId);
   const invitedPlayers = await match.getPlayers();
   const invitedTeams = await match.getTeams();
   const hasModifyPermission = await match.hasModifyPermission(ctx.state.currentPlayer);
@@ -228,7 +227,6 @@ router.get('match', '/:id', async (ctx) => {
     match,
     invitedPlayers,
     hasModifyPermission,
-    sport: sport.name,
     invitedTeams,
     schedule,
     field,
