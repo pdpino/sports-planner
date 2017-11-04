@@ -4,7 +4,7 @@
   <%- include('../_error/snippet', { errors: locals.errors }) %>
 
   <div>
-    <form action="<%= submitCompoundPath %>" method="post">
+    <form action="<%= submitCompoundPath %>" method="post" enctype="multipart/form-data">
       <% if(!compound.isNewRecord) { %>
         <div>
           <input type="hidden" name="_method" value="patch" />
@@ -20,7 +20,7 @@
       </div>
       <div>
         <label for="photo">Foto</label>
-        <input type="text" name="photo" value="<%= compound.photo %>" />
+        <input type="file" name="photo"/>
       </div>
       <div>
         <label for="address">Dirección</label>

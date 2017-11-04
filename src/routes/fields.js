@@ -1,6 +1,7 @@
 const KoaRouter = require('koa-router');
 const scheduleBasesRouter = require('./scheduleBases');
 const schedulesRouter = require('./schedules');
+const FileStorage= require('../services/file-storage');
 
 const router = new KoaRouter();
 
@@ -44,7 +45,12 @@ router.get('fieldNew', '/new', async (ctx) => {
 router.post('fieldCreate', '/', async (ctx) => {
   ctx.state.requireOwnerModifyPermission(ctx, ctx.state.compoundOwner);
   try {
-    const field = await ctx.orm.field.create(ctx.request.body);
+
+
+    const field = await ctx.orm.field.create(ctx.request.body.fields);
+    ctx.request.body.fields.photo=FileStorage.url("field"+field.id,{});
+    await field.update(ctx.request.body.fields);
+    FileStorage.upload(ctx.request.body.files.photo, "field"+field.id);
 
     ctx.redirect(ctx.router.url('field', {compoundId: ctx.state.compound.id, id: field.id }));
   } catch (validationError) {
@@ -88,8 +94,12 @@ router.get('fieldEdit', '/:id/edit', async (ctx) => {
 router.patch('fieldUpdate', '/:id', async (ctx) => {
   ctx.state.requireOwnerModifyPermission(ctx, ctx.state.compoundOwner);
   const field = await ctx.state.findById(ctx.orm.field, ctx.params.id);
+
+
   try {
-    await field.update(ctx.request.body);
+    FileStorage.upload(ctx.request.body.files.photo, "field"+field.id);
+    await field.update(ctx.request.body.fields);
+
     ctx.redirect(ctx.router.url('field', {
       id: field.id,
       compoundId: ctx.state.compound.id,
@@ -152,6 +162,7 @@ router.get('field', '/:id', async (ctx) => {
 router.delete('fieldDelete', '/:id', async (ctx) => {
   ctx.state.requireOwnerModifyPermission(ctx, ctx.state.compoundOwner);
   const field = await ctx.state.findById(ctx.orm.field, ctx.params.id);
+  FileStorage.delete(ctx.request.body.files.photo, ctx.state.compound + " " +ctx.request.body.fields.name);
   await field.destroy();
   ctx.redirect(ctx.router.url('compound', { id: ctx.state.compound.id }));
 });

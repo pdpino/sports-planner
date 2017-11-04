@@ -1,4 +1,6 @@
 const KoaRouter = require('koa-router');
+const FileStorage= require('../services/file-storage');
+
 const router = new KoaRouter();
 
 /** Extract the User parameters from a params object (such as request.body) **/
@@ -52,13 +54,17 @@ router.get('compoundOwnerNew', '/new', async (ctx) => {
 router.post('compoundOwnerCreate', '/', async (ctx) => {
   ctx.state.requireNoLogin(ctx);
 
-  const userParams = getUserParams(ctx.request.body);
-  const compoundOwnerParams = getCompoundOwnerParams(ctx.request.body);
+  const userParams = getUserParams(ctx.request.body.fields);
+  const compoundOwnerParams = getCompoundOwnerParams(ctx.request.body.fields);
 
   try {
     const user = await ctx.orm.user.create(userParams);
+    userParams.photo=FileStorage.url("user"+user.id,{});
+    await user.update(userParams);
     compoundOwnerParams.userId = user.id;
-    const compoundOwner = await ctx.orm.compoundOwner.create(compoundOwnerParams);
+    FileStorage.upload(ctx.request.body.files.photo, "user"+user.id);
+    const compoundOwner = await ctx.orm.compoundOwner.create(playerParams);
+
     ctx.redirect(ctx.router.url('compoundOwners'));
   } catch (validationError) {
     await ctx.render('compoundOwners/new', {
@@ -88,11 +94,13 @@ router.patch('compoundOwnerUpdate', '/:id', async (ctx) => {
 
   ctx.state.requireModifyPermission(ctx, user.id);
 
-  const userParams = getUserParams(ctx.request.body);
-  const compoundOwnerParams = getCompoundOwnerParams(ctx.request.body);
+  const userParams = getUserParams(ctx.request.body.fields);
+  const compoundOwnerParams = getCompoundOwnerParams(ctx.request.body.fields);
 
   try {
+    userParams.photo=FileStorage.url("user"+user.id,{});
     await user.update(userParams);
+    FileStorage.upload(ctx.request.body.files.photo, "user"+user.id);
     await compoundOwner.update(compoundOwnerParams);
     ctx.redirect(ctx.router.url('compoundOwner', { id: compoundOwner.id }));
   } catch (validationError) {
@@ -122,7 +130,7 @@ router.delete('compoundOwnerDelete', '/:id', async (ctx) => {
   const { compoundOwner, user } = await getOwnerAndUser(ctx, ctx.params.id);
 
   ctx.state.requireModifyPermission(ctx, user.id);
-
+  FileStorage.destrory("user"+user.id);
   await user.destroy(); // NOTE: compoundOwner.destroy() is not neccesary beause onDelete: cascade
   ctx.redirect(ctx.router.url('compoundOwners'));
 });

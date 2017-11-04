@@ -1,6 +1,7 @@
 const KoaRouter = require('koa-router');
 const fieldsRouter = require('./fields');
 const router = new KoaRouter();
+const FileStorage= require('../services/file-storage');
 
 router.get('compounds', '/', async (ctx) => {
   const compounds = await ctx.orm.compound.findAll();
@@ -27,12 +28,16 @@ router.get('compoundNew', '/new', async (ctx) => {
 router.post('compoundCreate', '/', async (ctx) => {
   ctx.state.requireOwnerLoggedIn(ctx);
 
-  const params = ctx.request.body; // TODO: parse, permit and require
+  const params = ctx.request.body.fields; // TODO: parse, permit and require
   // ctx.state.currentOwner.addCompound(compound);
   params.compoundOwnerId = ctx.state.currentOwner.id;
 
   try {
     const compound = await ctx.orm.compound.create(params);
+
+    params.photo=FileStorage.url("compound"+compound.id,{});
+    await compound.update(params);
+    FileStorage.upload(ctx.request.body.files.photo, "compound"+compound.id);
 
     ctx.redirect(ctx.router.url('compound', { id: compound.id }));
   } catch (validationError) {
@@ -67,6 +72,7 @@ router.patch('compoundUpdate', '/:id', async (ctx) => {
 
   try {
     await compound.update(ctx.request.body);
+    FileStorage.upload(ctx.request.body.files.photo, "compound"+compound.id);
     ctx.redirect(ctx.router.url('compound', { id: compound.id }));
   } catch (validationError) {
     await ctx.render('compounds/edit', {
@@ -100,6 +106,7 @@ router.get('compound', '/:id', async (ctx) => {
 
 router.delete('compoundDelete', '/:id', async (ctx) => {
   const compound = await ctx.state.findById(ctx.orm.compound, ctx.params.id);
+  FileStorage.destroy("compound"+compound.id)
   await compound.destroy();
   ctx.redirect(ctx.router.url('compounds'));
 });

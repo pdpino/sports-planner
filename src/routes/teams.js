@@ -4,6 +4,9 @@ const teamMatchesRouter = require('./teamMatches');
 
 const router = new KoaRouter();
 
+const FileStorage= require('../services/file-storage');
+
+
 /** Finds the name of the sportId, given all the sports **/
 function findSportName(sportId, allSports){
   // OPTIMIZE? use a model function?
@@ -40,7 +43,12 @@ router.post('teamCreate', '/', async (ctx) => {
   ctx.state.requirePlayerLoggedIn(ctx);
 
   try {
-    const team = await ctx.orm.team.create(ctx.request.body);
+
+
+    const team = await ctx.orm.team.create(ctx.request.body.fields);
+    ctx.request.body.fields.logo=FileStorage.url("team"+team.id,{})
+    FileStorage.upload(ctx.request.body.files.logo,"team"+team.id);
+    await team.update(ctx.request.body.fields);
     ctx.state.currentPlayer.addTeam(team, {
       through: { isCaptain: true }
     });
@@ -75,7 +83,8 @@ router.patch('teamUpdate', '/:id', async (ctx) => {
   await ctx.state.requirePlayerModifyPermission(ctx, team);
 
   try {
-    await team.update(ctx.request.body);
+    await team.update(ctx.request.body.fields);
+    FileStorage.upload(ctx.request.body.files.logo,"team"+team.id);
     ctx.redirect(ctx.router.url('team', { id: team.id }));
   } catch (validationError) {
     await ctx.render('teams/edit', {
@@ -118,6 +127,7 @@ router.get('team', '/:id', async (ctx) => {
 
 router.delete('teamDelete', '/:id', async (ctx) => {
   const team = await ctx.state.findById(ctx.orm.team, ctx.params.id);
+  FileStorage.destroy("team"+team.id);
 
   await ctx.state.requirePlayerModifyPermission(ctx, team);
 

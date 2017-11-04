@@ -1,4 +1,5 @@
 const KoaRouter = require('koa-router');
+const FileStorage= require('../services/file-storage');
 
 const router = new KoaRouter();
 
@@ -24,6 +25,7 @@ router.get('sportNew', '/new', async (ctx) => {
   const sport = ctx.orm.sport.build();
   await ctx.render('sports/new', {
     sport,
+    formtype: "post",
     submitSportPath: ctx.router.url('sportCreate'),
     cancelPath: ctx.router.url('sports'),
   });
@@ -32,13 +34,16 @@ router.get('sportNew', '/new', async (ctx) => {
 router.post('sportCreate', '/', async (ctx) => {
   ctx.state.requireAdmin(ctx);
 
-  fixUpdateParams(ctx.request.body);
+  fixUpdateParams(ctx.request.body.fields);
   try {
-    const sport = await ctx.orm.sport.create(ctx.request.body);
+    ctx.request.body.fields.logo=FileStorage.url(ctx.request.body.fields.name,{})
+    const sport = await ctx.orm.sport.create(ctx.request.body.fields);
+    FileStorage.upload(ctx.request.body.files.logo, ctx.request.body.fields.name);
     ctx.redirect(ctx.router.url('sport', { id: sport.id }));
   } catch (validationError) {
     await ctx.render('sports/new', {
       sport: ctx.orm.sport.build(ctx.request.body),
+      formtype: "post",
       errors: ctx.state.parseValidationError(validationError),
       submitSportPath: ctx.router.url('sportCreate'),
       cancelPath: ctx.router.url('sports'),
@@ -52,22 +57,27 @@ router.get('sportEdit', '/:id/edit', async (ctx) => {
   const sport = await ctx.state.findById(ctx.orm.sport, ctx.params.id);
   await ctx.render('sports/edit', {
     sport,
+    formtype: "patch",
     submitSportPath: ctx.router.url('sportUpdate', sport.id),
     cancelPath: ctx.router.url('sport', { id: ctx.params.id }),
   });
 });
 
 router.patch('sportUpdate', '/:id', async (ctx) => {
+  console.log("NOOO");
   ctx.state.requireAdmin(ctx);
 
-  fixUpdateParams(ctx.request.body);
+  fixUpdateParams(ctx.request.body.fields);
   const sport = await ctx.state.findById(ctx.orm.sport, ctx.params.id);
   try {
-    await sport.update(ctx.request.body);
+    ctx.request.body.fields.logo=FileStorage.url(ctx.request.body.fields.name,{})
+    FileStorage.upload(ctx.request.body.files.logo, ctx.request.body.fields.name);
+    await sport.update(ctx.request.body.fields);
     ctx.redirect(ctx.router.url('sport', { id: sport.id }));
   } catch (validationError) {
     await ctx.render('sports/edit', {
       sport,
+      formtype: "patch",
       errors: ctx.state.parseValidationError(validationError),
       submitSportPath: ctx.router.url('sportUpdate', sport.id),
       cancelPath: ctx.router.url('sport', { id: ctx.params.id }),
@@ -89,6 +99,7 @@ router.delete('sportDelete', '/:id', async (ctx) => {
   ctx.state.requireAdmin(ctx);
 
   const sport = await ctx.state.findById(ctx.orm.sport, ctx.params.id);
+  FileStorage.destroy(sport.name);
   await sport.destroy(); // {force: true});
   ctx.redirect(ctx.router.url('sports'));
 });

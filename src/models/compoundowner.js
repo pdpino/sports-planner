@@ -22,17 +22,17 @@ module.exports = function definecompoundOwner(sequelize, DataTypes) {
    * Load user info (email, names and photo) into player object
    * HACK: copied from models/player
    **/
-  compoundOwner.afterFind(async function loadUser(result) {
-    // REVIEW: avoid DB query?
-    if(result.constructor == Array) {
-      for (let i = 0; i < result.length; i++) {
-          Object.assign(result[i], await getUserObject(sequelize.models, result[i].userId));
-      }
-    } else {
-      Object.assign(result, await getUserObject(sequelize.models, result.userId));
-    }
+   compoundOwner.afterFind(async function loadUser(result) {
+     // REVIEW: avoid DB query?
+     if(result.constructor == Array) {
+       for (let i = 0; i < result.length; i++) {
+           Object.assign(result[i], await getUserObject(sequelize.models, result[i].userId));
+       }
+     } else {
+       Object.assign(result, await getUserObject(sequelize.models, result.userId));
+     }
 
-  });
+   });
 
 
   return compoundOwner;
