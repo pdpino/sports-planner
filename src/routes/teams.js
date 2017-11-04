@@ -5,21 +5,13 @@ const teamMatchesRouter = require('./teamMatches');
 
 const router = new KoaRouter();
 
-/** Finds the name of the sportId, given all the sports **/
-function findSportName(sportId, allSports){
-  // OPTIMIZE? use a model function?
-  const sportsFound = allSports.filter(sport => sport.id == sportId);
-  return (sportsFound[0]) ? sportsFound[0].name : null;
-}
-
 router.get('teams', '/', async (ctx) => {
-  const teams = await ctx.orm.team.findAll();
+  const teams = await ctx.orm.team.scope('withSport').findAll();
 
   await ctx.render('teams/index', {
     teams,
     sports: ctx.state.sports,
     hasCreatePermission: ctx.state.isPlayerLoggedIn,
-    getTeamSport: (team) => findSportName(team.sportId, ctx.state.sports),
     teamPath: team => ctx.router.url('team', { id: team.id }),
     newTeamPath: ctx.router.url('teamNew'),
   });
