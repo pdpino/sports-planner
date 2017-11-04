@@ -3,6 +3,8 @@ const playerSportsRouter = require('./playerSports');
 const playerTeamsRouter = require('./playerTeams');
 const playerMatchesRouter = require('./playerMatches');
 const friendshipsRouter = require('./friendships');
+const FileStorage= require('../services/file-storage');
+
 
 const router = new KoaRouter();
 
@@ -73,15 +75,22 @@ router.get('playerNew', '/new', async (ctx) => {
 
 router.post('playerCreate', '/', async (ctx) => {
   ctx.state.requireNoLogin(ctx);
-
-  const userParams = getUserParams(ctx.request.body);
-  const playerParams = getPlayerParams(ctx.request.body);
+  const userParams = getUserParams(ctx.request.body.fields);
+  const playerParams = getPlayerParams(ctx.request.body.fields);
 
   let user = null;
   try {
     user = await ctx.orm.user.create(userParams);
+    userParams.photo=FileStorage.url("user"+user.id,{});
+    await user.update(userParams);
     playerParams.userId = user.id;
-    const player = await ctx.orm.player.create(playerParams);
+    FileStorage.upload(ctx.request.body.files.photo, "user"+user.id);
+
+
+
+  const player = await ctx.orm.player.create(playerParams);
+
+
     ctx.redirect(ctx.router.url('players'));
   } catch (validationError) {
     if (user){ // User was created correctly, delete it
@@ -104,6 +113,7 @@ router.get('playerEdit', '/:id/edit', async (ctx) => {
   const player = await ctx.state.findById(ctx.orm.player, ctx.params.id);
 
   ctx.state.requireModifyPermission(ctx, player.userId);
+  console.log("lool");
 
   await ctx.render('players/edit', {
     player,
@@ -111,6 +121,7 @@ router.get('playerEdit', '/:id/edit', async (ctx) => {
     submitPlayerPath: ctx.router.url('playerUpdate', player.id),
     deletePlayerPath: ctx.router.url('playerDelete', player.id),
     cancelPath: ctx.router.url('player', { id: player.id }),
+
   });
 });
 
@@ -119,11 +130,13 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
 
   ctx.state.requireModifyPermission(ctx, user.id);
 
-  const userParams = getUserParams(ctx.request.body);
-  const playerParams = getPlayerParams(ctx.request.body);
+  const userParams = getUserParams(ctx.request.body.fields);
+  const playerParams = getPlayerParams(ctx.request.body.fields);
 
   try {
+    userParams.photo=FileStorage.url("user"+user.id,{});
     await user.update(userParams);
+    FileStorage.upload(ctx.request.body.files.photo, "user"+user.id);
     await player.update(playerParams);
     ctx.redirect(ctx.router.url('player', { id: player.id }));
   } catch (validationError) {
@@ -199,7 +212,7 @@ router.delete('playerDelete', '/:id', async (ctx) => {
   const { player, user } = await getPlayerAndUser(ctx, ctx.params.id);
 
   ctx.state.requireModifyPermission(ctx, user.id);
-
+  FileStorage.destroy(user.email);
   await user.destroy(); // NOTE: player.destroy() is not neccesary beause onDelete: cascade
   ctx.redirect(ctx.router.url('players'));
 });

@@ -4,7 +4,7 @@
   <%- include('../_error/snippet', { errors: locals.errors }) %>
 
   <div>
-    <form action="<%= submitCompoundOwnerPath %>" method="post">
+    <form action="<%= submitCompoundOwnerPath %>" method="post" enctype="multipart/form-data">
       <% if(!compoundOwner.isNewRecord) { %>
         <div>
           <input type="hidden" name="_method" value="patch" />

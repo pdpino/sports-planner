@@ -5,10 +5,10 @@
   <%- include('../_error/snippet', { errors: locals.errors }) %>
 
   <div>
-    <form action="<%= submitPlayerPath %>" method="post">
+    <form action="<%= submitPlayerPath %>" method="post" enctype="multipart/form-data">
       <% if(!player.isNewRecord) { %>
         <div>
-          <input type="hidden" name="_method" value="patch" />
+          <input type="hidden" name="_method" value="patch"/>
         </div>
       <% } %>
 

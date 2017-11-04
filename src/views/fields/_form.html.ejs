@@ -5,7 +5,7 @@
   <%- include('../_error/snippet', { errors: locals.errors }) %>
 
   <div>
-    <form action="<%= submitFieldPath %>" method="post">
+    <form action="<%= submitFieldPath %>" method="post" enctype="multipart/form-data">
       <% if(!field.isNewRecord) { %>
         <div>
           <input type="hidden" name="_method" value="patch" />
@@ -17,7 +17,7 @@
       </div>
       <div>
         <label for="photo">Foto</label>
-        <input type="text" name="photo" value="<%= field.photo %>" />
+        <input type="file" name="photo" accept="image/*"/>
       </div>
       <% if(scheduleBases.length==0) {%>
         <div>
