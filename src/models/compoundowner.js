@@ -21,11 +21,9 @@ module.exports = function definecompoundOwner(sequelize, DataTypes) {
     });
   };
 
-  /**
-   * Copy user info (email, names and photo) into player object
-   * HACK: copied from models/player
-   **/
+  /** Copy user info (email, names and photo) into player object, so is more accesible **/
   compoundOwner.afterFind(function copyUserInfo(result) {
+    // HACK: copied from models/player
     if(result.constructor == Array) {
       for (let i = 0; i < result.length; i++) {
           Object.assign(result[i], unWrapUser(result[i]));
