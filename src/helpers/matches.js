@@ -14,7 +14,7 @@ module.exports = function matchHelpers(app) {
       const privateMatches = await this.orm.match.scope({
         method: ['private', this.state.currentPlayer.id]
       }).findAll();
-      
+
       visibleMatches = visibleMatches.concat(privateMatches);
     }
 

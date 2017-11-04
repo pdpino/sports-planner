@@ -8,6 +8,9 @@ function getParams(params){
 }
 
 router.post('matchCommentCreate', '/', async (ctx) => {
+  const hasCommentPermission = await ctx.state.match.isPlayerInvited(ctx.state.currentPlayer);
+  ctx.assert(hasCommentPermission, 403);
+
   const params = getParams(ctx.request.body);
   await ctx.state.match.makeComment(ctx.state.currentPlayer, params);
   ctx.redirect(ctx.router.url('match', ctx.state.match.id));

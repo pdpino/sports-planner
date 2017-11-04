@@ -224,6 +224,9 @@ router.get('match', '/:id', async (ctx) => {
   const field = schedule && await ctx.orm.field.findById(schedule.fieldId);
   const comments = await match.getComments();
 
+  const canComment = await match.isPlayerInvited(ctx.state.currentPlayer);
+  // REVIEW: this is being called twice, once in requireSeeMatchPermission and once here
+
   await ctx.render('matches/show', {
     match,
     hasModifyPermission,
@@ -231,7 +234,7 @@ router.get('match', '/:id', async (ctx) => {
     invitedTeams,
     schedule,
     field,
-    canComment: ctx.state.isPlayerLoggedIn,
+    canComment,
     comments,
     createCommentPath: ctx.router.url('matchCommentCreate', { matchId: match.id }),
     deleteCommentPath: (comment) => ctx.router.url('matchCommentDelete', {
@@ -296,7 +299,6 @@ router.use(
   '/:matchId/comments',
   async (ctx, next) => {
     ctx.state.match = await ctx.findById(ctx.orm.match, ctx.params.matchId);
-    await ctx.requireSeeMatchPermission(ctx.state.match);
     return next();
   },
   matchCommentsRouter.routes(),
