@@ -126,6 +126,8 @@ router.get('player', '/:id', async (ctx) => {
   const friendshipStatus = (ctx.state.isPlayerLoggedIn
     && await ctx.state.currentPlayer.getFriendshipStatus(player));
 
+  // const wallComments = await player.getMyWallComments();
+
   await ctx.render('players/show', {
     hasModifyPermission: ctx.state.hasModifyPermission(ctx, player.userId),
     player,
