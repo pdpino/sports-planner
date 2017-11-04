@@ -98,7 +98,7 @@ router.use('/sports', sports.routes());
 router.use(
   '/teams',
   async (ctx, next) => {
-    ctx.state.sports = await ctx.orm.sport.findAll();
+    ctx.state.allSports = await ctx.orm.sport.findAll();
     return next();
   },
   teams.routes(),
