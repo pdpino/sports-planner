@@ -13,7 +13,20 @@ module.exports = function definecompoundReview(sequelize, DataTypes) {
     content: DataTypes.TEXT,
   });
   compoundReview.associate = function associate(models) {
-    // associations can be defined here
+    compoundReview.belongsTo(models.compound);
+    compoundReview.belongsTo(models.player);
+    compoundReview.belongsTo(models.match);
+
+    compoundReview.addScope('defaultScope', {
+      order: [
+        ['updatedAt', 'DESC']
+      ],
+      include: [{
+        model: sequelize.models.player,
+      }]
+    }, {
+      override: true
+    });
   };
   return compoundReview;
 };

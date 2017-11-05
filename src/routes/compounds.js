@@ -29,15 +29,14 @@ router.post('compoundCreate', '/', async (ctx) => {
   ctx.requireOwnerLoggedIn();
 
   const params = ctx.request.body.fields; // TODO: parse, permit and require
-  // ctx.state.currentOwner.addCompound(compound);
   params.compoundOwnerId = ctx.state.currentOwner.id;
 
   try {
     const compound = await ctx.orm.compound.create(params);
 
-    params.photo=FileStorage.url("compound"+compound.id,{});
+    params.photo = FileStorage.url("compound" + compound.id,{});
     await compound.update(params);
-    FileStorage.upload(ctx.request.body.files.photo, "compound"+compound.id);
+    FileStorage.upload(ctx.request.body.files.photo, "compound" + compound.id);
 
     ctx.redirect(ctx.router.url('compound', { id: compound.id }));
   } catch (validationError) {
@@ -87,20 +86,19 @@ router.patch('compoundUpdate', '/:id', async (ctx) => {
 
 router.get('compound', '/:id', async (ctx) => {
   const compound = await ctx.findById(ctx.orm.compound, ctx.params.id);
-  const compoundOwner = await ctx.findById(ctx.orm.compoundOwner, compound.compoundOwnerId);
+  const compoundOwner = await compound.getCompoundOwner();
   const fields = await compound.getFields();
-  const compoundId = compound.id;
+
+  const reviews = await compound.getReviews();
 
   await ctx.render('compounds/show', {
-    hasModifyPermission: ctx.hasModifyPermission(compoundOwner),
     compound,
-    compoundId,
-    fields,
     compoundOwner,
-    getFieldPath: (field) => ctx.router.url('field', {id:field.id,compoundId: compoundId  }),
-    compoundsPath: ctx.router.url('compounds'),
+    fields,
+    reviews,
+    hasModifyPermission: ctx.hasModifyPermission(compoundOwner),
     editCompoundPath: ctx.router.url('compoundEdit', compound.id),
-    newFieldPath: ctx.router.url('fieldNew',compound.id),
+    newFieldPath: ctx.router.url('fieldNew', compound.id),
   });
 });
 
