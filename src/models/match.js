@@ -188,7 +188,6 @@ module.exports = function definematch(sequelize, DataTypes) {
         isPending: true,
       }
     });
-    console.log("ALSDKJASDL", pendingReviews);
     return pendingReviews[0];
   }
 

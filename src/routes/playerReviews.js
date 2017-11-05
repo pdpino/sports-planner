@@ -19,12 +19,7 @@ router.post('playerReviewCreate', '/:playerId', async (ctx) => {
 
   const params = getParams(ctx.request.body);
 
-  // await ctx.state.match.reviewPlayer(pendingReview, params);
-  await pendingReview.update({
-    rating: params.rating,
-    content: params.content,
-    isPending: false,
-  })
+  await pendingReview.doReview(params);
   ctx.redirect(ctx.router.url('match', ctx.state.match.id));
 });
 

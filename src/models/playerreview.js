@@ -31,5 +31,13 @@ module.exports = function defineplayerReview(sequelize, DataTypes) {
   };
   playerReview.removeAttribute('id');
 
+  playerReview.prototype.doReview = function(params){
+    return this.update({
+      rating: params.rating,
+      content: params.content,
+      isPending: false,
+    })
+  }
+
   return playerReview;
 };
