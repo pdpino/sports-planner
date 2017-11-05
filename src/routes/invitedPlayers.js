@@ -1,6 +1,6 @@
 const KoaRouter = require('koa-router');
 const _ = require('lodash');
-const notifications = require('../services/notifications');
+
 
 const router = new KoaRouter();
 
@@ -25,7 +25,7 @@ router.post('invitedPlayerCreate', '/', async (ctx) => {
   const player = await ctx.findById(ctx.orm.player, ctx.request.body.playerId);
   try {
     await ctx.state.match.invitePlayer(player);
-    await notifications.invitePlayerToMatch(ctx, ctx.state.currentPlayer, player, ctx.state.match);
+    await ctx.invitePlayerToMatch(ctx.state.currentPlayer, player, ctx.state.match);
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
   } catch (validationError) {
     await ctx.render('invitedPlayers/new', {

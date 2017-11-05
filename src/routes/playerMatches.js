@@ -1,6 +1,6 @@
 const KoaRouter = require('koa-router');
 const _ = require('lodash');
-const notifications = require('../services/notifications');
+
 
 const router = new KoaRouter();
 
@@ -75,7 +75,7 @@ router.patch('playerMatchUpdate', '/:id', async (ctx) => {
     await ctx.state.player.updateMatch(playerMatch, params);
 
     if(statusChanged && params.status == 'accepted'){ // HACK: status hardcoded
-      await notifications.playerAcceptMatch(ctx, ctx.state.currentPlayer, matchAdmins, playerMatch);
+      await ctx.playerAcceptMatch(ctx.state.currentPlayer, matchAdmins, playerMatch);
     }
 
     ctx.redirect(ctx.router.url('player', { id: ctx.state.player.id }));

@@ -1,6 +1,6 @@
 module.exports = function notificationButtonsHelpers(app) {
   const profileButton = {
-    url: (ctx, entityId, eventId) => ctx.router.url('players', entityId),
+    url: (ctx, entityId, eventId) => ctx.router.url('player', entityId),
     method: 'get',
     message: 'Ver perfil'
   };
@@ -15,27 +15,27 @@ module.exports = function notificationButtonsHelpers(app) {
 
   const teamBaseButton = { method: 'get', message: 'Ver equipo' };
   const teamButtonAsEvent = {
-    url: (ctx, entityId, eventId) => ctx.router.url('teams', eventId),
+    url: (ctx, entityId, eventId) => ctx.router.url('team', eventId),
     ...teamBaseButton
   };
   const teamButtonAsEntity = {
-    url: (ctx, entityId, eventId) => ctx.router.url('teams', entityId),
+    url: (ctx, entityId, eventId) => ctx.router.url('team', entityId),
     ...teamBaseButton
   };
 
   const matchButton = {
-    url: (ctx, entityId, eventId) => ctx.router.url('matches', eventId),
+    url: (ctx, entityId, eventId) => ctx.router.url('match', eventId),
     method: 'get',
     message: 'Ver partido'
   };
 
   const fieldBaseButton = { method: 'get', message: 'Ver cancha' };
   const fieldButtonAsEvent = {
-    url: (ctx, entityId, eventId) => ctx.router.url('fields', eventId),
+    url: (ctx, entityId, eventId) => ctx.router.url('field', eventId),
     ...fieldBaseButton
   };
   const fieldButtonAsEntity = {
-    url: (ctx, entityId, eventId) => ctx.router.url('fields', entityId),
+    url: (ctx, entityId, eventId) => ctx.router.url('field', entityId),
     ...fieldBaseButton
   };
 

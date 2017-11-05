@@ -1,5 +1,5 @@
 const KoaRouter = require('koa-router');
-const notifications = require('../services/notifications');
+
 
 const router = new KoaRouter();
 
@@ -69,7 +69,7 @@ router.patch('teamMatchUpdate', '/:id', async (ctx) => {
     if(statusChanged && newStatus == 'accepted'){ // HACK: status hardcoded
       // Invite all of his players to the game
       await teamMatch.invitePlayers(ctx.state.teamMembers);
-      await notifications.teamAcceptMatch(ctx, ctx.state.currentPlayer, matchAdmins, ctx.state.team, teamMatch);
+      await ctx.teamAcceptMatch(ctx.state.currentPlayer, matchAdmins, ctx.state.team, teamMatch);
     }
 
     ctx.redirect(ctx.router.url('team', { id: ctx.state.team.id }));

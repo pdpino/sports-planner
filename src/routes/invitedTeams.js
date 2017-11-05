@@ -1,5 +1,5 @@
 const KoaRouter = require('koa-router');
-const notifications = require('../services/notifications');
+
 
 const router = new KoaRouter();
 
@@ -19,7 +19,7 @@ router.post('invitedTeamCreate', '/', async (ctx) => {
   try {
     await ctx.state.match.inviteTeam(team);
     if(teamCaptain){
-      await notifications.inviteTeamToMatch(ctx, ctx.state.currentPlayer, team, teamCaptain, ctx.state.match);
+      await ctx.inviteTeamToMatch(ctx.state.currentPlayer, team, teamCaptain, ctx.state.match);
     }
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
   } catch (validationError) {

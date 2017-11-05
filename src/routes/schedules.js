@@ -1,6 +1,6 @@
 const KoaRouter = require('koa-router');
 const router = new KoaRouter();
-const notifications = require('../services/notifications');
+
 
 function floatToStringHour(float){
 
@@ -153,7 +153,7 @@ router.patch('scheduleUpdate', '/:date', async (ctx) => {
         console.log("SENDING NOTIFICATIONS");
         const match = await ctx.orm.match.findById(schedules[i].matchId);
         const matchAdmins = await match.getAdmins();
-        await notifications.acceptFieldReservation(ctx, compoundOwner, matchAdmins, match, ctx.state.field);
+        await ctx.acceptFieldReservation(compoundOwner, matchAdmins, match, ctx.state.field);
       }
     }
     ctx.redirect(ctx.router.url('field', {
