@@ -72,8 +72,8 @@ router.patch('compoundUpdate', '/:id', async (ctx) => {
   ctx.requireOwnerModifyPermission(compoundOwner);
 
   try {
-    await compound.update(ctx.request.body);
-    FileStorage.upload(ctx.request.body.files.photo, "compound"+compound.id);
+    await compound.update(ctx.request.body.fields);
+    FileStorage.upload(ctx.request.body.files.photo, "compound" + compound.id);
     ctx.redirect(ctx.router.url('compound', { id: compound.id }));
   } catch (validationError) {
     await ctx.render('compounds/edit', {
