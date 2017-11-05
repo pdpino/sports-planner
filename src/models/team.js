@@ -1,3 +1,5 @@
+const helpers = require('./helpers');
+
 module.exports = function defineteam(sequelize, DataTypes) {
   const team = sequelize.define('team', {
     name: {

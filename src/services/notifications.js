@@ -16,8 +16,8 @@ const sendFieldReservation = require('../mailers/reservation-field');
  *    eventName: 'Partido de juanito',
  * }
  **/
-async function sendNotification(ctx, sender, receiver, options){
-  await ctx.orm.notification.create({
+function sendNotification(ctx, sender, receiver, options){
+  return ctx.orm.notification.create({
     senderId: sender.userId,
     receiverId: receiver.userId,
     wasRead: false,
@@ -27,6 +27,12 @@ async function sendNotification(ctx, sender, receiver, options){
     entityName: options.entityObj.name || options.entityObj.getName(),
     eventName: options.eventObj.name,
   });
+}
+
+async function sendNotifications(ctx, sender, receivers, options){
+  for(let i = 0; i < receivers.length; i++){
+    await sendNotification(ctx, sender, receiver[i], options);
+  }
 }
 
 /*
@@ -84,31 +90,27 @@ async function invitePlayerToTeam(ctx, sender, receiver, team){
 /*
  * sender is a player, receivers is a list of players
  */
-async function teamAcceptMatch(ctx, sender, receivers, team, match){
-  receivers.forEach(async (receiver) => {
-    await sendNotification(ctx, sender, receiver, {
-      kind: 'teamAcceptedMatch',
-      entityObj: team,
-      eventObj: match,
-    });
+function teamAcceptMatch(ctx, sender, receivers, team, match){
+  return sendNotifications(ctx, sender, receivers, {
+    kind: 'teamAcceptedMatch',
+    entityObj: team,
+    eventObj: match,
   });
 }
 
 /*
  * sender is a player, receivers is a list of players
  */
-async function playerAcceptMatch(ctx, sender, receivers, match){
-  receivers.forEach(async (receiver) => {
-    await sendNotification(ctx, sender, receiver, {
-      kind: 'playerAcceptedMatch',
-      entityObj: sender,
-      eventObj: match,
-    });
+function playerAcceptMatch(ctx, sender, receivers, match){
+  return sendNotifications(ctx, sender, receivers, {
+    kind: 'playerAcceptedMatch',
+    entityObj: sender,
+    eventObj: match,
   });
 }
 
 /*
- * A player asks for a field
+ * A player reserves a field
  */
 async function reserveField(ctx, player, owner, field){
   await sendNotification(ctx, player, owner, {
@@ -126,13 +128,11 @@ async function reserveField(ctx, player, owner, field){
 /*
  * An owner accepts a field reservation
  */
-async function acceptFieldReservation(ctx, owner, matchAdmins, match, field){
-  matchAdmins.forEach(async (matchAdmin) => {
-    await sendNotification(ctx, owner, matchAdmin, {
-      kind: 'ownerAcceptFieldReservation',
-      entityObj: field,
-      eventObj: match,
-    });
+function acceptFieldReservation(ctx, owner, matchAdmins, match, field){
+  return sendNotifications(ctx, owner, matchAdmins, {
+    kind: 'ownerAcceptFieldReservation',
+    entityObj: field,
+    eventObj: match,
   });
 }
 

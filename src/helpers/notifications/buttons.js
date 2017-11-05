@@ -1,4 +1,4 @@
-module.exports = function invitationHelpers(app) {
+module.exports = function notificationButtonsHelpers(app) {
   const profileButton = {
     url: (ctx, entityId, eventId) => ctx.router.url('players', entityId),
     method: 'get',
