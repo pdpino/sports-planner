@@ -97,6 +97,8 @@
   <% if(reviewsEnabled) { %>
     <%- include('../playerReviews/index-pending', { pendingReviews }) %>
     <%- include('../playerReviews/index-done', { doneReviews }) %>
+
+    <%- include('../compoundReviews/show') %>
   <% } %>
 
   <%- include('../_buttons/back', { backPath: matchesPath, message: 'Volver a todos los partidos' }) %>

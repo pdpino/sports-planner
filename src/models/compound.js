@@ -18,6 +18,7 @@ module.exports = function definecompound(sequelize, DataTypes) {
   compound.associate = function associate(models) {
     compound.belongsTo(models.compoundOwner);
     compound.hasMany(models.field);
+    compound.hasMany(models.compoundReview, { as: 'reviews' });
   };
 
   return compound;

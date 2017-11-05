@@ -1,0 +1,23 @@
+<%# Provide:
+  reviews,
+  %>
+
+<div>
+  <h4>Reviews:</h4>
+  <% if(reviews.length > 0) { %>
+    <ul>
+      <% reviews.forEach((review) => { %>
+        <li>
+          <%= review.player.getName() %>, <%= updatedAtTimestamp(review) %>:
+          <br>
+          <%= review.rating %>
+          --
+          <%= review.content %>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    No tiene reviews
+  <% } %>
+
+</div>

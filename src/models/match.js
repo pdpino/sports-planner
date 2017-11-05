@@ -38,6 +38,7 @@ module.exports = function definematch(sequelize, DataTypes) {
 
     match.hasMany(models.matchComment, { as: 'comments' });
     match.hasMany(models.playerReview);
+    match.hasMany(models.compoundReview);
 
     match.addScope('withSport', {
       include: [{
@@ -199,6 +200,16 @@ module.exports = function definematch(sequelize, DataTypes) {
 
   match.prototype.getDoneReviewsFromUser = function(reviewerUser){
     return getReviewsFromUser(this, reviewerUser, false);
+  }
+
+  match.prototype.getCompoundReviewFromUser = async function(reviewerPlayer){
+    const compoundReviews = await this.getCompoundReviews({
+      where: {
+        isPending: false,
+        playerId: reviewerPlayer.id,
+      }
+    });
+    return compoundReviews[0];
   }
 
   match.prototype.getPendingReview = async function(reviewerUser, reviewedPlayer){

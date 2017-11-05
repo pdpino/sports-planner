@@ -1,0 +1,13 @@
+<%# Must exist:
+  createCompoundReviewPath,
+  %>
+
+<div>
+  <h4>Review al recinto:</h4>
+  <% if(field && compoundReview) { %>
+    <%- include('../_reviews/new', { createReviewPath: createCompoundReviewPath }) %>
+  <% } else { %>
+    No hubo recinto reservado
+  <% } %>
+
+</div>

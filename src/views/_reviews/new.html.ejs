@@ -1,10 +1,9 @@
 <%# Provide:
+  createReviewPath
   %>
 
-<%# DEPRECATED %>
-
 <div>
-  <form action="<%= createPlayerReviewPath(player) %>" method="post">
+  <form action="<%= createReviewPath %>" method="post">
     <div>
       <label for="rating">Rating</label>
       <input type="number" name="rating" value="1" />

@@ -77,6 +77,9 @@ module.exports = function defineplayer(sequelize, DataTypes) {
 
     player.hasMany(models.playerReview, { as: 'reviews', foreignKey: 'reviewedId' });
 
+    player.hasMany(models.compoundReview);
+
+
     player.addScope('defaultScope', {
       include: [{
         model: sequelize.models.user

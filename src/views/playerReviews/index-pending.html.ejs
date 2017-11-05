@@ -1,5 +1,5 @@
 <%# Provide:
-  reviews,
+  pendingReviews,
   %>
 
 <div>
@@ -10,17 +10,7 @@
         <li>
           <%= review.reviewed.getName() %>
 
-          <form action="<%= createPlayerReviewPath(review.reviewed) %>" method="post">
-            <div>
-              <label for="rating">Rating</label>
-              <input type="number" name="rating" value="1" />
-            </div>
-            <div>
-              <label for="content">Comentario</label>
-              <input type="textarea" name="content" />
-            </div>
-            <input type="submit" value="Calificar" />
-          </form>
+          <%- include('../_reviews/new', { createReviewPath: createPlayerReviewPath(review.reviewed) }) %>
 
         </li>
       <% }) %>
