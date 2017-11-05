@@ -1,27 +1,27 @@
 module.exports = {
   up(queryInterface, Sequelize) {
-    return queryInterface.createTable('playerReviews', {
+    return queryInterface.createTable('compoundReviews', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      reviewerId: {
+      playerId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
+          model: 'players',
           key: 'id',
         },
         onUpdate: 'cascade',
         onDelete: 'cascade',
       },
-      reviewedId: {
+      compoundId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'players',
+          model: 'compounds',
           key: 'id',
         },
         onUpdate: 'cascade',
@@ -58,6 +58,6 @@ module.exports = {
     });
   },
   down(queryInterface, Sequelize) {
-    return queryInterface.dropTable('playerReviews');
+    return queryInterface.dropTable('compoundReviews');
   },
 };
