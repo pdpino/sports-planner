@@ -1,0 +1,23 @@
+<%# Provide:
+  reviews,
+  %>
+
+<div>
+  <h4>Reviews hechas:</h4>
+  <% if(doneReviews.length > 0) { %>
+    <ul>
+      <% doneReviews.forEach((review) => { %>
+        <li>
+          <%= review.reviewed.getName() %>, <%= updatedAtTimestamp(review) %>:
+          <br>
+          <%= review.rating %>
+          --
+          <%= review.content %>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    No hay reviews hechas
+  <% } %>
+
+</div>

@@ -1,20 +1,18 @@
 <%# Provide:
   %>
 
-<%# Must exist: canReview, createPlayerReviewPath %>
+<%# DEPRECATED %>
 
 <div>
-  <% if (canReview) { %>
-    <form action="<%= createPlayerReviewPath %>" method="post">
-      <div>
-        <label for="rating">Rating</label>
-        <input type="number" name="rating" value="1" />
-      </div>
-      <div>
-        <label for="content">Comentario</label>
-        <input type="textarea" name="content" />
-      </div>
-      <input type="submit" value="Calificar" />
-    </form>
-  <% } %>
+  <form action="<%= createPlayerReviewPath(player) %>" method="post">
+    <div>
+      <label for="rating">Rating</label>
+      <input type="number" name="rating" value="1" />
+    </div>
+    <div>
+      <label for="content">Comentario</label>
+      <input type="textarea" name="content" />
+    </div>
+    <input type="submit" value="Calificar" />
+  </form>
 </div>

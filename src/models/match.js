@@ -168,6 +168,33 @@ module.exports = function definematch(sequelize, DataTypes) {
     return isPlayerInvited;
   }
 
+  // match.prototype.reviewPlayer = function(pendingReview, params){
+  //   return this.addPlayerReview(pendingReview, {
+  //     rating: params.rating,
+  //     content: params.content,
+  //     isPending: false,
+  //   });
+  // }
+
+  match.prototype.getPendingReview = async function(reviewerUser, reviewedPlayer){
+    if (!reviewerUser || !reviewedPlayer) {
+      return null;
+    }
+
+    const pendingReviews = await this.getPlayerReviews({
+      where: {
+        reviewerId: reviewerUser.id,
+        reviewedId: reviewedPlayer.id,
+        isPending: true,
+      }
+    });
+    console.log("ALSDKJASDL", pendingReviews);
+    return pendingReviews[0];
+  }
+
+  match.prototype.hasPendingReview = function(reviewerUser, reviewedPlayer){
+    return this.getPendingReview(reviewerUser, reviewedPlayer);
+  }
 
   // async function assertNotEmptyName(instance){
   //   if (!instance.name){

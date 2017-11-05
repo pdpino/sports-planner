@@ -88,6 +88,8 @@
   <%- include('../comments/index', { comments }) %>
   <%- include('../comments/new') %>
 
+  <%- include('../playerReviews/index-pending', { pendingReviews }) %>
+  <%- include('../playerReviews/index-done', { doneReviews }) %>
 
   <%- include('../_buttons/back', { backPath: matchesPath, message: 'Volver a todos los partidos' }) %>
 

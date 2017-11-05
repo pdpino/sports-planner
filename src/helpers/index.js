@@ -34,8 +34,16 @@ module.exports = function helpers(app) {
     return _.differenceBy(collection1, collection2, (element) => element.id);
   }
 
+  app.context.prettyTimestamp = function(date){
+    return moment(date).format('YYYY-MMM-d H:mm');
+  }
+
+  /** Wrappers to get a pretty timestamp **/
   app.context.createdAtTimestamp = function(element){
-    return moment(element.createdAt).format('YYYY-MMM-d H:mm');
+    return this.prettyTimestamp(element.createdAt);
+  }
+  app.context.updatedAtTimestamp = function(element){
+    return this.prettyTimestamp(element.updatedAt);
   }
 
   permissionHelpers(app);

@@ -76,9 +76,5 @@ module.exports = function defineuser(sequelize, DataTypes) {
     return bcrypt.compare(password, this.password);
   };
 
-  user.prototype.getName = function() {
-    return `${this.firstName} ${this.lastName}`;
-  };
-
   return user;
 };

@@ -75,7 +75,8 @@ router.use((ctx, next) => {
   // example: ctx.state.f = ctx.f.bind(ctx);
 
   ctx.state.invitationToString = ctx.invitationToString;
-  ctx.state.createdAtTimestamp = ctx.createdAtTimestamp;
+  ctx.state.createdAtTimestamp = ctx.createdAtTimestamp.bind(ctx);
+  ctx.state.updatedAtTimestamp = ctx.updatedAtTimestamp.bind(ctx);
   ctx.state.canDeleteComment = ctx.canDeleteComment.bind(ctx);
 
   return next();

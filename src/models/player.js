@@ -214,32 +214,5 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     });
   }
 
-  player.prototype.receiveReview = function(pendingReview, params){
-    return this.addReview(pendingReview, {
-      rating: params.rating,
-      content: params.content,
-      isPending: false,
-    });
-  }
-
-  /** reviewer must be an user **/
-  player.prototype.getPendingReview = async function(reviewer){
-    if (!reviewer) {
-      return null;
-    }
-
-    const pendingReviews = await this.getReviews({
-      where: {
-        reviewerId: reviewer.id,
-        isPending: true,
-      }
-    });
-    return pendingReviews[0];
-  }
-
-  player.prototype.hasPendingReview = function(reviewer){
-    return this.getPendingReview(reviewer);
-  }
-
   return player;
 };

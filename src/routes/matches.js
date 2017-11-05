@@ -6,6 +6,7 @@ const notifications = require('../services/notifications');
 const invitedPlayersRouter = require('./invitedPlayers');
 const invitedTeamsRouter = require('./invitedTeams');
 const matchCommentsRouter = require('./matchComments');
+const playerReviewsRouter = require('./playerReviews');
 
 const router = new KoaRouter();
 
@@ -227,6 +228,20 @@ router.get('match', '/:id', async (ctx) => {
   const canComment = await match.isPlayerInvited(ctx.state.currentPlayer);
   // REVIEW: this is being called twice, once in requireSeeMatchPermission and once here
 
+  const pendingReviews = await match.getPlayerReviews({
+    where: {
+      isPending: true,
+      reviewerId: ctx.state.currentUser.id,
+    }
+  });
+
+  const doneReviews = await match.getPlayerReviews({
+    where: {
+      isPending: false,
+      reviewerId: ctx.state.currentUser.id,
+    }
+  });
+
   await ctx.render('matches/show', {
     match,
     hasModifyPermission,
@@ -234,6 +249,12 @@ router.get('match', '/:id', async (ctx) => {
     invitedTeams,
     schedule,
     field,
+    pendingReviews,
+    doneReviews,
+    createPlayerReviewPath: (player) => ctx.router.url('playerReviewCreate', {
+      matchId: match.id,
+      playerId: player.id,
+    }),
     canComment,
     comments,
     createCommentPath: ctx.router.url('matchCommentCreate', { matchId: match.id }),
@@ -302,6 +323,16 @@ router.use(
     return next();
   },
   matchCommentsRouter.routes(),
+);
+
+router.use(
+  '/:matchId/reviews',
+  async (ctx, next) => {
+    ctx.state.match = await ctx.findById(ctx.orm.match, ctx.params.matchId);
+
+    return next();
+  },
+  playerReviewsRouter.routes(),
 );
 
 module.exports = router;
