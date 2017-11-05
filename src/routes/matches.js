@@ -2,7 +2,7 @@ const KoaRouter = require('koa-router');
 const Sequelize = require('sequelize');
 const moment = require('moment');
 const _ = require('lodash');
-const notifications = require('../services/notifications');
+
 const invitedPlayersRouter = require('./invitedPlayers');
 const invitedTeamsRouter = require('./invitedTeams');
 const matchCommentsRouter = require('./matchComments');
@@ -140,7 +140,7 @@ router.patch('addSchedule', '/:id/:compoundId/:fieldId/selectSchedule', async (c
     updatedAt: new Date()
   });
 
-  await notifications.reserveField(ctx, ctx.state.currentPlayer, compoundOwner, field);
+  await ctx.reserveField(ctx.state.currentPlayer, compoundOwner, field);
 
   ctx.redirect(ctx.router.url('match', match.id));
   // await ctx.render('matches/edit', {

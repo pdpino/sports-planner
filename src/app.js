@@ -110,6 +110,12 @@ app.use(async (ctx, next) => {
         message: error.message,
         details: error.details,
       });
+    } else if (error.name === 'BadRequestError') {
+      // TODO: Render home or same page where the user was, but with errors
+      await ctx.render('_error/page', {
+        message: error.message,
+        details: error.details,
+      });
     } else {
       console.log("ERROR NOT RECOGNIZED"); // DEBUG
       throw error; // Upper middleware can handle it

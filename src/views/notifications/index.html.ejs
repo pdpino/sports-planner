@@ -1,0 +1,19 @@
+<div>
+  <h2>Notificaciones</h2>
+  <ul>
+    <% notifications.forEach((notification) => { %>
+      <li>
+        <%= notification.toString() %>
+
+        <% getNotificationButtons(notification).forEach((button) => { %>
+          <%- include('../_buttons/go', {
+            goToPath: button.path,
+            message: button.message,
+            method: button.method
+          }) %>
+        <% }); %>
+
+      </li>
+    <% }); %>
+  </ul>
+</div>

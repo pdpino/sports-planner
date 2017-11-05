@@ -45,6 +45,14 @@ module.exports = function definenotification(sequelize, DataTypes) {
     eventName: {
       type: DataTypes.STRING,
       defaultValue: '',
+    },
+    entityId: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
+    eventId: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
     }
   });
 
@@ -55,6 +63,12 @@ module.exports = function definenotification(sequelize, DataTypes) {
 
   notification.prototype.toString = function(){
     return nofiticationMessages[this.kind](this.entityName, this.eventName);
+  }
+
+  notification.readNotifications = async function(notifications){
+    for(let i = 0; i < notifications.length; i++){
+      await notifications[i].update({ wasRead: true });
+    }
   }
 
   return notification;

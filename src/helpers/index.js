@@ -4,6 +4,7 @@ const permissionHelpers = require('./permissions');
 const matchHelpers = require('./matches');
 const teamHelpers = require('./teams');
 const invitationHelpers = require('./invitations');
+const notificationHelpers = require('./notifications');
 const commentHelpers = require('./comments');
 
 // NOTE:
@@ -51,5 +52,6 @@ module.exports = function helpers(app) {
   matchHelpers(app);
   teamHelpers(app);
   invitationHelpers(app);
+  notificationHelpers(app);
   commentHelpers(app);
 };
