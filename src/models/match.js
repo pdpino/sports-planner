@@ -2,15 +2,15 @@ const Sequelize = require('sequelize');
 const moment = require('moment');
 const helpers = require('./helpers');
 
-const unWrapDate = helpers.getHookFunction(function (fullDate){
-  const date = moment(fullDate, "YYYY MM DD H:mm");
-  return {
+const unWrapDate = helpers.getHookFunction(function (match){
+  const date = moment(match.date, "YYYY MM DD H:mm");
+  Object.assign(match, {
     dateYear: date.format('YYYY'),
     dateMonth: date.format('MM'),
     dateDay: date.format('DD'),
     dateHour: date.format('H'),
     dateMinute: date.format('mm'),
-  };
+  });
 });
 
 module.exports = function definematch(sequelize, DataTypes) {
