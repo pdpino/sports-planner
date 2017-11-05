@@ -35,7 +35,8 @@ module.exports = function helpers(app) {
   }
 
   app.context.prettyTimestamp = function(date){
-    return moment(date).format('YYYY-MMM-d H:mm');
+    const parsedDate = moment(date);
+    return parsedDate.isValid() ? parsedDate.format('YYYY-MMM-d H:mm') : '';
   }
 
   /** Wrappers to get a pretty timestamp **/

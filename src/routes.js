@@ -76,6 +76,7 @@ router.use((ctx, next) => {
 
   ctx.state.invitationToString = ctx.invitationToString;
   ctx.state.createdAtTimestamp = ctx.createdAtTimestamp.bind(ctx);
+  ctx.state.prettyTimestamp = ctx.prettyTimestamp;
   ctx.state.updatedAtTimestamp = ctx.updatedAtTimestamp.bind(ctx);
   ctx.state.canDeleteComment = ctx.canDeleteComment.bind(ctx);
 
