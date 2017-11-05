@@ -41,7 +41,6 @@ router.get('matches', '/', async (ctx) => {
   await ctx.render('matches/index', {
     matches,
     hasCreatePermission: ctx.state.isPlayerLoggedIn,
-    matchPath: match => ctx.router.url('match', { id: match.id }),
     newMatchPath: ctx.router.url('matchNew'),
   });
 });

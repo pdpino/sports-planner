@@ -14,7 +14,6 @@ router.get('teams', '/', async (ctx) => {
   await ctx.render('teams/index', {
     teams,
     hasCreatePermission: ctx.state.isPlayerLoggedIn,
-    teamPath: team => ctx.router.url('team', { id: team.id }),
     newTeamPath: ctx.router.url('teamNew'),
   });
 });

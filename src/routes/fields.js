@@ -143,7 +143,6 @@ router.get('field', '/:id', async (ctx) => {
     getSchedulePath: schedule => ctx.router.url('schedule', {compoundId:ctx.state.compound.id, fieldId: field.id, date:schedule }),
     sportName: sport.name,
     fieldsPath: ctx.router.url('fields', { compoundId: ctx.state.compound.id }),
-    compoundPath: compound => ctx.router.url('compound', { id: compound.id }),
     editFieldPath: ctx.router.url('fieldEdit', {
       compoundId: ctx.state.compound.id,
       id: field.id,

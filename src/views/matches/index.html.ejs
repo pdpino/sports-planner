@@ -11,7 +11,7 @@
     <% if (matches.length > 0) { %>
       <% matches.forEach((match) => { %>
         <li>
-          <a href="<%= matchPath(match) %>">
+          <a href="<%= getMatchPath(match) %>">
             <%= match.name %>
           </a>
           <p>
