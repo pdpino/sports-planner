@@ -21,6 +21,9 @@ module.exports = function definematch(sequelize, DataTypes) {
     isPublic: {
       type: DataTypes.BOOLEAN,
     },
+    isDone: {
+      type: DataTypes.BOOLEAN,
+    },
     date: {
       type: DataTypes.DATE,
       isDate: true,
@@ -189,6 +192,10 @@ module.exports = function definematch(sequelize, DataTypes) {
 
   match.prototype.isInThePast = function(){
     return moment().isAfter(this.date);
+  }
+
+  match.prototype.areReviewsEnabled = function(){
+    return this.isDone && this.isInThePast();
   }
 
   function getReviewsFromUser(match, reviewerUser, isPending){

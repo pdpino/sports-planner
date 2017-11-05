@@ -12,6 +12,12 @@
     <%- include('../_buttons/delete', { deletePath: deleteMatchPath }) %>
   <% } %>
 
+  <% if(canEnableReviews) { %>
+    <form action="<%= enableReviews %>" method="post">
+      <input type="submit" value="Activar reviews"/>
+    </form>
+  <% } %>
+
 
   <% if(invitedPlayers.length > 0) { %>
     <h4> Jugadores que participan: </h4>
@@ -88,7 +94,7 @@
   <%- include('../comments/index', { comments }) %>
   <%- include('../comments/new') %>
 
-  <% if(showReviews) { %>
+  <% if(reviewsEnabled) { %>
     <%- include('../playerReviews/index-pending', { pendingReviews }) %>
     <%- include('../playerReviews/index-done', { doneReviews }) %>
   <% } %>

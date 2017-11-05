@@ -214,5 +214,13 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     });
   }
 
+  player.prototype.getDoneReviews = function(){
+    return this.getReviews({
+      where: {
+        isPending: false,
+      }
+    });
+  }
+
   return player;
 };

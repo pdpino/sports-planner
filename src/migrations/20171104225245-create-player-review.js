@@ -1,8 +1,14 @@
 module.exports = {
   up(queryInterface, Sequelize) {
     return queryInterface.createTable('playerReviews', {
-      reviewerId: {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
         primaryKey: true,
+        type: Sequelize.INTEGER,
+      },
+      reviewerId: {
+        // primaryKey: true,
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -13,7 +19,7 @@ module.exports = {
         onDelete: 'cascade',
       },
       reviewedId: {
-        primaryKey: true,
+        // primaryKey: true,
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -24,7 +30,7 @@ module.exports = {
         onDelete: 'cascade',
       },
       matchId: {
-        primaryKey: true,
+        // primaryKey: true,
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {

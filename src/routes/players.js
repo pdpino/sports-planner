@@ -135,7 +135,7 @@ router.get('player', '/:id', async (ctx) => {
   const hasCommentPermission = ctx.orm.player.hasCommentPermission(friendshipStatus);
   const wallComments = hasCommentPermission && await player.getMyWallComments();
 
-  const reviews = await player.getReviews();
+  const reviews = await player.getDoneReviews();
 
   await ctx.render('players/show', {
     hasModifyPermission: ctx.hasModifyPermission(player),

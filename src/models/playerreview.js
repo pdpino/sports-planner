@@ -12,6 +12,7 @@ module.exports = function defineplayerReview(sequelize, DataTypes) {
     },
     content: DataTypes.TEXT,
   });
+  // TODO: add validation to not be able to review yourself
   playerReview.associate = function associate(models) {
     playerReview.belongsTo(models.player, { as: 'reviewed' });
     playerReview.belongsTo(models.user, { as: 'reviewer' });
@@ -29,14 +30,12 @@ module.exports = function defineplayerReview(sequelize, DataTypes) {
       override: true
     });
   };
-  playerReview.removeAttribute('id');
-
   playerReview.prototype.doReview = function(params){
     return this.update({
       rating: params.rating,
       content: params.content,
       isPending: false,
-    })
+    });
   }
 
   return playerReview;
