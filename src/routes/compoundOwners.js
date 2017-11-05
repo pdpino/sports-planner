@@ -49,12 +49,12 @@ router.post('compoundOwnerCreate', '/', async (ctx) => {
 
   try {
     const user = await ctx.orm.user.create(userParams);
-    userParams.photo=FileStorage.url("user" + user.id,{});
+    userParams.photo = FileStorage.url("user" + user.id, {});
     await user.update(userParams);
     compoundOwnerParams.userId = user.id;
-    // REVIEW: create compoundOwner first to validate params ?
+    // REVIEW: create compoundOwner before saving the picture to validate params ?
     FileStorage.upload(ctx.request.body.files.photo, "user" + user.id);
-    const compoundOwner = await ctx.orm.compoundOwner.create(playerParams);
+    const compoundOwner = await ctx.orm.compoundOwner.create(compoundOwnerParams);
 
     ctx.redirect(ctx.router.url('compoundOwners'));
   } catch (validationError) {
