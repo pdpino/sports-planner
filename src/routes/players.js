@@ -4,7 +4,8 @@ const playerTeamsRouter = require('./playerTeams');
 const playerMatchesRouter = require('./playerMatches');
 const friendshipsRouter = require('./friendships');
 const wallCommentsRouter = require('./wallComments');
-const FileStorage= require('../services/file-storage');
+const playerReviewsRouter = require('./playerReviews');
+const FileStorage = require('../services/file-storage');
 
 
 const router = new KoaRouter();
@@ -136,6 +137,9 @@ router.get('player', '/:id', async (ctx) => {
   const hasCommentPermission = ctx.orm.player.hasCommentPermission(friendshipStatus);
   const wallComments = hasCommentPermission && await player.getMyWallComments();
 
+  const reviews = await player.getReviews();
+  const canReview = await player.hasPendingReview(ctx.state.currentUser);
+
   await ctx.render('players/show', {
     hasModifyPermission: ctx.hasModifyPermission(player),
     player,
@@ -144,6 +148,9 @@ router.get('player', '/:id', async (ctx) => {
     playerMatches,
     friends,
     wallComments,
+    reviews,
+    createPlayerReviewPath: ctx.router.url('playerReviewCreate', { playerId: player.id }),
+    canReview,
     canComment: hasCommentPermission,
     canSeeComments: hasCommentPermission,
     createCommentPath: ctx.router.url('wallCommentCreate', { playerId: player.id }),
@@ -260,6 +267,16 @@ router.use(
     return next();
   },
   wallCommentsRouter.routes(),
+);
+
+router.use(
+  '/:playerId/reviews',
+  async (ctx, next) => {
+    ctx.state.player = await ctx.findById(ctx.orm.player, ctx.params.playerId);
+
+    return next();
+  },
+  playerReviewsRouter.routes(),
 );
 
 module.exports = router;

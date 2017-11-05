@@ -10,7 +10,7 @@ function getParams(params){
 router.post('wallCommentCreate', '/', async (ctx) => {
   ctx.requirePlayerLoggedIn();
 
-  // REFACTOR
+  // REFACTOR ?
   const friendshipStatus = (ctx.state.isPlayerLoggedIn
     && await ctx.state.currentPlayer.getFriendshipStatus(ctx.state.player));
 
