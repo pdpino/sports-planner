@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 module.exports = function notificationButtonsHelpers(app) {
   const profileButton = {
     url: (ctx, entityId, eventId) => ctx.router.url('player', entityId),
@@ -9,8 +11,9 @@ module.exports = function notificationButtonsHelpers(app) {
       playerId: ctx.state.currentPlayer.id,
       friendId: entityId,
     }),
-    method: 'post',
-    message: 'Aceptar amistad'
+    method: 'patch',
+    message: 'Aceptar amistad',
+    ignoreIfRead: true
   };
 
   const teamBaseButton = { method: 'get', message: 'Ver equipo' };
@@ -52,10 +55,12 @@ module.exports = function notificationButtonsHelpers(app) {
   };
 
   app.context.getNotificationButtons = function(notification){
-    const buttons = notificationButtons[notification.kind];
+    let buttons = notificationButtons[notification.kind];
     buttons.forEach((button) => {
+      button.ignore = notification.wasRead && button.ignoreIfRead;
       button.path = button.url(this, notification.entityId, notification.eventId);
     });
+    buttons = _.filter(buttons, (button) => !button.ignore);
     return buttons;
   };
 

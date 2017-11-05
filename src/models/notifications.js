@@ -65,5 +65,11 @@ module.exports = function definenotification(sequelize, DataTypes) {
     return nofiticationMessages[this.kind](this.entityName, this.eventName);
   }
 
+  notification.readNotifications = async function(notifications){
+    for(let i = 0; i < notifications.length; i++){
+      await notifications[i].update({ wasRead: true });
+    }
+  }
+
   return notification;
 };

@@ -13,6 +13,9 @@ module.exports = function notificationSendHelpers(app) {
    * }
    **/
   app.context.sendNotification = function(sender, receiver, options){
+    if (!options.eventObj){ // Support empty event
+      options.eventObj = { id: 0, name: '' };
+    }
     return this.orm.notification.create({
       senderId: sender.userId,
       receiverId: receiver.userId,
@@ -31,6 +34,53 @@ module.exports = function notificationSendHelpers(app) {
     }
   }
 
+  app.context.addFriend = function(sender, receiver){
+    return this.sendNotification(sender, receiver, {
+      kind: 'friendshipAsked',
+      entityObj: sender,
+    });
+
+    // TODO: send mail
+    // sendInvitationPlayerMail(this, receiver.email, {
+    //   eventType: 'Equipo',
+    //   eventName: team.name,
+    //   invitedBy: sender.getName(),
+    // });
+  }
+
+  app.context.readAskedFriendNotification = async function(sender, receiver){
+    const askNotifications = await this.orm.notification.findAll({
+      where: {
+        kind: 'friendshipAsked',
+        senderId: sender.userId,
+        receiverId: receiver.userId,
+        wasRead: false,
+      }
+    });
+    return this.orm.notification.readNotifications(askNotifications);
+  }
+
+  app.context.acceptFriend = async function(sender, receiver){
+    return this.sendNotification(sender, receiver, {
+      kind: 'friendshipAccepted',
+      entityObj: sender,
+    });
+  }
+
+  app.context.invitePlayerToTeam = async function(sender, receiver, team){
+    await this.sendNotification(sender, receiver, {
+      kind: 'addedToTeam',
+      entityObj: sender,
+      eventObj: team,
+    });
+
+    sendInvitationPlayerMail(this, receiver.email, {
+      eventType: 'Equipo',
+      eventName: team.name,
+      invitedBy: sender.getName(),
+    });
+  }
+
   app.context.invitePlayerToMatch = async function(sender, receiver, match){
     await this.sendNotification(sender, receiver, {
       kind: 'playerInvitedToMatch',
@@ -41,6 +91,14 @@ module.exports = function notificationSendHelpers(app) {
       eventType: 'Partido',
       eventName: match.name,
       invitedBy: sender.getName(),
+    });
+  }
+
+  app.context.playerAcceptMatch = function(sender, receivers, match){
+    return this.sendNotifications(sender, receivers, {
+      kind: 'playerAcceptedMatch',
+      entityObj: sender,
+      eventObj: match,
     });
   }
 
@@ -59,32 +117,10 @@ module.exports = function notificationSendHelpers(app) {
     });
   }
 
-  app.context.invitePlayerToTeam = async function(sender, receiver, team){
-    await this.sendNotification(sender, receiver, {
-      kind: 'addedToTeam',
-      entityObj: sender,
-      eventObj: team,
-    });
-
-    sendInvitationPlayerMail(this, receiver.email, {
-      eventType: 'Equipo',
-      eventName: team.name,
-      invitedBy: sender.getName(),
-    });
-  }
-
   app.context.teamAcceptMatch = function(sender, receivers, team, match){
     return this.sendNotifications(sender, receivers, {
       kind: 'teamAcceptedMatch',
       entityObj: team,
-      eventObj: match,
-    });
-  }
-
-  app.context.playerAcceptMatch = function(sender, receivers, match){
-    return this.sendNotifications(sender, receivers, {
-      kind: 'playerAcceptedMatch',
-      entityObj: sender,
       eventObj: match,
     });
   }

@@ -174,6 +174,24 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     return _.unionWith(friendsSide1, friendsSide2, function(a, b) { return a.id === b.id; });
   }
 
+  player.prototype.askFriend = function(friend){
+    return this.addFriend(friend, {
+      through: {
+        isAccepted: false,
+      }
+    });
+  }
+
+  player.prototype.acceptFriend = function(friend){
+    // REVIEW: a bit of a hack,
+    // the friends accepts the player because the friend added the player
+    return friend.addFriend(this, {
+      through: {
+        isAccepted: true,
+      }
+    });
+  }
+
   player.prototype.askForMatch = async function(match){
     await this.addMatch(match, {
       through: {

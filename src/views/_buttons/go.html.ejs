@@ -1,6 +1,17 @@
 <%# Must provide: goToPath
     optional: message, method %>
 
-<form action="<%= goToPath %>" method="<%= locals.method || 'get' %>">
+<form action="<%= goToPath %>"
+  <% if (locals.method && method !== 'get') { %>
+    method="post"
+  <% } else { %>
+    method="get"
+  <% } %>
+  >
+  <% if (locals.method) { %>
+    <div>
+      <input type="hidden" name="_method" value="<%= method %>" />
+    </div>
+  <% } %>
   <input type="submit" value="<%= locals.message || 'Ir' %>"/>
 </form>
