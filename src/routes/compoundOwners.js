@@ -47,8 +47,9 @@ router.post('compoundOwnerCreate', '/', async (ctx) => {
   const userParams = getUserParams(ctx.request.body.fields);
   const compoundOwnerParams = getCompoundOwnerParams(ctx.request.body.fields);
 
+  let user = null;
   try {
-    const user = await ctx.orm.user.create(userParams);
+    user = await ctx.orm.user.create(userParams);
     userParams.photo = FileStorage.url("user" + user.id, {});
     await user.update(userParams);
     compoundOwnerParams.userId = user.id;
@@ -58,6 +59,10 @@ router.post('compoundOwnerCreate', '/', async (ctx) => {
 
     ctx.redirect(ctx.router.url('compoundOwners'));
   } catch (validationError) {
+    if (user){ // User was created correctly, delete it
+      user.destroy();
+    }
+
     await ctx.render('compoundOwners/new', {
       compoundOwner: ctx.orm.compoundOwner.build(ctx.request.body),
       errors: ctx.parseValidationError(validationError),
