@@ -46,6 +46,19 @@ router.use(async (ctx, next) => {
     signUpPlayerPath: ctx.router.url('playerNew'),
     signUpOwnerPath: ctx.router.url('compoundOwnerNew'),
     destroySessionPath: ctx.router.url('sessionDestroy'),
+    homePath: '/',
+    // HACK: ctx.router.url('home') not working (returns '//' and page goes to about:blank)
+    // path hardcoded
+  });
+
+  ctx.state.isAdminLoggedIn = ctx.hasAdminPermission();
+
+  return next();
+});
+
+/** Expose paths to the views **/
+router.use((ctx, next) => {
+  Object.assign(ctx.state, {
     getSportPath: (sport) => ctx.router.url('sport', sport.id),
     getPlayerPath: (player) => ctx.router.url('player', player.id),
     getCompoundOwnerPath: (compoundOwner) => ctx.router.url('compoundOwner', compoundOwner.id),
@@ -59,13 +72,7 @@ router.use(async (ctx, next) => {
     matchesPath: ctx.router.url('matches'),
     compoundOwnersPath: ctx.router.url('compoundOwners'),
     compoundsPath: ctx.router.url('compounds'),
-    homePath: '/',
-    // HACK: ctx.router.url('home') not working (returns '//' and page goes to about:blank)
-    // path hardcoded
   });
-
-  ctx.state.isAdminLoggedIn = ctx.hasAdminPermission();
-
   return next();
 });
 
@@ -75,7 +82,9 @@ router.use((ctx, next) => {
   // example: ctx.state.f = ctx.f.bind(ctx);
 
   ctx.state.invitationToString = ctx.invitationToString;
-  ctx.state.createdAtTimestamp = ctx.createdAtTimestamp;
+  ctx.state.createdAtTimestamp = ctx.createdAtTimestamp.bind(ctx);
+  ctx.state.prettyTimestamp = ctx.prettyTimestamp;
+  ctx.state.updatedAtTimestamp = ctx.updatedAtTimestamp.bind(ctx);
   ctx.state.canDeleteComment = ctx.canDeleteComment.bind(ctx);
 
   return next();

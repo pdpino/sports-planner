@@ -26,7 +26,6 @@ router.get('compoundOwners', '/', async (ctx) => {
 
   await ctx.render('compoundOwners/index', {
     compoundOwners,
-    newcompoundOwnerPath: ctx.router.url('compoundOwnerNew'),
   });
 });
 

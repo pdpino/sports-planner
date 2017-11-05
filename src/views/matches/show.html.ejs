@@ -1,7 +1,7 @@
 <div class="center">
   <h1><%= match.name %></h1>
   <p>
-    Fecha: <%= match.date%>
+    Fecha: <%= prettyTimestamp(match.date) %>
 
     Deporte: <%= match.sport.name %>
   </p>
@@ -10,6 +10,12 @@
     <%- include('../_buttons/edit', { editPath: editMatchPath }) %>
 
     <%- include('../_buttons/delete', { deletePath: deleteMatchPath }) %>
+  <% } %>
+
+  <% if(canEnableReviews) { %>
+    <form action="<%= enableReviews %>" method="post">
+      <input type="submit" value="Activar reviews"/>
+    </form>
   <% } %>
 
 
@@ -88,6 +94,10 @@
   <%- include('../comments/index', { comments }) %>
   <%- include('../comments/new') %>
 
+  <% if(reviewsEnabled) { %>
+    <%- include('../playerReviews/index-pending', { pendingReviews }) %>
+    <%- include('../playerReviews/index-done', { doneReviews }) %>
+  <% } %>
 
   <%- include('../_buttons/back', { backPath: matchesPath, message: 'Volver a todos los partidos' }) %>
 

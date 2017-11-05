@@ -72,14 +72,10 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     player.hasMany(models.teamComment);
     player.hasMany(models.matchComment);
 
-    player.hasMany(models.wallComment, {
-      as: 'commentedWalls',
-      foreignKey: 'commenterId',
-    });
-    player.hasMany(models.wallComment, {
-      as: 'myWallComments',
-      foreignKey: 'wallPlayerId',
-    });
+    player.hasMany(models.wallComment, { as: 'commentedWalls', foreignKey: 'commenterId' });
+    player.hasMany(models.wallComment, { as: 'myWallComments', foreignKey: 'wallPlayerId' });
+
+    player.hasMany(models.playerReview, { as: 'reviews', foreignKey: 'reviewedId' });
 
     player.addScope('defaultScope', {
       include: [{
@@ -218,6 +214,13 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     });
   }
 
+  player.prototype.getDoneReviews = function(){
+    return this.getReviews({
+      where: {
+        isPending: false,
+      }
+    });
+  }
 
   return player;
 };

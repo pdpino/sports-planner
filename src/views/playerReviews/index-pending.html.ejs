@@ -1,0 +1,32 @@
+<%# Provide:
+  reviews,
+  %>
+
+<div>
+  <h4>Reviews pendientes:</h4>
+  <% if(pendingReviews.length > 0) { %>
+    <ul>
+      <% pendingReviews.forEach((review) => { %>
+        <li>
+          <%= review.reviewed.getName() %>
+
+          <form action="<%= createPlayerReviewPath(review.reviewed) %>" method="post">
+            <div>
+              <label for="rating">Rating</label>
+              <input type="number" name="rating" value="1" />
+            </div>
+            <div>
+              <label for="content">Comentario</label>
+              <input type="textarea" name="content" />
+            </div>
+            <input type="submit" value="Calificar" />
+          </form>
+
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    No hay reviews pendientes
+  <% } %>
+
+</div>

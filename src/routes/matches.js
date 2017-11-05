@@ -6,6 +6,7 @@ const notifications = require('../services/notifications');
 const invitedPlayersRouter = require('./invitedPlayers');
 const invitedTeamsRouter = require('./invitedTeams');
 const matchCommentsRouter = require('./matchComments');
+const playerReviewsRouter = require('./playerReviews');
 
 const router = new KoaRouter();
 
@@ -40,7 +41,6 @@ router.get('matches', '/', async (ctx) => {
   await ctx.render('matches/index', {
     matches,
     hasCreatePermission: ctx.state.isPlayerLoggedIn,
-    matchPath: match => ctx.router.url('match', { id: match.id }),
     newMatchPath: ctx.router.url('matchNew'),
   });
 });
@@ -227,6 +227,14 @@ router.get('match', '/:id', async (ctx) => {
   const canComment = await match.isPlayerInvited(ctx.state.currentPlayer);
   // REVIEW: this is being called twice, once in requireSeeMatchPermission and once here
 
+  const reviewsEnabled = match.areReviewsEnabled();
+  const pendingReviews = reviewsEnabled &&
+    await match.getPendingReviewsFromUser(ctx.state.currentUser);
+  const doneReviews = reviewsEnabled &&
+    await match.getDoneReviewsFromUser(ctx.state.currentUser);
+
+  const canEnableReviews = await match.canEnableReviews({ hasModifyPermission });
+
   await ctx.render('matches/show', {
     match,
     hasModifyPermission,
@@ -234,6 +242,15 @@ router.get('match', '/:id', async (ctx) => {
     invitedTeams,
     schedule,
     field,
+    reviewsEnabled,
+    canEnableReviews,
+    pendingReviews,
+    doneReviews,
+    enableReviews: ctx.router.url('playerReviewEnable', { matchId: match.id }),
+    createPlayerReviewPath: (player) => ctx.router.url('playerReviewCreate', {
+      matchId: match.id,
+      playerId: player.id,
+    }),
     canComment,
     comments,
     createCommentPath: ctx.router.url('matchCommentCreate', { matchId: match.id }),
@@ -302,6 +319,16 @@ router.use(
     return next();
   },
   matchCommentsRouter.routes(),
+);
+
+router.use(
+  '/:matchId/reviews',
+  async (ctx, next) => {
+    ctx.state.match = await ctx.findById(ctx.orm.match, ctx.params.matchId);
+
+    return next();
+  },
+  playerReviewsRouter.routes(),
 );
 
 module.exports = router;

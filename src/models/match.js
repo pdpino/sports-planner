@@ -2,15 +2,15 @@ const Sequelize = require('sequelize');
 const moment = require('moment');
 const helpers = require('./helpers');
 
-const unWrapDate = helpers.getHookFunction(function (fullDate){
-  const date = moment(fullDate, "YYYY MM DD H:mm");
-  return {
+const unWrapDate = helpers.getHookFunction(function (match){
+  const date = moment(match.date, "YYYY MM DD H:mm");
+  Object.assign(match, {
     dateYear: date.format('YYYY'),
     dateMonth: date.format('MM'),
     dateDay: date.format('DD'),
     dateHour: date.format('H'),
     dateMinute: date.format('mm'),
-  };
+  });
 });
 
 module.exports = function definematch(sequelize, DataTypes) {
@@ -19,6 +19,9 @@ module.exports = function definematch(sequelize, DataTypes) {
       type: DataTypes.STRING,
     },
     isPublic: {
+      type: DataTypes.BOOLEAN,
+    },
+    isDone: {
       type: DataTypes.BOOLEAN,
     },
     date: {
@@ -34,6 +37,7 @@ module.exports = function definematch(sequelize, DataTypes) {
     match.hasOne(models.schedule);
 
     match.hasMany(models.matchComment, { as: 'comments' });
+    match.hasMany(models.playerReview);
 
     match.addScope('withSport', {
       include: [{
@@ -167,6 +171,54 @@ module.exports = function definematch(sequelize, DataTypes) {
     return isPlayerInvited;
   }
 
+  match.prototype.isInThePast = function(){
+    return moment().isAfter(this.date);
+  }
+
+  match.prototype.canEnableReviews = function(options){
+    return !this.isDone && this.isInThePast() &&
+      (options.hasModifyPermission || this.hasModifyPermission(options.player));
+  }
+
+  match.prototype.areReviewsEnabled = function(){
+    return this.isDone && this.isInThePast();
+  }
+
+  function getReviewsFromUser(match, reviewerUser, isPending){
+    return match.getPlayerReviews({
+      where: {
+        isPending,
+        reviewerId: reviewerUser.id,
+      }
+    });
+  }
+
+  match.prototype.getPendingReviewsFromUser = function(reviewerUser){
+    return getReviewsFromUser(this, reviewerUser, true);
+  }
+
+  match.prototype.getDoneReviewsFromUser = function(reviewerUser){
+    return getReviewsFromUser(this, reviewerUser, false);
+  }
+
+  match.prototype.getPendingReview = async function(reviewerUser, reviewedPlayer){
+    if (!reviewerUser || !reviewedPlayer) {
+      return null;
+    }
+
+    const pendingReviews = await this.getPlayerReviews({
+      where: {
+        reviewerId: reviewerUser.id,
+        reviewedId: reviewedPlayer.id,
+        isPending: true,
+      }
+    });
+    return pendingReviews[0];
+  }
+
+  match.prototype.hasPendingReview = function(reviewerUser, reviewedPlayer){
+    return this.getPendingReview(reviewerUser, reviewedPlayer);
+  }
 
   // async function assertNotEmptyName(instance){
   //   if (!instance.name){
