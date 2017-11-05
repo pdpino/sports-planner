@@ -1,15 +1,21 @@
 <div class="center">
   <h1><%= match.name %></h1>
   <p>
-    Fecha: <%= match.date%>
+    Fecha: <%= prettyTimestamp(match.date) %>
 
-    Deporte: <%= sport %>
+    Deporte: <%= match.sport.name %>
   </p>
 
   <% if (hasModifyPermission) { %>
     <%- include('../_buttons/edit', { editPath: editMatchPath }) %>
 
     <%- include('../_buttons/delete', { deletePath: deleteMatchPath }) %>
+  <% } %>
+
+  <% if(canEnableReviews) { %>
+    <form action="<%= enableReviews %>" method="post">
+      <input type="submit" value="Activar reviews"/>
+    </form>
   <% } %>
 
 
@@ -74,6 +80,26 @@
     <form action="<%= newInvitedTeamPath %>">
         <input type="submit" value="Invitar equipo" />
     </form>
+  <% } %>
+
+  <% if(schedule && field) { %>
+    <h4> Cancha para el partido: </h4>
+    <%= field.name %>
+    <%= schedule.status %>
+    <%= schedule.hours %>
+    <%= prettyTimestamp(schedule.date) %>
+  <% } else { %>
+    No hay canchas pedidas.
+  <% } %>
+
+  <%- include('../comments/index', { comments }) %>
+  <%- include('../comments/new') %>
+
+  <% if(reviewsEnabled) { %>
+    <%- include('../playerReviews/index-pending', { pendingReviews }) %>
+    <%- include('../playerReviews/index-done', { doneReviews }) %>
+
+    <%- include('../compoundReviews/show') %>
   <% } %>
 
   <%- include('../_buttons/back', { backPath: matchesPath, message: 'Volver a todos los partidos' }) %>

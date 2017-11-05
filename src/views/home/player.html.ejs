@@ -27,12 +27,6 @@
       <input type="submit" value="Ver recintos"/>
   </form>
 
-  <div>
-    <h2>Notificaciones</h2>
-    <ul>
-      <% notifications.forEach((notification) => { %>
-        <li> <%= notification.toString() %> </li>
-      <% }); %>
-    </ul>
-  </div>
+  <%- include('../notifications/index') %>
+
 </div>

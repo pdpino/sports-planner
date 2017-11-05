@@ -1,0 +1,19 @@
+<%# Provide:
+  reviews,
+  %>
+
+<div>
+  <h4>Reviews:</h4>
+  <% if(reviews.length > 0) { %>
+    <ul>
+      <% reviews.forEach((review) => { %>
+        <li>
+          <%- include('./show-done', { review }) %>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    No tiene reviews
+  <% } %>
+
+</div>

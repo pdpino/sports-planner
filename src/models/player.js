@@ -1,15 +1,20 @@
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const _ = require('lodash');
+const helpers = require('./helpers');
 
-async function getUserObject(models, userId){
-  const user = await models.user.findById(userId);
-  return { // REVIEW: replace this by a js method (like assign)?
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    photo: user.photo,
-  };
+function calculateAge(player){
+  // OPTIMIZE this function? dates can be substracted
+  const today = new Date();
+
+  const year = player.birthday.substring(0,4);
+  const month = player.birthday.substring(5,7);
+  const day = player.birthday.substring(8,10);
+
+  const dateBirthday = new Date(year, month-1, day);
+  const diff = today - dateBirthday;
+
+  player.age = Math.floor(diff/(1000*60*60*24*365.25));
 }
 
 module.exports = function defineplayer(sequelize, DataTypes) {
@@ -21,6 +26,7 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     'accepted',
   ];
   const genders = ['masculino', 'femenino'];
+
   const player = sequelize.define('player', {
     birthday: {
       type: DataTypes.DATEONLY,
@@ -29,9 +35,6 @@ module.exports = function defineplayer(sequelize, DataTypes) {
         notEmpty: {
           msg: "Debes ingresar tu fecha de nacimiento"
         },
-        // notEmpty: { // notNull?
-        //   msg: "Debes ingresar una fecha de nacimiento válida"
-        // },
         isBefore: {
           args: [ String(new Date()) ],
           msg: "No puedes ingresar una fecha de nacimiento en el futuro"
@@ -65,38 +68,53 @@ module.exports = function defineplayer(sequelize, DataTypes) {
       as: { singular: 'friend', plural: 'friends' },
       through: models.friendship,
     });
+
+    player.hasMany(models.teamComment);
+    player.hasMany(models.matchComment);
+
+    player.hasMany(models.wallComment, { as: 'commentedWalls', foreignKey: 'commenterId' });
+    player.hasMany(models.wallComment, { as: 'myWallComments', foreignKey: 'wallPlayerId' });
+
+    player.hasMany(models.playerReview, { as: 'reviews', foreignKey: 'reviewedId' });
+
+    player.hasMany(models.compoundReview);
+
+
+    player.addScope('defaultScope', {
+      include: [{
+        model: sequelize.models.user
+      }]
+    }, {
+      override: true
+    });
   };
 
-  /** Load user info (email, names and photo) into player object **/
-  player.afterFind(async function loadUser(result, options) {
-    // REVIEW: avoid DB query?
-    if(!result){
-      return;
-    }
+  player.afterFind(helpers.copyUserInfo);
 
-    if(result.constructor == Array) {
-      for (let i = 0; i < result.length; i++) {
-          Object.assign(result[i], await getUserObject(sequelize.models, result[i].userId));
-      }
-    } else {
-      Object.assign(result, await getUserObject(sequelize.models, result.userId));
-    }
-  });
+  player.afterFind(helpers.getHookFunction(calculateAge));
 
   player.getGenders = function() { return genders; }
 
   player.prototype.getName = function() {
-    return `${this.firstName} ${this.lastName}`;
+    // NOTE: if the player was found using find(), firstName and lastName are copied into the player
+    // if not, then try to use the user's names
+    if (this.firstName){
+      return `${this.firstName} ${this.lastName}`;
+    } else if (this.user) {
+      return `${this.user.firstName} ${this.user.lastName}`;
+    }
+    return '';
   }
 
-  player.canAddFriend = function(status){ return status === 'not' };
-  player.canDeleteFriend = function(status){ return status === 'accepted' };
-  player.canAcceptFriend = function(status){ return status === 'sent' };
-  player.waitingFriend = function(status){ return status === 'waiting' };
+  player.canAddFriend = (status) => status === 'not';
+  player.canDeleteFriend = (status) => status === 'accepted';
+  player.canAcceptFriend = (status) => status === 'sent';
+  player.waitingFriend = (status) => status === 'waiting';
+  player.hasCommentPermission = (status) => status === 'self' || status === 'accepted';
 
   player.prototype.getFriendshipStatus = async function(friend){
     if (this.id === friend.id){
-      return false;
+      return 'self';
     }
     const results = await player.findAll({
       include: [{
@@ -157,6 +175,72 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     });
 
     return _.unionWith(friendsSide1, friendsSide2, function(a, b) { return a.id === b.id; });
+  }
+
+  player.prototype.askFriend = function(friend){
+    return this.addFriend(friend, {
+      through: {
+        isAccepted: false,
+      }
+    });
+  }
+
+  player.prototype.acceptFriend = function(friend){
+    // REVIEW: a bit of a hack,
+    // the friends accepts the player because the friend added the player
+    return friend.addFriend(this, {
+      through: {
+        isAccepted: true,
+      }
+    });
+  }
+
+  player.prototype.askForMatch = async function(match){
+    await this.addMatch(match, {
+      through: {
+        status: 'asked' // HACK: invitation status harcoded
+      }
+    });
+  }
+
+  player.prototype.updateMatch = async function(match, params){
+    await this.addMatch(match, {
+      through: {
+        status: params.status || match.isPlayerInvited.status,
+        isAdmin: params.isAdmin,
+      }
+    });
+  }
+
+  player.prototype.playSport = async function(sport, position){
+    await this.addSport(sport, {
+      through: {
+        position,
+      }
+    });
+  }
+
+  player.prototype.getMatch = function(matchId){
+    return helpers.findOneAssociatedById(this, 'getMatches', matchId);
+  }
+
+  player.prototype.getSport = function(sportId){
+    return helpers.findOneAssociatedById(this, 'getSports', sportId);
+  }
+
+  player.prototype.receiveWallComment = function(commenter, params){
+    return this.createMyWallComment({
+      commenterId: commenter.id,
+      content: params.content,
+    });
+  }
+
+  player.prototype.getDoneReviews = function(){
+    return this.getReviews({
+      where: {
+        isPending: false,
+      }
+    });
   }
 
   return player;

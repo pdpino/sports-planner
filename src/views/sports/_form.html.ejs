@@ -4,7 +4,7 @@
   <%- include('../_error/snippet', { errors: locals.errors }) %>
 
   <div>
-    <form action="<%= submitSportPath %>" method="post">
+    <form action="<%= submitSportPath %>" method="post" enctype="multipart/form-data">
       <% if(!sport.isNewRecord) { %>
         <div>
           <input type="hidden" name="_method" value="patch" />
@@ -15,8 +15,8 @@
         <input type="text" name="name" value="<%= sport.name %>" required/>
       </div>
       <div>
-        <label for="logo">Logo</label>
-        <input type="text" name="logo" value="<%= sport.logo %>"></input>
+        <label for="logo">Foto</label>
+        <input type="file" name="logo" accept="image/*"/>
       </div>
       <div>
         <label for="isIndividual">Individual?</label>

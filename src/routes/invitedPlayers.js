@@ -1,31 +1,19 @@
-const sendInvitationPlayerMail = require('../mailers/invitation-player');
 const KoaRouter = require('koa-router');
+const _ = require('lodash');
+
 
 const router = new KoaRouter();
 
-/** Boolean if searchedMatch is in invitedPlayers **/
-function isPlayerInvited(searchedPlayer, invitedPlayers){
-  return Boolean(invitedPlayers.find((player) => player.id == searchedPlayer.id));
-}
-
-/** Return the difference between allPlayers and invitedPlayers **/
-function getInvitablePlayers(allPlayers, invitedPlayers){
-  // OPTIMIZE ???
-  return allPlayers.filter( (anyPlayer) => {
-    return !isPlayerInvited(anyPlayer, invitedPlayers);
-  });
-}
-
-/** Return the match played by player, searching with matchId */
-async function findInvitedPlayerById(match, playerId) {
-  const invitedPlayers = await match.getPlayers({ where: { id: playerId } });
-  return (invitedPlayers.length === 1) ? invitedPlayers[0] : null;
+function getParams(params){
+  const filteredParams = _.pick(params, 'isAdmin', 'status');
+  filteredParams.isAdmin = Boolean(filteredParams.isAdmin);
+  return filteredParams;
 }
 
 router.get('invitedPlayerNew', '/new', async (ctx) => {
   await ctx.render('invitedPlayers/new', {
     match: ctx.state.match,
-    invitablePlayers: getInvitablePlayers(ctx.state.invitablePlayers, ctx.state.invitedPlayers),
+    // invitablePlayers: ctx.state.invitablePlayers,
     submitInvitedPlayerPath: ctx.router.url('invitedPlayerCreate', {
       matchId: ctx.state.match.id
     }),
@@ -34,27 +22,16 @@ router.get('invitedPlayerNew', '/new', async (ctx) => {
 });
 
 router.post('invitedPlayerCreate', '/', async (ctx) => {
-  const player = await ctx.state.findById(ctx.orm.player, ctx.request.body.playerId);
+  const player = await ctx.findById(ctx.orm.player, ctx.request.body.playerId);
   try {
-    await ctx.state.match.addPlayer(player, {
-      through: { status: 'sent' }, // HACK: invitation status harcoded
-    });
-    await ctx.state.sendNotification(ctx.state.currentPlayer, player, {
-      kind: 'playerInvitedToMatch',
-      entityName: ctx.state.currentPlayer.getName(),
-      eventName: ctx.state.match.name,
-    });
-    sendInvitationPlayerMail(ctx, player.email, {
-      eventType: 'Partido',
-      eventName: ctx.state.match.name,
-      invitedBy: ctx.state.currentPlayer.getName(),
-    });
+    await ctx.state.match.invitePlayer(player);
+    await ctx.invitePlayerToMatch(ctx.state.currentPlayer, player, ctx.state.match);
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
   } catch (validationError) {
     await ctx.render('invitedPlayers/new', {
       match: ctx.state.match,
-      invitablePlayers: getInvitablePlayers(ctx.state.invitablePlayers, ctx.state.invitedPlayers),
-      errors: ctx.state.parseValidationError(validationError),
+      // invitablePlayers: ctx.state.invitablePlayers,
+      errors: ctx.parseValidationError(validationError),
       submitInvitedPlayerPath: ctx.router.url('invitedPlayerCreate', { matchId: ctx.state.match.id }),
       cancelPath: ctx.router.url('match', { id: ctx.state.match.id }),
     });
@@ -62,8 +39,8 @@ router.post('invitedPlayerCreate', '/', async (ctx) => {
 });
 
 router.get('invitedPlayerEdit', '/:id/edit', async (ctx) => {
-  const invitedPlayer = await findInvitedPlayerById(ctx.state.match, ctx.params.id);
-  const chooseStatuses = ctx.state.eligibleStatuses(invitedPlayer.isPlayerInvited.status, true);
+  const invitedPlayer = await ctx.state.match.getPlayer(ctx.params.id);
+  const chooseStatuses = ctx.eligibleStatuses(invitedPlayer.isPlayerInvited.status, true);
 
   await ctx.render('invitedPlayers/edit', {
     match: ctx.state.match,
@@ -82,23 +59,20 @@ router.get('invitedPlayerEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('invitedPlayerUpdate', '/:id', async (ctx) => {
-  const invitedPlayer = await findInvitedPlayerById(ctx.state.match, ctx.params.id);
-  const newStatus = ctx.request.body.status || invitedPlayer.isPlayerInvited.status;
-  const isAdmin = Boolean(ctx.request.body.isAdmin);
-  const chooseStatuses = ctx.state.eligibleStatuses(invitedPlayer.isPlayerInvited.status, true);
+  const invitedPlayer = await ctx.state.match.getPlayer(ctx.params.id);
+
+  const chooseStatuses = ctx.eligibleStatuses(invitedPlayer.isPlayerInvited.status, true);
+  const params = getParams(ctx.request.body);
 
   try {
-    await ctx.state.match.addPlayer(invitedPlayer, { through: {
-      status: newStatus,
-      isAdmin,
-    }});
+    await ctx.state.match.updatePlayerInvitation(invitedPlayer, params.status, params.isAdmin);
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
   } catch (validationError) {
     await ctx.render('invitedPlayers/edit', {
       match: ctx.state.match,
       invitedPlayer,
       chooseStatuses,
-      errors: ctx.state.parseValidationError(validationError),
+      errors: ctx.parseValidationError(validationError),
       submitInvitedPlayerPath: ctx.router.url('invitedPlayerUpdate', {
         matchId: ctx.state.match.id,
         id: invitedPlayer.id

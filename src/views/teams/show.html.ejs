@@ -2,9 +2,9 @@
 
   <h1><%= team.name %></h1>
   <p>
-    Logo: <%= team.logo %>
+    <img class="medium-logo" src="<%= team.logo %>" alt="logo">
 
-    Deporte: <%= sport %>
+    Deporte: <%= team.sport.name %>
   </p>
 
   <% if (hasModifyPermission) { %>
@@ -27,7 +27,7 @@
              <% if (hasModifyPermission) { %>
                <%- include('../_buttons/edit', {
                  editPath: editTeamMemberPath(teamMember),
-                 message: 'Editar información personal',
+                 message: 'Editar miembro de equipo',
                }) %>
              <% } %>
             </a>
@@ -78,6 +78,19 @@
 
   </div>
 
-  <%- include('../_buttons/back', { backPath: teamsPath, message: 'Volver a todos los equipos' }) %>
+
+  <% if (canSeePrivateComments) { %>
+    <%- include('../comments/index', { comments: privateComments, isPublic: false }) %>
+    <%- include('../comments/new', { isPublic: false }) %>
+  <% } %>
+
+  <%- include('../comments/index', { comments: publicComments, isPublic: true }) %>
+  <%- include('../comments/new', { isPublic: true }) %>
+
+
+  <%- include('../_buttons/back', {
+    backPath: teamsPath,
+    message: 'Volver a todos los equipos'
+  }) %>
 
 </div>

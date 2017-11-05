@@ -1,0 +1,22 @@
+<%# Provide:
+  pendingReviews,
+  %>
+
+<div>
+  <h4>Reviews pendientes:</h4>
+  <% if(pendingReviews.length > 0) { %>
+    <ul>
+      <% pendingReviews.forEach((review) => { %>
+        <li>
+          <%= review.reviewed.getName() %>
+
+          <%- include('../_reviews/new', { createReviewPath: createPlayerReviewPath(review.reviewed) }) %>
+
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    No hay reviews pendientes
+  <% } %>
+
+</div>

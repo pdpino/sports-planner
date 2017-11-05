@@ -1,6 +1,6 @@
 module.exports = {
   up(queryInterface, Sequelize) {
-    // HACK: copied from model
+    // DEPRECATED: this constraint is deleted in the next migration
     const notificationKinds = [
       'friendshipAsked',
       'friendshipAccepted',

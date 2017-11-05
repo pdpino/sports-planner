@@ -4,12 +4,12 @@
 <ul>
   <% fields.forEach((field) => { %>
     <li>
-      <a class="lilink" href=<%= getFieldPath(field) %>>
+      <a class="lilink" href="<%= getFieldPath(field) %>">
         <img
-        <% if(locals.logoClassName) { %>
-          class="<%= logoClassName %>"
-        <% } %>
-        src="<%= field.photo %>" width="<%= size %>" height="<%= size %>"/>
+          <% if(locals.logoClassName) { %>
+            class="<%= logoClassName %>"
+          <% } %>
+          src="<%= field.photo %>" />
         <div>
           <%= field.name %>
           <br />

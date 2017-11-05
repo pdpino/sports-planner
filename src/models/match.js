@@ -1,29 +1,17 @@
+const Sequelize = require('sequelize');
 const moment = require('moment');
+const helpers = require('./helpers');
 
-function unFoldDate(fullDate){
-  const date = moment(fullDate, "YYYY MM DD H:mm");
-  return {
+const unWrapDate = helpers.getHookFunction(function (match){
+  const date = moment(match.date, "YYYY MM DD H:mm");
+  Object.assign(match, {
     dateYear: date.format('YYYY'),
     dateMonth: date.format('MM'),
     dateDay: date.format('DD'),
     dateHour: date.format('H'),
     dateMinute: date.format('mm'),
-  };
-}
-
-async function setDate(result, options) {
-  if (!result) {
-    return;
-  }
-
-  if (result.constructor == Array) {
-    for (let i = 0; i < result.length; i++) {
-      Object.assign(result[i], unFoldDate(result[i].date));
-    }
-  } else {
-    Object.assign(result, unFoldDate(result.date));
-  }
-}
+  });
+});
 
 module.exports = function definematch(sequelize, DataTypes) {
   const match = sequelize.define('match', {
@@ -31,6 +19,9 @@ module.exports = function definematch(sequelize, DataTypes) {
       type: DataTypes.STRING,
     },
     isPublic: {
+      type: DataTypes.BOOLEAN,
+    },
+    isDone: {
       type: DataTypes.BOOLEAN,
     },
     date: {
@@ -43,6 +34,43 @@ module.exports = function definematch(sequelize, DataTypes) {
     match.belongsTo(models.sport);
     match.belongsToMany(models.player, { through: models.isPlayerInvited });
     match.belongsToMany(models.team, { through: models.isTeamInvited });
+    match.hasOne(models.schedule);
+
+    match.hasMany(models.matchComment, { as: 'comments' });
+    match.hasMany(models.playerReview);
+    match.hasMany(models.compoundReview);
+
+    match.addScope('withSport', {
+      include: [{
+        model: models.sport
+      }]
+    });
+
+    match.addScope('public', {
+      where: {
+        isPublic: true
+      }
+    });
+
+    match.addScope('private', function(playerId){
+      return {
+        where: {
+          isPublic: false
+        },
+        include: [{
+          model: models.player,
+          where: {
+            id: playerId,
+          },
+          through: {
+            where: {
+              status: { [Sequelize.Op.not]: 'rejectedByAdmin' }
+              // HACK: invitation status hardcoded
+            }
+          }
+        }]
+      };
+    });
   };
 
   /** Boolean indicating if the player has modify permission on the match **/
@@ -56,14 +84,56 @@ module.exports = function definematch(sequelize, DataTypes) {
     });
   }
 
-  match.afterCreate(setDate); // FIXME: not working for build()
-  match.afterFind(setDate);
+  match.prototype.invitePlayer = async function(player){
+    await this.addPlayer(player, {
+      through: {
+        status: 'sent' // HACK: invitation status harcoded
+      }
+    });
+  }
+
+  match.prototype.invitePlayers = async function(players){
+    // TODO: merge with invitePlayer function (use duck typing)
+    await this.addPlayers(players, {
+      through: {
+        status: 'sent' // HACK: invitation status harcoded
+      }
+    });
+  }
+
+  match.prototype.updatePlayerInvitation = async function(player, status, isAdmin){
+    await this.addPlayer(player, {
+      through: {
+        status: status || player.isPlayerInvited.status,
+        isAdmin,
+      }
+    });
+  }
+
+  match.prototype.inviteTeam = async function(team){
+    await this.addTeam(team, {
+      through: {
+        status: 'sent' // HACK: invitation status harcoded
+      }
+    });
+  }
+
+  match.prototype.updateTeamInvitation = async function(team, newStatus){
+    await this.addTeam(team, {
+      through: {
+        status: newStatus || team.isTeamInvited.status
+      }
+    });
+  }
+
+  match.afterCreate(unWrapDate); // FIXME: not working for build()
+  match.afterFind(unWrapDate);
 
   match.getDefaultName = function(player){
     return (player.firstName) ? `Partido de ${player.firstName}` : 'Partido';
   }
 
-  match.prototype.getAdmin = async function(){
+  match.prototype.getAdmins = async function(){
     const matchAdmins = await this.getPlayers({
       through: {
         where: {
@@ -71,7 +141,117 @@ module.exports = function definematch(sequelize, DataTypes) {
         }
       }
     });
-    return (matchAdmins && matchAdmins.length > 0) ? matchAdmins[0] : null;
+    return matchAdmins || [];
+  }
+
+  match.prototype.getPlayer = function(playerId){
+    return helpers.findOneAssociatedById(this, 'getPlayers', playerId);
+  }
+
+  match.prototype.getTeam = function(teamId){
+    return helpers.findOneAssociatedById(this, 'getTeams', teamId);
+  }
+
+  match.prototype.makeComment = function(player, params){
+    return this.createComment({
+      playerId: player.id,
+      content: params.content,
+    });
+  }
+
+  match.prototype.isPlayerInvited = async function(player){
+    const isPlayerInvited = player &&
+      await this.hasPlayer(player, {
+        through: {
+          where: {
+            status: { [Sequelize.Op.not]: 'rejectedByAdmin' }
+            // HACK: invitation status hardcoded
+          }
+        }
+      });
+    return isPlayerInvited;
+  }
+
+  match.prototype.isInThePast = function(){
+    return moment().isAfter(this.date);
+  }
+
+  match.prototype.canEnableReviews = function(options){
+    return !this.isDone && this.isInThePast() &&
+      (options.hasModifyPermission || this.hasModifyPermission(options.player));
+  }
+
+  match.prototype.areReviewsEnabled = function(){
+    return this.isDone && this.isInThePast();
+  }
+
+  function getReviewsFromUser(match, reviewerUser, isPending){
+    return match.getPlayerReviews({
+      where: {
+        isPending,
+        reviewerId: reviewerUser.id,
+      }
+    });
+  }
+
+  match.prototype.getPendingReviewsFromUser = function(reviewerUser){
+    return getReviewsFromUser(this, reviewerUser, true);
+  }
+
+  match.prototype.getDoneReviewsFromUser = function(reviewerUser){
+    return getReviewsFromUser(this, reviewerUser, false);
+  }
+
+  match.prototype.getCompoundReviewFromUser = async function(reviewerPlayer){
+    const compoundReviews = await this.getCompoundReviews({
+      where: {
+        playerId: reviewerPlayer.id,
+        // REVIEW: should the compound be included?
+      }
+    });
+    return compoundReviews[0];
+  }
+
+  match.prototype.getPendingReview = async function(reviewerUser, reviewedPlayer){
+    if (!reviewerUser || !reviewedPlayer) {
+      return null;
+    }
+
+    const pendingReviews = await this.getPlayerReviews({
+      where: {
+        reviewerId: reviewerUser.id,
+        reviewedId: reviewedPlayer.id,
+        isPending: true,
+      }
+    });
+    return pendingReviews[0];
+  }
+
+  match.prototype.hasPendingReview = function(reviewerUser, reviewedPlayer){
+    return this.getPendingReview(reviewerUser, reviewedPlayer);
+  }
+
+  /** reviewer is a person **/
+  match.prototype.createPendingPlayerReview = function(reviewer, reviewedPlayerId){
+    return this.createPlayerReview({
+      isPending: true,
+      reviewerId: reviewer.userId,
+      reviewedId: reviewedPlayerId,
+    });
+  }
+
+  match.prototype.createPendingCompoundReview = function(player, compound){
+    return this.createCompoundReview({
+      isPending: true,
+      playerId: player.id,
+      compoundId: compound.id,
+    });
+  }
+
+  match.prototype.markAsDone = function(){
+    return this.update({
+      isDone: true
+    });
   }
 
   // async function assertNotEmptyName(instance){

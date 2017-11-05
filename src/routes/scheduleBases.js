@@ -52,7 +52,7 @@ router.get('scheduleBases', '/', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
   const scheduleBases= await ctx.state.field.getScheduleBases();
   await ctx.render('scheduleBases/index', {
-    hasModifyPermission: ctx.state.hasOwnerModifyPermission(ctx, compoundOwner),
+    hasModifyPermission: ctx.hasModifyPermission(compoundOwner),
     scheduleBases,
     newScheduleBasePath: ctx.router.url('scheduleBaseNew',{fieldId:ctx.state.field.id, compoundId:ctx.state.compound.id}),
   });
@@ -60,7 +60,7 @@ router.get('scheduleBases', '/', async (ctx) => {
 
 router.get('scheduleBaseNew', '/new', async (ctx) => {
   const compoundOwner = await ctx.state.compound.getCompoundOwner();
-  ctx.state.requireOwnerModifyPermission(ctx, compoundOwner);
+  ctx.requireOwnerModifyPermission(compoundOwner);
 
   const arrayOfHour= arrayOfHours(ctx.state.field);
     console.log(arrayOfHour[0]);
@@ -86,7 +86,7 @@ router.get('scheduleBaseNew', '/new', async (ctx) => {
 router.post('scheduleBaseCreate', '/', async (ctx) => {
 
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
-  ctx.state.requireOwnerModifyPermission(ctx, compoundOwner);
+  ctx.requireOwnerModifyPermission(compoundOwner);
   console.log("HOLAAA");
   try {
     for (i=0; i<7*ctx.state.field.modules;i++){
@@ -117,7 +117,7 @@ router.post('scheduleBaseCreate', '/', async (ctx) => {
 
 router.get('scheduleBaseEdit', '/edit', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
-  ctx.state.requireOwnerModifyPermission(ctx, compoundOwner);
+  ctx.requireOwnerModifyPermission(compoundOwner);
   const scheduleBases = await ctx.state.field.getScheduleBases();
   scheduleBases.sort(function(a, b) {
     return a.id - b.id;
@@ -139,7 +139,7 @@ router.get('scheduleBaseEdit', '/edit', async (ctx) => {
 
 router.patch('scheduleBaseUpdate', '/', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
-  ctx.state.requireOwnerModifyPermission(ctx, compoundOwner);
+  ctx.requireOwnerModifyPermission(compoundOwner);
   const scheduleBases = await ctx.state.field.getScheduleBases();
   scheduleBases.sort(function(a, b) {
     return a.id - b.id;
@@ -174,7 +174,7 @@ router.get('scheduleBase', '/', async (ctx) => {
   const scheduleBase = await ctx.orm.scheduleBase.findById(ctx.params.id);
   const field= await scheduleBase.getField();
   await ctx.render('scheduleBases/show', {
-    hasModifyPermission: ctx.state.hasOwnerModifyPermission(ctx, compoundOwner),
+    hasModifyPermission: ctx.hasModifyPermission(compoundOwner),
     scheduleBase,
     scheduleBasesPath: ctx.router.url('scheduleBases', {fieldId: ctx.state.field.id}),
     fieldPath: field => ctx.router.url('field', { id: field.id, compoundId:ctx.state.compound.id }),
@@ -185,7 +185,7 @@ router.get('scheduleBase', '/', async (ctx) => {
 
 router.delete('scheduleBaseDelete', '/', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
-  ctx.state.requireOwnerModifyPermission(ctx, compoundOwner);
+  ctx.requireOwnerModifyPermission(compoundOwner);
   const scheduleBases = await ctx.state.field.getScheduleBases();
   for (i=0; i<7*ctx.state.field.modules;i++){
     console.log(scheduleBases[i]);

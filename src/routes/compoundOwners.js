@@ -1,4 +1,6 @@
 const KoaRouter = require('koa-router');
+const FileStorage= require('../services/file-storage');
+
 const router = new KoaRouter();
 
 /** Extract the User parameters from a params object (such as request.body) **/
@@ -19,26 +21,16 @@ function getCompoundOwnerParams(params){
   };
 }
 
-/** Load the owner and his user from the database **/
-async function getOwnerAndUser(ctx, compoundOwnerId){
-  // REVIEW: apparently not all calls of this need both user and compoundOwner
-  const compoundOwner = await ctx.state.findById(ctx.orm.compoundOwner, compoundOwnerId);
-  const user = compoundOwner && await compoundOwner.getUser();
-  return { compoundOwner, user };
-}
-
-
 router.get('compoundOwners', '/', async (ctx) => {
   const compoundOwners = await ctx.orm.compoundOwner.findAll();
 
   await ctx.render('compoundOwners/index', {
     compoundOwners,
-    newcompoundOwnerPath: ctx.router.url('compoundOwnerNew'),
   });
 });
 
 router.get('compoundOwnerNew', '/new', async (ctx) => {
-  ctx.state.requireNoLogin(ctx);
+  ctx.requireNoLogin();
 
   const compoundOwner = ctx.orm.compoundOwner.build(ctx.request.body);
 
@@ -50,20 +42,25 @@ router.get('compoundOwnerNew', '/new', async (ctx) => {
 });
 
 router.post('compoundOwnerCreate', '/', async (ctx) => {
-  ctx.state.requireNoLogin(ctx);
+  ctx.requireNoLogin();
 
-  const userParams = getUserParams(ctx.request.body);
-  const compoundOwnerParams = getCompoundOwnerParams(ctx.request.body);
+  const userParams = getUserParams(ctx.request.body.fields);
+  const compoundOwnerParams = getCompoundOwnerParams(ctx.request.body.fields);
 
   try {
     const user = await ctx.orm.user.create(userParams);
+    userParams.photo=FileStorage.url("user" + user.id,{});
+    await user.update(userParams);
     compoundOwnerParams.userId = user.id;
-    const compoundOwner = await ctx.orm.compoundOwner.create(compoundOwnerParams);
+    // REVIEW: create compoundOwner first to validate params ?
+    FileStorage.upload(ctx.request.body.files.photo, "user" + user.id);
+    const compoundOwner = await ctx.orm.compoundOwner.create(playerParams);
+
     ctx.redirect(ctx.router.url('compoundOwners'));
   } catch (validationError) {
     await ctx.render('compoundOwners/new', {
       compoundOwner: ctx.orm.compoundOwner.build(ctx.request.body),
-      errors: ctx.state.parseValidationError(validationError),
+      errors: ctx.parseValidationError(validationError),
       submitCompoundOwnerPath: ctx.router.url('compoundOwnerCreate'),
       cancelPath: ctx.router.url('compoundOwners'),
     });
@@ -71,9 +68,9 @@ router.post('compoundOwnerCreate', '/', async (ctx) => {
 });
 
 router.get('compoundOwnerEdit', '/:id/edit', async (ctx) => {
-  const compoundOwner = await ctx.state.findById(ctx.orm.compoundOwner, ctx.params.id);
+  const compoundOwner = await ctx.findById(ctx.orm.compoundOwner, ctx.params.id);
 
-  ctx.state.requireModifyPermission(ctx, compoundOwner.userId);
+  ctx.requireModifyPermission(compoundOwner);
 
   await ctx.render('compoundOwners/edit', {
     compoundOwner,
@@ -84,21 +81,23 @@ router.get('compoundOwnerEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('compoundOwnerUpdate', '/:id', async (ctx) => {
-  const { compoundOwner, user } = await getOwnerAndUser(ctx, ctx.params.id);
+  const compoundOwner = await ctx.findById(ctx.orm.compoundOwner, ctx.params.id);
 
-  ctx.state.requireModifyPermission(ctx, user.id);
+  ctx.requireModifyPermission(compoundOwner);
 
-  const userParams = getUserParams(ctx.request.body);
-  const compoundOwnerParams = getCompoundOwnerParams(ctx.request.body);
+  const userParams = getUserParams(ctx.request.body.fields);
+  const compoundOwnerParams = getCompoundOwnerParams(ctx.request.body.fields);
 
   try {
-    await user.update(userParams);
+    userParams.photo = FileStorage.url("user" + compoundOwner.user.id,{});
+    await compoundOwner.user.update(userParams);
+    FileStorage.upload(ctx.request.body.files.photo, "user" + compoundOwner.user.id);
     await compoundOwner.update(compoundOwnerParams);
     ctx.redirect(ctx.router.url('compoundOwner', { id: compoundOwner.id }));
   } catch (validationError) {
     await ctx.render('compoundOwners/edit', {
       compoundOwner,
-      errors: ctx.state.parseValidationError(validationError),
+      errors: ctx.parseValidationError(validationError),
       submitCompoundOwnerPath: ctx.router.url('compoundOwnerUpdate', compoundOwner.id),
       deleteCompoundOwnerPath: ctx.router.url('compoundOwnerDelete', compoundOwner.id),
       cancelPath: ctx.router.url('compoundOwner', { id: compoundOwner.id }),
@@ -107,23 +106,23 @@ router.patch('compoundOwnerUpdate', '/:id', async (ctx) => {
 });
 
 router.get('compoundOwner', '/:id', async (ctx) => {
-  const compoundOwner = await ctx.state.findById(ctx.orm.compoundOwner, ctx.params.id);
+  const compoundOwner = await ctx.findById(ctx.orm.compoundOwner, ctx.params.id);
   const compounds = await compoundOwner.getCompounds();
 
   await ctx.render('compoundOwners/show', {
     compoundOwner,
     compounds,
-    hasModifyPermission: ctx.state.hasModifyPermission(ctx, compoundOwner.userId),
+    hasModifyPermission: ctx.hasModifyPermission(compoundOwner),
     editCompoundOwnerPath: ctx.router.url('compoundOwnerEdit', compoundOwner.id),
   });
 });
 
 router.delete('compoundOwnerDelete', '/:id', async (ctx) => {
-  const { compoundOwner, user } = await getOwnerAndUser(ctx, ctx.params.id);
+  const compoundOwner = await ctx.findById(ctx.orm.compoundOwner, ctx.params.id);
 
-  ctx.state.requireModifyPermission(ctx, user.id);
-
-  await user.destroy(); // NOTE: compoundOwner.destroy() is not neccesary beause onDelete: cascade
+  ctx.requireModifyPermission(compoundOwner);
+  FileStorage.destrory("user" + compoundOwner.user.id);
+  await compoundOwner.user.destroy(); // NOTE: compoundOwner.destroy() is not neccesary beause onDelete: cascade
   ctx.redirect(ctx.router.url('compoundOwners'));
 });
 

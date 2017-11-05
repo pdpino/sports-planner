@@ -1,0 +1,18 @@
+<%# Must exist:
+  createCompoundReviewPath,
+  %>
+
+<div>
+  <h4>Review al recinto:</h4>
+  <% if(schedule) { %>
+    <% if(compoundReview.isPending) { %>
+      <%- include('../_reviews/new', { createReviewPath: createCompoundReviewPath }) %>
+    <% } else { %>
+      <%- include('./show-done', { review: compoundReview }) %>
+    <% } %>
+
+  <% } else { %>
+    No hubo recinto reservado
+  <% } %>
+
+</div>

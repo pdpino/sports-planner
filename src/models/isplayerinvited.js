@@ -28,7 +28,6 @@ module.exports = function defineisPlayerInvited(sequelize, DataTypes) {
 
   isPlayerInvited.associate = function associate(models) {
     isPlayerInvited.belongsTo(models.team);
-    // isPlayerInvited.belongsTo(models.player); // hostId
   };
 
   return isPlayerInvited;

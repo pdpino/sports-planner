@@ -1,55 +1,50 @@
 const KoaRouter = require('koa-router');
 const teamMembersRouter = require('./teamMembers');
 const teamMatchesRouter = require('./teamMatches');
+const teamCommentsRouter = require('./teamComments');
+const FileStorage= require('../services/file-storage');
 
 const router = new KoaRouter();
 
-/** Finds the name of the sportId, given all the sports **/
-function findSportName(sportId, allSports){
-  // OPTIMIZE? use a model function?
-  const sportsFound = allSports.filter(sport => sport.id == sportId);
-  return (sportsFound[0]) ? sportsFound[0].name : null;
-}
-
 router.get('teams', '/', async (ctx) => {
-  const teams = await ctx.orm.team.findAll();
+  const teams = await ctx.orm.team.scope('withSport').findAll();
 
   await ctx.render('teams/index', {
     teams,
-    sports: ctx.state.sports,
     hasCreatePermission: ctx.state.isPlayerLoggedIn,
-    getTeamSport: (team) => findSportName(team.sportId, ctx.state.sports),
-    teamPath: team => ctx.router.url('team', { id: team.id }),
     newTeamPath: ctx.router.url('teamNew'),
   });
 });
 
 router.get('teamNew', '/new', async (ctx) => {
-  ctx.state.requirePlayerLoggedIn(ctx);
+  ctx.requirePlayerLoggedIn();
 
   const team = ctx.orm.team.build();
   await ctx.render('teams/new', {
     team,
-    sports: ctx.state.sports,
+    sports: ctx.state.allSports,
     submitTeamPath: ctx.router.url('teamCreate'),
     cancelPath: ctx.router.url('teams'),
   });
 });
 
 router.post('teamCreate', '/', async (ctx) => {
-  ctx.state.requirePlayerLoggedIn(ctx);
+  ctx.requirePlayerLoggedIn();
 
   try {
-    const team = await ctx.orm.team.create(ctx.request.body);
+    const team = await ctx.orm.team.create(ctx.request.body.fields);
+    ctx.request.body.fields.logo = FileStorage.url("team" + team.id, {})
+    FileStorage.upload(ctx.request.body.files.logo, "team" + team.id);
+    await team.update(ctx.request.body.fields);
     ctx.state.currentPlayer.addTeam(team, {
       through: { isCaptain: true }
     });
-    ctx.redirect(ctx.router.url('team', { id: team.id }));
+    ctx.redirect(ctx.router.url('team', team.id));
   } catch (validationError) {
     await ctx.render('teams/new', {
       team: ctx.orm.team.build(ctx.request.body),
-      errors: ctx.state.parseValidationError(validationError),
-      sports: ctx.state.sports,
+      errors: ctx.parseValidationError(validationError),
+      sports: ctx.state.allSports,
       submitTeamPath: ctx.router.url('teamCreate'),
       cancelPath: ctx.router.url('teams'),
     });
@@ -57,31 +52,32 @@ router.post('teamCreate', '/', async (ctx) => {
 });
 
 router.get('teamEdit', '/:id/edit', async (ctx) => {
-  const team = await ctx.state.findById(ctx.orm.team, ctx.params.id);
+  const team = await ctx.findById(ctx.orm.team, ctx.params.id);
 
-  await ctx.state.requirePlayerModifyPermission(ctx, team);
+  await ctx.requirePlayerModifyPermission(team);
 
   await ctx.render('teams/edit', {
     team,
-    sports: ctx.state.sports,
+    sports: ctx.state.allSports,
     submitTeamPath: ctx.router.url('teamUpdate', team.id),
     cancelPath: ctx.router.url('team', { id: ctx.params.id }),
   });
 });
 
 router.patch('teamUpdate', '/:id', async (ctx) => {
-  const team = await ctx.state.findById(ctx.orm.team, ctx.params.id);
+  const team = await ctx.findById(ctx.orm.team, ctx.params.id);
 
-  await ctx.state.requirePlayerModifyPermission(ctx, team);
+  await ctx.requirePlayerModifyPermission(team);
 
   try {
-    await team.update(ctx.request.body);
+    await team.update(ctx.request.body.fields);
+    FileStorage.upload(ctx.request.body.files.logo,"team"+team.id);
     ctx.redirect(ctx.router.url('team', { id: team.id }));
   } catch (validationError) {
     await ctx.render('teams/edit', {
       team,
-      errors: ctx.state.parseValidationError(validationError),
-      sports: ctx.state.sports,
+      errors: ctx.parseValidationError(validationError),
+      sports: ctx.state.allSports,
       submitTeamPath: ctx.router.url('teamUpdate', team.id),
       cancelPath: ctx.router.url('team', { id: ctx.params.id }),
     });
@@ -89,18 +85,29 @@ router.patch('teamUpdate', '/:id', async (ctx) => {
 });
 
 router.get('team', '/:id', async (ctx) => {
-  const team = await ctx.state.findById(ctx.orm.team, ctx.params.id);
+  const team = await ctx.findById(ctx.orm.team.scope('withSport'), ctx.params.id);
   const sport = await team.getSport();
   const teamMembers = await team.getPlayers();
   const teamMatches = await team.getMatches();
   const hasModifyPermission = await team.hasModifyPermission(ctx.state.currentPlayer);
+  const canSeePrivateComments = await team.hasPlayer(ctx.state.currentPlayer);
+  const publicComments = await team.getPublicComments();
+  const privateComments = (canSeePrivateComments) ? await team.getPrivateComments() : [];
 
   await ctx.render('teams/show', {
     team,
     teamMembers,
     teamMatches,
     hasModifyPermission,
-    sport: sport.name,
+    canComment: ctx.state.isPlayerLoggedIn,
+    canSeePrivateComments,
+    publicComments,
+    privateComments,
+    createCommentPath: ctx.router.url('teamCommentCreate', { teamId: team.id }),
+    deleteCommentPath: (comment) => ctx.router.url('teamCommentDelete', {
+      teamId: team.id,
+      id: comment.id
+    }),
     editTeamPath: ctx.router.url('teamEdit', team.id),
     deleteTeamPath: ctx.router.url('teamDelete', team.id),
     newTeamMemberPath: ctx.router.url('teamMemberNew', { teamId: team.id } ),
@@ -117,9 +124,10 @@ router.get('team', '/:id', async (ctx) => {
 });
 
 router.delete('teamDelete', '/:id', async (ctx) => {
-  const team = await ctx.state.findById(ctx.orm.team, ctx.params.id);
+  const team = await ctx.findById(ctx.orm.team, ctx.params.id);
+  FileStorage.destroy("team"+team.id);
 
-  await ctx.state.requirePlayerModifyPermission(ctx, team);
+  await ctx.requirePlayerModifyPermission(team);
 
   await team.destroy();
   ctx.redirect(ctx.router.url('teams'));
@@ -128,13 +136,15 @@ router.delete('teamDelete', '/:id', async (ctx) => {
 router.use(
   '/:teamId/players',
   async (ctx, next) => {
-    ctx.state.team = await ctx.state.findById(ctx.orm.team, ctx.params.teamId);
+    ctx.state.team = await ctx.findById(ctx.orm.team, ctx.params.teamId);
 
-    await ctx.state.requirePlayerModifyPermission(ctx, ctx.state.team);
+    await ctx.requirePlayerModifyPermission(ctx.state.team);
 
-    ctx.state.teamMembers = await ctx.state.team.getPlayers();
-    ctx.state.invitablePlayers = await ctx.state.currentPlayer.getAllFriends();
-    await next();
+    const friends = await ctx.state.currentPlayer.getAllFriends();
+    const teamMembers = await ctx.state.team.getPlayers();
+    ctx.state.invitablePlayers = ctx.substract(friends, teamMembers);
+
+    return next();
   },
   teamMembersRouter.routes(),
 );
@@ -142,16 +152,27 @@ router.use(
 router.use(
   '/:teamId/matches',
   async (ctx, next) => {
-    ctx.state.team = await ctx.state.findById(ctx.orm.team, ctx.params.teamId);
+    ctx.state.team = await ctx.findById(ctx.orm.team, ctx.params.teamId);
 
-    await ctx.state.requirePlayerModifyPermission(ctx, ctx.state.team);
+    await ctx.requirePlayerModifyPermission(ctx.state.team);
 
     ctx.state.teamMembers = await ctx.state.team.getPlayers();
-    ctx.state.teamMatches = await ctx.state.team.getMatches();
-    ctx.state.visibleMatches = await ctx.state.getVisibleMatches(ctx);
-    await next();
+
+    const visibleMatches = await ctx.getVisibleMatches();
+    const teamMatches = await ctx.state.team.getMatches();
+    ctx.state.joinableMatches = ctx.substract(visibleMatches, teamMatches);
+    return next();
   },
   teamMatchesRouter.routes(),
+);
+
+router.use(
+  '/:teamId/comments',
+  async (ctx, next) => {
+    ctx.state.team = await ctx.findById(ctx.orm.team, ctx.params.teamId);
+    return next();
+  },
+  teamCommentsRouter.routes(),
 );
 
 module.exports = router;

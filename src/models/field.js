@@ -25,9 +25,8 @@ module.exports = function definefield(sequelize, DataTypes) {
       defaultValue:1,
       validate:{
         min:1,
-        }
-      },
-
+      }
+    },
     photo: DataTypes.STRING,
   });
 

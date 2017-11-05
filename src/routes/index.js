@@ -4,14 +4,16 @@ const KoaRouter = require('koa-router');
 const router = new KoaRouter();
 
 router.get('home', '', async (ctx) => {
-  if (ctx.state.isPlayerLoggedIn){
+  if (ctx.state.isLoggedIn){
     const notifications = await ctx.state.currentUser.getReceivedNotifications({
       order: [
         ['createdAt', 'DESC']
       ]
     });
+    // REVIEW: if a different home is needed for player and owner, create a new view called home/owner (or compoundOwner)
     await ctx.render('home/player', {
       notifications,
+      getNotificationButtons: ctx.getNotificationButtons.bind(ctx),
     });
   } else {
     await ctx.render('index', { });

@@ -10,6 +10,8 @@ const override = require('koa-override-method');
 const mailer = require('./mailers');
 const routes = require('./routes');
 const orm = require('./models');
+const helpers = require('./helpers');
+
 
 // App constructor
 const app = new Koa();
@@ -71,7 +73,12 @@ app.use(koaBody({
 
 
 app.use((ctx, next) => {
-  ctx.request.method = override.call(ctx, ctx.request.body);
+  if(ctx.request.body.fields){
+    ctx.request.method = override.call(ctx, ctx.request.body.fields);
+  }
+  else{
+    ctx.request.method = override.call(ctx, ctx.request.body);
+  }
   return next();
 });
 
@@ -83,6 +90,8 @@ render(app, {
 });
 
 mailer(app);
+
+helpers(app);
 
 // Handle errors
 app.use(async (ctx, next) => {
@@ -96,6 +105,12 @@ app.use(async (ctx, next) => {
         details: error.details,
       });
     } else if (error.name === 'ForbiddenError') {
+      // TODO: Render home or same page where the user was, but with errors
+      await ctx.render('_error/page', {
+        message: error.message,
+        details: error.details,
+      });
+    } else if (error.name === 'BadRequestError') {
       // TODO: Render home or same page where the user was, but with errors
       await ctx.render('_error/page', {
         message: error.message,
