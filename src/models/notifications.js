@@ -45,6 +45,14 @@ module.exports = function definenotification(sequelize, DataTypes) {
     eventName: {
       type: DataTypes.STRING,
       defaultValue: '',
+    },
+    entityId: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
+    eventId: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
     }
   });
 

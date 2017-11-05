@@ -158,7 +158,7 @@ router.get('player', '/:id', async (ctx) => {
     canDeleteFriend: ctx.orm.player.canDeleteFriend(friendshipStatus),
     canAcceptFriend: ctx.orm.player.canAcceptFriend(friendshipStatus),
     waitingFriend: ctx.orm.player.waitingFriend(friendshipStatus),
-    addFriendPath: (friend) => ctx.router.url('friendNew', {
+    addFriendPath: (friend) => ctx.router.url('friendCreate', {
       playerId: ctx.state.currentPlayer.id,
       friendId: friend.id,
     }),

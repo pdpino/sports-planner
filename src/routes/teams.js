@@ -2,11 +2,9 @@ const KoaRouter = require('koa-router');
 const teamMembersRouter = require('./teamMembers');
 const teamMatchesRouter = require('./teamMatches');
 const teamCommentsRouter = require('./teamComments');
-
-const router = new KoaRouter();
-
 const FileStorage= require('../services/file-storage');
 
+const router = new KoaRouter();
 
 router.get('teams', '/', async (ctx) => {
   const teams = await ctx.orm.team.scope('withSport').findAll();
@@ -34,16 +32,14 @@ router.post('teamCreate', '/', async (ctx) => {
   ctx.requirePlayerLoggedIn();
 
   try {
-
-
     const team = await ctx.orm.team.create(ctx.request.body.fields);
-    ctx.request.body.fields.logo=FileStorage.url("team"+team.id,{})
-    FileStorage.upload(ctx.request.body.files.logo,"team"+team.id);
+    ctx.request.body.fields.logo = FileStorage.url("team" + team.id, {})
+    FileStorage.upload(ctx.request.body.files.logo, "team" + team.id);
     await team.update(ctx.request.body.fields);
     ctx.state.currentPlayer.addTeam(team, {
       through: { isCaptain: true }
     });
-    ctx.redirect(ctx.router.url('team', { id: team.id }));
+    ctx.redirect(ctx.router.url('team', team.id));
   } catch (validationError) {
     await ctx.render('teams/new', {
       team: ctx.orm.team.build(ctx.request.body),

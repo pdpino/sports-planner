@@ -10,7 +10,7 @@ async function getFriendAndStatus(ctx){
   return { friend, friendshipStatus };
 }
 
-router.post('friendNew', '/:friendId', async (ctx) => {
+router.post('friendCreate', '/:friendId', async (ctx) => {
   const { friend, friendshipStatus } = await getFriendAndStatus(ctx);
 
   ctx.assert(ctx.orm.player.canAddFriend(friendshipStatus), 400, 'No se puede añadir amigo');
@@ -54,7 +54,7 @@ router.delete('friendDelete', '/:friendId', async (ctx) => {
   // OPTIMIZE: avoid 2 queries
   await ctx.state.player.removeFriend(friend);
   await friend.removeFriend(ctx.state.player);
-  
+
   ctx.redirect(ctx.router.url('player', friend.id));
 });
 

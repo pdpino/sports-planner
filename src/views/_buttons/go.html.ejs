@@ -1,0 +1,6 @@
+<%# Must provide: goToPath
+    optional: message, method %>
+
+<form action="<%= goToPath %>" method="<%= locals.method || 'get' %>">
+  <input type="submit" value="<%= locals.message || 'Ir' %>"/>
+</form>

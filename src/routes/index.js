@@ -10,9 +10,10 @@ router.get('home', '', async (ctx) => {
         ['createdAt', 'DESC']
       ]
     });
-    // REVIEW: if a different home is needed for player and owner, create new view called home/owner (or compoundOwner)
+    // REVIEW: if a different home is needed for player and owner, create a new view called home/owner (or compoundOwner)
     await ctx.render('home/player', {
       notifications,
+      getNotificationButtons: ctx.getNotificationButtons.bind(ctx),
     });
   } else {
     await ctx.render('index', { });
