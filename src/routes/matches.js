@@ -232,6 +232,8 @@ router.get('match', '/:id', async (ctx) => {
     await match.getPendingReviewsFromUser(ctx.state.currentUser);
   const doneReviews = reviewsEnabled &&
     await match.getDoneReviewsFromUser(ctx.state.currentUser);
+  const compoundReview = reviewsEnabled &&
+    await match.getCompoundReviewFromUser(ctx.state.currentPlayer);
 
   const canEnableReviews = await match.canEnableReviews({ hasModifyPermission });
 
@@ -242,6 +244,11 @@ router.get('match', '/:id', async (ctx) => {
     invitedTeams,
     schedule,
     field,
+    compoundReview,
+    createCompoundReviewPath: reviewsEnabled && schedule && ctx.router.url('compoundReviewCreate', {
+      compoundId: field.compoundId,
+      matchId: match.id,
+    }),
     reviewsEnabled,
     canEnableReviews,
     pendingReviews,

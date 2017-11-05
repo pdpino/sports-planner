@@ -28,5 +28,12 @@ module.exports = function definecompoundReview(sequelize, DataTypes) {
       override: true
     });
   };
+  compoundReview.prototype.doReview = function(params){
+    return this.update({
+      rating: params.rating,
+      content: params.content,
+      isPending: false,
+    });
+  }
   return compoundReview;
 };

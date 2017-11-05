@@ -1,7 +1,9 @@
 const KoaRouter = require('koa-router');
 const fieldsRouter = require('./fields');
+const compoundReviewsRouter = require('./compoundReviews');
+const FileStorage = require('../services/file-storage');
+
 const router = new KoaRouter();
-const FileStorage= require('../services/file-storage');
 
 router.get('compounds', '/', async (ctx) => {
   const compounds = await ctx.orm.compound.findAll();
@@ -118,6 +120,15 @@ router.use(
     return next();
   },
   fieldsRouter.routes(),
+);
+
+router.use(
+  '/:compoundId/reviews',
+  async (ctx, next) => {
+    ctx.state.compound = await ctx.findById(ctx.orm.compound, ctx.params.compoundId);
+    return next();
+  },
+  compoundReviewsRouter.routes(),
 );
 
 module.exports = router;
