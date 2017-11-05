@@ -11,14 +11,12 @@ router.post('playerReviewCreate', '/:playerId', async (ctx) => {
   ctx.requirePlayerLoggedIn();
 
   const reviewedPlayer = await ctx.findById(ctx.orm.player, ctx.params.playerId);
-
   const pendingReview = await ctx.state.match.getPendingReview(ctx.state.currentUser, reviewedPlayer);
   ctx.assert(pendingReview, 403, 'No hay reviews pendientes');
 
   ctx.assert(ctx.state.match.isInThePast(), 403, 'El partido aún no ocurre');
 
   const params = getParams(ctx.request.body);
-
   await pendingReview.doReview(params);
   ctx.redirect(ctx.router.url('match', ctx.state.match.id));
 });

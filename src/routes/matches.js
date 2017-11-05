@@ -228,19 +228,12 @@ router.get('match', '/:id', async (ctx) => {
   const canComment = await match.isPlayerInvited(ctx.state.currentPlayer);
   // REVIEW: this is being called twice, once in requireSeeMatchPermission and once here
 
-  const pendingReviews = await match.getPlayerReviews({
-    where: {
-      isPending: true,
-      reviewerId: ctx.state.currentUser.id,
-    }
-  });
+  const matchPassed = match.isInThePast();
 
-  const doneReviews = await match.getPlayerReviews({
-    where: {
-      isPending: false,
-      reviewerId: ctx.state.currentUser.id,
-    }
-  });
+  const pendingReviews = matchPassed &&
+    await match.getPendingReviewsFromUser(ctx.state.currentUser);
+  const doneReviews = matchPassed &&
+    await match.getDoneReviewsFromUser(ctx.state.currentUser);
 
   await ctx.render('matches/show', {
     match,
@@ -249,6 +242,7 @@ router.get('match', '/:id', async (ctx) => {
     invitedTeams,
     schedule,
     field,
+    showReviews: matchPassed,
     pendingReviews,
     doneReviews,
     createPlayerReviewPath: (player) => ctx.router.url('playerReviewCreate', {

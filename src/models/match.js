@@ -168,14 +168,6 @@ module.exports = function definematch(sequelize, DataTypes) {
     return isPlayerInvited;
   }
 
-  // match.prototype.reviewPlayer = function(pendingReview, params){
-  //   return this.addPlayerReview(pendingReview, {
-  //     rating: params.rating,
-  //     content: params.content,
-  //     isPending: false,
-  //   });
-  // }
-
   match.prototype.getPendingReview = async function(reviewerUser, reviewedPlayer){
     if (!reviewerUser || !reviewedPlayer) {
       return null;
@@ -198,6 +190,23 @@ module.exports = function definematch(sequelize, DataTypes) {
   match.prototype.isInThePast = function(){
     return moment().isAfter(this.date);
   }
+
+  function getReviewsFromUser(match, reviewerUser, isPending){
+    return match.getPlayerReviews({
+      where: {
+        isPending,
+        reviewerId: reviewerUser.id,
+      }
+    });
+  }
+
+  match.prototype.getPendingReviewsFromUser = function(reviewerUser){
+    return getReviewsFromUser(this, reviewerUser, true);
+  }
+  match.prototype.getDoneReviewsFromUser = function(reviewerUser){
+    return getReviewsFromUser(this, reviewerUser, false);
+  }
+
 
   // async function assertNotEmptyName(instance){
   //   if (!instance.name){
