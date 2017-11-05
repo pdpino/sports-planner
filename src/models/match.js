@@ -195,6 +195,10 @@ module.exports = function definematch(sequelize, DataTypes) {
     return this.getPendingReview(reviewerUser, reviewedPlayer);
   }
 
+  match.prototype.isInThePast = function(){
+    return moment().isAfter(this.date);
+  }
+
   // async function assertNotEmptyName(instance){
   //   if (!instance.name){
   //     const sport = await sequelize.models.sport.findById(instance.sportId);

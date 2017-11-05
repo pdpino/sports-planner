@@ -15,7 +15,7 @@ router.post('playerReviewCreate', '/:playerId', async (ctx) => {
   const pendingReview = await ctx.state.match.getPendingReview(ctx.state.currentUser, reviewedPlayer);
   ctx.assert(pendingReview, 403, 'No hay reviews pendientes');
 
-  // TODO: match must be in the past
+  ctx.assert(ctx.state.match.isInThePast(), 403, 'El partido aún no ocurre');
 
   const params = getParams(ctx.request.body);
 
