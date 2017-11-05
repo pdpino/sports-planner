@@ -205,8 +205,8 @@ module.exports = function definematch(sequelize, DataTypes) {
   match.prototype.getCompoundReviewFromUser = async function(reviewerPlayer){
     const compoundReviews = await this.getCompoundReviews({
       where: {
-        isPending: false,
         playerId: reviewerPlayer.id,
+        // REVIEW: should the compound be included?
       }
     });
     return compoundReviews[0];
@@ -229,6 +229,29 @@ module.exports = function definematch(sequelize, DataTypes) {
 
   match.prototype.hasPendingReview = function(reviewerUser, reviewedPlayer){
     return this.getPendingReview(reviewerUser, reviewedPlayer);
+  }
+
+  /** reviewer is a person **/
+  match.prototype.createPendingPlayerReview = function(reviewer, reviewedPlayerId){
+    return this.createPlayerReview({
+      isPending: true,
+      reviewerId: reviewer.userId,
+      reviewedId: reviewedPlayerId,
+    });
+  }
+
+  match.prototype.createPendingCompoundReview = function(player, compound){
+    return this.createCompoundReview({
+      isPending: true,
+      playerId: player.id,
+      compoundId: compound.id,
+    });
+  }
+
+  match.prototype.markAsDone = function(){
+    return this.update({
+      isDone: true
+    });
   }
 
   // async function assertNotEmptyName(instance){

@@ -17,7 +17,7 @@ async function asyncForEach(array, callback) {
   }
 }
 
-router.post('playerReviewEnable', '/enable', async (ctx) => {
+router.post('reviewsEnable', '/enable', async (ctx) => {
   const canEnableReviews = await ctx.state.match.canEnableReviews({
     player: ctx.state.currentPlayer
   });
@@ -32,30 +32,38 @@ router.post('playerReviewEnable', '/enable', async (ctx) => {
         return;
       }
 
-      await ctx.state.match.createPlayerReview({
-        isPending: true,
-        reviewerId: reviewer.userId,
-        reviewedId,
-      });
+      await ctx.state.match.createPendingPlayerReview(reviewer, reviewedId);
     });
   });
 
-  // const schedule = await ctx.state.match.getSchedule();
-  // if (schedule){
-  //   const field = await ctx.orm.field.findById(schedule.fieldId);
-  //   const compound = await ctx.orm.compound.findById(field.compoundId);
-  //   const compoundOwner = await ctx.orm.compoundOwner.findById(field.compoundOwnerId);
-  // }
+  const schedule = await ctx.state.match.getSchedule();
+  try{
+    if (schedule){
+      const field = await schedule.getField();
+      const compound = await field.getCompound();
+      const compoundOwner = await compound.getCompoundOwner();
 
-  await ctx.state.match.update({
-    isDone: true,
-  });
+      // Owner can review players
+      asyncForEach(invitedPlayerIds, async (reviewedId) => {
+        await ctx.state.match.createPendingPlayerReview(compoundOwner, reviewedId);
+      });
+
+      // Players can review compound
+      asyncForEach(invitedPlayers, async (player) => {
+        await ctx.state.match.createPendingCompoundReview(player, compound);
+      });
+    }
+  } catch(error){
+    // couldn't find something, pass
+  }
+
+  await ctx.state.match.markAsDone();
 
   ctx.redirect(ctx.router.url('match', ctx.state.match.id));
 });
 
 router.post('playerReviewCreate', '/:playerId', async (ctx) => {
-  ctx.requirePlayerLoggedIn();
+  ctx.requireLoggedIn();
 
   const reviewedPlayer = await ctx.findById(ctx.orm.player, ctx.params.playerId);
   const pendingReview = await ctx.state.match.getPendingReview(ctx.state.currentUser, reviewedPlayer);
@@ -64,7 +72,13 @@ router.post('playerReviewCreate', '/:playerId', async (ctx) => {
   ctx.assert(ctx.state.match.isInThePast(), 403, 'El partido aún no ocurre');
 
   const params = getParams(ctx.request.body);
-  await pendingReview.doReview(params);
+  try{
+    await pendingReview.doReview(params);
+  } catch (error){
+    // TODO: show it better to the user
+    const errorMessage = error.errors[0].message;
+    ctx.throw(403, `${errorMessage}`);
+  }
   ctx.redirect(ctx.router.url('match', ctx.state.match.id));
 });
 

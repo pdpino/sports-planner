@@ -23,9 +23,9 @@ module.exports = function helpers(app) {
    * If is from the DB: validationError.errors is undefined, (HACK) put it to an array in a object with a message (as if it came from the model)
    **/
   app.context.parseValidationError = function(validationError){
-    const errorMessage = validationError.errors || [ { message: validationError.toString() } ];
+    const errorMessages = validationError.errors || [ { message: validationError.toString() } ];
     console.log("ERROR FOUND!: ", validationError);
-    return errorMessage;
+    return errorMessages;
   }
 
   /**
@@ -37,7 +37,7 @@ module.exports = function helpers(app) {
 
   app.context.prettyTimestamp = function(date){
     const parsedDate = moment(date);
-    return parsedDate.isValid() ? parsedDate.format('YYYY-MMM-d H:mm') : '';
+    return parsedDate.isValid() ? parsedDate.format('YYYY-MMM-D H:mm') : '';
   }
 
   /** Wrappers to get a pretty timestamp **/

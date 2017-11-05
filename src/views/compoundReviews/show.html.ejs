@@ -4,8 +4,13 @@
 
 <div>
   <h4>Review al recinto:</h4>
-  <% if(field && compoundReview) { %>
-    <%- include('../_reviews/new', { createReviewPath: createCompoundReviewPath }) %>
+  <% if(schedule) { %>
+    <% if(compoundReview.isPending) { %>
+      <%- include('../_reviews/new', { createReviewPath: createCompoundReviewPath }) %>
+    <% } else { %>
+      <%- include('./show-done', { review: compoundReview }) %>
+    <% } %>
+
   <% } else { %>
     No hubo recinto reservado
   <% } %>

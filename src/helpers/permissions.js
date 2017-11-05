@@ -12,6 +12,10 @@ module.exports = function permissions(app) {
     this.assert(this.hasAdminPermission(), 404, "Debes ser admin", {});
   }
 
+  app.context.requireLoggedIn = function(){
+    this.assert(this.state.isLoggedIn, 403, "Debes hacer login", {});
+  }
+
   app.context.requirePlayerLoggedIn = function(){
     this.assert(this.state.isPlayerLoggedIn, 403, "Debes ser jugador", {});
   }

@@ -253,7 +253,7 @@ router.get('match', '/:id', async (ctx) => {
     canEnableReviews,
     pendingReviews,
     doneReviews,
-    enableReviews: ctx.router.url('playerReviewEnable', { matchId: match.id }),
+    enableReviews: ctx.router.url('reviewsEnable', { matchId: match.id }),
     createPlayerReviewPath: (player) => ctx.router.url('playerReviewCreate', {
       matchId: match.id,
       playerId: player.id,

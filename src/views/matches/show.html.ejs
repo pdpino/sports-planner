@@ -87,6 +87,7 @@
     <%= field.name %>
     <%= schedule.status %>
     <%= schedule.hours %>
+    <%= prettyTimestamp(schedule.date) %>
   <% } else { %>
     No hay canchas pedidas.
   <% } %>

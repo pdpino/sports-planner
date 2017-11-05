@@ -91,7 +91,7 @@ router.get('compound', '/:id', async (ctx) => {
   const compoundOwner = await compound.getCompoundOwner();
   const fields = await compound.getFields();
 
-  const reviews = await compound.getReviews();
+  const reviews = await compound.getDoneReviews();
 
   await ctx.render('compounds/show', {
     compound,
