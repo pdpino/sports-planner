@@ -32,6 +32,8 @@ router.use(async (ctx, next) => {
       });
       profilePath = ctx.router.url('compoundOwner', { id: currentOwner.id });
     }
+  } else {
+    ctx.session = null; // Close session if no player found
   }
 
   Object.assign(ctx.state, {
@@ -65,7 +67,7 @@ router.use((ctx, next) => {
     getCompoundPath: (compound) => ctx.router.url('compound', compound.id),
     getFieldPath: (field) => ctx.router.url('field', {
       compoundId: field.compoundId,
-      id: field.id 
+      id: field.id
     }),
     getTeamPath: (team) => ctx.router.url('team', team.id),
     getMatchPath: (match) => ctx.router.url('match', match.id),
