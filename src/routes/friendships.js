@@ -17,7 +17,7 @@ router.post('friendCreate', '/:friendId', async (ctx) => {
 
   try {
     await ctx.state.player.askFriend(friend);
-    ctx.addFriend(ctx.state.player, friend);
+    ctx.askFriend(ctx.state.player, friend);
     ctx.redirect(ctx.router.url('player', friend.id));
   } catch (validationError) {
     const error = ctx.parseValidationError(validationError);

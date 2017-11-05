@@ -34,7 +34,7 @@ module.exports = function notificationSendHelpers(app) {
     }
   }
 
-  app.context.addFriend = function(sender, receiver){
+  app.context.askFriend = function(sender, receiver){
     return this.sendNotification(sender, receiver, {
       kind: 'friendshipAsked',
       entityObj: sender,
