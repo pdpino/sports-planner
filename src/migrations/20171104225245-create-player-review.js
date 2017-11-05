@@ -27,6 +27,16 @@ module.exports = {
         onUpdate: 'cascade',
         onDelete: 'cascade',
       },
+      matchId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'matches',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade',
+      },
       isPending: {
         type: Sequelize.BOOLEAN,
         allowNull: false,

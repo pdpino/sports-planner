@@ -34,6 +34,7 @@ module.exports = function definematch(sequelize, DataTypes) {
     match.hasOne(models.schedule);
 
     match.hasMany(models.matchComment, { as: 'comments' });
+    match.hasMany(models.playerReview);
 
     match.addScope('withSport', {
       include: [{

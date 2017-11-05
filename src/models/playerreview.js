@@ -15,6 +15,7 @@ module.exports = function defineplayerReview(sequelize, DataTypes) {
   playerReview.associate = function associate(models) {
     playerReview.belongsTo(models.player, { as: 'reviewed' });
     playerReview.belongsTo(models.user, { as: 'reviewer' });
+    playerReview.belongsTo(models.match);
   };
   return playerReview;
 };
