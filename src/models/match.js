@@ -171,27 +171,13 @@ module.exports = function definematch(sequelize, DataTypes) {
     return isPlayerInvited;
   }
 
-  match.prototype.getPendingReview = async function(reviewerUser, reviewedPlayer){
-    if (!reviewerUser || !reviewedPlayer) {
-      return null;
-    }
-
-    const pendingReviews = await this.getPlayerReviews({
-      where: {
-        reviewerId: reviewerUser.id,
-        reviewedId: reviewedPlayer.id,
-        isPending: true,
-      }
-    });
-    return pendingReviews[0];
-  }
-
-  match.prototype.hasPendingReview = function(reviewerUser, reviewedPlayer){
-    return this.getPendingReview(reviewerUser, reviewedPlayer);
-  }
-
   match.prototype.isInThePast = function(){
     return moment().isAfter(this.date);
+  }
+
+  match.prototype.canEnableReviews = function(options){
+    return !this.isDone && this.isInThePast() &&
+      (options.hasModifyPermission || this.hasModifyPermission(options.player));
   }
 
   match.prototype.areReviewsEnabled = function(){
@@ -210,10 +196,29 @@ module.exports = function definematch(sequelize, DataTypes) {
   match.prototype.getPendingReviewsFromUser = function(reviewerUser){
     return getReviewsFromUser(this, reviewerUser, true);
   }
+
   match.prototype.getDoneReviewsFromUser = function(reviewerUser){
     return getReviewsFromUser(this, reviewerUser, false);
   }
 
+  match.prototype.getPendingReview = async function(reviewerUser, reviewedPlayer){
+    if (!reviewerUser || !reviewedPlayer) {
+      return null;
+    }
+
+    const pendingReviews = await this.getPlayerReviews({
+      where: {
+        reviewerId: reviewerUser.id,
+        reviewedId: reviewedPlayer.id,
+        isPending: true,
+      }
+    });
+    return pendingReviews[0];
+  }
+
+  match.prototype.hasPendingReview = function(reviewerUser, reviewedPlayer){
+    return this.getPendingReview(reviewerUser, reviewedPlayer);
+  }
 
   // async function assertNotEmptyName(instance){
   //   if (!instance.name){

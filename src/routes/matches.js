@@ -228,13 +228,12 @@ router.get('match', '/:id', async (ctx) => {
   // REVIEW: this is being called twice, once in requireSeeMatchPermission and once here
 
   const reviewsEnabled = match.areReviewsEnabled();
-
   const pendingReviews = reviewsEnabled &&
     await match.getPendingReviewsFromUser(ctx.state.currentUser);
   const doneReviews = reviewsEnabled &&
     await match.getDoneReviewsFromUser(ctx.state.currentUser);
 
-  const canEnableReviews = hasModifyPermission && !reviewsEnabled && match.isInThePast();
+  const canEnableReviews = await match.canEnableReviews({ hasModifyPermission });
 
   await ctx.render('matches/show', {
     match,

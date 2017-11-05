@@ -8,7 +8,7 @@ function getParams(params){
 }
 
 /**
- * Wrapper to use an async for each
+ * Wrapper to use an async forEach
  * source: https://codeburst.io/javascript-async-await-with-foreach-b6ba62bbf404
  */
 async function asyncForEach(array, callback) {
@@ -18,13 +18,13 @@ async function asyncForEach(array, callback) {
 }
 
 router.post('playerReviewEnable', '/enable', async (ctx) => {
-  ctx.assert(!ctx.state.match.isDone, 403);
-  await ctx.requirePlayerModifyPermission(ctx.state.match);
+  const canEnableReviews = await ctx.state.match.canEnableReviews({
+    player: ctx.state.currentPlayer
+  });
+  ctx.assert(canEnableReviews, 403);
 
   const invitedPlayers = await ctx.state.match.getPlayers();
   const invitedPlayerIds = _.map(invitedPlayers, 'id');
-
-  console.log("AAAA: ", invitedPlayerIds);
 
   asyncForEach(invitedPlayers, async (reviewer) => {
     asyncForEach(invitedPlayerIds, async (reviewedId) => {
