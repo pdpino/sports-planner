@@ -13,7 +13,7 @@ function DateArray(){
   let array=[];
   for (let i=0;i<14;i++){
     tomorrow.setDate(tomorrow.getDate() + 1);
-    let string=tomorrow.getFullYear().toString() + "-"+(tomorrow.getMonth()+1).toString()+"-"+tomorrow.getDate().toString();
+    let string=tomorrow.getFullYear().toString() + "-"+(tomorrow.getMonth()+1).toString()+"-"+(tomorrow.getDate()).toString();
     array.push(string);
   }
   return array;
@@ -158,7 +158,7 @@ router.get('field', '/:id', async (ctx) => {
 router.delete('fieldDelete', '/:id', async (ctx) => {
   ctx.requireOwnerModifyPermission(ctx.state.compoundOwner);
   const field = await ctx.findById(ctx.orm.field, ctx.params.id);
-  FileStorage.delete(ctx.request.body.files.photo, ctx.state.compound + " " +ctx.request.body.fields.name);
+  FileStorage.destroy("field"+field.id);
   await field.destroy();
   ctx.redirect(ctx.router.url('compound', { id: ctx.state.compound.id }));
 });

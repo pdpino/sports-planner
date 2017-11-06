@@ -33,7 +33,7 @@
 
 
 
-        <% for (j=0;j<field.modules;j++) { %>
+        <% for (j=0;j<modules;j++) { %>
             <tr>
               <th>   <label for="hours"><%=arrayOfHour[j]%></label> </th>
 
@@ -42,25 +42,25 @@
 
       <td>
       <div>
-        <input type="hidden" name="scheduleBases[<%= field.modules*i + j %>][weekday]" value="<%=i%>" />
+        <input type="hidden" name="scheduleBases[<%= modules*i + j %>][weekday]" value="<%=i%>" />
       </div>
       <div>
 
-        <input type="hidden" name="scheduleBases[<%= field.modules*i + j %>][hours]" value="<%= arrayOfHour[j]%>" />
+        <input type="hidden" name="scheduleBases[<%= modules*i + j %>][hours]" value="<%= arrayOfHour[j]%>" />
       </div>
       <div>
-        <input type="hidden" name="scheduleBases[<%= field.modules*i + j %>][priority]" value="<%= 1 %>" />
+        <input type="hidden" name="scheduleBases[<%= modules*i + j %>][priority]" value="<%= 1 %>" />
       </div>
       <div>
 
         <label for="open">Disponible?</label>
-          <input type="checkbox" name="scheduleBases[<%= field.modules*i + j %>][open]"  <%= scheduleBases[field.modules*i + j].open ? 'checked' : '' %> ></input>
+          <input type="checkbox" name="scheduleBases[<%= modules*i + j %>][open]"  <%= scheduleBases[modules*i + j].open ? 'checked' : '' %> ></input>
       </div>
       <div>
-        <input type="hidden" name="scheduleBases[<%= field.modules*i + j %>][fieldId]" value="<%= field.id %>" />
+        <input type="hidden" name="scheduleBases[<%= modules*i + j %>][fieldId]" value="<%= field.id %>" />
       </div>
         <div id="price">
-        <input type="number" class="price" name="scheduleBases[<%= field.modules*i + j %>][price]" value="<%=scheduleBases[field.modules*i + j].price %>"
+        <input type="number" class="price" name="scheduleBases[<%= modules*i + j %>][price]" value="<%=scheduleBases[modules*i + j].price %>"
       </div>
       </td>
       <% } %>

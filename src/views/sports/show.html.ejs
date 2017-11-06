@@ -1,6 +1,6 @@
 <div class="center">
   <h1><%= sport.name %></h1>
-  <p>Logo: <%= sport.logo %></p>
+    <img class="large-logo" src="<%= sport.logo %>" height="500" width="500" >
   <p>Es un deporte <%= (sport.isIndividual) ? 'individual' : 'colectivo' %>.</p>
 
   <% if (hasModifyPermission) { %>
