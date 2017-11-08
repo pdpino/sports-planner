@@ -21,7 +21,7 @@
           <li>
               <a class="lilink" href="<%= getPlayerPath(teamMember) %>"%>>
               <img class="small-logo" src="<%=teamMember.photo%>"/>
-              <div id="margincustom">
+              <div>
                <%= teamMember.firstName %> <%= (teamMember.isMember.isCaptain ? '-- capitán del equipo' : '' )%>
              </div>
              <% if (hasModifyPermission) { %>
@@ -56,7 +56,7 @@
 
           <li>
               <a class="lilink" href="<%= getMatchPath(match) %>">%>
-                <div id="margincustom">
+                <div>
                   <%= match.name %>
                 </div>
                 <% if (hasModifyPermission) { %>
