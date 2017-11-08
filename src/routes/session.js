@@ -29,7 +29,7 @@ router.put('sessionCreate', '/', async (ctx) => {
     email,
     createSessionPath: ctx.router.url('sessionCreate'),
     error: 'e-mail o contraseña incorrectos',
-    cancelPath: '/', // HACK: can't use 'home' url
+    cancelPath: '/', // HACK: can't use 'home' path
   });
 });
 

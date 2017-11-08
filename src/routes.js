@@ -33,7 +33,7 @@ router.use(async (ctx, next) => {
       profilePath = ctx.router.url('compoundOwner', { id: currentOwner.id });
     }
   } else {
-    ctx.session = null; // Close session if no player found
+    ctx.session.userId = 0; // Close session if no player found
   }
 
   Object.assign(ctx.state, {
