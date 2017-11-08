@@ -2,7 +2,6 @@ const KoaRouter = require('koa-router');
 const Sequelize = require('sequelize');
 const moment = require('moment');
 const _ = require('lodash');
-
 const invitedPlayersRouter = require('./invitedPlayers');
 const invitedTeamsRouter = require('./invitedTeams');
 const matchCommentsRouter = require('./matchComments');
@@ -143,17 +142,6 @@ router.patch('addSchedule', '/:id/:compoundId/:fieldId/selectSchedule', async (c
   await ctx.reserveField(ctx.state.currentPlayer, compoundOwner, field);
 
   ctx.redirect(ctx.router.url('match', match.id));
-  // await ctx.render('matches/edit', {
-  //   match,
-  //   sport: sport.name,
-  //   compound,
-  //   field,
-  //   schedules,
-  //   sports: ctx.state.allSports,
-  //   submitMatchPath: ctx.router.url('matchUpdate', match.id),
-  //   selectCompoundPath: ctx.router.url('selectCompound', {id: ctx.params.id}),
-  //   cancelPath: ctx.router.url('matches'),
-  // });
 });
 
 router.post('matchCreate', '/', async (ctx) => {
@@ -184,12 +172,16 @@ router.post('matchCreate', '/', async (ctx) => {
 router.get('matchEdit', '/:id/edit', async (ctx) => {
   const match = await ctx.findById(ctx.orm.match, ctx.params.id);
   await ctx.requirePlayerModifyPermission(match);
+  const schedule = await match.getSchedule();
 
   await ctx.render('matches/edit', {
     match,
+    schedule,
     sports: ctx.state.allSports,
     submitMatchPath: ctx.router.url('matchUpdate', match.id),
     selectCompoundPath: ctx.router.url('selectCompound', {id: ctx.params.id}),
+    removeSchedulePath: ctx.router.url('removeSchedule', match.id),
+
     cancelPath: ctx.router.url('match', { id: ctx.params.id }),
   });
 });

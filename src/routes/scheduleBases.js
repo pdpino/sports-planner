@@ -28,20 +28,29 @@ return final;
 
 }
 
+function modules(field){
+  let close=parseFloat(field.closingHour.substr(0,2))+parseFloat(field.closingHour.substr(3,2))/60;
+  let open=parseFloat(field.openingHour.substr(0,2))+parseFloat(field.openingHour.substr(3,2))/60;
+  if(open>=close){
+    close+=24;
+  }
+  return Math.floor((close-open)/(field.modules/60));
+}
+
 function arrayOfHours (field){
   let close=parseFloat(field.closingHour.substr(0,2))+parseFloat(field.closingHour.substr(3,2))/60;
   let open=parseFloat(field.openingHour.substr(0,2))+parseFloat(field.openingHour.substr(3,2))/60;
   if(open>=close){
     close+=24;
   }
-  let moduleMinutes=(close-open)/field.modules;
+  let totalmodules=modules(field);
   let final=[];
   let text="";
-  let endModule=open + moduleMinutes;
-  for (i=0;i<field.modules;i++){
+  let endModule=open + (field.modules/60);
+  for (i=0;i<totalmodules;i++){
     text=floatToStringHour(open)+" - "+ floatToStringHour(endModule);
     open=endModule;
-    endModule+=moduleMinutes;
+    endModule+=field.modules/60;
     final.push(text);
   }
   return final;
@@ -66,7 +75,7 @@ router.get('scheduleBaseNew', '/new', async (ctx) => {
     console.log(arrayOfHour[0]);
   const daysOfWeek=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
   const scheduleBases = []
-  for (i=0;i<7*ctx.state.field.modules;i++){
+  for (i=0;i<7*modules(ctx.state.field);i++){
     const scheduleBase = ctx.orm.scheduleBase.build();
     scheduleBases.push(scheduleBase);
   }
@@ -78,6 +87,7 @@ router.get('scheduleBaseNew', '/new', async (ctx) => {
     scheduleBase,
     daysOfWeek,
     field: ctx.state.field,
+    modules: modules(ctx.state.field),
     submitScheduleBasePath: ctx.router.url('scheduleBaseCreate',{compoundId:ctx.state.compound.id,fieldId:ctx.state.field.id}),
     cancelPath: ctx.router.url('field',{id:ctx.state.field.id, compoundId:ctx.state.compound.id}),
   });
@@ -89,7 +99,7 @@ router.post('scheduleBaseCreate', '/', async (ctx) => {
   ctx.requireOwnerModifyPermission(compoundOwner);
   console.log("HOLAAA");
   try {
-    for (i=0; i<7*ctx.state.field.modules;i++){
+    for (i=0; i<7*modules(ctx.state.field);i++){
       console.log(ctx.request.body.scheduleBases[i]);
       const scheduleBase = await ctx.orm.scheduleBase.create(ctx.request.body.scheduleBases[i]);
     }
@@ -99,7 +109,7 @@ router.post('scheduleBaseCreate', '/', async (ctx) => {
     const daysOfWeek=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
     const scheduleBases = []
     for (i=0;i<7*ctx.state.field.modules;i++){
-      const scheduleBase = ctx.orm.scheduleBase.build(ctx.request.body.scheduleBases[i]);
+      const scheduleBase = ctx.orm.scheduleBase.create(ctx.request.body.scheduleBases[i]);
       scheduleBases.push(scheduleBase);
     }
     await ctx.render('scheduleBases/new', {
@@ -130,6 +140,7 @@ router.get('scheduleBaseEdit', '/edit', async (ctx) => {
     arrayOfHour,
     daysOfWeek,
     scheduleBase,
+    modules: modules(ctx.state.field),
     field:  ctx.state.field,
     submitScheduleBasePath: ctx.router.url('scheduleBaseUpdate', {fieldId:ctx.state.field.id, compoundId:ctx.state.compound.id}),
     deleteScheduleBasePath: ctx.router.url('scheduleBaseDelete', {fieldId:ctx.state.field.id, compoundId:ctx.state.compound.id}),
@@ -141,6 +152,7 @@ router.patch('scheduleBaseUpdate', '/', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
   ctx.requireOwnerModifyPermission(compoundOwner);
   const scheduleBases = await ctx.state.field.getScheduleBases();
+  console.log("LALALA");
   scheduleBases.sort(function(a, b) {
     return a.id - b.id;
 });
@@ -148,7 +160,7 @@ router.patch('scheduleBaseUpdate', '/', async (ctx) => {
   const arrayOfHour= arrayOfHours(ctx.state.field);
   const daysOfWeek=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
   try {
-    for (i=0; i<7*ctx.state.field.modules;i++){
+    for (i=0; i<7*modules(ctx.state.field);i++){
       console.log(ctx.request.body.scheduleBases[i]);
       await scheduleBases[i].update(ctx.request.body.scheduleBases[i]);
     }
@@ -187,7 +199,8 @@ router.delete('scheduleBaseDelete', '/', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
   ctx.requireOwnerModifyPermission(compoundOwner);
   const scheduleBases = await ctx.state.field.getScheduleBases();
-  for (i=0; i<7*ctx.state.field.modules;i++){
+  console.log(scheduleBases);
+  for (i=0; i<7*modules(ctx.state.field);i++){
     console.log(scheduleBases[i]);
     await scheduleBases[i].destroy();
   }

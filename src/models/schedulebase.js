@@ -15,7 +15,7 @@ module.exports = function definescheduleBase(sequelize, DataTypes) {
     open:{
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: false,
+      defaultValue: true,
     },
     priority:{
       type:DataTypes.INTEGER,
