@@ -113,12 +113,21 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
   cursor: pointer;
 }
 
-.username {
+#profile-button {
+  float: left;
+  display: block;
+}
+
+#profile-picture {
+  float: left;
+}
+
+#invited-name, #profile-name {
   font-weight: bold;
-  margin: 2px 2px;
-  padding: 13px 32px;
-  box-sizing: border-box;
+  text-decoration: none;
   color: white;
+  margin-left: 1em;
+  margin-top: 1em;
 }
 
 .bar {

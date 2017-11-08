@@ -24,15 +24,16 @@
 
       <div id="user-bar">
         <% if (currentUser) { %>
-          <div class=bar>
-            <img class="small-logo" src="<%= currentUser.photo %>"/>
-          </div>
-          <span class="username" class="name"> Hola <%= currentUser.firstName %></span>
 
           <% if (!isAdminLoggedIn) { %>
-            <form  class="bar" action="<%= profilePath %>" method="get">
-              <input type="submit" value="Mi Perfil" />
-            </form>
+            <a id="profile-button" href="<%= profilePath %>">
+              <div id="profile-picture">
+                <img class="small-logo" src="<%= currentUser.photo %>"/>
+              </div>
+              <span id="profile-name">
+                Hola <%= currentUser.firstName %>
+              </span>
+            </a>
           <% } %>
 
           <%- include('_buttons/delete', {
@@ -42,7 +43,9 @@
           }) %>
 
         <% } else { %>
-          <span class="username" class="name">Hola Invitado</span>
+          <span id="invited-name">
+            Hola Invitado
+          </span>
 
           <form class="bar" action="<%= newSessionPath %>" method="get">
             <input type="submit" value="Iniciar sesión" />
