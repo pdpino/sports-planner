@@ -17,23 +17,19 @@ router.use(async (ctx, next) => {
   const currentUser = ctx.session.userId && await ctx.orm.user.findById(ctx.session.userId);
   let currentPlayer = null;
   let currentOwner = null;
-  let profilePath = null;
+  let profilePath = '/';
 
   if (currentUser){
-    if (currentUser.role == 'player'){
-      currentPlayer = await ctx.orm.player.find({
-        where: { userId: currentUser.id }
-      });
-      profilePath = ctx.router.url('player', { id: currentPlayer.id });
+    if (currentUser.isPlayer()){
+      currentPlayer = await currentUser.getPlayer();
+      profilePath = ctx.router.url('player', currentPlayer.id);
     }
-    else if (currentUser.role == 'owner'){
-      currentOwner = await ctx.orm.compoundOwner.find({
-        where: { userId: currentUser.id }
-      });
-      profilePath = ctx.router.url('compoundOwner', { id: currentOwner.id });
+    else if (currentUser.isCompoundOwner()){
+      currentOwner = await currentUser.getCompoundOwner();
+      profilePath = ctx.router.url('compoundOwner', currentOwner.id);
     }
   } else {
-    ctx.session.userId = 0; // Close session if no player found
+    ctx.session.userId = 0; // Close session when no player found (e.g. old cookie)
   }
 
   Object.assign(ctx.state, {

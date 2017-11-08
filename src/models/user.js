@@ -76,5 +76,26 @@ module.exports = function defineuser(sequelize, DataTypes) {
     return bcrypt.compare(password, this.password);
   };
 
+  user.prototype.isPlayer = function () { return this.role === 'player'; };
+  user.prototype.isCompoundOwner = function () { return this.role === 'owner'; };
+  // user.prototype.isAdmin = function () { return this.role === 'admin'; };
+
+  user.prototype.getPlayer = function () {
+    return this.isPlayer() && sequelize.models.player.find({
+      where: {
+        userId: this.id
+      }
+    });
+  };
+
+  user.prototype.getCompoundOwner = function () {
+    return this.isCompoundOwner() && sequelize.models.compoundOwner.find({
+      where: {
+        userId: this.id
+      }
+    });
+  };
+
+
   return user;
 };
