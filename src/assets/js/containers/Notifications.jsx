@@ -11,6 +11,7 @@ export default class Notifications extends Component {
       loading: false,
       error: undefined,
     };
+    this.reload = this.reload.bind(this);
   }
 
   componentDidMount() {
@@ -27,6 +28,10 @@ export default class Notifications extends Component {
     }
   }
 
+  async reload() {
+    this.fetchNotifications();
+  }
+
   render() {
     if (this.state.loading) {
       return <p>Cargando notificaciones...</p>;
@@ -36,6 +41,7 @@ export default class Notifications extends Component {
         { this.state.error && <div className="error">Error: {this.state.error}</div>}
         <NotificationsComponent
           notifications={this.state.notifications}
+          onSubmit={this.reload}
         />
       </div>
     );

@@ -1,6 +1,6 @@
 import React from 'react';
 
-function displayNotifications(notifications){
+function displayNotificationsList(notifications){
   const displayedNotifications = [];
   notifications.forEach((notification) => {
     displayedNotifications.push(
@@ -16,8 +16,11 @@ export default function Notifications(props) {
   return (
     <div>
       <h2>Notificaciones</h2>
+      <form onSubmit={props.onSubmit}>
+        <input type="submit" value="Recargar" />
+      </form>
       <p>Hay { props.notifications.length } notificaciones </p>
-      <ul> { displayNotifications(props.notifications) } </ul>
+      <ul> { displayNotificationsList(props.notifications) } </ul>
     </div>
   );
 }
