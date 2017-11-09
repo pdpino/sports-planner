@@ -3,7 +3,8 @@ const KoaRouter = require('koa-router');
 const router = new KoaRouter();
 
 router.get('notifications', '/', async (ctx, next) => {
-  // ctx.requireUserModifyPermission(ctx.state.user);
+  ctx.requireUser(ctx.state.user);
+  console.log("ASDF: ", ctx.request);
 
   const notifications = await ctx.state.user.getReceivedNotifications();
 

@@ -1,3 +1,5 @@
+const helpers = require('./helpers');
+
 module.exports = function definenotification(sequelize, DataTypes) {
   // notification kinds copied in migration
   const nofiticationMessages = {
@@ -78,6 +80,14 @@ module.exports = function definenotification(sequelize, DataTypes) {
       await notifications[i].update({ wasRead: true });
     }
   }
+
+  notification.afterFind(helpers.getHookFunction(function (notification){
+    // Used to pass attributes to react app in the client
+    // HACK: copy it in dataValues, instead of the object itself
+    Object.assign(notification.dataValues, {
+      message: notification.toString(),
+    });
+  }));
 
   return notification;
 };

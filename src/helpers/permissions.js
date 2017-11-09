@@ -37,7 +37,7 @@ module.exports = function permissions(app) {
     this.assert(this.hasModifyPermission(person), 403, "No tienes permisos");
   }
 
-  app.context.requireUserModifyPermission = function(user){
+  app.context.requireUser = function(user){
     this.assert(this.hasUserModifyPermission(user), 403, "No tienes permisos");
   }
 

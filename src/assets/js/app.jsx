@@ -1,21 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
-import App from './components/App';
+import NotificationsApp from './apps/Notifications';
 
-const reactAppContainer = document.getElementById('react-app');
+const notificationsAppContainer = document.getElementById('notifications-react-app');
 
-if (reactAppContainer) {
+if (notificationsAppContainer) {
   const render = function render(Component) {
     ReactDOM.render(
       <AppContainer>
-        <Component />
+        <Component {...notificationsAppContainer.dataset}/>
       </AppContainer>,
-      document.getElementById('react-app'),
+      notificationsAppContainer,
     );
   };
 
-  render(App);
+  render(NotificationsApp);
 
   // Webpack Hot Module Replacement API
   if (module.hot) {
