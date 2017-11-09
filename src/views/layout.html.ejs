@@ -11,52 +11,61 @@
 
   <body>
     <header>
-      <div id="logo">
-        <a href="<%= homePath %>">
-          <img src="/assets/logo.png" alt="Logo" />
-        </a>
-      </div>
+      <div id="nav-bar">
+        <div id="logo">
+          <a href="<%= homePath %>">
+            <img src="/assets/logo.png" alt="Logo" />
+          </a>
+        </div>
 
-      <div id="user-bar">
-        <% if (currentUser) { %>
+        <div id="buttons-bar">
+          <a class="nav-bar-button" href="<%= sportsPath %>"> Deportes </a>
+          <a class="nav-bar-button" href="<%= playersPath %>"> Jugadores </a>
+          <a class="nav-bar-button" href="<%= teamsPath %>"> Equipos </a>
+          <a class="nav-bar-button" href="<%= matchesPath %>"> Partidos </a>
+          <a class="nav-bar-button" href="<%= compoundOwnersPath %>"> Dueños </a>
+          <a class="nav-bar-button" href="<%= compoundsPath %>"> Recintos </a>
+        </div>
 
-          <a id="profile-button" href="<%= profilePath %>">
-            <div id="profile-picture">
-              <img class="small-logo" src="<%= currentUser.photo %>"/>
-            </div>
-            <span id="profile-name">
-              Hola <%= currentUser.firstName %>
+        <div id="user-bar">
+          <% if (currentUser) { %>
+
+            <a id="profile-button" href="<%= profilePath %>">
+              <div id="profile-picture">
+                <img class="small-logo" src="<%= currentUser.photo %>"/>
+              </div>
+              <span id="profile-name">
+                Hola <%= currentUser.firstName %>
+              </span>
+            </a>
+
+            <form id="logout-button" class="nav-bar-button" action="<%= destroySessionPath %>" method="post">
+              <input type="hidden" name="_method" value="delete"/>
+              <input id="logout-button-input" type="submit" name="delete" value="Salir" />
+            </form>
+
+          <% } else { %>
+            <span id="invited-name">
+              Hola Invitado
             </span>
-          </a>
 
-          <form id="logout-button" class="nav-bar-button" action="<%= destroySessionPath %>" method="post">
-            <input type="hidden" name="_method" value="delete"/>
-            <input id="logout-button-input" type="submit" name="delete" value="Salir" />
-          </form>
+            <a id="login-button" class="nav-bar-button" href="<%= newSessionPath %>"> Iniciar sesión </a>
 
-        <% } else { %>
-          <span id="invited-name">
-            Hola Invitado
-          </span>
-
-          <a class="nav-bar-button" href="<%= newSessionPath %>">
-            Iniciar sesión
-          </a>
-
-          <div class="register-dropdown">
-            <button class="nav-bar-button">Registrarse</button>
-            <div class="register-options">
-              <a href="<%= signUpPlayerPath %>">
-                Jugador
-              </a>
-              <a href="<%= signUpOwnerPath %>">
-                Dueño de recinto
-              </a>
+            <div class="register-dropdown">
+              <button class="nav-bar-button">Registrarse</button>
+              <div class="register-options">
+                <a href="<%= signUpPlayerPath %>">
+                  Jugador
+                </a>
+                <a href="<%= signUpOwnerPath %>">
+                  Dueño de recinto
+                </a>
+              </div>
             </div>
-          </div>
-
-        <% } %>
+          <% } %>
+        </div>
       </div>
+
     </header>
     <%- body %>
     <script src="/assets/app.js"></script>

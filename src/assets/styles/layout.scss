@@ -15,7 +15,36 @@ header {
   z-index: 10;
 }
 
+#nav-bar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+#logo {
+  display: flex;
+  justify-content: flex-start;
+  vertical-align: middle;
+  img {
+    height: 60px;
+  }
+}
+
+#buttons-bar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  .nav-bar-button {
+    padding: 0 0.7em;
+  }
+}
+
 #user-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   position: absolute;
   top: 0;
   right: 0;
@@ -27,19 +56,11 @@ header {
   }
 }
 
-#logo {
-  display: inline-block;
-  vertical-align: middle;
-  img {
-    height: 60px;
-  }
-}
-
 #profile-button {
   float: left;
   display: inline-block;
-  padding-left: 0.4em;
-  padding-right: 0.4em;
+  padding-left: 0.3em;
+  padding-right: 0.3em;
   padding-top: 0.2em;
   // padding-bottom: 0.1em;
 
@@ -90,7 +111,7 @@ header {
   box-sizing: border-box;
   color: white;
   font-family: "Lucida Console", Arial, sans-serif;
-  padding: 1em 2em;
+  padding: 1em 1em;
   font-weight: bold;
   cursor: pointer;
 
