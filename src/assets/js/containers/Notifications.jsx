@@ -11,7 +11,7 @@ export default class Notifications extends Component {
       loading: false,
       error: undefined,
     };
-    this.reload = this.reload.bind(this);
+    this.refresh = this.refresh.bind(this);
   }
 
   componentDidMount() {
@@ -23,12 +23,13 @@ export default class Notifications extends Component {
     try {
       const result = await notificationsService.get(this.props.userId);
       this.setState({ notifications: result.notifications, loading: false });
+      console.log("AAA: ", result);
     } catch (error){
       this.setState({ error: 'No se pudieron cargar las notificaciones', loading: false });
     }
   }
 
-  async reload() {
+  async refresh() {
     this.fetchNotifications();
   }
 
@@ -41,7 +42,7 @@ export default class Notifications extends Component {
         { this.state.error && <div className="error">Error: {this.state.error}</div>}
         <NotificationsComponent
           notifications={this.state.notifications}
-          onSubmit={this.reload}
+          onSubmit={this.refresh}
         />
       </div>
     );

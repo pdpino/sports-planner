@@ -4,9 +4,15 @@ const router = new KoaRouter();
 
 router.get('notifications', '/', async (ctx, next) => {
   ctx.requireUser(ctx.state.user);
-  console.log("ASDF: ", ctx.request);
 
   const notifications = await ctx.state.user.getReceivedNotifications();
+
+  const compactNotifications = notifications.map((notification) => {
+    return {
+      message: notification.toString(),
+      buttons: ctx.getNotificationButtons(notification),
+    };
+  });
 
   switch (ctx.accepts('html', 'json')) {
     case 'html':
@@ -16,7 +22,7 @@ router.get('notifications', '/', async (ctx, next) => {
       });
       break;
     case 'json':
-      ctx.body = { notifications };
+      ctx.body = { notifications: compactNotifications };
       break;
     default:
   }

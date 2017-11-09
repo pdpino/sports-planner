@@ -78,6 +78,7 @@ module.exports = function notificationButtonsHelpers(app) {
       button.path = button.url(this, notification.entityId, notification.eventId);
     });
     buttons = _.filter(buttons, (button) => !button.ignore);
+    buttons = buttons.map((button) => _.pick(button, 'method', 'message', 'path'));
     return buttons;
   };
 

@@ -1,11 +1,29 @@
 import React from 'react';
 
+function displayButtons(buttons){
+  // NOTE: the hidden input doesn't hurt if get or post are used
+  // REVIEW: if the hidden input is provided, the method=... in the form is needed at all?
+  const displayedButtons = [];
+  buttons.forEach((button) => {
+    displayedButtons.push(
+      <form action={button.path} method={ (button.method === 'get') ? 'get' : 'post' }>
+        <div>
+          <input type="hidden" name="_method" value={button.method} />
+        </div>
+        <input type="submit" value={button.message} />
+      </form>
+    );
+  });
+  return displayedButtons;
+}
+
 function displayNotificationsList(notifications){
   const displayedNotifications = [];
-  notifications.forEach((notification) => {
+  notifications.forEach((notification, index) => {
     displayedNotifications.push(
-      <li key={notification.id}>
+      <li key={index}>
         { notification.message }
+        { displayButtons(notification.buttons) }
       </li>
     );
   });
