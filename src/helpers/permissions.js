@@ -1,11 +1,15 @@
 module.exports = function permissions(app) {
   app.context.hasAdminPermission = function(){
-    return this.state.currentUser && this.state.currentUser.role == 'admin';
+    return this.state.currentUser && this.state.currentUser.isAdmin();
   }
 
   /** Has modify permission over the person (player or owner) **/
   app.context.hasModifyPermission = function(person){
-    return this.state.currentUser && this.state.currentUser.id == person.userId;
+    return this.state.currentUser && this.state.currentUser.id === person.userId;
+  }
+
+  app.context.hasUserModifyPermission = function(user){
+    return this.state.currentUser && this.state.currentUser.id === user.id;
   }
 
   app.context.requireAdmin = function(){
@@ -31,6 +35,10 @@ module.exports = function permissions(app) {
   /** Person may be a player or compoundOwner **/
   app.context.requireModifyPermission = function(person){
     this.assert(this.hasModifyPermission(person), 403, "No tienes permisos");
+  }
+
+  app.context.requireUserModifyPermission = function(user){
+    this.assert(this.hasUserModifyPermission(user), 403, "No tienes permisos");
   }
 
   app.context.requireOwnerModifyPermission = function(owner){

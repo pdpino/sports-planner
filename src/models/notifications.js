@@ -59,6 +59,14 @@ module.exports = function definenotification(sequelize, DataTypes) {
   notification.associate = function associate(models) {
     notification.belongsTo(models.user, { as: 'sender' });
     notification.belongsTo(models.user, { as: 'receiver' });
+
+    notification.addScope('defaultScope', {
+      order: [
+        ['createdAt', 'DESC']
+      ],
+    }, {
+      override: true
+    });
   };
 
   notification.prototype.toString = function(){

@@ -78,7 +78,7 @@ module.exports = function defineuser(sequelize, DataTypes) {
 
   user.prototype.isPlayer = function () { return this.role === 'player'; };
   user.prototype.isCompoundOwner = function () { return this.role === 'owner'; };
-  // user.prototype.isAdmin = function () { return this.role === 'admin'; };
+  user.prototype.isAdmin = function () { return this.role === 'admin'; };
 
   user.prototype.getPlayer = function () {
     return this.isPlayer() && sequelize.models.player.find({

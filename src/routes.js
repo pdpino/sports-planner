@@ -3,6 +3,7 @@ const KoaRouter = require('koa-router');
 const index = require('./routes/index');
 const sports = require('./routes/sports');
 const players = require('./routes/players');
+const users = require('./routes/users');
 const teams = require('./routes/teams');
 const matches = require('./routes/matches');
 const session = require('./routes/session');
@@ -116,5 +117,6 @@ router.use(
 router.use('/compoundOwners', compoundOwners.routes());
 router.use('/session', session.routes());
 router.use('/compounds', compound.routes());
+router.use('/users', users.routes());
 
 module.exports = router;
