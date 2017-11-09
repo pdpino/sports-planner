@@ -27,18 +27,6 @@ p {
   text-justify: inter-word;
 }
 
-header {
-  padding: 10px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  border-bottom: 1px solid #ccc;
-  box-shadow: 0 0 5px #999;
-  background: #006400;
-  z-index: 10;
-}
-
 a {
   color: #1E90FF;
   &:hover {
