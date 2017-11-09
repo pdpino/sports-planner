@@ -7,9 +7,7 @@ function displayButtons(buttons){
   buttons.forEach((button) => {
     displayedButtons.push(
       <form action={button.path} method={ (button.method === 'get') ? 'get' : 'post' }>
-        <div>
-          <input type="hidden" name="_method" value={button.method} />
-        </div>
+        <input type="hidden" name="_method" value={button.method} />
         <input type="submit" value={button.message} />
       </form>
     );
