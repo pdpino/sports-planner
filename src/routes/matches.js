@@ -139,7 +139,7 @@ router.patch('addSchedule', '/:id/:compoundId/:fieldId/selectSchedule', async (c
     updatedAt: new Date()
   });
 
-  await ctx.reserveField(ctx.state.currentPlayer, compoundOwner, field);
+  await ctx.reserveField(ctx.state.currentPlayer, compoundOwner, compound, field);
 
   ctx.redirect(ctx.router.url('match', match.id));
 });

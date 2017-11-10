@@ -1,5 +1,5 @@
 const KoaRouter = require('koa-router');
-const sendExampleEmail = require('../mailers/example');
+// const sendExampleEmail = require('../mailers/example');
 
 const router = new KoaRouter();
 
@@ -21,7 +21,7 @@ router.post('hello', '/', async (ctx) => {
   //   await fileStorage.upload(ctx.request.body.files.uploads);
   // }
   if (Math.random() > 1) {
-    await sendExampleEmail(ctx.request.body);
+    // await sendExampleEmail(ctx.request.body);
   }
   ctx.redirect(router.url('hello'));
 });
