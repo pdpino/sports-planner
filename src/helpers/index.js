@@ -10,6 +10,18 @@ const commentHelpers = require('./comments');
 // NOTE:
 // See https://github.com/embbnux/kails (koa in rails style) for examples on helper functions
 module.exports = function helpers(app) {
+  app.context.login = async function(email, password){
+    const user = await this.orm.user.find({ where: { email } });
+    if (user) {
+      const isPasswordCorrect = await user.checkPassword(password);
+      if (isPasswordCorrect) {
+        this.session.userId = user.id;
+        return this.redirect('/'); // HACK: can't use home path
+      }
+    }
+    return false;
+  }
+
   /** Wrapper to find an entity (match, team, player, etc) by the id and assert that is not null **/
   app.context.findById = async function(model, id) {
     const entity = await model.findById(id);

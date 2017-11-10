@@ -38,8 +38,8 @@ router.get('players', '/', async (ctx) => {
 router.get('playerNew', '/new', async (ctx) => {
   ctx.requireNoLogin();
 
-  const user = ctx.orm.user.build(); // (ctx.request.body);
-  const player = ctx.orm.player.build(); // (ctx.request.body);
+  const user = ctx.orm.user.build();
+  const player = ctx.orm.player.build();
 
   await ctx.render('players/new', {
     player,
@@ -51,10 +51,11 @@ router.get('playerNew', '/new', async (ctx) => {
 
 router.post('playerCreate', '/', async (ctx) => {
   ctx.requireNoLogin();
+
   const userParams = getUserParams(ctx.request.body.fields);
   const playerParams = getPlayerParams(ctx.request.body.fields);
 
-  let user = null;
+  let user;
   try {
     user = await ctx.orm.user.create(userParams);
     userParams.photo = FileStorage.url("user" + user.id,{});
@@ -62,8 +63,10 @@ router.post('playerCreate', '/', async (ctx) => {
     playerParams.userId = user.id;
     const player = await ctx.orm.player.create(playerParams);
     FileStorage.upload(ctx.request.body.files.photo, "user" + user.id);
-    ctx.redirect(ctx.router.url('players'));
+
+    await ctx.login(user.email, userParams.password);
   } catch (validationError) {
+    // TODO: also delete created photo (if any)
     if (user){ // User was created correctly, delete it
       // REVIEW: you may avoid saving to the DB and then deleting by using
       // build() and then save() methods on user and player

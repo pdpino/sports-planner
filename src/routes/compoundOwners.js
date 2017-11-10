@@ -57,7 +57,7 @@ router.post('compoundOwnerCreate', '/', async (ctx) => {
     FileStorage.upload(ctx.request.body.files.photo, "user" + user.id);
     const compoundOwner = await ctx.orm.compoundOwner.create(compoundOwnerParams);
 
-    ctx.redirect(ctx.router.url('compoundOwners'));
+    await ctx.login(user.email, userParams.password);
   } catch (validationError) {
     if (user){ // User was created correctly, delete it
       user.destroy();
