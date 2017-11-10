@@ -196,7 +196,7 @@ router.delete('playerDelete', '/:id', async (ctx) => {
   const player = await ctx.findById(ctx.orm.player, ctx.params.id);
 
   ctx.requireModifyPermission(player);
-  FileStorage.destroy(user.email);
+  FileStorage.destroy(player.user.email);
   await player.user.destroy(); // NOTE: player.destroy() is not neccesary beause onDelete: cascade
   ctx.redirect(ctx.router.url('players'));
 });

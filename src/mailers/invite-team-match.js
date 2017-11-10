@@ -4,8 +4,11 @@ module.exports = function mailInvitationTeamToMatch(ctx, to, invitationInfo) {
   // matchDate (already as prettyTimestamp),
   // teamName,
   // invitedBy,
+  // playerLink,
+  // teamLink,
+  // matchLink,
 
-  return ctx.sendMail('invitation-team', {
+  return ctx.sendMail('invite-team-match', {
     to,
     subject: 'Invitación equipo a partido'
   }, invitationInfo);

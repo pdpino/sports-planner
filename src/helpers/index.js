@@ -60,6 +60,10 @@ module.exports = function helpers(app) {
 
   app.context.prettyTimestamp = function(date){
     const parsedDate = moment(date);
+    if (!parsedDate.isValid()){
+      // DEBUG
+      console.log("WARNING: prettyTimestamp got invalid date: ", date);
+    }
     return parsedDate.isValid() ? parsedDate.format('YYYY-MMM-D H:mm') : '';
   }
 
