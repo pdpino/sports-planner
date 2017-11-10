@@ -132,7 +132,7 @@ module.exports = function notificationSendHelpers(app) {
       compoundName: compound.name,
       playerLink: this.getFullUrl('player', player.id),
       compoundLink: this.getFullUrl('compound', compound.id),
-      fieldLink: this.getFullUrl('field', field.id),
+      fieldLink: this.getFullUrl('field', { id: field.id, compoundId: compound.id }),
     });
   }
 
