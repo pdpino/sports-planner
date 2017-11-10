@@ -7,16 +7,21 @@
     </form>
   <% } %>
 
-  <ul>
-    <% compounds.forEach((compound) => { %>
-      <li>
-          <a class="lilink" href=<%= getCompoundPath(compound) %>>
-          <img class="medium-logo" src="<%= compound.photo %>"/>
-          <div>
-           <%= compound.name %>
-         </div>
-       </a>
-      </li>
-    <% }) %>
-  </ul>
+  <% if (compounds.length > 0) { %>
+    <ul>
+      <% compounds.forEach((compound) => { %>
+        <li>
+            <a class="lilink" href=<%= getCompoundPath(compound) %>>
+            <img class="medium-logo" src="<%= compound.photo %>"/>
+            <div>
+             <%= compound.name %>
+           </div>
+         </a>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p> No hay recintos </p>
+  <% } %>
+
 </div>

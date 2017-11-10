@@ -7,7 +7,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
+          model: 'users', // ERROR: should be compoundOwners, is fixed in a following migration
           key: 'id',
         },
         onUpdate: 'cascade',
@@ -16,7 +16,11 @@ module.exports = {
     );
   },
 
-  down(queryInterface, Sequelize) {
-    return queryInterface.removeColumn('compounds', 'compoundOwnerId');
+  async down(queryInterface, Sequelize) {
+    try {
+      await queryInterface.removeColumn('compounds', 'compoundOwnerId');
+    } catch (error) {
+      // Column already deleted
+    }
   },
 };
