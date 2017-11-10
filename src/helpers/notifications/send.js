@@ -2,6 +2,7 @@ const mailInvitationPlayerToTeam = require('../../mailers/invite-player-team');
 const mailInvitationPlayerToMatch = require('../../mailers/invite-player-match');
 const mailInvitationTeamToMatch = require('../../mailers/invite-team-match');
 const mailFieldReservation = require('../../mailers/reserve-field');
+const mailAskFriend = require('../../mailers/ask-friend');
 
 module.exports = function notificationSendHelpers(app) {
   /**
@@ -35,13 +36,15 @@ module.exports = function notificationSendHelpers(app) {
     }
   }
 
-  app.context.askFriend = function(sender, receiver){
-    return this.sendNotification(sender, receiver, {
+  app.context.askFriend = async function(sender, receiver){
+    await this.sendNotification(sender, receiver, {
       kind: 'friendshipAsked',
       entityObj: sender,
     });
 
-    // TODO: send mail
+    return mailAskFriend(this, receiver.email, {
+      askedBy: sender.getName(),
+    });
   }
 
   app.context.acceptFriend = async function(sender, receiver){
@@ -58,7 +61,7 @@ module.exports = function notificationSendHelpers(app) {
       eventObj: team,
     });
 
-    mailInvitationPlayerToTeam(this, receiver.email, {
+    return mailInvitationPlayerToTeam(this, receiver.email, {
       teamName: team.name,
       invitedBy: sender.getName(),
     });
@@ -70,7 +73,7 @@ module.exports = function notificationSendHelpers(app) {
       entityObj: sender,
       eventObj: match,
     });
-    mailInvitationPlayerToMatch(this, receiver.email, {
+    return mailInvitationPlayerToMatch(this, receiver.email, {
       matchName: match.name,
       matchDate: this.prettyTimestamp(match.date),
       invitedBy: sender.getName(),
@@ -92,7 +95,7 @@ module.exports = function notificationSendHelpers(app) {
       eventObj: match,
     });
 
-    mailInvitationTeamToMatch(this, teamCaptain.email, {
+    return mailInvitationTeamToMatch(this, teamCaptain.email, {
       matchName: match.name,
       matchDate: this.prettyTimestamp(match.date),
       teamName: invitedTeam.name,
@@ -115,7 +118,7 @@ module.exports = function notificationSendHelpers(app) {
       eventObj: field,
     });
 
-    mailFieldReservation(this, owner.email, {
+    return mailFieldReservation(this, owner.email, {
       playerName: player.getName(),
       fieldName: field.name,
       compoundName: compound.name,
