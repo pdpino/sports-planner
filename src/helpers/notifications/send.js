@@ -44,19 +44,6 @@ module.exports = function notificationSendHelpers(app) {
     // TODO: send mail
   }
 
-  app.context.readAskedFriendNotification = async function(sender, receiver){
-    // TODO: move function to model
-    const askNotifications = await this.orm.notification.findAll({
-      where: {
-        kind: 'friendshipAsked',
-        senderId: sender.userId,
-        receiverId: receiver.userId,
-        wasRead: false,
-      }
-    });
-    return this.orm.notification.readNotifications(askNotifications);
-  }
-
   app.context.acceptFriend = async function(sender, receiver){
     return this.sendNotification(sender, receiver, {
       kind: 'friendshipAccepted',

@@ -32,7 +32,7 @@ router.patch('friendAccept', '/:friendId', async (ctx) => {
   try {
     ctx.state.player.acceptFriend(friend);
     ctx.acceptFriend(ctx.state.player, friend);
-    ctx.readAskedFriendNotification(friend, ctx.state.player);
+    ctx.orm.notification.readAskedFriend(friend, ctx.state.player);
     ctx.redirect(ctx.router.url('player', friend.id));
   } catch (validationError) {
     const error = ctx.parseValidationError(validationError);

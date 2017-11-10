@@ -81,6 +81,18 @@ module.exports = function definenotification(sequelize, DataTypes) {
     }
   }
 
+  notification.readAskedFriend = async function(sender, receiver){
+    const askNotifications = await notification.findAll({
+      where: {
+        kind: 'friendshipAsked',
+        senderId: sender.userId,
+        receiverId: receiver.userId,
+        wasRead: false,
+      }
+    });
+    return notification.readNotifications(askNotifications);
+  }
+
   // notification.afterFind(helpers.getHookFunction(function (notification){
   //   // Used to pass attributes to react app in the client
   //   // HACK: copy it in dataValues, instead of the object itself
