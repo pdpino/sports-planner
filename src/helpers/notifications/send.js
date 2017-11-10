@@ -44,6 +44,7 @@ module.exports = function notificationSendHelpers(app) {
 
     return mailAskFriend(this, receiver.email, {
       askedBy: sender.getName(),
+      profileLink: this.getFullUrl('player', sender.id),
     });
   }
 

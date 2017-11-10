@@ -22,6 +22,17 @@ module.exports = function helpers(app) {
     return false;
   }
 
+  /**
+   * Get the url like: 'http(s)://host(:port)/path/to/resource'
+   * Used to display links in the emails
+   */
+  app.context.getFullUrl = function(name, params){
+    // REVIEW: does koa-router has a method for this?
+    const origin = this.request.origin;
+    const url = this.router.url(name, params);
+    return `${origin}${url}`;
+  }
+
   /** Wrapper to find an entity (match, team, player, etc) by the id and assert that is not null **/
   app.context.findById = async function(model, id) {
     const entity = await model.findById(id);

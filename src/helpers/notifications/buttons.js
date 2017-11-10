@@ -1,7 +1,7 @@
 const _ = require('lodash');
 
 module.exports = function notificationButtonsHelpers(app) {
-  const profileButton = {
+  const playerProfileButton = {
     url: (ctx, entityId, eventId) => ctx.router.url('player', entityId),
     method: 'get',
     message: 'Ver perfil',
@@ -51,14 +51,14 @@ module.exports = function notificationButtonsHelpers(app) {
   };
 
   const notificationButtons = {
-    friendshipAsked: [ acceptFriendButton, profileButton ],
-    friendshipAccepted: [ profileButton ],
-    addedToTeam: [ teamButtonAsEvent, profileButton ],
-    playerInvitedToMatch: [ matchButton, profileButton ],
-    playerAcceptedMatch: [ matchButton, profileButton ],
+    friendshipAsked: [ acceptFriendButton, playerProfileButton ],
+    friendshipAccepted: [ playerProfileButton ],
+    addedToTeam: [ teamButtonAsEvent, playerProfileButton ],
+    playerInvitedToMatch: [ matchButton, playerProfileButton ],
+    playerAcceptedMatch: [ matchButton, playerProfileButton ],
     teamInvitedToMatch: [ matchButton, teamButtonAsEntity ],
     teamAcceptedMatch: [ matchButton, teamButtonAsEntity ],
-    playerReserveField: [ fieldButtonAsEvent, profileButton ],
+    playerReserveField: [ fieldButtonAsEvent, playerProfileButton ],
     ownerAcceptFieldReservation: [ matchButton, fieldButtonAsEntity ],
   };
 
