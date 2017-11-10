@@ -1,16 +1,9 @@
 <h1>Fuiste invitado a un equipo! </h1>
 
 <p>
-  <%= invitedBy %> te ha invitado a su equipo:
-  <strong>
-    <%= teamName %>
-  </strong>
-</p>
-
-<p>
-  <a href="<%= playerLink %>">Perfil del jugador</a>
-  <br>
-  <a href="<%= teamLink %>">Equipo</a>
+  <a href="<%= playerLink %>"><%= invitedBy %></a>
+  te ha invitado a su equipo:
+  <a href="<%= teamLink %>"><strong><%= teamName %></strong></a>
 </p>
 
 <%- include('_footer') %>
