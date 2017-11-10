@@ -94,9 +94,9 @@ router.patch('compoundOwnerUpdate', '/:id', async (ctx) => {
   const compoundOwnerParams = getCompoundOwnerParams(ctx.request.body.fields);
 
   try {
-    userParams.photo = FileStorage.url("user" + compoundOwner.user.id,{});
+    userParams.photo = FileStorage.url('user' + compoundOwner.user.id,{});
     await compoundOwner.user.update(userParams);
-    FileStorage.upload(ctx.request.body.files.photo, "user" + compoundOwner.user.id);
+    FileStorage.upload(ctx.request.body.files.photo, 'user' + compoundOwner.user.id);
     await compoundOwner.update(compoundOwnerParams);
     ctx.redirect(ctx.router.url('compoundOwner', { id: compoundOwner.id }));
   } catch (validationError) {
@@ -126,7 +126,7 @@ router.delete('compoundOwnerDelete', '/:id', async (ctx) => {
   const compoundOwner = await ctx.findById(ctx.orm.compoundOwner, ctx.params.id);
 
   ctx.requireModifyPermission(compoundOwner);
-  FileStorage.destrory("user" + compoundOwner.user.id);
+  FileStorage.destroy('user' + compoundOwner.user.id);
   await compoundOwner.user.destroy(); // NOTE: compoundOwner.destroy() is not neccesary beause onDelete: cascade
   ctx.redirect(ctx.router.url('compoundOwners'));
 });

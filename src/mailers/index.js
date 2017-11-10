@@ -8,7 +8,11 @@ module.exports = function mailers(app) {
     console.log(`MAILERS: emailName: ${emailName}, options: ${options.toString()}`); // DEBUG
     const html = await this.render(
       `emails/${emailName}`,
-      { ...templateContext, layout: false, writeResp: false },
+      { ...templateContext,
+        homeLink: this.request.origin,
+        layout: false,
+        writeResp: false,
+      },
     );
     return transport.sendMail({ ...options, html });
   };

@@ -27,7 +27,7 @@ module.exports = function helpers(app) {
    * Used to display links in the emails
    */
   app.context.getFullUrl = function(name, params){
-    // REVIEW: does koa-router has a method for this?
+    // REVIEW: koa-router has a method for this?
     const origin = this.request.origin;
     const url = this.router.url(name, params);
     return `${origin}${url}`;
