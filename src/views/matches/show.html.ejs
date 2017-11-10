@@ -97,7 +97,7 @@
 
   <% if(reviewsEnabled) { %>
     <%- include('../playerReviews/index-pending', { pendingReviews }) %>
-    <%- include('../playerReviews/index-done', { doneReviews }) %>
+    <%- include('../playerReviews/index-done', { doneReviews, showReviewer: false }) %>
 
     <%- include('../compoundReviews/show') %>
   <% } %>

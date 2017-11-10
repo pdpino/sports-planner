@@ -1,5 +1,6 @@
 <%# Provide:
   doneReviews,
+  showReviewer
   %>
 
 <div>
@@ -8,7 +9,13 @@
     <ul>
       <% doneReviews.forEach((review) => { %>
         <li>
-          <%= review.reviewed.getName() %>, <%= updatedAtTimestamp(review) %>:
+          <% if (showReviewer) { %>
+            <%= review.reviewer.getName() %>,
+          <% } else { %>
+            <%= review.reviewed.getName() %>,
+          <% } %>
+
+          <%= updatedAtTimestamp(review) %>:
           <br>
           <%= review.rating %>
           --

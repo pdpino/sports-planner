@@ -96,6 +96,9 @@ module.exports = function defineuser(sequelize, DataTypes) {
     });
   };
 
+  user.prototype.getName = function() {
+    return `${this.firstName} ${this.lastName}`;
+  }
 
   return user;
 };
