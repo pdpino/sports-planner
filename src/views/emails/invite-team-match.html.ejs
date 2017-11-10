@@ -1,14 +1,15 @@
-<h1>Tu equipo fue invitado a un <%= eventType %>! </h1>
+<h1>Tu equipo fue invitado a un partido! </h1>
 
 <p>
   <%= invitedBy %> ha invitado a tu equipo
   <em>
     <%= teamName %>
   </em>
-  a <%= eventType %>:
+  al partido:
   <strong>
-    <%= eventName %>
-  </strong>
+    <%= matchName %>
+  </strong>,
+  <%= matchDate %>
 </p>
 
 <%- include('_footer') %>

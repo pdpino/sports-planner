@@ -1,6 +1,7 @@
-const sendInvitationPlayerMail = require('../../mailers/invitation-player');
-const sendInvitationTeamMail = require('../../mailers/invitation-team');
-const sendFieldReservation = require('../../mailers/reservation-field');
+const mailInvitationPlayerToTeam = require('../../mailers/invite-player-team');
+const mailInvitationPlayerToMatch = require('../../mailers/invite-player-match');
+const mailInvitationTeamToMatch = require('../../mailers/invite-team-match');
+const mailFieldReservation = require('../../mailers/reserve-field');
 
 module.exports = function notificationSendHelpers(app) {
   /**
@@ -41,14 +42,10 @@ module.exports = function notificationSendHelpers(app) {
     });
 
     // TODO: send mail
-    // sendInvitationPlayerMail(this, receiver.email, {
-    //   eventType: 'Equipo',
-    //   eventName: team.name,
-    //   invitedBy: sender.getName(),
-    // });
   }
 
   app.context.readAskedFriendNotification = async function(sender, receiver){
+    // TODO: move function to model
     const askNotifications = await this.orm.notification.findAll({
       where: {
         kind: 'friendshipAsked',
@@ -74,9 +71,8 @@ module.exports = function notificationSendHelpers(app) {
       eventObj: team,
     });
 
-    sendInvitationPlayerMail(this, receiver.email, {
-      eventType: 'Equipo',
-      eventName: team.name,
+    mailInvitationPlayerToTeam(this, receiver.email, {
+      teamName: team.name,
       invitedBy: sender.getName(),
     });
   }
@@ -87,9 +83,9 @@ module.exports = function notificationSendHelpers(app) {
       entityObj: sender,
       eventObj: match,
     });
-    sendInvitationPlayerMail(this, receiver.email, {
-      eventType: 'Partido',
-      eventName: match.name,
+    mailInvitationPlayerToMatch(this, receiver.email, {
+      matchName: match.name,
+      matchDate: this.prettyTimestamp(match.date),
       invitedBy: sender.getName(),
     });
   }
@@ -109,11 +105,11 @@ module.exports = function notificationSendHelpers(app) {
       eventObj: match,
     });
 
-    sendInvitationTeamMail(this, teamCaptain.email, {
-      eventType: 'Partido',
-      eventName: match.name,
-      invitedBy: sender.getName(),
+    mailInvitationTeamToMatch(this, teamCaptain.email, {
+      matchName: match.name,
+      matchDate: this.prettyTimestamp(match.date),
       teamName: invitedTeam.name,
+      invitedBy: sender.getName(),
     });
   }
 
@@ -125,16 +121,17 @@ module.exports = function notificationSendHelpers(app) {
     });
   }
 
-  app.context.reserveField = async function(player, owner, field){
+  app.context.reserveField = async function(player, owner, compound, field){
     await this.sendNotification(player, owner, {
       kind: 'playerReserveField',
       entityObj: player,
       eventObj: field,
     });
 
-    sendFieldReservation(this, owner.email, {
+    mailFieldReservation(this, owner.email, {
       playerName: player.getName(),
       fieldName: field.name,
+      compoundName: compound.name,
     });
   }
 
