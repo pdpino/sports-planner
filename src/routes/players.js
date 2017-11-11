@@ -174,7 +174,6 @@ router.get('player', '/:id', async (ctx) => {
       playerId: ctx.state.currentPlayer.id,
       friendId: friend.id,
     }),
-    newPlayerTeamPath: ctx.router.url('playerTeamNew', { playerId: player.id } ),
     deletePlayerTeamPath: (team) => ctx.router.url('playerTeamDelete', {
       playerId: player.id,
       id: team.id
@@ -187,8 +186,8 @@ router.get('player', '/:id', async (ctx) => {
     newPlayerSportPath: ctx.router.url('playerSportNew', { playerId: player.id } ),
     editPlayerSportPath: (sport) => ctx.router.url('playerSportEdit', {
       playerId: player.id,
-      id: sport.id }
-    ),
+      id: sport.id
+    }),
   });
 });
 

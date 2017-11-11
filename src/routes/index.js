@@ -4,12 +4,42 @@ const KoaRouter = require('koa-router');
 const router = new KoaRouter();
 
 router.get('home', '', async (ctx) => {
-  if (ctx.state.isLoggedIn){
+  // Provide function for views
+  ctx.state.getNotificationButtons = ctx.getNotificationButtons.bind(ctx);
+
+  if (ctx.state.isPlayerLoggedIn){
     const notifications = await ctx.state.currentUser.getReceivedNotifications();
-    // REVIEW: if a different home is needed for player and owner, create a new view called home/owner (or compoundOwner)
+    const mySports = await ctx.state.currentPlayer.getSports();
+    const myTeams = await ctx.state.currentPlayer.getTeams();
+    const myMatches = await ctx.state.currentPlayer.getMatches();
+    const reviewsAverage = await ctx.state.currentPlayer.getReviewsAverage();
+
     await ctx.render('home/player', {
       notifications,
-      getNotificationButtons: ctx.getNotificationButtons.bind(ctx),
+      mySports,
+      myTeams,
+      myMatches,
+      reviewsAverage,
+      newTeamPath: ctx.router.url('teamNew'),
+      deletePlayerTeamPath: (team) => ctx.router.url('playerTeamDelete', {
+        playerId: ctx.state.currentPlayer.id,
+        id: team.id
+      }),
+      newPlayerMatchPath: ctx.router.url('playerMatchNew', { playerId: ctx.state.currentPlayer.id } ),
+      editPlayerMatchPath: (match) => ctx.router.url('playerMatchEdit', {
+        playerId: ctx.state.currentPlayer.id,
+        id: match.id
+      }),
+      newPlayerSportPath: ctx.router.url('playerSportNew', { playerId: ctx.state.currentPlayer.id } ),
+      editPlayerSportPath: (sport) => ctx.router.url('playerSportEdit', {
+        playerId: ctx.state.currentPlayer.id,
+        id: sport.id
+      }),
+    });
+  } else if (ctx.state.isOwnerLoggedIn) {
+    const notifications = await ctx.state.currentUser.getReceivedNotifications();
+    await ctx.render('home/compoundOwner', {
+      notifications,
     });
   } else {
     await ctx.render('index', { });

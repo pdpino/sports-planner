@@ -31,7 +31,7 @@ function displayNotificationsList(notifications){
 export default function Notifications(props) {
   return (
     <div>
-      <h2>Notificaciones</h2>
+      <h4>Notificaciones</h4>
       <form onSubmit={props.onSubmit}>
         <input type="submit" value="Recargar" />
       </form>

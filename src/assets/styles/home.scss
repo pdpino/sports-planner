@@ -1,0 +1,54 @@
+#body-container {
+  // HACK: this div contains the home-container, so the home-container does not need to specify top property
+  // This could be used in every view (in layout.html wrap the body)
+  position: relative;
+  top: 50px;
+}
+
+#home-container {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+#column-left {
+  width: 30%;
+  // border: solid 1px blue;
+}
+
+#column-right {
+  width: 70%;
+  // border: solid 1px blue;
+}
+
+.box-container {
+  border: solid 1px black;
+  padding: 0.5em;
+  margin: 0.5em;
+  background-color: #F0F0EA;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+
+}
+
+#notifications-react-app {
+
+}
+
+#reviews-container {
+
+}
+
+#teams-container {
+
+}
+
+#matches-container {
+
+}
+
+#sports-container {
+
+}

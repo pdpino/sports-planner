@@ -1,12 +1,89 @@
-<div class="center">
+<div id="body-container">
+  <div id="home-container">
+    <%# include('../notifications/index') %>
 
-  <h1>Jugamos</h1>
+    <div id="column-left">
 
-  <%# include('../notifications/index') %>
-  <div
-    id="notifications-react-app"
-    data-user-id="<%= currentUser.id %>"
-    >
-    Here a React app will be rendered
+      <div
+        id="notifications-react-app"
+        class="box-container"
+        data-user-id="<%= currentUser.id %>"
+        >
+      </div>
+
+      <div id="reviews-container" class="box-container">
+        <p>
+          <% if(reviewsAverage === 0) { %>
+            No has recibido reviews
+          <% } else { %>
+            Tienes un promedio de reviews <%= reviewsAverage %>
+          <% } %>
+        </p>
+      </div>
+
+      <div id="teams-container" class="box-container">
+        <h4> Mis equipos </h4>
+        <% if(myTeams.length > 0) { %>
+          <ul>
+            <% myTeams.forEach((team) => { %>
+              <li>
+                <a class="lilink" href="<%= getTeamPath(team) %>">
+                  <img class="small-logo" src="<%= team.logo %>"/>
+                  <div>
+                    <%= team.name %> <%= (team.isMember.isCaptain) ? '-- Capitán' : '' %>
+                  </div>
+                  <%- include('../_buttons/delete', {
+                    deletePath: deletePlayerTeamPath(team),
+                    message: 'Abandonar equipo',
+                  }) %>
+                </a>
+              </li>
+            <% }) %>
+          </ul>
+        <% } else { %>
+          No tienes equipo.
+        <% } %>
+
+        <form action="<%= newTeamPath %>">
+          <input type="submit" value="Crear Equipo"/>
+        </form>
+      </div>
+
+    </div>
+
+    <div id="column-right">
+
+      <div id="matches-container" class="box-container">
+        <h4>Partidos</h4>
+        <% if(myMatches.length > 0) { %>
+          <ul>
+            <% myMatches.forEach((match) => { %>
+              <li>
+                <a class="lilink" href="<%= getMatchPath(match) %>">
+                  <div>
+                    <%= match.name %>
+                  </div>
+                  <div>
+                    <%= prettyTimestamp(match.date) %>
+                  </div>
+                  <div>
+                    <%= (match.isPlayerInvited.isAdmin) ? 'Usted es Admin del partido' : '' %>
+                  </div>
+                  <%- include('../_buttons/edit', { editPath: editPlayerMatchPath(match) }) %>
+                </a>
+              </li>
+            <% }) %>
+          </ul>
+        <% } else { %>
+          <p>No tienes ningún partido</p>
+        <% } %>
+
+        <form action="<%= newPlayerMatchPath %>">
+            <input type="submit" value="Añadir Partido" />
+        </form>
+      </div>
+
+    </div>
+
   </div>
 </div>
