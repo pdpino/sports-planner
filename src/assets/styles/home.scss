@@ -46,9 +46,59 @@
 }
 
 #matches-container {
-
+  display: flex;
+  flex-flow: row wrap;
 }
 
-#sports-container {
+#matches-sup-bar {
+  width: 100%;
+  position: relative;
+}
 
+#matches-title {
+  display: inline-block;
+}
+
+#matches-new {
+  display: inline-block;
+  position: absolute;
+  right: 0;
+}
+
+#matches-confirmed-container {
+  width: 50%;
+}
+
+#matches-invite-container {
+  width: 50%;
+}
+
+#matches-past-container {
+  width: 100%;
+}
+
+.match-home-li {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  &:hover {
+    // HACK: this needs to be done to override lilink behaviour
+    display: flex;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.match-home-li-element {
+  display: inline-block;
+}
+
+form.match-home-li-element {
+  right: 0;
+}
+
+div.match-home-li-element {
+  left: 0;
 }

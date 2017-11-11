@@ -54,33 +54,26 @@
     <div id="column-right">
 
       <div id="matches-container" class="box-container">
-        <h4>Partidos</h4>
-        <% if(myMatches.length > 0) { %>
-          <ul>
-            <% myMatches.forEach((match) => { %>
-              <li>
-                <a class="lilink" href="<%= getMatchPath(match) %>">
-                  <div>
-                    <%= match.name %>
-                  </div>
-                  <div>
-                    <%= prettyTimestamp(match.date) %>
-                  </div>
-                  <div>
-                    <%= (match.isPlayerInvited.isAdmin) ? 'Usted es Admin del partido' : '' %>
-                  </div>
-                  <%- include('../_buttons/edit', { editPath: editPlayerMatchPath(match) }) %>
-                </a>
-              </li>
-            <% }) %>
-          </ul>
-        <% } else { %>
-          <p>No tienes ningún partido</p>
-        <% } %>
+        <div id="matches-sup-bar">
+          <h3 id="matches-title">Partidos</h3>
 
-        <form action="<%= newPlayerMatchPath %>">
-            <input type="submit" value="Añadir Partido" />
-        </form>
+          <form id="matches-new" action="<%= newMatchPath %>">
+            <input type="submit" value="Crear Partido" />
+          </form>
+        </div>
+
+        <div id="matches-confirmed-container">
+          <%- include('../matches/_index-snippet', { title: 'Confirmados', matches: myConfirmedMatches }) %>
+        </div>
+
+        <div id="matches-invite-container">
+          <%- include('../matches/_index-snippet', { title: 'Por confirmar', matches: myInviteMatches }) %>
+        </div>
+
+        <div id="matches-past-container">
+          <%- include('../matches/_index-snippet', { title: 'Pasados', matches: myPastMatches }) %>
+        </div>
+
       </div>
 
     </div>

@@ -24,16 +24,16 @@ router.get('home', '', async (ctx) => {
       notifications,
       mySports,
       myTeams,
-      myMatches: myPastMatches, // DEBUGging
+      myPastMatches,
       myInviteMatches,
       myConfirmedMatches,
       reviewsAverage,
+      newMatchPath: ctx.router.url('matchNew'),
       newTeamPath: ctx.router.url('teamNew'),
       deletePlayerTeamPath: (team) => ctx.router.url('playerTeamDelete', {
         playerId: ctx.state.currentPlayer.id,
         id: team.id
       }),
-      newPlayerMatchPath: ctx.router.url('playerMatchNew', { playerId: ctx.state.currentPlayer.id } ),
       editPlayerMatchPath: (match) => ctx.router.url('playerMatchEdit', {
         playerId: ctx.state.currentPlayer.id,
         id: match.id
