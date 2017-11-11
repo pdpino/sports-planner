@@ -3,6 +3,10 @@ const KoaRouter = require('koa-router');
 
 const router = new KoaRouter();
 
+router.get('index', 'index', (ctx) => {
+  return ctx.render('index', { });
+});
+
 router.get('home', '', async (ctx) => {
   // Provide function for views
   ctx.state.getNotificationButtons = ctx.getNotificationButtons.bind(ctx);
@@ -42,7 +46,7 @@ router.get('home', '', async (ctx) => {
       notifications,
     });
   } else {
-    await ctx.render('index', { });
+    return ctx.redirect(ctx.router.url('index'));
   }
 });
 
