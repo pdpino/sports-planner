@@ -251,5 +251,50 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     return doneReviews.length && ratingSum / doneReviews.length;
   }
 
+  player.prototype.getPastMatches = function(){
+    return this.getMatches({
+      where: {
+        isDone: true,
+      },
+      through: {
+        where: {
+          status: {
+            [Op.ne]: 'rejectedByAdmin'
+          }
+        }
+      }
+    });
+  }
+
+  player.prototype.getInviteMatches = function(){
+    return this.getMatches({
+      where: {
+        isDone: false,
+      },
+      through: {
+        where: {
+          [Op.and]: [{
+            status: { [Op.ne]: 'accepted' }
+          }, {
+            status: { [Op.ne]: 'rejectedByAdmin' }
+          }]
+        }
+      }
+    });
+  }
+
+  player.prototype.getConfirmedMatches = function(){
+    return this.getMatches({
+      where: {
+        isDone: false,
+      },
+      through: {
+        where: {
+          status: 'accepted',
+        }
+      }
+    });
+  }
+
   return player;
 };

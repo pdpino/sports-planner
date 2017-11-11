@@ -40,6 +40,18 @@ module.exports = function definematch(sequelize, DataTypes) {
     match.hasMany(models.playerReview);
     match.hasMany(models.compoundReview);
 
+    // REVIEW: add this default scope
+    // The others scopes extend from this one?
+    // If not, the scopes should always be called alongside defaultScope,
+    // or the date order should be copied on the other scopes
+    // match.addScope('defaultScope', {
+    //   order: [
+    //     ['date', 'DESC']
+    //   ],
+    // }, {
+    //   override: true
+    // });
+
     match.addScope('withSport', {
       include: [{
         model: models.sport

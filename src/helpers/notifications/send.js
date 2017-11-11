@@ -32,7 +32,7 @@ module.exports = function notificationSendHelpers(app) {
 
   app.context.sendNotifications = async function(sender, receivers, options){
     for(let i = 0; i < receivers.length; i++){
-      await this.sendNotification(sender, receiver[i], options);
+      await this.sendNotification(sender, receivers[i], options);
     }
   }
 
