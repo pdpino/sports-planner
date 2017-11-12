@@ -28,5 +28,4 @@ function renderApp(App, AppDivId){
 }
 
 renderApp(NotificationsApp, 'notifications-react-app');
-renderApp(TeamCommentsApp, 'team-private-comments-react-app');
-renderApp(TeamCommentsApp, 'team-public-comments-react-app');
+renderApp(TeamCommentsApp, 'team-comments-react-app');

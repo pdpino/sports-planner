@@ -1,6 +1,6 @@
 import React from 'react';
-import TeamComments from '../containers/TeamComments';
+import AllTeamComments from '../components/AllTeamComments';
 
 export default function App(props) {
-  return <TeamComments {...props} />;
+  return <AllTeamComments {...props} />;
 }
