@@ -2,7 +2,7 @@ import React from 'react';
 
 function displayDeleteButton(comment, onDelete){
   if (comment.canDelete) {
-    const onSubmit = (e) => onDelete(e, { id: comment.id });
+    const onSubmit = (event) => onDelete(event, { id: comment.id });
     return (
       <form onSubmit={onSubmit}>
         <input type="submit" value="Eliminar" />
