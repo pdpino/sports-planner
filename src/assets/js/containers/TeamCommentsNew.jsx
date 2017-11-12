@@ -22,7 +22,7 @@ export default class TeamCommentsNew extends GenericForm {
             />
           </label>
           <div>
-            <input type="submit" value="Comentar2" />
+            <input type="submit" value="Comentar" />
           </div>
         </form>
       </div>
