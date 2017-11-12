@@ -78,17 +78,6 @@
 
   </div>
 
-
-  <% if (canSeePrivateComments) { %>
-    <%# include('../comments/index', { comments: privateComments, isPublic: false }) %>
-    <%# include('../comments/new', { isPublic: false }) %>
-    <%# include('../comments/react', { divId: 'team-private-comments-react-app', isPublic: false }) %>
-  <% } %>
-
-  <%# include('../comments/index', { comments: publicComments, isPublic: true }) %>
-
-  <%# include('../comments/react', { divId: 'team-public-comments-react-app', isPublic: true }) %>
-
   <div
     id="team-comments-react-app"
     data-team-id="<%= team.id %>"
