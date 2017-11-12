@@ -19,7 +19,7 @@ router.post('teamCommentCreate', '/', async (ctx) => {
   ctx.redirect(ctx.router.url('team', ctx.state.team.id));
 });
 
-router.get('teamCommentsPublic', '/', async (ctx) => {
+router.get('teamCommentsPublic', '/public', async (ctx) => {
   const publicComments = await ctx.state.team.getPublicComments();
 
   switch (ctx.accepts('html', 'json')) {
@@ -40,10 +40,10 @@ router.get('teamCommentsPublic', '/', async (ctx) => {
   }
 });
 
-router.get('teamCommentsPrivate', '/', async (ctx) => {
+router.get('teamCommentsPrivate', '/private', async (ctx) => {
   await ctx.requirePlayerInTeam(ctx.state.team);
 
-  const privateComments = await team.getPrivateComments();
+  const privateComments = await ctx.state.team.getPrivateComments();
 
   switch (ctx.accepts('html', 'json')) {
     case 'html':
