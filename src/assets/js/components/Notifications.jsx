@@ -4,9 +4,9 @@ function displayButtons(buttons){
   // NOTE: the hidden input doesn't hurt if get or post are used
   // REVIEW: if the hidden input is provided, the method=... in the form is needed at all?
   const displayedButtons = [];
-  buttons.forEach((button) => {
+  buttons.forEach((button, index) => {
     displayedButtons.push(
-      <form action={button.path} method={ (button.method === 'get') ? 'get' : 'post' }>
+      <form key={index} action={button.path} method={ (button.method === 'get') ? 'get' : 'post' }>
         <input type="hidden" name="_method" value={button.method} />
         <input type="submit" value={button.message} />
       </form>

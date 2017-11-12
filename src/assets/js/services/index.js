@@ -4,9 +4,8 @@ export default async function jsonRequest(path, options = {}) {
     headers: { ...options.headers, Accept: 'application/json' },
     credentials: 'include',
   });
-  const json = await result.json();
   if (result.status !== 200) {
-    throw Object.assign(new Error(), json);
+    throw Object.assign(new Error(), result);
   }
-  return json;
+  return result.json();
 }

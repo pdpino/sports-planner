@@ -78,15 +78,13 @@
 
   </div>
 
-
-  <% if (canSeePrivateComments) { %>
-    <%- include('../comments/index', { comments: privateComments, isPublic: false }) %>
-    <%- include('../comments/new', { isPublic: false }) %>
-  <% } %>
-
-  <%- include('../comments/index', { comments: publicComments, isPublic: true }) %>
-  <%- include('../comments/new', { isPublic: true }) %>
-
+  <div
+    id="team-comments-react-app"
+    data-team-id="<%= team.id %>"
+    data-can-public-comment="<%= canComment %>"
+    data-show-private-comments="<%= canSeePrivateComments %>"
+    >
+  </div>
 
   <%- include('../_buttons/back', {
     backPath: teamsPath,

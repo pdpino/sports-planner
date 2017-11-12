@@ -16,7 +16,60 @@ router.post('teamCommentCreate', '/', async (ctx) => {
   }
 
   await ctx.state.team.makeComment(ctx.state.currentPlayer, params);
-  ctx.redirect(ctx.router.url('team', ctx.state.team.id));
+
+  switch (ctx.accepts('html', 'json')) {
+    case 'html':
+      ctx.redirect(ctx.router.url('team', ctx.state.team.id));
+      break;
+    case 'json':
+      ctx.body = { };
+      break;
+    default:
+  }
+});
+
+router.get('teamCommentsPublic', '/public', async (ctx) => {
+  const publicComments = await ctx.state.team.getPublicComments();
+
+  switch (ctx.accepts('html', 'json')) {
+    case 'html':
+      await ctx.render('comments/index', {
+        comments: publicComments,
+        deleteCommentPath: (comment) => ctx.router.url('teamCommentDelete', {
+          teamId: ctx.state.team.id,
+          id: comment.id,
+        }),
+        isPublic: true,
+      });
+      break;
+    case 'json':
+      ctx.body = { comments: ctx.getDisplayableComments(publicComments) };
+      break;
+    default:
+  }
+});
+
+router.get('teamCommentsPrivate', '/private', async (ctx) => {
+  await ctx.requirePlayerInTeam(ctx.state.team);
+
+  const privateComments = await ctx.state.team.getPrivateComments();
+
+  switch (ctx.accepts('html', 'json')) {
+    case 'html':
+      await ctx.render('comments/index', {
+        comments: privateComments,
+        deleteCommentPath: (comment) => ctx.router.url('teamCommentDelete', {
+          teamId: ctx.state.team.id,
+          id: comment.id,
+        }),
+        isPublic: false,
+      });
+      break;
+    case 'json':
+      ctx.body = { comments: ctx.getDisplayableComments(privateComments) };
+      break;
+    default:
+  }
 });
 
 router.delete('teamCommentDelete', '/:id', async (ctx) => {
@@ -25,7 +78,16 @@ router.delete('teamCommentDelete', '/:id', async (ctx) => {
   ctx.requireModifyPermission(comment.player);
 
   await comment.destroy();
-  ctx.redirect(ctx.router.url('team', ctx.state.team.id));
+
+  switch (ctx.accepts('html', 'json')) {
+    case 'html':
+      ctx.redirect(ctx.router.url('team', ctx.state.team.id));
+      break;
+    case 'json':
+      ctx.body = { };
+      break;
+    default:
+  }
 });
 
 module.exports = router;
