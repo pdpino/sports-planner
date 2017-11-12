@@ -47,8 +47,8 @@
   </div>
 
   <div>
+    <h4>Amigos:</h4>
     <% if(friends.length > 0) { %>
-      <h4>Amigos:</h4>
       <ul>
         <% friends.forEach((friend) => { %>
           <li>
@@ -68,8 +68,8 @@
   </div>
 
   <div>
+    <h4>Deportes que practica:</h4>
     <% if(playerSports.length > 0) { %>
-      <h4>Deportes que practica:</h4>
       <ul>
         <% playerSports.forEach((sport) => { %>
           <li>
@@ -104,8 +104,8 @@
   </div>
 
   <div>
+    <h4> Equipos a los que pertenece: </h4>
     <% if(playerTeams.length > 0) { %>
-      <h4> Equipos a los que pertenece: </h4>
       <ul>
         <% playerTeams.forEach((team) => { %>
 
@@ -129,31 +129,31 @@
       No pertenece a ningún equipo.
     <% } %>
 
+    <h4> Partidos: </h4>
     <% if(playerMatches.length > 0) { %>
-      <h4> Partidos: </h4>
       <ul>
         <% playerMatches.forEach((match) => { %>
           <li>
-              <a class="lilink" href="<%= getMatchPath(match) %>">
-                <div>
-                  <%= match.name %>
-                </div>
-                <div>
-                  <%= match.date %>
-                </div>
-                <div>
-                  <%= (match.isPlayerInvited.isAdmin) ? 'Usted es Admin del partido' : '' %>
-                </div>
+            <a class="lilink" href="<%= getMatchPath(match) %>">
+              <div>
+                <%= match.name %>
+              </div>
+              <div>
+                <%= match.date %>
+              </div>
+              <div>
+                <%= (match.isPlayerInvited.isAdmin) ? 'Usted es Admin del partido' : '' %>
+              </div>
 
-                <% if(hasModifyPermission) { %>
-                  <%- include('../_buttons/edit', { editPath: editPlayerMatchPath(match) }) %>
-                <% } %>
+              <% if(hasModifyPermission) { %>
+                <%- include('../_buttons/edit', { editPath: editPlayerMatchPath(match) }) %>
+              <% } %>
             </a>
-        </li>
+          </li>
         <% }) %>
       </ul>
     <% } else { %>
-      No pertenece a ningún partido.
+      No tiene ningún partido.
     <% } %>
 
 

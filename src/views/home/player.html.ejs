@@ -1,12 +1,82 @@
-<div class="center">
+<div id="body-container">
+  <div id="home-container">
+    <%# include('../notifications/index') %>
 
-  <h1>Jugamos</h1>
+    <div id="column-left">
 
-  <%# include('../notifications/index') %>
-  <div
-    id="notifications-react-app"
-    data-user-id="<%= currentUser.id %>"
-    >
-    Here a React app will be rendered
+      <div
+        id="notifications-react-app"
+        class="box-container"
+        data-user-id="<%= currentUser.id %>"
+        >
+      </div>
+
+      <div id="reviews-container" class="box-container">
+        <p>
+          <% if(reviewsAverage === 0) { %>
+            No has recibido reviews
+          <% } else { %>
+            Tienes un promedio de reviews <%= reviewsAverage %>
+          <% } %>
+        </p>
+      </div>
+
+      <div id="teams-container" class="box-container">
+        <h4> Mis equipos </h4>
+        <% if(myTeams.length > 0) { %>
+          <ul>
+            <% myTeams.forEach((team) => { %>
+              <li>
+                <a class="lilink" href="<%= getTeamPath(team) %>">
+                  <img class="small-logo" src="<%= team.logo %>"/>
+                  <div>
+                    <%= team.name %> <%= (team.isMember.isCaptain) ? '-- Capitán' : '' %>
+                  </div>
+                  <%- include('../_buttons/delete', {
+                    deletePath: deletePlayerTeamPath(team),
+                    message: 'Abandonar equipo',
+                  }) %>
+                </a>
+              </li>
+            <% }) %>
+          </ul>
+        <% } else { %>
+          No tienes equipo.
+        <% } %>
+
+        <form action="<%= newTeamPath %>">
+          <input type="submit" value="Crear Equipo"/>
+        </form>
+      </div>
+
+    </div>
+
+    <div id="column-right">
+
+      <div id="matches-container" class="box-container">
+        <div id="matches-sup-bar">
+          <h3 id="matches-title">Partidos</h3>
+
+          <a id="matches-new" href="<%= newMatchPath %>">
+            <img class="small-button" src="/assets/plus_green.png" alt="Crear partido" title="Crear partido"/>
+          </a>
+        </div>
+
+        <div id="matches-confirmed-container">
+          <%- include('../matches/_index-snippet', { title: 'Confirmados', matches: myConfirmedMatches }) %>
+        </div>
+
+        <div id="matches-invite-container">
+          <%- include('../matches/_index-snippet', { title: 'Por confirmar', matches: myInviteMatches }) %>
+        </div>
+
+        <div id="matches-past-container">
+          <%- include('../matches/_index-snippet', { title: 'Pasados', matches: myPastMatches }) %>
+        </div>
+
+      </div>
+
+    </div>
+
   </div>
 </div>

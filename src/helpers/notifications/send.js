@@ -32,7 +32,7 @@ module.exports = function notificationSendHelpers(app) {
 
   app.context.sendNotifications = async function(sender, receivers, options){
     for(let i = 0; i < receivers.length; i++){
-      await this.sendNotification(sender, receiver[i], options);
+      await this.sendNotification(sender, receivers[i], options);
     }
   }
 
@@ -42,8 +42,9 @@ module.exports = function notificationSendHelpers(app) {
       entityObj: sender,
     });
 
-    return mailAskFriend(this, receiver.email, {
+    mailAskFriend(this, receiver.email, {
       askedBy: sender.getName(),
+      playerLink: this.getFullUrl('player', sender.id),
     });
   }
 
@@ -61,9 +62,11 @@ module.exports = function notificationSendHelpers(app) {
       eventObj: team,
     });
 
-    return mailInvitationPlayerToTeam(this, receiver.email, {
+    mailInvitationPlayerToTeam(this, receiver.email, {
       teamName: team.name,
       invitedBy: sender.getName(),
+      playerLink: this.getFullUrl('player', sender.id),
+      teamLink: this.getFullUrl('team', team.id),
     });
   }
 
@@ -73,10 +76,12 @@ module.exports = function notificationSendHelpers(app) {
       entityObj: sender,
       eventObj: match,
     });
-    return mailInvitationPlayerToMatch(this, receiver.email, {
+    mailInvitationPlayerToMatch(this, receiver.email, {
       matchName: match.name,
       matchDate: this.prettyTimestamp(match.date),
       invitedBy: sender.getName(),
+      playerLink: this.getFullUrl('player', sender.id),
+      matchLink: this.getFullUrl('match', match.id),
     });
   }
 
@@ -95,11 +100,14 @@ module.exports = function notificationSendHelpers(app) {
       eventObj: match,
     });
 
-    return mailInvitationTeamToMatch(this, teamCaptain.email, {
+    mailInvitationTeamToMatch(this, teamCaptain.email, {
       matchName: match.name,
       matchDate: this.prettyTimestamp(match.date),
       teamName: invitedTeam.name,
       invitedBy: sender.getName(),
+      playerLink: this.getFullUrl('player', sender.id),
+      teamLink: this.getFullUrl('team', invitedTeam.id),
+      matchLink: this.getFullUrl('match', match.id),
     });
   }
 
@@ -118,10 +126,13 @@ module.exports = function notificationSendHelpers(app) {
       eventObj: field,
     });
 
-    return mailFieldReservation(this, owner.email, {
+    mailFieldReservation(this, owner.email, {
       playerName: player.getName(),
       fieldName: field.name,
       compoundName: compound.name,
+      playerLink: this.getFullUrl('player', player.id),
+      compoundLink: this.getFullUrl('compound', compound.id),
+      fieldLink: this.getFullUrl('field', { id: field.id, compoundId: compound.id }),
     });
   }
 

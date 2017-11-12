@@ -24,8 +24,8 @@ function floatToStringHour(float){
   if (minutes<10){
     final+="0"
   }
-final+=minutes.toString();
-return final;
+  final+=minutes.toString();
+  return final;
 
 }
 

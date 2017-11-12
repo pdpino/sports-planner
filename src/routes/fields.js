@@ -44,13 +44,14 @@ router.get('fieldNew', '/new', async (ctx) => {
 
 router.post('fieldCreate', '/', async (ctx) => {
   ctx.requireOwnerModifyPermission(ctx.state.compoundOwner);
+  ctx.request.body.fields.compoundId = ctx.state.compound.id;
   try {
     const field = await ctx.orm.field.create(ctx.request.body.fields);
-    ctx.request.body.fields.photo=FileStorage.url("field"+field.id,{});
+    ctx.request.body.fields.photo = FileStorage.url('field' + field.id,{});
     await field.update(ctx.request.body.fields);
-    FileStorage.upload(ctx.request.body.files.photo, "field"+field.id);
+    FileStorage.upload(ctx.request.body.files.photo, 'field' + field.id);
 
-    ctx.redirect(ctx.router.url('field', {compoundId: ctx.state.compound.id, id: field.id }));
+    ctx.redirect(ctx.router.url('field', { compoundId: ctx.state.compound.id, id: field.id }));
   } catch (validationError) {
     await ctx.render('fields/new', {
       compound: ctx.state.compound,

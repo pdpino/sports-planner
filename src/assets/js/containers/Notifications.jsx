@@ -23,7 +23,6 @@ export default class Notifications extends Component {
     try {
       const result = await notificationsService.get(this.props.userId);
       this.setState({ notifications: result.notifications, loading: false });
-      console.log("AAA: ", result);
     } catch (error){
       this.setState({ error: 'No se pudieron cargar las notificaciones', loading: false });
     }

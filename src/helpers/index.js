@@ -22,6 +22,17 @@ module.exports = function helpers(app) {
     return false;
   }
 
+  /**
+   * Get the url like: 'http(s)://host(:port)/path/to/resource'
+   * Used to display links in the emails
+   */
+  app.context.getFullUrl = function(name, params){
+    // REVIEW: koa-router has a method for this?
+    const origin = this.request.origin;
+    const url = this.router.url(name, params);
+    return `${origin}${url}`;
+  }
+
   /** Wrapper to find an entity (match, team, player, etc) by the id and assert that is not null **/
   app.context.findById = async function(model, id) {
     const entity = await model.findById(id);
@@ -49,6 +60,10 @@ module.exports = function helpers(app) {
 
   app.context.prettyTimestamp = function(date){
     const parsedDate = moment(date);
+    if (!parsedDate.isValid()){
+      // DEBUG
+      console.log("WARNING: prettyTimestamp got invalid date: ", date);
+    }
     return parsedDate.isValid() ? parsedDate.format('YYYY-MMM-D H:mm') : '';
   }
 

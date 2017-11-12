@@ -1,6 +1,10 @@
 <%# Must provide: editPath
-    optional: message %>
+    optional: message, formClass %>
 
-<form action="<%= editPath %>">
+<form
+  <% if (locals.formClass) { %>
+    class="<%= formClass %>"
+  <% } %>
+  action="<%= editPath %>">
   <input class="edit-button" type="submit" value="<%= locals.message || 'Editar' %>"/>
 </form>

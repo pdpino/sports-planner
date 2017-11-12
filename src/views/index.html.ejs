@@ -5,5 +5,31 @@
   <p>
     Organiza encuentros deportivos con tus amigos!
   </p>
-  <div id="react-app">Here a React app will be rendered</div>
+
+  <form class="index-button" action="<%= sportsPath %>" method="get">
+    <input type="submit" value="Deportes"/>
+  </form>
+
+  <form class="index-button" action="<%= playersPath %>" method="get">
+    <input type="submit" value="Jugadores"/>
+  </form>
+
+  <form class="index-button" action="<%= teamsPath %>" method="get">
+    <input type="submit" value="Equipos"/>
+  </form>
+
+  <form class="index-button" action="<%= matchesPath %>" method="get">
+    <input type="submit" value="Partidos"/>
+  </form>
+
+  <br>
+  <%# HACK: use css instead %>
+
+  <form class="index-button" action="<%= compoundOwnersPath %>" method="get">
+    <input type="submit" value="Dueños de recinto"/>
+  </form>
+
+  <form class="index-button" action="<%= compoundsPath %>" method="get">
+    <input type="submit" value="Recintos"/>
+  </form>
 </div>
