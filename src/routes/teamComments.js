@@ -43,7 +43,16 @@ router.get('teamCommentsPublic', '/public', async (ctx) => {
       });
       break;
     case 'json':
-      ctx.body = { comments: publicComments };
+      const compactComments = publicComments.map((comment) => {
+        return {
+          id: comment.id,
+          content: comment.content,
+          commenterName: comment.getCommenter().getName(),
+          timestamp: ctx.createdAtTimestamp(comment),
+          canDelete: ctx.canDeleteComment(comment),
+        };
+      });
+      ctx.body = { comments: compactComments };
       break;
     default:
   }
@@ -78,7 +87,16 @@ router.delete('teamCommentDelete', '/:id', async (ctx) => {
   ctx.requireModifyPermission(comment.player);
 
   await comment.destroy();
-  ctx.redirect(ctx.router.url('team', ctx.state.team.id));
+
+  switch (ctx.accepts('html', 'json')) {
+    case 'html':
+      ctx.redirect(ctx.router.url('team', ctx.state.team.id));
+      break;
+    case 'json':
+      ctx.body = { };
+      break;
+    default:
+  }
 });
 
 module.exports = router;

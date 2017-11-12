@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import TeamCommentsForm from '../containers/TeamCommentsForm';
+import TeamCommentsNew from '../containers/TeamCommentsNew';
 import TeamCommentsDisplay from '../components/TeamCommentsDisplay';
 import teamCommentsService from '../services/teamComments';
 
@@ -13,6 +13,7 @@ export default class TeamComments extends Component {
       error: undefined,
     };
     this.onSubmit = this.onSubmit.bind(this);
+    this.onDelete = this.onDelete.bind(this);
   }
 
   componentDidMount() {
@@ -24,7 +25,7 @@ export default class TeamComments extends Component {
     try {
       const result = await teamCommentsService.get(this.props.teamId, true);
       this.setState({ comments: result.comments, loading: false });
-    } catch (error){
+    } catch (error) {
       this.setState({ error: 'No se pudieron cargar los comentarios', loading: false });
     }
   }
@@ -40,18 +41,26 @@ export default class TeamComments extends Component {
     await this.fetchComments();
   }
 
+  async onDelete(event, data) {
+    event.preventDefault();
+    const json = await teamCommentsService.deleteComment(this.props.teamId, data.id);
+    await this.fetchComments();
+  }
+
   render() {
     if (this.state.loading) {
       return <p>Cargando comentarios...</p>;
     }
     return (
       <div>
+        <h4>Comentarios públicos</h4>
         { this.state.error && <div className="error">Error: {this.state.error}</div>}
-        <TeamCommentsForm
+        <TeamCommentsNew
           onSubmit={this.onSubmit}
         />
         <TeamCommentsDisplay
           comments={this.state.comments}
+          onDelete={this.onDelete}
         />
       </div>
     );

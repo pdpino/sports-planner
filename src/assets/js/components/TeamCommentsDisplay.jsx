@@ -1,11 +1,25 @@
 import React from 'react';
 
-function displayCommentList(comments){
+function displayDeleteButton(comment, onDelete){
+  if (comment.canDelete) {
+    const onSubmit = (e) => onDelete(e, { id: comment.id });
+    return (
+      <form onSubmit={onSubmit}>
+        <input type="submit" value="Eliminar" />
+      </form>
+    );
+  }
+}
+
+function displayCommentList(comments, onDelete){
   const displayedComments = [];
   comments.forEach((comment, index) => {
     displayedComments.push(
       <li key={index}>
+        { comment.commenterName }, { comment.timestamp }:
+        <br/>
         { comment.content }
+        { displayDeleteButton(comment, onDelete) }
       </li>
     );
   });
@@ -15,8 +29,7 @@ function displayCommentList(comments){
 export default function TeamCommentsDisplay(props) {
   return (
     <div>
-      <h4>Comentarios asd</h4>
-      <ul> { displayCommentList(props.comments) } </ul>
+      <ul> { displayCommentList(props.comments, props.onDelete) } </ul>
     </div>
   );
 }

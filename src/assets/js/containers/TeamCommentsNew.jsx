@@ -1,19 +1,10 @@
 import React, { Component } from 'react';
+import GenericForm from './GenericForm';
 
-export default class TeamCommentsForm extends Component {
+export default class TeamCommentsNew extends GenericForm {
   constructor(props) {
     super(props);
-    this.state = { content: ''};
-    this.onSubmit = this.onSubmit.bind(this);
-    this.onInputChange = this.onInputChange.bind(this);
-  }
-
-  onInputChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
-  }
-
-  onSubmit() {
-    this.props.onSubmit(this.state);
+    this.state = { content: '' };
   }
 
   render() {

@@ -13,4 +13,10 @@ export default {
       body: JSON.stringify(commentData),
     });
   },
+  async deleteComment(teamId, commentId) {
+    return jsonRequest(`/teams/${teamId}/comments/${commentId}`, {
+      method: 'delete',
+      headers: { 'Content-Type': 'application/json' },
+    });
+  },
 };
