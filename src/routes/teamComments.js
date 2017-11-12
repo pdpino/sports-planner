@@ -19,6 +19,50 @@ router.post('teamCommentCreate', '/', async (ctx) => {
   ctx.redirect(ctx.router.url('team', ctx.state.team.id));
 });
 
+router.get('teamCommentsPublic', '/', async (ctx) => {
+  const publicComments = await ctx.state.team.getPublicComments();
+
+  switch (ctx.accepts('html', 'json')) {
+    case 'html':
+      await ctx.render('comments/index', {
+        comments: publicComments,
+        deleteCommentPath: (comment) => ctx.router.url('teamCommentDelete', {
+          teamId: ctx.state.team.id,
+          id: comment.id,
+        }),
+        isPublic: true,
+      });
+      break;
+    case 'json':
+      ctx.body = { comments: publicComments };
+      break;
+    default:
+  }
+});
+
+router.get('teamCommentsPrivate', '/', async (ctx) => {
+  await ctx.requirePlayerInTeam(ctx.state.team);
+
+  const privateComments = await team.getPrivateComments();
+
+  switch (ctx.accepts('html', 'json')) {
+    case 'html':
+      await ctx.render('comments/index', {
+        comments: privateComments,
+        deleteCommentPath: (comment) => ctx.router.url('teamCommentDelete', {
+          teamId: ctx.state.team.id,
+          id: comment.id,
+        }),
+        isPublic: false,
+      });
+      break;
+    case 'json':
+      ctx.body = { comments: privateComments };
+      break;
+    default:
+  }
+});
+
 router.delete('teamCommentDelete', '/:id', async (ctx) => {
   const comment = await ctx.findById(ctx.orm.teamComment, ctx.params.id);
 
