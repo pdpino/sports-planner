@@ -7,7 +7,7 @@ import TeamCommentsApp from './apps/TeamComments';
 function renderApp(App, AppDivId){
   const AppDiv = document.getElementById(AppDivId);
   if(!AppDiv){
-    console.log("ERROR: can't find ", AppDivId);
+    console.log("ERROR: can't find div for react-app ", AppDivId);
     return;
   }
   const render = function render(Component) {
@@ -28,4 +28,5 @@ function renderApp(App, AppDivId){
 }
 
 renderApp(NotificationsApp, 'notifications-react-app');
-renderApp(TeamCommentsApp, 'team-comments-react-app');
+renderApp(TeamCommentsApp, 'team-private-comments-react-app');
+renderApp(TeamCommentsApp, 'team-public-comments-react-app');

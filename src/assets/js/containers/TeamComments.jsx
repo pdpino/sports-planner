@@ -8,6 +8,8 @@ export default class TeamComments extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      canComment: props.canComment === 'true', // HACK: it comes as string from html
+      isPublic: props.isPublic === 'true',
       comments: [],
       loading: false,
       error: undefined,
@@ -23,7 +25,7 @@ export default class TeamComments extends Component {
   async fetchComments() {
     this.setState({ loading: true });
     try {
-      const result = await teamCommentsService.get(this.props.teamId, true);
+      const result = await teamCommentsService.get(this.props.teamId, this.state.isPublic);
       this.setState({ comments: result.comments, loading: false });
     } catch (error) {
       this.setState({ error: 'No se pudieron cargar los comentarios', loading: false });
@@ -33,7 +35,7 @@ export default class TeamComments extends Component {
   async onSubmit(data) {
     this.setState({ loading: true, error: undefined });
     try {
-      const json = await teamCommentsService.postComment(this.props.teamId, true, data);
+      const json = await teamCommentsService.postComment(this.props.teamId, this.state.isPublic, data);
       this.setState({ loading: false });
     } catch (error) {
       this.setState({ error: error.message, loading: false });
@@ -48,7 +50,7 @@ export default class TeamComments extends Component {
   }
 
   renderNewCommentForm(){
-    if (this.props.canComment === 'true') { // HACK: it comes as string from html
+    if (this.state.canComment) {
       return (
         <TeamCommentsNew
           onSubmit={this.onSubmit}
@@ -63,7 +65,7 @@ export default class TeamComments extends Component {
     }
     return (
       <div>
-        <h4>Comentarios públicos</h4>
+        <h4>Comentarios { this.state.isPublic ? 'públicos' : 'privados'}</h4>
         { this.state.error && <div className="error">Error: {this.state.error}</div>}
         { this.renderNewCommentForm() }
         <TeamCommentsDisplay

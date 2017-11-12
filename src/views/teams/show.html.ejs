@@ -80,13 +80,14 @@
 
 
   <% if (canSeePrivateComments) { %>
-    <%- include('../comments/index', { comments: privateComments, isPublic: false }) %>
-    <%- include('../comments/new', { isPublic: false }) %>
+    <%# include('../comments/index', { comments: privateComments, isPublic: false }) %>
+    <%# include('../comments/new', { isPublic: false }) %>
+    <%- include('../comments/react', { divId: 'team-private-comments-react-app', isPublic: false }) %>
   <% } %>
 
   <%# include('../comments/index', { comments: publicComments, isPublic: true }) %>
 
-  <%- include('../comments/react', { isPublic: true }) %>
+  <%- include('../comments/react', { divId: 'team-public-comments-react-app', isPublic: true }) %>
 
 
   <%- include('../_buttons/back', {

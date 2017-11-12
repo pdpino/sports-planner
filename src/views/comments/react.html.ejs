@@ -1,8 +1,9 @@
-<%# Must exist: team, canComment %>
+<%# Must exist: divId team, canComment, isPublic %>
 
 <div
-  id="team-comments-react-app"
+  id="<%= divId %>"
   data-team-id="<%= team.id %>"
   data-can-comment="<%= canComment %>"
+  data-is-public="<%= isPublic %>"
   >
 </div>
