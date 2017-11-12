@@ -85,8 +85,8 @@
   <% } %>
 
   <%# include('../comments/index', { comments: publicComments, isPublic: true }) %>
-  
-  <%- include('../comments/react') %>
+
+  <%- include('../comments/react', { isPublic: true }) %>
 
 
   <%- include('../_buttons/back', {
