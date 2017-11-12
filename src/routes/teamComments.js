@@ -16,7 +16,16 @@ router.post('teamCommentCreate', '/', async (ctx) => {
   }
 
   await ctx.state.team.makeComment(ctx.state.currentPlayer, params);
-  ctx.redirect(ctx.router.url('team', ctx.state.team.id));
+
+  switch (ctx.accepts('html', 'json')) {
+    case 'html':
+      ctx.redirect(ctx.router.url('team', ctx.state.team.id));
+      break;
+    case 'json':
+      ctx.body = { };
+      break;
+    default:
+  }
 });
 
 router.get('teamCommentsPublic', '/public', async (ctx) => {

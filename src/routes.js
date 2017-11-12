@@ -90,8 +90,6 @@ router.use((ctx, next) => {
   ctx.state.updatedAtTimestamp = ctx.updatedAtTimestamp.bind(ctx);
   ctx.state.canDeleteComment = ctx.canDeleteComment.bind(ctx);
 
-  console.log("BBBBB");
-
   return next();
 });
 
