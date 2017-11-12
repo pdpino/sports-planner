@@ -47,6 +47,16 @@ export default class TeamComments extends Component {
     await this.fetchComments();
   }
 
+  renderNewCommentForm(){
+    if (this.props.canComment === 'true') { // HACK: it comes as string from html
+      return (
+        <TeamCommentsNew
+          onSubmit={this.onSubmit}
+        />
+      );
+    }
+  }
+
   render() {
     if (this.state.loading) {
       return <p>Cargando comentarios...</p>;
@@ -55,9 +65,7 @@ export default class TeamComments extends Component {
       <div>
         <h4>Comentarios públicos</h4>
         { this.state.error && <div className="error">Error: {this.state.error}</div>}
-        <TeamCommentsNew
-          onSubmit={this.onSubmit}
-        />
+        { this.renderNewCommentForm() }
         <TeamCommentsDisplay
           comments={this.state.comments}
           onDelete={this.onDelete}

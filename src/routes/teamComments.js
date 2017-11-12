@@ -7,6 +7,19 @@ function getParams(params){
   return _.pick(params, 'isPublic', 'content');
 }
 
+function getCompactComments(ctx, comments){
+  // TODO: move this to a better place
+  return comments.map((comment) => {
+    return {
+      id: comment.id,
+      content: comment.content,
+      commenterName: comment.getCommenter().getName(),
+      timestamp: ctx.createdAtTimestamp(comment),
+      canDelete: ctx.canDeleteComment(comment),
+    };
+  });
+}
+
 router.post('teamCommentCreate', '/', async (ctx) => {
   ctx.requirePlayerLoggedIn();
 
@@ -43,16 +56,7 @@ router.get('teamCommentsPublic', '/public', async (ctx) => {
       });
       break;
     case 'json':
-      const compactComments = publicComments.map((comment) => {
-        return {
-          id: comment.id,
-          content: comment.content,
-          commenterName: comment.getCommenter().getName(),
-          timestamp: ctx.createdAtTimestamp(comment),
-          canDelete: ctx.canDeleteComment(comment),
-        };
-      });
-      ctx.body = { comments: compactComments };
+      ctx.body = { comments: getCompactComments(ctx, publicComments) };
       break;
     default:
   }
@@ -75,7 +79,7 @@ router.get('teamCommentsPrivate', '/private', async (ctx) => {
       });
       break;
     case 'json':
-      ctx.body = { comments: privateComments };
+      ctx.body = { comments: getCompactComments(ctx, privateComments) };
       break;
     default:
   }
