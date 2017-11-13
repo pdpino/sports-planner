@@ -1,3 +1,5 @@
+// const helpers = require('./helpers');
+
 module.exports = function definenotification(sequelize, DataTypes) {
   // notification kinds copied in migration
   const nofiticationMessages = {
@@ -59,6 +61,14 @@ module.exports = function definenotification(sequelize, DataTypes) {
   notification.associate = function associate(models) {
     notification.belongsTo(models.user, { as: 'sender' });
     notification.belongsTo(models.user, { as: 'receiver' });
+
+    notification.addScope('defaultScope', {
+      order: [
+        ['createdAt', 'DESC']
+      ],
+    }, {
+      override: true
+    });
   };
 
   notification.prototype.toString = function(){
@@ -70,6 +80,26 @@ module.exports = function definenotification(sequelize, DataTypes) {
       await notifications[i].update({ wasRead: true });
     }
   }
+
+  notification.readAskedFriend = async function(sender, receiver){
+    const askNotifications = await notification.findAll({
+      where: {
+        kind: 'friendshipAsked',
+        senderId: sender.userId,
+        receiverId: receiver.userId,
+        wasRead: false,
+      }
+    });
+    return notification.readNotifications(askNotifications);
+  }
+
+  // notification.afterFind(helpers.getHookFunction(function (notification){
+  //   // Used to pass attributes to react app in the client
+  //   // HACK: copy it in dataValues, instead of the object itself
+  //   Object.assign(notification.dataValues, {
+  //     message: notification.toString(),
+  //   });
+  // }));
 
   return notification;
 };

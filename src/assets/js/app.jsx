@@ -1,17 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
-import App from './components/App';
+import NotificationsApp from './apps/Notifications';
+import TeamCommentsApp from './apps/TeamComments';
+import WallCommentsApp from './apps/WallComments';
 
-const reactAppContainer = document.getElementById('react-app');
-
-if (reactAppContainer) {
+function renderApp(App, AppDivId){
+  const AppDiv = document.getElementById(AppDivId);
+  if(!AppDiv){
+    console.log("ERROR: can't find div for react-app ", AppDivId);
+    return;
+  }
   const render = function render(Component) {
     ReactDOM.render(
       <AppContainer>
-        <Component />
+        <Component {...AppDiv.dataset}/>
       </AppContainer>,
-      document.getElementById('react-app'),
+      AppDiv,
     );
   };
 
@@ -22,3 +27,7 @@ if (reactAppContainer) {
     module.hot.accept('./components/App', () => { render(App); });
   }
 }
+
+renderApp(NotificationsApp, 'notifications-react-app');
+renderApp(TeamCommentsApp, 'team-comments-react-app');
+renderApp(WallCommentsApp, 'wall-comments-react-app');

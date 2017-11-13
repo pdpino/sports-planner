@@ -243,5 +243,58 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     });
   }
 
+  player.prototype.getReviewsAverage = async function(){
+    // NOTE: the average could be obtained with a sequelize function (there is no special reason to do it this way)
+    const doneReviews = await this.getDoneReviews();
+    const ratingSum = 0;
+    doneReviews.forEach((review) => { ratingSum += review.rating; });
+    return doneReviews.length && ratingSum / doneReviews.length;
+  }
+
+  player.prototype.getPastMatches = function(){
+    return this.getMatches({
+      where: {
+        isDone: true,
+      },
+      through: {
+        where: {
+          status: {
+            [Op.ne]: 'rejectedByAdmin'
+          }
+        }
+      }
+    });
+  }
+
+  player.prototype.getInviteMatches = function(){
+    return this.getMatches({
+      where: {
+        isDone: false,
+      },
+      through: {
+        where: {
+          [Op.and]: [{
+            status: { [Op.ne]: 'accepted' }
+          }, {
+            status: { [Op.ne]: 'rejectedByAdmin' }
+          }]
+        }
+      }
+    });
+  }
+
+  player.prototype.getConfirmedMatches = function(){
+    return this.getMatches({
+      where: {
+        isDone: false,
+      },
+      through: {
+        where: {
+          status: 'accepted',
+        }
+      }
+    });
+  }
+
   return player;
 };

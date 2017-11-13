@@ -1,0 +1,33 @@
+<%# THIS SNIPPET WAS CREATED FOR USE ONLY IN HOME
+  Altough it can be edited to be used in other places %>
+
+<%# Provide:
+  title,
+  matches
+%>
+
+<h4><%= title %></h4>
+<% if(matches.length > 0) { %>
+  <ul>
+    <% matches.forEach((match) => { %>
+      <li>
+        <a class="lilink match-home-li" href="<%= getMatchPath(match) %>">
+          <div class="match-home-li-element">
+            <div>
+              <%= match.name %>
+            </div>
+            <div>
+              <%= (match.isPlayerInvited.isAdmin) ? 'Admin del partido' : '' %>
+            </div>
+            <div>
+              <%= prettyTimestamp(match.date) %>
+            </div>
+          </div>
+          <%- include('../_buttons/edit', { editPath: editPlayerMatchPath(match), formClass: 'match-home-li-element' }) %>
+        </a>
+      </li>
+    <% }) %>
+  </ul>
+<% } else { %>
+  <p>No hay partidos</p>
+<% } %>

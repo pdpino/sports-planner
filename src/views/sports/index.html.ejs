@@ -11,7 +11,7 @@
     <ul>
       <% sports.forEach((sport) => { %>
         <li>
-            <a class="lilink sport" href="<%= sportPath(sport) %>"%>>
+            <a class="lilink sport" href="<%= getSportPath(sport) %>"%>>
             <img class="medium-logo" src="<%= sport.logo %>" alt="logo"/>
             <div>
              <%= sport.name %>

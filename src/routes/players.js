@@ -38,8 +38,8 @@ router.get('players', '/', async (ctx) => {
 router.get('playerNew', '/new', async (ctx) => {
   ctx.requireNoLogin();
 
-  const user = ctx.orm.user.build(); // (ctx.request.body);
-  const player = ctx.orm.player.build(); // (ctx.request.body);
+  const user = ctx.orm.user.build();
+  const player = ctx.orm.player.build();
 
   await ctx.render('players/new', {
     player,
@@ -51,10 +51,11 @@ router.get('playerNew', '/new', async (ctx) => {
 
 router.post('playerCreate', '/', async (ctx) => {
   ctx.requireNoLogin();
+
   const userParams = getUserParams(ctx.request.body.fields);
   const playerParams = getPlayerParams(ctx.request.body.fields);
 
-  let user = null;
+  let user;
   try {
     user = await ctx.orm.user.create(userParams);
     userParams.photo = FileStorage.url("user" + user.id,{});
@@ -62,8 +63,10 @@ router.post('playerCreate', '/', async (ctx) => {
     playerParams.userId = user.id;
     const player = await ctx.orm.player.create(playerParams);
     FileStorage.upload(ctx.request.body.files.photo, "user" + user.id);
-    ctx.redirect(ctx.router.url('players'));
+
+    await ctx.login(user.email, userParams.password);
   } catch (validationError) {
+    // TODO: also delete created photo (if any)
     if (user){ // User was created correctly, delete it
       // REVIEW: you may avoid saving to the DB and then deleting by using
       // build() and then save() methods on user and player
@@ -171,7 +174,6 @@ router.get('player', '/:id', async (ctx) => {
       playerId: ctx.state.currentPlayer.id,
       friendId: friend.id,
     }),
-    newPlayerTeamPath: ctx.router.url('playerTeamNew', { playerId: player.id } ),
     deletePlayerTeamPath: (team) => ctx.router.url('playerTeamDelete', {
       playerId: player.id,
       id: team.id
@@ -184,8 +186,8 @@ router.get('player', '/:id', async (ctx) => {
     newPlayerSportPath: ctx.router.url('playerSportNew', { playerId: player.id } ),
     editPlayerSportPath: (sport) => ctx.router.url('playerSportEdit', {
       playerId: player.id,
-      id: sport.id }
-    ),
+      id: sport.id
+    }),
   });
 });
 
@@ -193,7 +195,7 @@ router.delete('playerDelete', '/:id', async (ctx) => {
   const player = await ctx.findById(ctx.orm.player, ctx.params.id);
 
   ctx.requireModifyPermission(player);
-  FileStorage.destroy(user.email);
+  FileStorage.destroy(player.user.email);
   await player.user.destroy(); // NOTE: player.destroy() is not neccesary beause onDelete: cascade
   ctx.redirect(ctx.router.url('players'));
 });

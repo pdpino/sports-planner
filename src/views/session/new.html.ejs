@@ -4,11 +4,9 @@
     <% if (locals.notice) { %>
       <div className="notice"><%= notice %></div>
     <% } %>
-    <% if (locals.error) { %>
-      <div class="errors">
-        <%= error %>
-      </div>
-    <% } %>
+
+    <%- include('../_error/snippet-one', { error: locals.error }) %>
+
     <form action="<%= createSessionPath %>" method="post">
       <div>
         <input type="hidden" name="_method" value="put" />

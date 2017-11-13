@@ -8,10 +8,10 @@
 <div>
   <h4>
   <%= locals.title || 'Comentarios' %>
-  <% if (locals.isPublic) { %>
+  <% if (locals.isPublic !== undefined) { %>
     <%= (isPublic) ? 'públicos' : 'privados' %>
   <% } %>
-  :</h4>
+  </h4>
 
   <% if(comments.length > 0) { %>
     <ul>

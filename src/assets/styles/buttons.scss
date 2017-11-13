@@ -1,0 +1,32 @@
+.index-button {
+  display: inline-block;
+}
+
+.delete-button {
+  background-color: #8B0000;
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-decoration: none;
+  font-family: "Lucida Console", Arial, sans-serif;
+  font-weight: bold;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.edit-button {
+  background-color: #FFD700;
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-decoration: none;
+  font-family: "Lucida Console", Arial, sans-serif;
+  font-weight: bold;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.small-button {
+  width: 4em;
+  height: 4em;
+}

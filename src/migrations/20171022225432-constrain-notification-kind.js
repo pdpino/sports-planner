@@ -19,7 +19,11 @@ module.exports = {
     });
   },
 
-  down(queryInterface, Sequelize) {
-    return queryInterface.removeConstraint('notifications', 'notification_kind');
+  async down(queryInterface, Sequelize) {
+    try {
+      await queryInterface.removeConstraint('notifications', 'notification_kind');
+    } catch (error) {
+      // constraint does not exist
+    }
   },
 };

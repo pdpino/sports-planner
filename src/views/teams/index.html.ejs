@@ -9,21 +9,25 @@
   <% } %>
 
 
-  <ul>
-    <% teams.forEach((team) => { %>
-      <li>
-        <a class="lilink sport" href="<%= getTeamPath(team) %>"%>>
-          <img class="medium-logo" src="<%= team.logo %>"/>
-          <div id="margincustom">
-            <%= team.name %>
-          </div>
-          <div id="separar">
-            <%= team.sport.name %>
-          </div>
-        </a>
-      </li>
-    <% }) %>
-  </ul>
+  <% if (teams.length > 0) { %>
+    <ul>
+      <% teams.forEach((team) => { %>
+        <li>
+          <a class="lilink sport" href="<%= getTeamPath(team) %>"%>>
+            <img class="medium-logo" src="<%= team.logo %>"/>
+            <div>
+              <%= team.name %>
+            </div>
+            <div class="index-sport-name">
+              <%= team.sport.name %>
+            </div>
+          </a>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p> No hay equipos </p>
+  <% } %>
 
 
 </div>

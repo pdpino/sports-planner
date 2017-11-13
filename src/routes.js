@@ -3,6 +3,7 @@ const KoaRouter = require('koa-router');
 const index = require('./routes/index');
 const sports = require('./routes/sports');
 const players = require('./routes/players');
+const users = require('./routes/users');
 const teams = require('./routes/teams');
 const matches = require('./routes/matches');
 const session = require('./routes/session');
@@ -17,21 +18,19 @@ router.use(async (ctx, next) => {
   const currentUser = ctx.session.userId && await ctx.orm.user.findById(ctx.session.userId);
   let currentPlayer = null;
   let currentOwner = null;
-  let profilePath = null;
+  let profilePath = '/';
 
   if (currentUser){
-    if (currentUser.role == 'player'){
-      currentPlayer = await ctx.orm.player.find({
-        where: { userId: currentUser.id }
-      });
-      profilePath = ctx.router.url('player', { id: currentPlayer.id });
+    if (currentUser.isPlayer()){
+      currentPlayer = await currentUser.getPlayer();
+      profilePath = ctx.router.url('player', currentPlayer.id);
     }
-    else if (currentUser.role == 'owner'){
-      currentOwner = await ctx.orm.compoundOwner.find({
-        where: { userId: currentUser.id }
-      });
-      profilePath = ctx.router.url('compoundOwner', { id: currentOwner.id });
+    else if (currentUser.isCompoundOwner()){
+      currentOwner = await currentUser.getCompoundOwner();
+      profilePath = ctx.router.url('compoundOwner', currentOwner.id);
     }
+  } else {
+    ctx.session.userId = 0; // Close session when no player found (e.g. old cookie)
   }
 
   Object.assign(ctx.state, {
@@ -65,7 +64,7 @@ router.use((ctx, next) => {
     getCompoundPath: (compound) => ctx.router.url('compound', compound.id),
     getFieldPath: (field) => ctx.router.url('field', {
       compoundId: field.compoundId,
-      id: field.id 
+      id: field.id
     }),
     getTeamPath: (team) => ctx.router.url('team', team.id),
     getMatchPath: (match) => ctx.router.url('match', match.id),
@@ -75,6 +74,7 @@ router.use((ctx, next) => {
     matchesPath: ctx.router.url('matches'),
     compoundOwnersPath: ctx.router.url('compoundOwners'),
     compoundsPath: ctx.router.url('compounds'),
+    indexPath: ctx.router.url('index'),
   });
   return next();
 });
@@ -85,14 +85,13 @@ router.use((ctx, next) => {
   // example: ctx.state.f = ctx.f.bind(ctx);
 
   ctx.state.invitationToString = ctx.invitationToString;
-  ctx.state.createdAtTimestamp = ctx.createdAtTimestamp.bind(ctx);
   ctx.state.prettyTimestamp = ctx.prettyTimestamp;
+  ctx.state.createdAtTimestamp = ctx.createdAtTimestamp.bind(ctx);
   ctx.state.updatedAtTimestamp = ctx.updatedAtTimestamp.bind(ctx);
   ctx.state.canDeleteComment = ctx.canDeleteComment.bind(ctx);
 
   return next();
 });
-
 
 // Add actual routes
 router.use('/', index.routes());
@@ -118,5 +117,6 @@ router.use(
 router.use('/compoundOwners', compoundOwners.routes());
 router.use('/session', session.routes());
 router.use('/compounds', compound.routes());
+router.use('/users', users.routes());
 
 module.exports = router;

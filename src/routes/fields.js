@@ -13,7 +13,7 @@ function DateArray(){
   let array=[];
   for (let i=0;i<14;i++){
     tomorrow.setDate(tomorrow.getDate() + 1);
-    let string=tomorrow.getFullYear().toString() + "-"+(tomorrow.getMonth()+1).toString()+"-"+tomorrow.getDate().toString();
+    let string=tomorrow.getFullYear().toString() + "-"+(tomorrow.getMonth()+1).toString()+"-"+(tomorrow.getDate()).toString();
     array.push(string);
   }
   return array;
@@ -44,13 +44,14 @@ router.get('fieldNew', '/new', async (ctx) => {
 
 router.post('fieldCreate', '/', async (ctx) => {
   ctx.requireOwnerModifyPermission(ctx.state.compoundOwner);
+  ctx.request.body.fields.compoundId = ctx.state.compound.id;
   try {
     const field = await ctx.orm.field.create(ctx.request.body.fields);
-    ctx.request.body.fields.photo=FileStorage.url("field"+field.id,{});
+    ctx.request.body.fields.photo = FileStorage.url('field' + field.id,{});
     await field.update(ctx.request.body.fields);
-    FileStorage.upload(ctx.request.body.files.photo, "field"+field.id);
+    FileStorage.upload(ctx.request.body.files.photo, 'field' + field.id);
 
-    ctx.redirect(ctx.router.url('field', {compoundId: ctx.state.compound.id, id: field.id }));
+    ctx.redirect(ctx.router.url('field', { compoundId: ctx.state.compound.id, id: field.id }));
   } catch (validationError) {
     await ctx.render('fields/new', {
       compound: ctx.state.compound,
@@ -157,7 +158,7 @@ router.get('field', '/:id', async (ctx) => {
 router.delete('fieldDelete', '/:id', async (ctx) => {
   ctx.requireOwnerModifyPermission(ctx.state.compoundOwner);
   const field = await ctx.findById(ctx.orm.field, ctx.params.id);
-  FileStorage.delete(ctx.request.body.files.photo, ctx.state.compound + " " +ctx.request.body.fields.name);
+  FileStorage.destroy("field"+field.id);
   await field.destroy();
   ctx.redirect(ctx.router.url('compound', { id: ctx.state.compound.id }));
 });

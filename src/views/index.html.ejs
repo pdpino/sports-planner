@@ -6,28 +6,30 @@
     Organiza encuentros deportivos con tus amigos!
   </p>
 
-  <form class="indexbutton" action="<%= sportsPath %>" method="get">
-      <input type="submit" value="Ver deportes"/>
+  <form class="index-button" action="<%= sportsPath %>" method="get">
+    <input type="submit" value="Deportes"/>
   </form>
 
-  <form class="indexbutton" action="<%= playersPath %>" method="get">
-      <input type="submit" value="Ver jugadores"/>
+  <form class="index-button" action="<%= playersPath %>" method="get">
+    <input type="submit" value="Jugadores"/>
   </form>
 
-  <form class="indexbutton" action="<%= teamsPath %>" method="get">
-      <input type="submit" value="Ver equipos"/>
+  <form class="index-button" action="<%= teamsPath %>" method="get">
+    <input type="submit" value="Equipos"/>
   </form>
 
-  <form class="indexbutton" action="<%= matchesPath %>" method="get">
-      <input type="submit" value="Ver partidos"/>
+  <form class="index-button" action="<%= matchesPath %>" method="get">
+    <input type="submit" value="Partidos"/>
   </form>
 
-  <form class="indexbutton" action="<%= compoundOwnersPath %>" method="get">
-      <input type="submit" value="Ver dueños de recinto"/>
+  <br>
+  <%# HACK: use css instead %>
+
+  <form class="index-button" action="<%= compoundOwnersPath %>" method="get">
+    <input type="submit" value="Dueños de recinto"/>
   </form>
 
-  <form class="indexbutton" action="<%= compoundsPath %>" method="get">
-      <input type="submit" value="Ver recintos"/>
+  <form class="index-button" action="<%= compoundsPath %>" method="get">
+    <input type="submit" value="Recintos"/>
   </form>
 </div>
-<div id="react-app">Here a React app will be rendered</div>

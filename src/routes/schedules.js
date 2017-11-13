@@ -8,6 +8,10 @@ function floatToStringHour(float){
   let minutesTwoDigits=false;
   let hours=Math.floor(float);
   let minutes= Math.round((float%1)*60);
+  if (minutes>=60){
+    minutes-=60;
+    hours+=1;
+  }
   let final="";
   if (hours>=24){
     hours-=24;
@@ -22,6 +26,16 @@ function floatToStringHour(float){
   }
   final+=minutes.toString();
   return final;
+
+}
+
+function modules(field){
+  let close=parseFloat(field.closingHour.substr(0,2))+parseFloat(field.closingHour.substr(3,2))/60;
+  let open=parseFloat(field.openingHour.substr(0,2))+parseFloat(field.openingHour.substr(3,2))/60;
+  if(open>=close){
+    close+=24;
+  }
+  return Math.floor((close-open)/(field.modules/60));
 }
 
 function arrayOfHours (field){
@@ -30,14 +44,14 @@ function arrayOfHours (field){
   if(open>=close){
     close+=24;
   }
-  let moduleMinutes=(close-open)/field.modules;
+  let totalmodules=modules(field);
   let final=[];
   let text="";
-  let endModule=open + moduleMinutes;
-  for (i=0;i<field.modules;i++){
+  let endModule=open + (field.modules/60);
+  for (i=0;i<totalmodules;i++){
     text=floatToStringHour(open)+" - "+ floatToStringHour(endModule);
     open=endModule;
-    endModule+=moduleMinutes;
+    endModule+=field.modules/60;
     final.push(text);
   }
   return final;
@@ -77,7 +91,7 @@ router.post('scheduleCreate', '/', async (ctx) => {
     if (exist.length!=0){
       continue;
     }
-    for(j=0;j<ctx.state.field.modules;j++){
+    for(j=0;j<modules(ctx.state.field);j++){
         let scheduleBase= await ctx.state.field.getScheduleBases({
           where:{
             weekday: tomorrow.getDay(),
@@ -195,7 +209,7 @@ router.get('schedule', '/:date', async (ctx) => {
   realDate.setMinutes(0);
   realDate.setSeconds(0);
   realDate.setMilliseconds(0);
-  realDate.setDate(realDate.getDate() + 1);
+  realDate.setDate(realDate.getDate());
   const schedules = await ctx.state.field.getSchedules({
     where:{
       date:realDate,

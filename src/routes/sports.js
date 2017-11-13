@@ -16,7 +16,6 @@ router.get('sports', '/', async (ctx) => {
   await ctx.render('sports/index', {
     sports,
     hasModifyPermission: ctx.hasAdminPermission(),
-    sportPath: sport => ctx.router.url('sport', { id: sport.id }),
     newSportPath: ctx.router.url('sportNew'),
   });
 });

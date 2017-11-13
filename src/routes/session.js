@@ -17,19 +17,12 @@ router.put('sessionCreate', '/', async (ctx) => {
   ctx.requireNoLogin();
 
   const { email, password } = ctx.request.body;
-  const user = await ctx.orm.user.find({ where: { email } });
-  if (user) {
-    const isPasswordCorrect = await user.checkPassword(password);
-    if (isPasswordCorrect) {
-      ctx.session.userId = user.id;
-      return ctx.redirect('/'); // HACK: can't use 'home' path
-    }
-  }
+  await ctx.login(email, password);
   return ctx.render('session/new', {
     email,
     createSessionPath: ctx.router.url('sessionCreate'),
     error: 'e-mail o contraseña incorrectos',
-    cancelPath: '/', // HACK: can't use 'home' url
+    cancelPath: '/', // HACK: can't use 'home' path
   });
 });
 

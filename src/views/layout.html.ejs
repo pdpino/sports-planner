@@ -4,58 +4,67 @@
   <head>
     <meta charset="utf-8">
     <title>Jugamos? - IIC2513</title>
-
-
-    <link rel="stylesheet" href="/assets/styles/layout.css">
-
     <% if (env !== 'development') { %>
        <link rel="stylesheet" href="/assets/styles.css">
      <% } %>
-
   </head>
 
   <body>
     <header>
-      <div id="logo">
-        <a href="<%= homePath %>">
-          <img src="/assets/logo.png" alt="Logo" />
-        </a>
-      </div>
+      <div id="nav-bar">
+        <div id="logo">
+          <a href="<%= homePath %>">
+            <img src="/assets/logo.png" alt="Logo" />
+          </a>
+        </div>
 
-      <div id="user-bar">
-        <% if (currentUser) { %>
-          <div class=bar>
-            <img class="small-logo" src="<%= currentUser.photo %>"/>
-          </div>
-          <span class="username" class="name"> Hola <%= currentUser.firstName %></span>
+        <div id="buttons-bar">
+          <a class="nav-bar-button" href="<%= indexPath %>"> Información </a>
+          <a class="nav-bar-button" href="<%= playersPath %>"> Jugadores </a>
+          <a class="nav-bar-button" href="<%= teamsPath %>"> Equipos </a>
+          <a class="nav-bar-button" href="<%= matchesPath %>"> Partidos </a>
+          <a class="nav-bar-button" href="<%= compoundsPath %>"> Recintos </a>
+        </div>
 
-          <% if (!isAdminLoggedIn) { %>
-            <form  class="bar" action="<%= profilePath %>" method="get">
-              <input type="submit" value="Mi Perfil" />
+        <div id="user-bar">
+          <% if (currentUser) { %>
+
+            <a id="profile-button" href="<%= profilePath %>">
+              <div id="profile-picture">
+                <img class="small-logo" src="<%= currentUser.photo %>"/>
+              </div>
+              <span id="profile-name">
+                Hola <%= currentUser.firstName %>
+              </span>
+            </a>
+
+            <form id="logout-button" class="nav-bar-button" action="<%= destroySessionPath %>" method="post">
+              <input type="hidden" name="_method" value="delete"/>
+              <input id="logout-button-input" type="submit" name="delete" value="Salir" />
             </form>
+
+          <% } else { %>
+            <span id="invited-name">
+              Hola Invitado
+            </span>
+
+            <a id="login-button" class="nav-bar-button" href="<%= newSessionPath %>"> Iniciar sesión </a>
+
+            <div class="register-dropdown">
+              <button class="nav-bar-button">Registrarse</button>
+              <div class="register-options">
+                <a href="<%= signUpPlayerPath %>">
+                  Jugador
+                </a>
+                <a href="<%= signUpOwnerPath %>">
+                  Dueño de recinto
+                </a>
+              </div>
+            </div>
           <% } %>
-
-          <%- include('_buttons/delete', {
-            deletePath: destroySessionPath,
-            message: 'Salir',
-            className: 'bar',
-          }) %>
-
-        <% } else { %>
-          <span class="username" class="name">Hola Invitado</span>
-
-          <form class="bar" action="<%= newSessionPath %>" method="get">
-            <input type="submit" value="Iniciar sesión" />
-          </form>
-          <form class="bar" action="<%= signUpPlayerPath %>" method="get">
-            <input type="submit" value="Regístrate como jugador" />
-          </form>
-          <form class="bar" action="<%= signUpOwnerPath %>" method="get">
-            <input type="submit" value="Regístrate como dueño de recintos deportivos" />
-          </form>
-
-        <% } %>
+        </div>
       </div>
+
     </header>
     <%- body %>
     <script src="/assets/app.js"></script>

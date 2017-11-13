@@ -25,6 +25,9 @@ module.exports = function defineplayerReview(sequelize, DataTypes) {
       include: [{
         model: sequelize.models.player,
         as: 'reviewed',
+      }, {
+        model: sequelize.models.user,
+        as: 'reviewer',
       }]
     }, {
       override: true
