@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import GenericForm from './GenericForm';
 
-export default class TeamCommentsNew extends GenericForm {
+export default class CommentsNew extends GenericForm {
   constructor(props) {
     super(props);
     this.state = { content: '' };
@@ -12,7 +12,7 @@ export default class TeamCommentsNew extends GenericForm {
       <div>
         <form onSubmit={this.onSubmit}>
           <label htmlFor="content">
-            <span>Deja un comentario:</span>
+            <span>Escribe un comentario:</span>
             <input
               type="textarea"
               name="content"

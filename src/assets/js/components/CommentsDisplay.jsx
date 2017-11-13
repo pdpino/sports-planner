@@ -26,7 +26,7 @@ function displayCommentList(comments, onDelete){
   return displayedComments;
 }
 
-export default function TeamCommentsDisplay(props) {
+export default function CommentsDisplay(props) {
   return (
     <div>
       <ul> { displayCommentList(props.comments, props.onDelete) } </ul>
