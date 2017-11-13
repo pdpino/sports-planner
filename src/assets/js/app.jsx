@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import NotificationsApp from './apps/Notifications';
 import TeamCommentsApp from './apps/TeamComments';
+import ScheduleBasesApp from './apps/ScheduleBases';
 
 function renderApp(App, AppDivId){
   const AppDiv = document.getElementById(AppDivId);
@@ -29,3 +30,4 @@ function renderApp(App, AppDivId){
 
 renderApp(NotificationsApp, 'notifications-react-app');
 renderApp(TeamCommentsApp, 'team-comments-react-app');
+renderApp(ScheduleBasesApp, 'schedule-bases-react-app');

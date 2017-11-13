@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import scheduleBasesService from '../services/scheduleBases';
 
 
-export deafult class ScheduleBaseForm extends React.Component {
+export default class ScheduleBaseForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -51,6 +51,7 @@ return final;
 }
 
  arrayOfHours (generic){
+
   let close=parseFloat(generic.hours.substr(8,2))+parseFloat(generic.hours.substr(11,2))/60;
   let open=parseFloat(generic.hours.substr(0,2))+parseFloat(generic.hours.substr(3,2))/60;
   if(open>=close){
@@ -58,17 +59,20 @@ return final;
   }
 
   let totalmodules=this.modules(generic);
+
   let final=[];
   let text="";
   let endModule=open + (generic.duration/60);
 
-  for (i=0;i<totalmodules;i++){
+
+  for(var i=0;i<totalmodules;i++){
 
     text=this.floatToStringHour(open)+" - "+ this.floatToStringHour(endModule);
     open=endModule;
     endModule+=generic.duration/60;
     final.push(text);
   }
+
   return final;
 }
 
@@ -152,16 +156,15 @@ return final;
   }
 
   generateScheduleBase = (idx) => () => {
-        const arrayhours= this.arrayOfHours(this.state.generics[idx]);
-        const modules= this.modules(this.state.generics[idx]);
-        let cachar=this.state.scheduleBases;
-      console.log(arrayhours);
-      console.log(modules);
-        for (i = 0; i < modules; i++) {
+    const arrayhours= this.arrayOfHours(this.state.generics[idx]);
+
+    const modules= this.modules(this.state.generics[idx]);
+    var cachar=this.state.scheduleBases;
+
+        for (var i = 0; i < modules; i++) {
           cachar.push({ hours:arrayhours[i],price: this.state.generics[idx].price,weekday:this.state.generics[idx].day }) ;
         }
         this.setState({scheduleBases: cachar});
-
   }
 
 
@@ -171,7 +174,7 @@ return final;
         <form onSubmit={this.handleSubmit}>
         <h4>ScheduleBases</h4>
         {this.state.generics.map((generic, idx) => (
-        <div>
+        <div class="generator">
           <p> {this.state.days[generic.day]} </p>
           <input
             type="text"
@@ -286,41 +289,29 @@ return final;
  />
 
 
-<button type="button" onClick={this.generateScheduleBase(idx)} className="small">Generar Horario Base</button>
+<button type="button" onClick={this.generateScheduleBase(idx)}>Generar Horario Base</button>
        </div>
 
           ) )
 
   }
 
-{this.state.scheduleBases.map((scheduleBase, idx) => (
-  <div className="scheduleBase">
-   <table>
+
+<table>
 <tr>
-<th> </th>
-<th> <p> Dia </p>
-<select name='dayofweek' value={scheduleBase.weekday} onChange={this.handleScheduleBaseDayChange(idx)}>
-
-  <option value="1">Lunes</option>
-  <option value="2">Martes</option>
-<option value="3">Miércoles</option>
-<option value="4">Jueves</option>
-<option value="5">Viernes</option>
-<option value="6">Sabado</option>
-<option value="0">Domingo</option>
-  </select> </th>
-
+<th> Hora</th>
+<th> Precio </th>
+<th> Dia </th>
 <th> Eliminar </th>
 </tr>
+{this.state.scheduleBases.map((scheduleBase, idx) => (
+  <div className="scheduleBase">
+
+
+
 <tr>
-<td>
-<input
-              type="text"
-              value={scheduleBase.hours}
-              placeholder={`ScheduleBase #${idx + 1} a`}
-              onChange={this.handleScheduleBaseHoursChange(idx)}
-              disabled
-            />
+<th>
+            <h3>{scheduleBase.hours} </h3>
             <p>Hora inicio:  </p>
    <select className="hours1"  value={scheduleBase.hours.substr(0,1)} onChange={this.handleScheduleBaseHourDDChange(idx)}>
   <option value="0">0</option>
@@ -408,9 +399,9 @@ return final;
   <option value="9">9</option>
 </select>
 
-</td>
+</th>
   <td>
-    <p> Precio </p>
+
     <input
               type="number"
               min="0"
@@ -419,15 +410,28 @@ return final;
               onChange={this.handleScheduleBasePriceChange(idx)}
             />
     </td>
+    <td>
+    <select name='dayofweek' value={scheduleBase.weekday} onChange={this.handleScheduleBaseDayChange(idx)}>
+
+      <option value="1">Lunes</option>
+      <option value="2">Martes</option>
+    <option value="3">Miércoles</option>
+    <option value="4">Jueves</option>
+    <option value="5">Viernes</option>
+    <option value="6">Sabado</option>
+    <option value="0">Domingo</option>
+      </select>
+      </td>
 <td>
             <button type="button" onClick={this.handleRemoveScheduleBase(idx)} className="small">-</button>
 
 </td>
           </tr>
-</table>
+
 
             </div>
         ))}
+        </table>
 
         <button type="button" onClick={this.handleAddScheduleBase} className="small">Add ScheduleBase</button>
         <button>Listo!</button>

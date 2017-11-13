@@ -2,6 +2,11 @@
 
   <h1> <%= (scheduleBase.isNewRecord) ? 'Nuevo Horario Base' : 'Editar Horario Base' %></h1>
   <%- include('../_error/snippet', { errors: locals.errors }) %>
+  <div
+    id="schedule-bases-react-app"
+    >
+  </div>
+
 
   <form action="<%= submitScheduleBasePath %>" method="post">
     <% if(!scheduleBase.isNewRecord) { %>

@@ -2,7 +2,7 @@ import jsonRequest from './index';
 
 export default {
   async get(compoundId,fieldId) {
-    return jsonRequest(`/compounds/${compoundId}/${fieldId}/scheduleBases/`);
+    return jsonRequest(`/compounds/${compoundId}/fields/${fieldId}/scheduleBases/edit`);
   },
   async postComment(teamId, isPublic, commentData = {}) {
     commentData.isPublic = isPublic;
