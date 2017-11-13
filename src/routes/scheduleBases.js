@@ -135,17 +135,35 @@ router.get('scheduleBaseEdit', '/edit', async (ctx) => {
   const scheduleBase= scheduleBases[0];
   const arrayOfHour= arrayOfHours(ctx.state.field);
   const daysOfWeek=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
-  await ctx.render('scheduleBases/edit', {
-    scheduleBases,
-    arrayOfHour,
-    daysOfWeek,
-    scheduleBase,
-    modules: modules(ctx.state.field),
-    field:  ctx.state.field,
-    submitScheduleBasePath: ctx.router.url('scheduleBaseUpdate', {fieldId:ctx.state.field.id, compoundId:ctx.state.compound.id}),
-    deleteScheduleBasePath: ctx.router.url('scheduleBaseDelete', {fieldId:ctx.state.field.id, compoundId:ctx.state.compound.id}),
-    cancelPath: ctx.router.url('field', {id:ctx.state.field.id, compoundId:ctx.state.compound.id}),
+
+  const compactScheduleBases = scheduleBases.map((scheduleBase) => {
+    return {
+      hours: scheduleBase.hours,
+      price: scheduleBase.price,
+      weekday: scheduleBase.weekday
+    };
   });
+
+  switch (ctx.accepts('html', 'json')) {
+    case 'html':
+    await ctx.render('scheduleBases/edit', {
+      scheduleBases,
+      arrayOfHour,
+      daysOfWeek,
+      scheduleBase,
+      modules: modules(ctx.state.field),
+      field:  ctx.state.field,
+      submitScheduleBasePath: ctx.router.url('scheduleBaseUpdate', {fieldId:ctx.state.field.id, compoundId:ctx.state.compound.id}),
+      deleteScheduleBasePath: ctx.router.url('scheduleBaseDelete', {fieldId:ctx.state.field.id, compoundId:ctx.state.compound.id}),
+      cancelPath: ctx.router.url('field', {id:ctx.state.field.id, compoundId:ctx.state.compound.id}),
+    });
+      break;
+    case 'json':
+      ctx.body = { scheduleBases: compactScheduleBases};
+      break;
+    default:
+  }
+
 });
 
 router.patch('scheduleBaseUpdate', '/', async (ctx) => {
