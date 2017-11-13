@@ -1,7 +1,7 @@
 import jsonRequest from './index';
 
 export default {
-  async get(isPublic,fieldId) {
+  async get(compoundId,fieldId) {
     return jsonRequest(`/compounds/${compoundId}/${fieldId}/scheduleBases/`);
   },
   async postComment(teamId, isPublic, commentData = {}) {
@@ -10,12 +10,6 @@ export default {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(commentData),
-    });
-  },
-  async deleteComment(teamId, commentId) {
-    return jsonRequest(`/teams/${teamId}/comments/${commentId}`, {
-      method: 'delete',
-      headers: { 'Content-Type': 'application/json' },
     });
   },
 };

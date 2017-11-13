@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import CreateScheduleBaseComponent from '../components/CreateScheduleBaseComponent';
+import scheduleBasesService from '../services/scheduleBases';
+
 
 export deafult class ScheduleBaseForm extends React.Component {
   constructor(props) {
