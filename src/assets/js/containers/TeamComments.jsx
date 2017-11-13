@@ -59,8 +59,7 @@ export default class TeamComments extends Component {
   }
 
   renderPublicComments() {
-    // HACK: canPublicComment === 'true' because props come as strings
-    return this.renderComments(true, this.props.canPublicComment === 'true', 'Comentarios públicos');
+    return this.renderComments(true, this.props.canPublicComment, 'Comentarios públicos');
   }
 
   renderCommentSwitch() {

@@ -16,7 +16,6 @@ export default {
   async deleteComment(teamId, commentId) {
     return jsonRequest(`/teams/${teamId}/comments/${commentId}`, {
       method: 'delete',
-      headers: { 'Content-Type': 'application/json' },
     });
   },
 };
