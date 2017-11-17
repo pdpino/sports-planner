@@ -11,8 +11,8 @@
   <ul>
     <% matches.forEach((match) => { %>
       <li>
-        <a class="lilink match-home-li" href="<%= getMatchPath(match) %>">
-          <div class="match-home-li-element">
+        <a class="lilink home-match-li" href="<%= getMatchPath(match) %>">
+          <div class="home-match-li-element">
             <div>
               <%= match.name %>
             </div>
@@ -23,7 +23,7 @@
               <%= prettyTimestamp(match.date) %>
             </div>
           </div>
-          <%- include('../_buttons/edit', { editPath: editPlayerMatchPath(match), formClass: 'match-home-li-element' }) %>
+          <%- include('../_buttons/edit', { editPath: editPlayerMatchPath(match), formClass: 'home-match-li-element' }) %>
         </a>
       </li>
     <% }) %>

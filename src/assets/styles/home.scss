@@ -1,11 +1,15 @@
 #body-container {
-  // HACK: this div contains the home-container, so the home-container does not need to specify top property
+  // NOTE: this will be used in multiple pages, not just home
+
+  // HACK: this div contains the jumbotron, so the jumbotron does not need to specify top property
   // This could be used in every view (in layout.html wrap the body)
   position: relative;
   top: 50px;
 }
 
-#home-container {
+.jumbotron {
+  // NOTE: this will be used in multiple pages, not just home
+
   position: absolute;
   width: 100%;
   text-align: center;
@@ -14,71 +18,62 @@
   flex-wrap: wrap;
 }
 
-#column-left {
-  width: 30%;
-  // border: solid 1px blue;
-}
-
-#column-right {
-  width: 70%;
-  // border: solid 1px blue;
-}
-
 .box-container {
+  // NOTE: this will be used in multiple pages, not just home
+
   border: solid 1px black;
   padding: 0.5em;
   margin: 0.5em;
   background-color: #F0F0EA;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-
 }
 
-#notifications-react-app {
+#notifications-react-app { }
+#home-reviews-container { }
+#home-teams-container { }
 
+#home-column-left {
+  width: 30%;
 }
 
-#reviews-container {
-
+#home-column-right {
+  width: 70%;
 }
 
-#teams-container {
-
-}
-
-#matches-container {
+#home-matches-container {
   display: flex;
   flex-flow: row wrap;
 }
 
-#matches-sup-bar {
+#home-matches-sup-bar {
   width: 100%;
   position: relative;
 }
 
-#matches-title {
+#home-matches-title {
   display: inline-block;
 }
 
-#matches-new {
+#home-matches-new {
   display: inline-block;
   position: absolute;
   right: 0;
   margin-right: 0.5em;
 }
 
-#matches-confirmed-container {
+#home-matches-confirmed-container {
   width: 50%;
 }
 
-#matches-invite-container {
+#home-matches-invite-container {
   width: 50%;
 }
 
-#matches-past-container {
+#home-matches-past-container {
   width: 100%;
 }
 
-.match-home-li {
+.home-match-li {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
@@ -92,14 +87,14 @@
   }
 }
 
-.match-home-li-element {
+.home-match-li-element {
   display: inline-block;
 }
 
-form.match-home-li-element {
+form.home-match-li-element {
   right: 0;
 }
 
-div.match-home-li-element {
+div.home-match-li-element {
   left: 0;
 }

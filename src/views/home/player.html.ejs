@@ -1,17 +1,15 @@
 <div id="body-container">
-  <div id="home-container">
-    <%# include('../notifications/index') %>
+  <div class="jumbotron">
 
-    <div id="column-left">
+    <div id="home-column-left">
 
-      <div
-        id="notifications-react-app"
+      <div id="notifications-react-app"
         class="box-container"
         data-user-id="<%= currentUser.id %>"
         >
       </div>
 
-      <div id="reviews-container" class="box-container">
+      <div id="home-reviews-container" class="box-container">
         <p>
           <% if(reviewsAverage === 0) { %>
             No has recibido reviews
@@ -21,7 +19,7 @@
         </p>
       </div>
 
-      <div id="teams-container" class="box-container">
+      <div id="home-teams-container" class="box-container">
         <h4> Mis equipos </h4>
         <% if(myTeams.length > 0) { %>
           <ul>
@@ -51,26 +49,26 @@
 
     </div>
 
-    <div id="column-right">
+    <div id="home-column-right">
 
-      <div id="matches-container" class="box-container">
-        <div id="matches-sup-bar">
-          <h3 id="matches-title">Partidos</h3>
+      <div id="home-matches-container" class="box-container">
+        <div id="home-matches-sup-bar">
+          <h3 id="home-matches-title">Partidos</h3>
 
-          <a id="matches-new" href="<%= newMatchPath %>">
+          <a id="home-matches-new" href="<%= newMatchPath %>">
             <img class="small-button" src="/assets/plus_green.png" alt="Crear partido" title="Crear partido"/>
           </a>
         </div>
 
-        <div id="matches-confirmed-container">
+        <div id="home-matches-confirmed-container">
           <%- include('../matches/_index-snippet', { title: 'Confirmados', matches: myConfirmedMatches }) %>
         </div>
 
-        <div id="matches-invite-container">
+        <div id="home-matches-invite-container">
           <%- include('../matches/_index-snippet', { title: 'Por confirmar', matches: myInviteMatches }) %>
         </div>
 
-        <div id="matches-past-container">
+        <div id="home-matches-past-container">
           <%- include('../matches/_index-snippet', { title: 'Pasados', matches: myPastMatches }) %>
         </div>
 
