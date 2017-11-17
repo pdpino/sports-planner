@@ -25,8 +25,7 @@ export default class WallComments extends Component {
   }
 
   render() {
-    // HACK: prop comes as a string, so === 'true'
-    if (this.props.canSeeComments === 'true') {
+    if (this.props.canSeeComments) {
       return (
         <Comments
           canComment={this.props.canComment}

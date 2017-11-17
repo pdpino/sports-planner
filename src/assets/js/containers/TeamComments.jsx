@@ -15,11 +15,6 @@ export default class TeamComments extends Component {
     this.deleteComment = this.deleteComment.bind(this);
   }
 
-  canSeePrivateComments() {
-    // HACK: prop comes as string
-    return this.props.showPrivateComments === 'true';
-  }
-
   toggle(data) {
     this.setState({ chosenPublic: data.chosenPublic })
   }
@@ -52,7 +47,7 @@ export default class TeamComments extends Component {
   }
 
   renderPrivateComments() {
-    if (this.canSeePrivateComments()) {
+    if (this.props.canSeePrivateComments) {
       // NOTE: if can the user can see the private comments, then can also make private comments
       return this.renderComments(false, true, 'Comentarios privados');
     }
@@ -63,7 +58,7 @@ export default class TeamComments extends Component {
   }
 
   renderCommentSwitch() {
-    if(this.canSeePrivateComments()){
+    if(this.props.canSeePrivateComments){
       return (
         <div>
           <ToggleTeamComments
