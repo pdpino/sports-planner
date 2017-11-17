@@ -1,6 +1,6 @@
 <div id="body-container">
   <div class="jumbotron">
-    <div id="team-column-left">
+    <div id="team-column-left" class="column-30">
 
       <div id="team-card" class="box-container">
         <img class="medium-logo" src="<%= team.logo %>" alt="logo">
@@ -15,24 +15,24 @@
 
     </div>
 
-    <div id="team-column-center">
+    <div id="team-column-center" class="column-40">
       <div id="team-players" class="box-container">
+        <h4>Jugadores</h4>
         <% if(teamMembers.length > 0) { %>
-          <h4>Jugadores</h4>
           <ul>
             <% teamMembers.forEach( (teamMember) => { %>
               <li>
-                  <a class="lilink" href="<%= getPlayerPath(teamMember) %>"%>>
+                <a class="lilink" href="<%= getPlayerPath(teamMember) %>"%>>
                   <img class="small-logo" src="<%=teamMember.photo%>"/>
                   <div>
-                   <%= teamMember.firstName %> <%= (teamMember.isMember.isCaptain ? '-- capitán del equipo' : '' )%>
-                 </div>
-                 <% if (hasModifyPermission) { %>
-                   <%- include('../_buttons/edit', {
-                     editPath: editTeamMemberPath(teamMember),
-                     message: 'Editar miembro de equipo',
-                   }) %>
-                 <% } %>
+                    <%= teamMember.firstName %> <%= (teamMember.isMember.isCaptain ? '-- capitán del equipo' : '' )%>
+                  </div>
+                  <% if (hasModifyPermission) { %>
+                    <%- include('../_buttons/edit', {
+                      editPath: editTeamMemberPath(teamMember),
+                      message: 'Editar miembro de equipo',
+                    }) %>
+                  <% } %>
                 </a>
               </li>
             <% }) %>
@@ -43,7 +43,7 @@
 
         <% if (hasModifyPermission) { %>
           <form action="<%= newTeamMemberPath %>">
-              <input type="submit" value="Añadir Jugador" />
+            <input type="submit" value="Añadir Jugador" />
           </form>
         <% } %>
 
@@ -72,7 +72,7 @@
 
         <% if (hasModifyPermission) { %>
           <form action="<%= newTeamMatchPath %>">
-              <input type="submit" value="Añadir partidos" />
+            <input type="submit" value="Añadir partidos" />
           </form>
         <% } %>
 
@@ -80,7 +80,7 @@
 
     </div>
 
-    <div id="team-column-right">
+    <div id="team-column-right" class="column-30">
       <div id="team-comments-react-app"
         class="box-container"
         data-team-id="<%= team.id %>"

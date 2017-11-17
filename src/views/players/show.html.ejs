@@ -1,7 +1,7 @@
 <div id="body-container">
   <div class="jumbotron">
 
-    <div id="player-profile-column-left">
+    <div id="player-profile-column-left" class="column-30">
       <div id="player-profile-card" class="box-container">
         <img class="medium-logo" src="<%= player.photo %>" height="500" width="500" >
 
@@ -73,7 +73,7 @@
 
     </div>
 
-    <div id="player-profile-column-center">
+    <div id="player-profile-column-center" class="column-40">
       <div id="player-profile-reviews" class="box-container">
         <%- include('../playerReviews/index-done', { doneReviews: reviews, showReviewer: true }) %>
       </div>
@@ -90,7 +90,7 @@
 
     </div>
 
-    <div id="player-profile-column-right">
+    <div id="player-profile-column-right" class="column-30">
 
       <div id="player-profile-sports" class="box-container">
         <h4>Deportes que practica</h4>

@@ -1,6 +1,6 @@
 <div id="body-container">
   <div class="jumbotron">
-    <div id="match-column-left">
+    <div id="match-column-left" class="column-30">
       <div id="match-card" class="box-container">
         <h3><%= match.name %></h3>
         <p><%= match.sport.name %></p>
@@ -42,7 +42,7 @@
 
     </div>
 
-    <div id="match-column-center">
+    <div id="match-column-center" class="column-40">
 
       <div id="match-teams" class="box-container">
         <h4> Equipos que participan </h4>
@@ -114,7 +114,7 @@
 
     </div>
 
-    <div id="match-column-right">
+    <div id="match-column-right" class="column-30">
 
       <% if(reviewsEnabled) { %>
         <div id="match-reviews" class="box-container">
