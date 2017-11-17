@@ -1,107 +1,136 @@
-<div class="center">
-  <h1><%= match.name %></h1>
-  <p>
-    Fecha: <%= prettyTimestamp(match.date) %>
-
-    Deporte: <%= match.sport.name %>
-  </p>
-
-  <% if (hasModifyPermission) { %>
-    <%- include('../_buttons/edit', { editPath: editMatchPath }) %>
-
-    <%- include('../_buttons/delete', { deletePath: deleteMatchPath }) %>
-  <% } %>
-
-  <% if(canEnableReviews) { %>
-    <form action="<%= enableReviews %>" method="post">
-      <input type="submit" value="Activar reviews"/>
-    </form>
-  <% } %>
-
-
-  <% if(invitedPlayers.length > 0) { %>
-    <h4> Jugadores que participan: </h4>
-    <ul>
-      <% invitedPlayers.forEach((player) => { %>
-        <li>
-
-          <a href="<%= getPlayerPath(player) %>">
-            <%= player.firstName %> <%= player.lastName %>
-          </a>
-
-          <%= (player.isPlayerInvited.isAdmin) ? '-- Admin del partido' : '' %>
-          --
-          <%= invitationToString(player.isPlayerInvited.status) %>
-
-          <% if(hasModifyPermission) { %>
-            <%- include('../_buttons/edit', { editPath: editInvitedPlayerPath(player) }) %>
+<div id="body-container">
+  <div class="jumbotron">
+    <div id="match-column-left">
+      <div id="match-card" class="box-container">
+        <h3><%= match.name %></h3>
+        <p><%= match.sport.name %></p>
+        <p>
+          <% if(match.date) { %>
+            Fecha: <%= prettyTimestamp(match.date) %>
+          <% } else { %>
+            No hay fecha aún
           <% } %>
-        </li>
-      <% }) %>
-    </ul>
-  <% } else { %>
-    No contiene jugadores.
-  <% } %>
+        </p>
 
-  <% if (hasModifyPermission) { %>
-    <form action="<%= newInvitedPlayerPath %>">
-        <input type="submit" value="Añadir Jugador" />
-    </form>
-  <% } %>
+        <% if (hasModifyPermission) { %>
+          <%- include('../_buttons/edit', { editPath: editMatchPath }) %>
 
-  <% if(invitedTeams.length > 0) { %>
-    <h4> Equipos que participan: </h4>
-    <ul>
-      <% invitedTeams.forEach((team) => { %>
-        <li>
+          <%- include('../_buttons/delete', { deletePath: deleteMatchPath }) %>
+        <% } %>
 
-          <a href="<%= getTeamPath(team) %>">
-            <%= team.name %>
-          </a>
+        <% if(canEnableReviews) { %>
+          <form action="<%= enableReviews %>" method="post">
+            <input type="submit" value="Activar reviews"/>
+          </form>
+        <% } %>
 
-          --
-          <%= invitationToString(team.isTeamInvited.status) %>
 
-          <% if(hasModifyPermission) { %>
-            <%- include('../_buttons/edit', {
-              editPath: editInvitedTeamPath(team),
-              message: 'Editar invitación',
-            }) %>
-          <% } %>
+      </div>
 
-        </li>
-      <% }) %>
-    </ul>
-  <% } else { %>
-    No hay equipos invitados.
-  <% } %>
+      <div id="match-field" class="box-container">
+        <h4> Cancha para el partido </h4>
+        <% if(schedule && field) { %>
+          <%= field.name %>
+          <%= schedule.status %>
+          <%= schedule.hours %>
+          <%= prettyTimestamp(schedule.date) %>
+        <% } else { %>
+          No hay canchas pedidas
+        <% } %>
 
-  <% if (hasModifyPermission) { %>
-    <form action="<%= newInvitedTeamPath %>">
-        <input type="submit" value="Invitar equipo" />
-    </form>
-  <% } %>
+      </div>
 
-  <% if(schedule && field) { %>
-    <h4> Cancha para el partido: </h4>
-    <%= field.name %>
-    <%= schedule.status %>
-    <%= schedule.hours %>
-    <%= prettyTimestamp(schedule.date) %>
-  <% } else { %>
-    No hay canchas pedidas.
-  <% } %>
+    </div>
 
-  <%- include('../comments/index', { comments }) %>
-  <%- include('../comments/new') %>
+    <div id="match-column-center">
 
-  <% if(reviewsEnabled) { %>
-    <%- include('../playerReviews/index-pending', { pendingReviews }) %>
-    <%- include('../playerReviews/index-done', { doneReviews, showReviewer: false }) %>
+      <div id="match-teams" class="box-container">
+        <h4> Equipos que participan </h4>
+        <% if(invitedTeams.length > 0) { %>
+          <ul>
+            <% invitedTeams.forEach((team) => { %>
+              <li>
 
-    <%- include('../compoundReviews/show') %>
-  <% } %>
+                <a href="<%= getTeamPath(team) %>">
+                  <%= team.name %>
+                </a>
 
-  <%- include('../_buttons/back', { backPath: matchesPath, message: 'Volver a todos los partidos' }) %>
+                --
+                <%= invitationToString(team.isTeamInvited.status) %>
 
+                <% if(hasModifyPermission) { %>
+                  <%- include('../_buttons/edit', {
+                    editPath: editInvitedTeamPath(team),
+                    message: 'Editar invitación',
+                  }) %>
+                <% } %>
+
+              </li>
+            <% }) %>
+          </ul>
+        <% } else { %>
+          No hay equipos invitados
+        <% } %>
+
+        <% if (hasModifyPermission) { %>
+          <form action="<%= newInvitedTeamPath %>">
+              <input type="submit" value="Invitar equipo" />
+          </form>
+        <% } %>
+      </div>
+
+      <div id="match-players" class="box-container">
+        <% if(invitedPlayers.length > 0) { %>
+          <h4> Jugadores que participan </h4>
+          <ul>
+            <% invitedPlayers.forEach((player) => { %>
+              <li>
+
+                <a href="<%= getPlayerPath(player) %>">
+                  <%= player.firstName %> <%= player.lastName %>
+                </a>
+
+                <%= (player.isPlayerInvited.isAdmin) ? '-- Admin del partido' : '' %>
+                --
+                <%= invitationToString(player.isPlayerInvited.status) %>
+
+                <% if(hasModifyPermission) { %>
+                  <%- include('../_buttons/edit', { editPath: editInvitedPlayerPath(player) }) %>
+                <% } %>
+              </li>
+            <% }) %>
+          </ul>
+        <% } else { %>
+          No contiene jugadores
+        <% } %>
+
+        <% if (hasModifyPermission) { %>
+          <form action="<%= newInvitedPlayerPath %>">
+              <input type="submit" value="Añadir Jugador" />
+          </form>
+        <% } %>
+      </div>
+
+
+    </div>
+
+    <div id="match-column-right">
+
+      <% if(reviewsEnabled) { %>
+        <div id="match-reviews" class="box-container">
+          <%- include('../playerReviews/index-pending', { pendingReviews }) %>
+          <%- include('../playerReviews/index-done', { doneReviews, showReviewer: false }) %>
+
+          <%- include('../compoundReviews/show') %>
+        </div>
+      <% } %>
+
+      <div id="match-comments" class="box-container">
+        <%- include('../comments/index', { comments }) %>
+        <%- include('../comments/new') %>
+      </div>
+
+    </div>
+
+  </div>
 </div>
