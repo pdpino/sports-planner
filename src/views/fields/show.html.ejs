@@ -1,70 +1,76 @@
-<div class="center">
+<div id="body-container">
+  <div class="jumbotron">
+    <div id="field-column-left" class="column-30">
 
-  <h1><%= field.name %></h1>
+      <div id="field-card" class="box-container">
+        <img class="medium-logo" src="<%= field.photo %>" height="500" width="500" >
+        <h4><%= field.name %></h4>
+        <p> <%= sportName %> </p>
 
-  <div>
-    <h4>Información de la cancha</h4>
+        <p> Horario: <%= field.openingHour %> - <%= field.closingHour %>  </p>
+
+        <p>
+          Recinto:
+          <a href="<%= getCompoundPath(compound) %>">
+            <%= compound.name %>
+          </a>
+        </p>
+
+        <% if (hasModifyPermission) { %>
+          <%- include('../_buttons/edit', {
+            editPath: editFieldPath,
+            message: 'Editar cancha',
+          }) %>
+          <%- include('../_buttons/delete', {
+            deletePath: deleteFieldPath,
+            message: 'Eliminar cancha',
+          }) %>
+        <%}%>
+      </div>
+
+    </div>
+
+    <div id="field-column-right" class="column-70">
+
+      <div id="field-schedules" class="box-container">
+        <h4> Horarios que dispone </h4>
+        <% if (schedules2.length > 0) { %>
+          <ul>
+            <% schedules.forEach((schedule) => { %>
+              <li>
+                <a class="lilink" href=<%= getSchedulePath(schedule) %>>
+                  <div>
+                    <%= schedule %>
+                  </div>
+                </a>
+              </li>
+            <% }) %>
+          </ul>
+        <% } else { %>
+          No contiene horarios
+        <% } %>
 
 
-    <p> <%= sportName %> </p>
+        <% if (hasModifyPermission) { %>
+          <% if(scheduleBases.length > 0) { %>
+            <form action="<%= editScheduleBasePath %>">
+              <input type="submit" value="Editar Horario Base" />
+            </form>
 
-    <img src="<%= field.photo %>" height="500" width="500" >
-    <p> Schedule: <%= field.openingHour %> - <%= field.closingHour %>  </p>
-    <p> Dirección: <%= compound.address %> </p>
-    <p> Recinto: <%= compound.name %>
+            <form action="<%= generateSchedulePath %>" method="post">
+              <input type="submit" value="Generar Horarios" />
+            </form>
 
-    <% if (hasModifyPermission) { %>
-      <%- include('../_buttons/edit', {
-        editPath: editFieldPath,
-        message: 'Editar cancha',
-      }) %>
-      <%- include('../_buttons/delete', {
-        deletePath: deleteFieldPath,
-        message: 'Eliminar cancha',
-      }) %>
-    <%}%>
+          <% } else { %>
+            <form action="<%= newScheduleBasePath %>">
+              <input type="submit" value="Crear Horario Base" />
+            </form>
+          <% } %>
+        <% } %>
+      </div>
+
+    </div>
+
+
   </div>
-
-
-  <% if(schedules2.length > 0) { %>
-    <h4> Horarios que dispone: </h4>
-    <ul>
-      <% schedules.forEach((schedule) => { %>
-        <li>
-            <a class="lilink" href=<%= getSchedulePath(schedule) %>>
-            <div>
-             <%= schedule %>
-           </div>
-         </a>
-        </li>
-      <% }) %>
-    </ul>
-  <% } else { %>
-    No contiene horarios.
-  <% } %>
-
-  <% if(hasModifyPermission) { %>
-
-
-    <% if(scheduleBases.length>0) { %>
-    <form action="<%= editScheduleBasePath %>">
-        <input type="submit" value="Editar Horario Base" />
-    </form>
-
-    <form action="<%= generateSchedulePath %>" method="post">
-        <input type="submit" value="Generar Horarios" />
-    </form>
-    <%} else { %>
-      <form action="<%= newScheduleBasePath %>">
-          <input type="submit" value="Crear Horario Base" />
-      </form>
-      <%}%>
-<% } %>
-
-    <form action="<%= getCompoundPath(compound) %>">
-      <input type="submit" value="Ir perfil recinto" />
-    </form>
-
-  </div>
-
 </div>
