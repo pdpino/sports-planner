@@ -9,7 +9,7 @@
         >
       </div>
 
-      <div id="home-reviews-container" class="box-container">
+      <div id="home-reviews" class="box-container">
         <p>
           <% if(reviewsAverage === 0) { %>
             No has recibido reviews
@@ -19,7 +19,7 @@
         </p>
       </div>
 
-      <div id="home-teams-container" class="box-container">
+      <div id="home-teams" class="box-container">
         <h4> Mis equipos </h4>
         <% if(myTeams.length > 0) { %>
           <ul>
@@ -51,11 +51,11 @@
 
     <div id="home-column-right" class="column-70">
 
-      <div id="home-matches-container" class="box-container">
+      <div id="home-matches" class="box-container">
         <div id="home-matches-sup-bar">
-          <h3 id="home-matches-title">Partidos</h3>
+          <h3>Partidos</h3>
 
-          <a id="home-matches-new" href="<%= newMatchPath %>">
+          <a href="<%= newMatchPath %>">
             <img class="small-button" src="/assets/plus_green.png" alt="Crear partido" title="Crear partido"/>
           </a>
         </div>

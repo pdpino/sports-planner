@@ -31,11 +31,15 @@ function displayNotificationsList(notifications){
 export default function Notifications(props) {
   return (
     <div>
-      <h4>Notificaciones</h4>
-      <form id="refresh-notifications-button" onSubmit={props.onSubmit}>
-        <input src="/assets/refresh.png" type="image" alt="Recargar" />
-      </form>
-      <p>Hay { props.notifications.length } notificaciones </p>
+      <div id="notifications-sup-bar">
+        <h4>Notificaciones</h4>
+        <form onSubmit={props.onSubmit}>
+          <input src="/assets/refresh.png" type="image" alt="Recargar" />
+        </form>
+      </div>
+      <div id="notifications-amount">
+        <p>Hay { props.notifications.length } notificaciones</p>
+      </div>
       <ul> { displayNotificationsList(props.notifications) } </ul>
     </div>
   );

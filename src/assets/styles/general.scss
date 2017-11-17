@@ -158,8 +158,6 @@ img {
 }
 
 #body-container {
-  // NOTE: this will be used in multiple pages, not just home
-
   // HACK: this div contains the jumbotron, so the jumbotron does not need to specify top property
   // This could be used in every view (in layout.html wrap the body)
   position: relative;
@@ -167,8 +165,6 @@ img {
 }
 
 .jumbotron {
-  // NOTE: this will be used in multiple pages, not just home
-
   position: absolute;
   width: 100%;
   text-align: center;
@@ -178,8 +174,6 @@ img {
 }
 
 .box-container {
-  // NOTE: this will be used in multiple pages, not just home
-
   border: solid 1px black;
   padding: 0.5em;
   margin: 0.5em;

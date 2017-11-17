@@ -1,4 +1,4 @@
-#home-matches-container {
+#home-matches {
   display: flex;
   flex-flow: row wrap;
 }
@@ -6,17 +6,17 @@
 #home-matches-sup-bar {
   width: 100%;
   position: relative;
-}
 
-#home-matches-title {
-  display: inline-block;
-}
+  h3 {
+    display: inline-block;
+  }
 
-#home-matches-new {
-  display: inline-block;
-  position: absolute;
-  right: 0;
-  margin-right: 0.5em;
+  a {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    margin-right: 0.5em;
+  }
 }
 
 #home-matches-confirmed-container {
