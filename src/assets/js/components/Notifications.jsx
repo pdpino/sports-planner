@@ -32,8 +32,8 @@ export default function Notifications(props) {
   return (
     <div>
       <h4>Notificaciones</h4>
-      <form onSubmit={props.onSubmit}>
-        <input type="submit" value="Recargar" />
+      <form id="refresh-notifications-button" onSubmit={props.onSubmit}>
+        <input src="/assets/refresh.png" type="image" alt="Recargar" />
       </form>
       <p>Hay { props.notifications.length } notificaciones </p>
       <ul> { displayNotificationsList(props.notifications) } </ul>
