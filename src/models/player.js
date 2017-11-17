@@ -95,16 +95,7 @@ module.exports = function defineplayer(sequelize, DataTypes) {
 
   player.getGenders = function() { return genders; }
 
-  player.prototype.getName = function() {
-    // NOTE: if the player was found using find(), firstName and lastName are copied into the player
-    // if not, then try to use the user's names
-    if (this.firstName){
-      return `${this.firstName} ${this.lastName}`;
-    } else if (this.user) {
-      return `${this.user.firstName} ${this.user.lastName}`;
-    }
-    return '';
-  }
+  player.prototype.getName = function() { return helpers.getPersonName(this); }
 
   player.canAddFriend = (status) => status === 'not';
   player.canDeleteFriend = (status) => status === 'accepted';
