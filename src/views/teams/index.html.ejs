@@ -1,33 +1,35 @@
-<div class="center">
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container index-container">
+      <h1>Equipos</h1>
 
-  <h1>Equipos</h1>
+      <% if (hasCreatePermission) { %>
+        <form action="<%= newTeamPath %>">
+          <input type="submit" value="Crear Equipo"/>
+        </form>
+      <% } %>
 
-  <% if (hasCreatePermission) { %>
-    <form action="<%= newTeamPath %>">
-      <input type="submit" value="Crear Equipo"/>
-    </form>
-  <% } %>
-
-
-  <% if (teams.length > 0) { %>
-    <ul>
-      <% teams.forEach((team) => { %>
-        <li>
-          <a class="lilink sport" href="<%= getTeamPath(team) %>"%>>
-            <img class="medium-logo" src="<%= team.logo %>"/>
-            <div>
-              <%= team.name %>
-            </div>
-            <div class="index-sport-name">
-              <%= team.sport.name %>
-            </div>
-          </a>
-        </li>
-      <% }) %>
-    </ul>
-  <% } else { %>
-    <p> No hay equipos </p>
-  <% } %>
+      <% if (teams.length > 0) { %>
+        <ul>
+          <% teams.forEach((team) => { %>
+            <li>
+              <a class="lilink sport" href="<%= getTeamPath(team) %>"%>>
+                <img class="medium-logo" src="<%= team.logo %>"/>
+                <div>
+                  <%= team.name %>
+                </div>
+                <div class="index-sport-name">
+                  <%= team.sport.name %>
+                </div>
+              </a>
+            </li>
+          <% }) %>
+        </ul>
+      <% } else { %>
+        <p> No hay equipos </p>
+      <% } %>
 
 
+    </div>
+  </div>
 </div>

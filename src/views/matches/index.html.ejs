@@ -1,28 +1,32 @@
-<div class="center">
-  <h1>Partidos</h1>
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container index-container">
+      <h1>Partidos</h1>
 
-  <% if (hasCreatePermission) { %>
-  <form action="<%= newMatchPath %>">
-      <input type="submit" value="Crear partido"/>
-  </form>
-  <% } %>
+      <% if (hasCreatePermission) { %>
+        <form action="<%= newMatchPath %>">
+          <input type="submit" value="Crear partido"/>
+        </form>
+      <% } %>
 
-  <ul>
-    <% if (matches.length > 0) { %>
-      <% matches.forEach((match) => { %>
-        <li>
-          <a href="<%= getMatchPath(match) %>">
-            <%= match.name %>
-          </a>
+      <ul>
+        <% if (matches.length > 0) { %>
+          <% matches.forEach((match) => { %>
+            <li>
+              <a href="<%= getMatchPath(match) %>">
+                <%= match.name %>
+              </a>
+              <p>
+                Fecha: <%= prettyTimestamp(match.date) %>
+              </p>
+            </li>
+          <% }) %>
+        <% } else { %>
           <p>
-            Fecha: <%= match.date %>
+            No hay partidos disponibles
           </p>
-        </li>
-      <% }) %>
-    <% } else { %>
-      <p>
-        No hay partidos disponibles
-      </p>
-    <% } %>
-  </ul>
+        <% } %>
+      </ul>
+    </div>
+  </div>
 </div>
