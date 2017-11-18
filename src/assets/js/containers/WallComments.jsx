@@ -25,20 +25,15 @@ export default class WallComments extends Component {
   }
 
   render() {
-    if (this.props.canSeeComments) {
-      return (
-        <Comments
-          canComment={this.props.canComment}
-          title="Muro"
-          fetchComments={this.fetchComments}
-          postComment={this.postComment}
-          deleteComment={this.deleteComment}
-          {...this.props}
-        />
-      );
-    } else {
-      // HACK: to return something
-      return <div/>;
-    }
+    return (
+      <Comments
+        canComment={this.props.canComment}
+        title="Muro"
+        fetchComments={this.fetchComments}
+        postComment={this.postComment}
+        deleteComment={this.deleteComment}
+        {...this.props}
+      />
+    );
   }
 }

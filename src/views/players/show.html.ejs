@@ -78,15 +78,14 @@
         <%- include('../playerReviews/index-done', { doneReviews: reviews, showReviewer: true }) %>
       </div>
 
-
-      <div id="wall-comments-react-app"
-        class="<%= (canSeeComments) ? 'box-container' : '' %>"
-        data-player-id="<%= player.id %>"
-        data-can-comment="<%= canComment %>"
-        data-can-see-comments="<%= canSeeComments %>"
-        >
-      </div>
-
+      <% if (canSeeComments) { %>
+        <div id="wall-comments-react-app"
+          class="box-container"
+          data-player-id="<%= player.id %>"
+          data-can-comment="<%= canComment %>"
+          >
+        </div>
+      <% } %>
 
     </div>
 
