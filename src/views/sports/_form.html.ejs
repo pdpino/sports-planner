@@ -1,36 +1,40 @@
-<div class="center">
-  <h1><%= sport.isNewRecord ? 'Nuevo deporte' : 'Editar deporte' %></h1>
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container form-container">
+      <h1><%= sport.isNewRecord ? 'Nuevo deporte' : 'Editar deporte' %></h1>
 
-  <%- include('../_error/snippet', { errors: locals.errors }) %>
+      <%- include('../_error/snippet', { errors: locals.errors }) %>
 
-  <div>
-    <form action="<%= submitSportPath %>" method="post" enctype="multipart/form-data">
-      <% if(!sport.isNewRecord) { %>
-        <div>
-          <input type="hidden" name="_method" value="patch" />
-        </div>
-      <% } %>
       <div>
-        <label for="name">Nombre</label>
-        <input type="text" name="name" value="<%= sport.name %>" required/>
+        <form action="<%= submitSportPath %>" method="post" enctype="multipart/form-data">
+          <% if(!sport.isNewRecord) { %>
+            <div>
+              <input type="hidden" name="_method" value="patch" />
+            </div>
+          <% } %>
+          <div>
+            <label for="name">Nombre</label>
+            <input type="text" name="name" value="<%= sport.name %>" required/>
+          </div>
+          <div>
+            <label for="logo">Foto</label>
+            <input type="file" name="logo" accept="image/*"/>
+          </div>
+          <div>
+            <label for="isIndividual">Individual?</label>
+            <input type="checkbox" name="isIndividual" <%= sport.isIndividual ? 'checked' : '' %> ></input>
+          </div>
+          <div>
+            <% if(sport.isNewRecord) { %>
+              <input type="submit" name="create" value="Crear" />
+            <% } else { %>
+              <input type="submit" name="update" value="Guardar" />
+            <% } %>
+          </div>
+        </form>
       </div>
-      <div>
-        <label for="logo">Foto</label>
-        <input type="file" name="logo" accept="image/*"/>
-      </div>
-      <div>
-        <label for="isIndividual">Individual?</label>
-        <input type="checkbox" name="isIndividual" <%= sport.isIndividual ? 'checked' : '' %> ></input>
-      </div>
-      <div>
-        <% if(sport.isNewRecord) { %>
-          <input type="submit" name="create" value="Crear" />
-        <% } else { %>
-          <input type="submit" name="update" value="Guardar" />
-        <% } %>
-      </div>
-    </form>
+
+      <%- include('../_buttons/cancel', { cancelPath }) %>
+    </div>
   </div>
-
-  <%- include('../_buttons/cancel', { cancelPath }) %>
 </div>

@@ -1,74 +1,77 @@
-<div class="center">
-  <h1><%= match.isNewRecord ? 'Nuevo Partido' : 'Editar Partido' %></h1>
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container form-container">
+      <h1><%= match.isNewRecord ? 'Nuevo Partido' : 'Editar Partido' %></h1>
 
-  <%- include('../_error/snippet', { errors: locals.errors }) %>
+      <%- include('../_error/snippet', { errors: locals.errors }) %>
 
-  <div>
-    <form action="<%= submitMatchPath %>" method="post">
-      <% if(!match.isNewRecord) { %>
-        <div>
-          <input type="hidden" name="_method" value="patch" />
-        </div>
-      <% } %>
       <div>
-        <label for="name">Nombre</label>
-        <input type="text" name="name" value="<%= match.name %>"> </input>
+        <form action="<%= submitMatchPath %>" method="post">
+          <% if(!match.isNewRecord) { %>
+            <div>
+              <input type="hidden" name="_method" value="patch" />
+            </div>
+          <% } %>
+          <div>
+            <label for="name">Nombre</label>
+            <input type="text" name="name" value="<%= match.name %>"> </input>
+          </div>
+          <div>
+            <label for="isPublic">Público?</label>
+            <input type="checkbox" name="isPublic" <%= match.isPublic ? 'checked' : '' %> ></input>
+          </div>
+          <div>
+            <h4>Fecha y hora</h4>
+            <div>
+              <label for="dateYear">Año</label>
+              <input class="input-date-long" type="number" name="dateYear" value="<%= match.dateYear %>"></input>
+
+              <label for="dateMonth">Mes</label>
+              <input class="input-date" type="number" name="dateMonth" value="<%= match.dateMonth %>"></input>
+
+              <label for="dateDay">Día</label>
+              <input class="input-date" type="number" name="dateDay" value="<%= match.dateDay %>"></input>
+            </div>
+            <div>
+              <label for="dateHour">Hora</label>
+              <input class="input-date" type="number" name="dateHour" value="<%= match.dateHour %>"></input>
+              <input class="input-date" type="number" name="dateMinute" value="<%= match.dateMinute %>"></input>
+            </div>
+          </div>
+
+          <div>
+            <label for="sportId">Deporte</label>
+
+            <% sports.forEach((sport) => { %>
+              <input type="radio" name="sportId" value="<%= sport.id %>" required
+              <%= (sport.id === match.sportId) ? 'checked' : '' %> >
+              <%= sport.name %>
+            <% }) %>
+          </div>
+          <div>
+            <% if(match.isNewRecord) { %>
+              <input type="submit" name="create" value="Crear" />
+            <% } else { %>
+              <input type="submit" name="update" value="Guardar" />
+            <% } %>
+          </div>
+        </form>
       </div>
-      <div>
-        <label for="isPublic">Público?</label>
-        <input type="checkbox" name="isPublic" <%= match.isPublic ? 'checked' : '' %> ></input>
-      </div>
-      <div>
-        <h3>Fecha y hora</h3>
-        <div>
-          <label for="dateYear">Año</label>
-          <input class="input-date-long" type="number" name="dateYear" value="<%= match.dateYear %>"></input>
 
-          <label for="dateMonth">Mes</label>
-          <input class="input-date" type="number" name="dateMonth" value="<%= match.dateMonth %>"></input>
-
-          <label for="dateDay">Día</label>
-          <input class="input-date" type="number" name="dateDay" value="<%= match.dateDay %>"></input>
-        </div>
-        <div>
-          <label for="dateHour">Hora</label>
-          <input class="input-date" type="number" name="dateHour" value="<%= match.dateHour %>"></input>
-          <input class="input-date" type="number" name="dateMinute" value="<%= match.dateMinute %>"></input>
-      </div>
-
-      <div>
-        <label for="sportId">Deporte</label>
-
-        <% sports.forEach((sport) => { %>
-          <input type="radio" name="sportId" value="<%= sport.id %>" required
-          <%= (sport.id === match.sportId) ? 'checked' : '' %> >
-          <%= sport.name %>
-        <% }) %>
-      </div>
-      <div>
-        <% if(match.isNewRecord) { %>
-          <input type="submit" name="create" value="Crear" />
+      <% if (!match.isNewRecord) { %>
+        <% if (schedule){ %>
+          <form action="<%= removeSchedulePath %>" method="post">
+            <input type="submit" value="Anular Reserva" />
+          </form>
         <% } else { %>
-          <input type="submit" name="update" value="Guardar" />
+          <form action="<%= selectCompoundPath %>" method="get">
+            <input type="submit" value="Pedir Cancha" />
+          </form>
         <% } %>
-      </div>
-    </form>
+      <% } %>
+
+      <%- include('../_buttons/cancel', { cancelPath }) %>
+
+    </div>
   </div>
-
-  <% if(!match.isNewRecord) { %>
-      <% if (schedule){ %>
-        <form action="<%= removeSchedulePath %>" method="post">
-          
-        <input type="submit" value="Anular Reserva" />
-        </form>
-      <% } else{ %>
-        <form action="<%= selectCompoundPath %>" method="get">
-        <input type="submit" value="Pedir Cancha" />
-        </form>
-      <%}%>
-
-    <%}%>
-
-  <%- include('../_buttons/cancel', { cancelPath }) %>
-
 </div>

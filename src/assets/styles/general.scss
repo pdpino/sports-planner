@@ -70,15 +70,6 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
   cursor: pointer;
 }
 
-.center {
-  left: 25%;
-  background-color: #fff;
-  margin: 0 auto;
-  width: 66%;
-  text-align: center;
-  min-height: 100%;
-}
-
 ul {
   list-style-type: none;
 }
@@ -177,6 +168,16 @@ img {
   text-align: center;
 }
 
+.center {
+  // THIS CLASS IS DEPRECATED, use jumbotron-center instead
+  left: 25%;
+  background-color: #fff;
+  margin: 0 auto;
+  width: 66%;
+  text-align: center;
+  min-height: 100%;
+}
+
 .box-container {
   border: solid 1px black;
   padding: 0.5em;
@@ -188,5 +189,11 @@ img {
 .index-container {
   h1 {
     font-size: 2em;
+  }
+}
+
+.form-container {
+  h1 {
+    font-size: 1.5em;
   }
 }

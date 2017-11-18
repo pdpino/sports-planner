@@ -1,37 +1,44 @@
-<div class="center">
-  <h1> <%= (compoundOwner.isNewRecord) ? 'Nuevo Dueño de recinto' : 'Editar Dueño de recinto' %></h1>
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container form-container">
+      <h1> <%= (compoundOwner.isNewRecord) ? 'Nuevo Dueño de recinto' : 'Editar Dueño de recinto' %></h1>
 
-  <%- include('../_error/snippet', { errors: locals.errors }) %>
-
-  <div>
-    <form action="<%= submitCompoundOwnerPath %>" method="post" enctype="multipart/form-data">
-      <% if(!compoundOwner.isNewRecord) { %>
-        <div>
-          <input type="hidden" name="_method" value="patch" />
-        </div>
-      <% } %>
-
-      <%- include('../_users/form', { user: compoundOwner }) %>
+      <%- include('../_error/snippet', { errors: locals.errors }) %>
 
       <div>
-        <label for="phone">Teléfono</label>
-        <input type="text" name="phone" value="<%= compoundOwner.phone %>" />
+        <form action="<%= submitCompoundOwnerPath %>" method="post" enctype="multipart/form-data">
+          <% if(!compoundOwner.isNewRecord) { %>
+            <div>
+              <input type="hidden" name="_method" value="patch" />
+            </div>
+          <% } %>
+
+          <%- include('../_users/form', { user: compoundOwner }) %>
+
+          <div>
+            <label for="phone">Teléfono</label>
+            <input type="text" name="phone" value="<%= compoundOwner.phone %>" />
+          </div>
+          <div>
+            <% if(compoundOwner.isNewRecord) { %>
+              <input type="submit" name="create" value="Registrarse" />
+            <% } else { %>
+              <input type="submit" name="update" value="Guardar Cambios" />
+            <% } %>
+          </div>
+        </form>
       </div>
-        <% if(compoundOwner.isNewRecord) { %>
-          <input type="submit" name="create" value="Registrarse" />
-        <% } else { %>
-          <input type="submit" name="update" value="Guardar Cambios" />
-        <% } %>
-      </div>
-    </form>
 
-  <% if(!compoundOwner.isNewRecord) { %>
-    <%- include('../_buttons/delete', {
-      deletePath: deleteCompoundOwnerPath,
-      message: "Eliminar usuario",
-    }) %>
-  <% } %>
 
-  <%- include('../_buttons/cancel', { cancelPath }) %>
+      <% if(!compoundOwner.isNewRecord) { %>
+        <%- include('../_buttons/delete', {
+          deletePath: deleteCompoundOwnerPath,
+          message: "Eliminar usuario",
+        }) %>
+      <% } %>
 
+      <%- include('../_buttons/cancel', { cancelPath }) %>
+
+    </div>
+  </div>
 </div>
