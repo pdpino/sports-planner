@@ -147,8 +147,8 @@ img {
 }
 
 #body-container {
-  // HACK: this div contains the jumbotron, so the jumbotron does not need to specify top property
-  // This could be used in every view (in layout.html wrap the body)
+  // HACK: this div contains whatever is in the body, so that does not need to specify top property
+  // FIXME: This should be in in layout.html wrapping the body, not in each view
   position: relative;
   top: 50px;
 }
