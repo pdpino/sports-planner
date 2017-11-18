@@ -1,25 +1,29 @@
-<div class ="center">
-  <h1><%= field.name %></h1>
-  <h2><%= schedules[0] && schedules[0].date %></h2>
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container">
+      <h1><%= field.name %></h1>
+      <h2><%= schedules[0] && schedules[0].date %></h2>
 
-  <table>
-    <tr>
-      <th>Hora</th>
-      <th>Precio</th>
-      <th>Estado</th>
-    </tr>
-    <% for (let i=0;i<schedules.length;i++) {%>
-      <tr>
-        <th> <%= schedules[i].hours %> </th>
-        <td> <%= schedules[i].price %> </td>
-        <td> <%= schedules[i].status %> </td>
-      </tr>
-    <% } %>
-  </table>
-  <% if (hasModifyPermission) { %>
-    <form action="<%= editSchedulePath %>">
-      <input type="submit" value="Editar Horarios" />
-    </form>
-  <% } %>
+      <table>
+        <tr>
+          <th>Hora</th>
+          <th>Precio</th>
+          <th>Estado</th>
+        </tr>
+        <% for (let i=0;i<schedules.length;i++) {%>
+          <tr>
+            <th> <%= schedules[i].hours %> </th>
+            <td> <%= schedules[i].price %> </td>
+            <td> <%= schedules[i].status %> </td>
+          </tr>
+        <% } %>
+      </table>
+      <% if (hasModifyPermission) { %>
+        <form action="<%= editSchedulePath %>">
+          <input type="submit" value="Editar Horarios" />
+        </form>
+      <% } %>
 
+    </div>
+  </div>
 </div>

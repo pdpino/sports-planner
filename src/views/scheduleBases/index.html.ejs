@@ -1,23 +1,25 @@
-<div class ="center">
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container">
+      <h1>Horario Bases en Jugamos</h1>
+      <% if(hasModifyPermission) { %>
+        <form action=<%= newScheduleBasePath %>>
+          <input type="submit" value="Crear Horario Base"/>
+        </form>
+      <% } %>
 
-  <h1>Horario Bases en Jugamos</h1>
+      <ul>
+        <% scheduleBases.forEach((scheduleBase) => { %>
+          <li>
+              <a class="lilink" href=<%= scheduleBasePath(scheduleBase) %>>
+              <div>
+               <%=scheduleBase.weekday %> - <%= scheduleBase.hours %>
+             </div>
+           </a>
+          </li>
+        <% }) %>
+      </ul>
 
-
-  <% if(hasModifyPermission) { %>
-  <form action=<%= newScheduleBasePath %>>
-      <input type="submit" value="Crear Horario Base"/>
-  </form>
-  <%}%>
-
-  <ul>
-    <% scheduleBases.forEach((scheduleBase) => { %>
-      <li>
-          <a class="lilink" href=<%= scheduleBasePath(scheduleBase) %>>
-          <div>
-           <%=scheduleBase.weekday %> - <%= scheduleBase.hours %>
-         </div>
-       </a>
-      </li>
-    <% }) %>
-  </ul>
+    </div>
+  </div>
 </div>
