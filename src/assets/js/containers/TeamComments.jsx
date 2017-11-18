@@ -41,7 +41,6 @@ export default class TeamComments extends Component {
         fetchComments={() => this.fetchComments(isPublic)}
         postComment={(data) => this.postComment(isPublic, data)}
         deleteComment={this.deleteComment}
-        {...this.props}
       />
     );
   }

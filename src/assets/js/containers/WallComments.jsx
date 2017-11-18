@@ -25,6 +25,7 @@ export default class WallComments extends Component {
   }
 
   render() {
+    console.log("AAA: ", this.props);
     return (
       <Comments
         canComment={this.props.canComment}
@@ -32,7 +33,6 @@ export default class WallComments extends Component {
         fetchComments={this.fetchComments}
         postComment={this.postComment}
         deleteComment={this.deleteComment}
-        {...this.props}
       />
     );
   }
