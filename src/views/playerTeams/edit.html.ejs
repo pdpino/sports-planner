@@ -1,26 +1,32 @@
-<div class="center">
+<%# DEPRECATED: THIS VIEW IS NOT USED %>
 
-  <h1> Editar equipo al que pertenezco %></h1>
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container invitation-container">
 
-  <%- include('../_error/snippet', { errors: locals.errors }) %>
+      <h1> Editar equipo al que pertenezco %></h1>
 
-  <div>
-    <%= playerTeam.name %>
-    <form action="<%= submitPlayerTeamPath %>" method="post">
+      <%- include('../_error/snippet', { errors: locals.errors }) %>
+
       <div>
-        <input type="hidden" name="_method" value="patch" />
+        <%= playerTeam.name %>
+        <form action="<%= submitPlayerTeamPath %>" method="post">
+          <div>
+            <input type="hidden" name="_method" value="patch" />
+          </div>
+          <div>
+            <label for="isCaptain"></label>
+            <input type="checkbox" name="isCaptain" <%= (playerTeam.isMember.isCaptain) ? 'checked' : '' %> /> Capitán
+          </div>
+          <div>
+            <input type="submit" name="update" value="Guardar Cambios" />
+          </div>
+        </form>
       </div>
-      <div>
-        <label for="isCaptain"></label>
-        <input type="checkbox" name="isCaptain" <%= (playerTeam.isMember.isCaptain) ? 'checked' : '' %> /> Capitán
-      </div>
-      <div>
-        <input type="submit" name="update" value="Guardar Cambios" />
-      </div>
-    </form>
+
+      <%- include('../_buttons/delete', { deletePath: deletePlayerTeamPath }) %>
+
+      <%- include('../_buttons/cancel', { cancelPath }) %>
+    </div>
   </div>
-
-  <%- include('../_buttons/delete', { deletePath: deletePlayerTeamPath }) %>
-
-  <%- include('../_buttons/cancel', { cancelPath }) %>
 </div>

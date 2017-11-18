@@ -1,30 +1,34 @@
-<div class="center">
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container invitation-container">
 
-  <h1> Editar deporte que practico %></h1>
+      <h1> Editar deporte que practico %></h1>
 
-  <%- include('../_error/snippet', { errors: locals.errors }) %>
-
-  <div>
-    <%= playSport.name %>
-    <form action="<%= submitPlayerSportPath %>" method="post">
-      <div>
-        <input type="hidden" name="_method" value="patch" />
-      </div>
-      <div>
-        <label for="position">Posición: </label>
-        <input type="text" name="position" value="<%= playSport.plays.position %>"/>
-      </div>
+      <%- include('../_error/snippet', { errors: locals.errors }) %>
 
       <div>
-        <input type="submit" name="update" value="Guardar Cambios" />
+        <%= playSport.name %>
+        <form action="<%= submitPlayerSportPath %>" method="post">
+          <div>
+            <input type="hidden" name="_method" value="patch" />
+          </div>
+          <div>
+            <label for="position">Posición: </label>
+            <input type="text" name="position" value="<%= playSport.plays.position %>"/>
+          </div>
+
+          <div>
+            <input type="submit" name="update" value="Guardar Cambios" />
+          </div>
+        </form>
       </div>
-    </form>
+
+      <%- include('../_buttons/delete', {
+        deletePath: deletePlayerSportPath,
+        message: 'Dejar de practicar deporte',
+      }) %>
+
+      <%- include('../_buttons/cancel', { cancelPath }) %>
+    </div>
   </div>
-
-  <%- include('../_buttons/delete', {
-    deletePath: deletePlayerSportPath,
-    message: 'Dejar de practicar deporte',
-  }) %>
-
-  <%- include('../_buttons/cancel', { cancelPath }) %>
 </div>

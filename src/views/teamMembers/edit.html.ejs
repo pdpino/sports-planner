@@ -1,25 +1,30 @@
-<div class="center">
-  <h1> Editar Jugadores del equipo %></h1>
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container invitation-container">
+      <h1> Editar jugador del equipo %></h1>
 
-  <%- include('../_error/snippet', { errors: locals.errors }) %>
+      <%- include('../_error/snippet', { errors: locals.errors }) %>
 
-  <div>
-    <%= teamMember.name %>
-    <form action="<%= submitTeamMemberPath %>" method="post">
       <div>
-        <input type="hidden" name="_method" value="patch" />
+        <%= teamMember.name %>
+        <form action="<%= submitTeamMemberPath %>" method="post">
+          <div>
+            <input type="hidden" name="_method" value="patch" />
+          </div>
+          <div>
+            <label for="isCaptain"></label>
+            <input type="checkbox" name="isCaptain" <%= (teamMember.isMember.isCaptain) ? 'checked' : '' %> /> Capitán
+          </div>
+          <div>
+            <input type="submit" name="update" value="Guardar Cambios" />
+          </div>
+        </form>
       </div>
-      <div>
-        <label for="isCaptain"></label>
-        <input type="checkbox" name="isCaptain" <%= (teamMember.isMember.isCaptain) ? 'checked' : '' %> /> Capitán
-      </div>
-      <div>
-        <input type="submit" name="update" value="Guardar Cambios" />
-      </div>
-    </form>
+
+      <%- include('../_buttons/delete', { deletePath: deleteTeamMemberPath }) %>
+
+      <%- include('../_buttons/cancel', { cancelPath }) %>
+
+    </div>
   </div>
-
-  <%- include('../_buttons/delete', { deletePath: deleteTeamMemberPath }) %>
-
-  <%- include('../_buttons/cancel', { cancelPath }) %>
 </div>

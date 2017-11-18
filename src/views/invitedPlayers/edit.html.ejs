@@ -1,25 +1,29 @@
-<div class="center">
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container invitation-container">
 
-  <h1> Editar solicitudes de partido %></h1>
+      <h1> Editar invitación a jugador %></h1>
 
-  <%- include('../_error/snippet', { errors: locals.errors }) %>
+      <%- include('../_error/snippet', { errors: locals.errors }) %>
 
-  <div>
-    <%= invitedPlayer.firstName %> <%= invitedPlayer.lastName %>
+      <div>
+        <%= invitedPlayer.getName() %>
 
-    <%- include('../_invitations/form', {
-      invitation: invitedPlayer.isPlayerInvited,
-      chooseStatuses,
-      submitPath: submitInvitedPlayerPath,
-      hasAdminPermission: true, // If it is here, already has permissions
-    }) %>
+        <%- include('../_invitations/form', {
+          invitation: invitedPlayer.isPlayerInvited,
+          chooseStatuses,
+          submitPath: submitInvitedPlayerPath,
+          hasAdminPermission: true, // If it is here, already has permissions
+        }) %>
 
+      </div>
+
+      <%- include('../_buttons/delete', {
+        deletePath: deleteInvitedPlayerPath,
+        message: 'Eliminar invitacion',
+      }) %>
+
+      <%- include('../_buttons/cancel', { cancelPath }) %>
+    </div>
   </div>
-
-  <%- include('../_buttons/delete', {
-    deletePath: deleteInvitedPlayerPath,
-    message: 'Eliminar invitacion',
-  }) %>
-
-  <%- include('../_buttons/cancel', { cancelPath }) %>
 </div>

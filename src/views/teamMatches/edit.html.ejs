@@ -1,19 +1,25 @@
-<div class="center">
-  <h1> Editar invitación a partido %></h1>
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container invitation-container">
+      <h1> Editar invitación a partido %></h1>
 
-  <%- include('../_error/snippet', { errors: locals.errors }) %>
+      <%- include('../_error/snippet', { errors: locals.errors }) %>
 
-  <div>
-    <%= teamMatch.name %>
+      <div>
+        <%= teamMatch.name %>
 
-    <%- include('../_invitations/form', {
-      invitation: teamMatch.isTeamInvited,
-      chooseStatuses,
-      submitPath: submitTeamMatchPath,
-      hasAdminPermission: false, // REVIEW: the invitedTeams do not require this
-    }) %>
+        <%- include('../_invitations/form', {
+          invitation: teamMatch.isTeamInvited,
+          chooseStatuses,
+          submitPath: submitTeamMatchPath,
+          hasAdminPermission: false, // REVIEW: the invitedTeams do not require this
+        }) %>
+      </div>
 
-  <%- include('../_buttons/delete', { deletePath: deleteTeamMatchPath }) %>
+      <%- include('../_buttons/delete', { deletePath: deleteTeamMatchPath }) %>
 
-  <%- include('../_buttons/cancel', { cancelPath }) %>
+      <%- include('../_buttons/cancel', { cancelPath }) %>
+
+    </div>
+  </div>
 </div>
