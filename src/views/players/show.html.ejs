@@ -53,21 +53,11 @@
 
       <div id="player-profile-friends" class="box-container">
         <h4>Amigos</h4>
-        <% if(friends.length > 0) { %>
-          <ul>
-            <% friends.forEach((friend) => { %>
-              <li>
-                <a class="lilink" href="<%= getPlayerPath(friend) %>">
-                  <div>
-                    <%= friend.getName() %>
-                  </div>
-                </a>
-              </li>
-            <% }) %>
-          </ul>
-        <% } else { %>
-          No tiene amigos
-        <% } %>
+        <%- include('../players/_index', {
+          players: friends,
+          showEmail: true,
+          noPlayersMessage: 'No tiene amigos'
+        }) %>
       </div>
 
 

@@ -1,0 +1,65 @@
+<%# Provide:
+    players,
+  %>
+
+<%# Optional:
+    showEmail,
+    isTeamMember,
+    isInvitedToMatch,
+    editParticipationPath,
+    editParticipationMessage,
+    noPlayerMessage,
+ %>
+
+<% if (players.length > 0) { %>
+  <ul>
+    <% players.forEach((player) => { %>
+      <li class="list-item">
+        <a class="lilink" href="<%= getPlayerPath(player) %>"%>>
+          <img class="small-logo" src="<%= player.photo %>"/>
+          <div>
+            <span>
+              <strong>
+                <%= player.getName() %>
+              </strong>
+            </span>
+
+            <% if (locals.showEmail) { %>
+              <span>
+                <%= player.email %>
+              </span>
+            <% } %>
+
+            <% if (locals.isTeamMember && player.isMember.isCaptain) { %>
+              <span>
+                Capitán
+              </span>
+            <% } %>
+
+            <% if (locals.isInvitedToMatch) { %>
+              <% if (player.isPlayerInvited.isAdmin) { %>
+                <span>
+                  Admin del partido
+                </span>
+              <% } %>
+              <span>
+                <%= invitationToString(player.isPlayerInvited.status) %>
+              </span>
+            <% } %>
+
+          </div>
+        </a>
+        <% if (locals.editParticipationPath && hasModifyPermission) { %>
+          <%- include('../_buttons/edit', {
+            editPath: editParticipationPath(player),
+            message: locals.editParticipationMessage || 'Editar'
+          }) %>
+        <% } %>
+      </li>
+    <% }) %>
+  </ul>
+<% } else { %>
+  <p>
+    <%= locals.noPlayersMessage || 'No hay jugadores' %>
+  </p>
+<% } %>

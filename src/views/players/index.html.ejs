@@ -8,12 +8,14 @@
           <li>
             <a class="lilink" href="<%= getPlayerPath(player) %>">
               <img class="medium-logo" src="<%= player.photo %>"/>
-              <span>
-                <%= player.getName() %>
-              </span>
-              <span>
-                <%= player.email %>
-              </span>
+              <div>
+                <span>
+                  <%= player.getName() %>
+                </span>
+                <span>
+                  <%= player.email %>
+                </span>
+              </div>
             </a>
           </li>
         <% }) %>

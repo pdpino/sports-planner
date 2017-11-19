@@ -1,22 +1,36 @@
-.match-li {
+.list-item {
+  // NOTE: this class should be used to list matches, teams, players, etc
+  // The photo is in the left (if any), the text is in the middle (stacked text)
+  // and the button(s) is in the right (if any)
+  // See an example on ... TODO
+
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
+  position: relative;
   margin: 0;
-  padding: 0;
+  padding: 0.8em 0;
+
+  border-bottom: 1px gray solid;
+
   &:hover {
     // HACK: this needs to be done to override lilink behaviour
     display: flex;
     margin: 0;
-    padding: 0;
+    // padding: 0 2em;
   }
 
-  div, form {
+  img, div, form {
     display: inline-block;
   }
 
-  div {
+  img {
     left: 0;
+    position: absolute;
+  }
+
+  div {
+    // left: 0;
   }
 
   form {

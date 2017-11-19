@@ -79,33 +79,16 @@
       </div>
 
       <div id="match-players" class="box-container">
-        <% if(invitedPlayers.length > 0) { %>
-          <h4> Jugadores que participan </h4>
-          <ul>
-            <% invitedPlayers.forEach((player) => { %>
-              <li>
-
-                <a href="<%= getPlayerPath(player) %>">
-                  <%= player.firstName %> <%= player.lastName %>
-                </a>
-
-                <%= (player.isPlayerInvited.isAdmin) ? '-- Admin del partido' : '' %>
-                --
-                <%= invitationToString(player.isPlayerInvited.status) %>
-
-                <% if(hasModifyPermission) { %>
-                  <%- include('../_buttons/edit', { editPath: editInvitedPlayerPath(player) }) %>
-                <% } %>
-              </li>
-            <% }) %>
-          </ul>
-        <% } else { %>
-          No contiene jugadores
-        <% } %>
-
+        <h4> Jugadores que participan </h4>
+        <%- include('../players/_index', {
+          players: invitedPlayers,
+          isInvitedToMatch: true,
+          editParticipationPath: editInvitedPlayerPath,
+        }) %>
+        
         <% if (hasModifyPermission) { %>
           <form action="<%= newInvitedPlayerPath %>">
-              <input type="submit" value="Añadir Jugador" />
+            <input type="submit" value="Añadir Jugador" />
           </form>
         <% } %>
       </div>
