@@ -1,6 +1,7 @@
 /* eslint no-console: "off" */
-
-const app = require('./src/app');
+const _ = require('lodash');
+const http = require('http');
+const apps = require('./src/app');
 const db = require('./src/models');
 
 const PORT = process.env.PORT || 3000;
@@ -9,12 +10,19 @@ db.sequelize
   .authenticate()
   .then(() => {
     console.log('Connection to the database has been established successfully.');
-    app.listen(PORT, (err) => {
+    const callbacks = _.mapValues(apps, app => app.callback());
+    http.createServer((req, res) => {
+      if (req.url.startsWith('/api')) {
+        callbacks.api(req, res);
+      } else {
+        callbacks.ui(req, res);
+      }
+    }).listen(PORT, (err) => {
       if (err) {
         return console.error('Failed', err);
       }
       console.log(`Listening on port ${PORT}`);
-      return app;
+      return null;
     });
   })
   .catch(err => console.error('Unable to connect to the database:', err));
