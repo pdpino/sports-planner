@@ -9,7 +9,7 @@ export default {
     commentData.isPublic = isPublic;
     return jsonRequest(`/teams/${teamId}/comments/`, {
       method: 'post',
-      headers: { 'Content-Type': 'application/json' },
+      sendJson: true,
       body: JSON.stringify(commentData),
     });
   },

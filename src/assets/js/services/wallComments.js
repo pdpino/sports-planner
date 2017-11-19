@@ -7,7 +7,7 @@ export default {
   async postComment(playerId, commentData = {}) {
     return jsonRequest(`/players/${playerId}/comments/`, {
       method: 'post',
-      headers: { 'Content-Type': 'application/json' },
+      sendJson: true,
       body: JSON.stringify(commentData),
     });
   },

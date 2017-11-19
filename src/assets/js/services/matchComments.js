@@ -7,7 +7,7 @@ export default {
   async postComment(matchId, commentData = {}) {
     return jsonRequest(`/matches/${matchId}/comments/`, {
       method: 'post',
-      headers: { 'Content-Type': 'application/json' },
+      sendJson: true,
       body: JSON.stringify(commentData),
     });
   },
