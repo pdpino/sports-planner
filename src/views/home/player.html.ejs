@@ -21,7 +21,11 @@
 
       <div id="home-teams" class="box-container">
         <h4> Mis equipos </h4>
-        <%- include('../teams/_index-small.html.ejs', { teams: myTeams, hasModifyPermission: true, noTeamMessage: 'No tienes equipos' }) %>
+        <%- include('../teams/_index-small.html.ejs', {
+          teams: myTeams,
+          hasModifyPermission: true,
+          noTeamMessage: 'No tienes equipos'
+        }) %>
 
         <form action="<%= newTeamPath %>">
           <input type="submit" value="Crear Equipo"/>
