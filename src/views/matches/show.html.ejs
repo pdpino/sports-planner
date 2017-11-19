@@ -43,23 +43,29 @@
     </div>
 
     <div id="match-column-center" class="column-40">
-
       <div id="match-teams" class="box-container">
         <h4> Equipos que participan </h4>
         <% if(invitedTeams.length > 0) { %>
           <ul>
             <% invitedTeams.forEach((team) => { %>
-              <li>
-
-                <a href="<%= getTeamPath(team) %>"><%= team.name %></a>
-
-                --
-                <%= invitationToString(team.isTeamInvited.status) %>
+              <li class="list-item">
+                <img class="small-logo" src="<%= team.logo %>"/>
+                <a class="lilink" href="<%= getTeamPath(team) %>">
+                  <div>
+                    <span>
+                      <strong><%= team.name %></strong>
+                    </span>
+                    <span>
+                      <%= invitationToString(team.isTeamInvited.status) %>
+                    </span>
+                  </div>
+                </a>
 
                 <% if(hasModifyPermission) { %>
                   <%- include('../_buttons/edit', {
                     editPath: editInvitedTeamPath(team),
                     message: 'Editar invitación',
+                    useImage: true,
                   }) %>
                 <% } %>
 
@@ -85,7 +91,7 @@
           isInvitedToMatch: true,
           editParticipationPath: editInvitedPlayerPath,
         }) %>
-        
+
         <% if (hasModifyPermission) { %>
           <form action="<%= newInvitedPlayerPath %>">
             <input type="submit" value="Añadir Jugador" />

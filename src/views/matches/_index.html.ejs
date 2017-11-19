@@ -32,7 +32,7 @@
             <% } %>
           </div>
           <% if (hasModifyPermission) { %>
-            <%- include('../_buttons/edit', { editPath: editInvitationPath(match) }) %>
+            <%- include('../_buttons/edit', { editPath: editInvitationPath(match), useImage: true }) %>
           <% } %>
         </a>
       </li>

@@ -52,7 +52,8 @@
         <% if (locals.editParticipationPath && hasModifyPermission) { %>
           <%- include('../_buttons/edit', {
             editPath: editParticipationPath(player),
-            message: locals.editParticipationMessage || 'Editar'
+            message: locals.editParticipationMessage || 'Editar',
+            useImage: true
           }) %>
         <% } %>
       </li>

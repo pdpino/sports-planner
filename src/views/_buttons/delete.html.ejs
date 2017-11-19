@@ -1,5 +1,5 @@
 <%# Must provide: deletePath
-    optional: message, className, elementId %>
+    optional: message, className, elementId, useImage %>
 
 <form
   <% if(locals.className) { %>
@@ -15,6 +15,10 @@
       <input type="hidden" name="_method" value="delete" />
     </div>
     <div>
-      <input class="delete-button" type="submit" name="delete" value="<%= locals.message || 'Eliminar' %>" />
+      <% if (locals.useImage) { %>
+        <input class="delete-button-icon" type="image" src="/assets/garbage.png" alt="<%= locals.message || 'Eliminar' %>" />
+      <% } else { %>
+        <input class="delete-button" type="submit" name="delete" value="<%= locals.message || 'Eliminar' %>" />
+      <% } %>
     </div>
 </form>
