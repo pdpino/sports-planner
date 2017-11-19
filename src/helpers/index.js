@@ -40,6 +40,19 @@ module.exports = function helpers(app) {
     return entity;
   };
 
+  /** FUTURE: Wrapper to accept html and json **/
+  // app.context.acceptFormats = function(callbackHtml, callbackJson){
+  //   switch (ctx.accepts('html', 'json')) {
+  //     case 'html':
+  //       callbackHtml();
+  //       break;
+  //     case 'json':
+  //       callbackJson();
+  //       break;
+  //     default:
+  //   }
+  // }
+
   /**
    * Wrapper to parse validation errors from sequelize
    * If the error is from the model: everything is ok with validationError.errors
