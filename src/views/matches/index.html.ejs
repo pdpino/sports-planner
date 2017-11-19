@@ -13,12 +13,16 @@
         <% if (matches.length > 0) { %>
           <% matches.forEach((match) => { %>
             <li>
-              <a href="<%= getMatchPath(match) %>">
-                <%= match.name %>
+              <a class="lilink" href="<%= getMatchPath(match) %>"%>>
+                <div>
+                  <%= match.name %>
+                </div>
+                <% if (match.date) { %>
+                  <p>
+                    Fecha: <%= prettyTimestamp(match.date) %>
+                  </p>
+                <% } %>
               </a>
-              <p>
-                Fecha: <%= prettyTimestamp(match.date) %>
-              </p>
             </li>
           <% }) %>
         <% } else { %>
