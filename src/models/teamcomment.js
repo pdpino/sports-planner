@@ -6,7 +6,12 @@ module.exports = function defineteamComment(sequelize, DataTypes) {
     },
     content: {
       type: DataTypes.TEXT,
-    },
+      validate: {
+        notEmpty: {
+          msg: "No puede ser un comentario vacio"
+        },
+      },
+    }
   });
   teamComment.associate = function associate(models) {
     teamComment.belongsTo(models.team);

@@ -18,7 +18,13 @@ router.post('matchCommentCreate', '/', async (ctx) => {
   await requireCommentPermission(ctx);
 
   const params = getParams(ctx.request.body);
-  await ctx.state.match.makeComment(ctx.state.currentPlayer, params);
+
+  try {
+    await ctx.state.match.makeComment(ctx.state.currentPlayer, params);
+  } catch (validationError) {
+    const errors = ctx.parseValidationError(validationError);
+    // TODO: show to the user
+  }
 
   switch (ctx.accepts('html', 'json')) {
     case 'html':
@@ -33,7 +39,7 @@ router.post('matchCommentCreate', '/', async (ctx) => {
 
 router.get('matchComments', '/', async (ctx) => {
   await requireCommentPermission(ctx);
-  
+
   const comments = await ctx.state.match.getComments();
 
   switch (ctx.accepts('html', 'json')) {

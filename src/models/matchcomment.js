@@ -1,6 +1,13 @@
 module.exports = function definematchComment(sequelize, DataTypes) {
   const matchComment = sequelize.define('matchComment', {
-    content: DataTypes.TEXT,
+    content: {
+      type: DataTypes.TEXT,
+      validate: {
+        notEmpty: {
+          msg: "No puede ser un comentario vacio"
+        },
+      },
+    }
   });
   matchComment.associate = function associate(models) {
     matchComment.belongsTo(models.match);
