@@ -9,28 +9,11 @@
         </form>
       <% } %>
 
-      <ul>
-        <% if (matches.length > 0) { %>
-          <% matches.forEach((match) => { %>
-            <li>
-              <a class="lilink" href="<%= getMatchPath(match) %>"%>>
-                <div>
-                  <%= match.name %>
-                </div>
-                <% if (match.date) { %>
-                  <p>
-                    Fecha: <%= prettyTimestamp(match.date) %>
-                  </p>
-                <% } %>
-              </a>
-            </li>
-          <% }) %>
-        <% } else { %>
-          <p>
-            No hay partidos disponibles
-          </p>
-        <% } %>
-      </ul>
+      <%- include('_index', {
+        isPlayerMatch: false,
+        hasModifyPermission: false,
+      }) %>
+
     </div>
   </div>
 </div>

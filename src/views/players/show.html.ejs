@@ -135,31 +135,11 @@
 
       <div id="player-profile-matches" class="box-container">
         <h4> Partidos </h4>
-        <% if(playerMatches.length > 0) { %>
-          <ul>
-            <% playerMatches.forEach((match) => { %>
-              <li>
-                <a class="lilink" href="<%= getMatchPath(match) %>">
-                  <div>
-                    <%= match.name %>
-                  </div>
-                  <div>
-                    <%= prettyTimestamp(match.date) %>
-                  </div>
-                  <div>
-                    <%= (match.isPlayerInvited.isAdmin) ? 'Usted es Admin del partido' : '' %>
-                  </div>
-
-                  <% if(hasModifyPermission) { %>
-                    <%- include('../_buttons/edit', { editPath: editPlayerMatchPath(match) }) %>
-                  <% } %>
-                </a>
-              </li>
-            <% }) %>
-          </ul>
-        <% } else { %>
-          No hay partidos
-        <% } %>
+        <%- include('../matches/_index', {
+          matches: playerMatches,
+          isPlayerMatch: true,
+          editInvitationPath: editPlayerMatchPath
+        }) %>
 
         <% if(hasModifyPermission) { %>
           <form action="<%= newPlayerMatchPath %>">

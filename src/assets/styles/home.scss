@@ -30,29 +30,3 @@
 #home-matches-past-container {
   width: 100%;
 }
-
-.home-match-li {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  margin: 0;
-  padding: 0;
-  &:hover {
-    // HACK: this needs to be done to override lilink behaviour
-    display: flex;
-    margin: 0;
-    padding: 0;
-  }
-}
-
-.home-match-li-element {
-  display: inline-block;
-}
-
-form.home-match-li-element {
-  right: 0;
-}
-
-div.home-match-li-element {
-  left: 0;
-}

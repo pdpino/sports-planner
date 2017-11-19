@@ -51,24 +51,11 @@
 
       <div id="team-matches" class="box-container">
         <h4>Partidos</h4>
-        <% if(teamMatches.length > 0) { %>
-          <ul>
-            <% teamMatches.forEach( (match) => { %>
-              <li>
-                  <a class="lilink" href="<%= getMatchPath(match) %>">%>
-                    <div>
-                      <%= match.name %>
-                    </div>
-                    <% if (hasModifyPermission) { %>
-                     <%- include('../_buttons/edit', { editPath: editTeamMatchPath(match) }) %>
-                   <% } %>
-                 </a>
-              </li>
-            <% }) %>
-          </ul>
-        <% } else { %>
-          No hay partidos
-        <% } %>
+        <%- include('../matches/_index', {
+          matches: teamMatches,
+          isPlayerMatch: false,
+          editInvitationPath: editTeamMatchPath
+        }) %>
 
         <% if (hasModifyPermission) { %>
           <form action="<%= newTeamMatchPath %>">

@@ -42,15 +42,33 @@
         </div>
 
         <div id="home-matches-confirmed-container">
-          <%- include('../matches/_index-snippet', { title: 'Confirmados', matches: myConfirmedMatches }) %>
+          <%- include('../matches/_index', {
+            title: 'Confirmados',
+            matches: myConfirmedMatches,
+            isPlayerMatch: true,
+            hasModifyPermission: true,
+            editInvitationPath: editPlayerMatchPath
+          }) %>
         </div>
 
         <div id="home-matches-invite-container">
-          <%- include('../matches/_index-snippet', { title: 'Por confirmar', matches: myInviteMatches }) %>
+          <%- include('../matches/_index', {
+            title: 'Por confirmar',
+            matches: myInviteMatches,
+            isPlayerMatch: true,
+            hasModifyPermission: true,
+            editInvitationPath: editPlayerMatchPath
+          }) %>
         </div>
 
         <div id="home-matches-past-container">
-          <%- include('../matches/_index-snippet', { title: 'Pasados', matches: myPastMatches }) %>
+          <%- include('../matches/_index', {
+            title: 'Pasados',
+            matches: myPastMatches,
+            isPlayerMatch: true,
+            hasModifyPermission: true,
+            editInvitationPath: editPlayerMatchPath
+          }) %>
         </div>
 
       </div>

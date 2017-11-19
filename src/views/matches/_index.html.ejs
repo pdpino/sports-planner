@@ -1,0 +1,43 @@
+<%# Must exist:
+    matches,
+    isPlayerMatch,
+    getMatchPath,
+    hasModifyPermission
+    editInvitationPath (function that receives a match, only needed if hasModifyPermission is true),
+
+  Optional: title,
+%>
+
+<% if (locals.title) { %>
+  <h4><%= title %></h4>
+<% } %>
+<% if (matches.length > 0) { %>
+  <ul>
+    <% matches.forEach((match) => { %>
+      <li>
+        <a class="lilink match-li" href="<%= getMatchPath(match) %>">
+          <div>
+            <span>
+              <strong>
+                <%= match.name %>
+              </strong>
+            </span>
+            <% if (match.date) { %>
+              <span>Fecha: <%= prettyTimestamp(match.date) %></span>
+            <% } %>
+            <% if (isPlayerMatch) { %>
+              <span>
+                <%= (match.isPlayerInvited.isAdmin) ? 'Admin del partido' : '' %>
+              </span>
+            <% } %>
+          </div>
+          <% if (hasModifyPermission) { %>
+            <%- include('../_buttons/edit', { editPath: editInvitationPath(match) }) %>
+          <% } %>
+        </a>
+      </li>
+    <% }) %>
+  </ul>
+<% } else { %>
+  <p>No hay partidos</p>
+<% } %>
