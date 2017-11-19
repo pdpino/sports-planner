@@ -5,7 +5,7 @@ function displayDeleteButton(comment, onDelete){
     const onSubmit = (event) => onDelete(event, { id: comment.id });
     return (
       <form onSubmit={onSubmit}>
-        <input type="submit" value="Eliminar" />
+        <input class="delete-button-icon" type="image" src="/assets/garbage.png" alt="Eliminar" />
       </form>
     );
   }
