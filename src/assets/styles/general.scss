@@ -78,7 +78,7 @@ li {
   padding: 10px;
   overflow: auto;
   &:hover {
-    background: #eee;
+    background: #d2d2d2; // TODO: choose good color
     cursor: pointer;
   }
   img {
