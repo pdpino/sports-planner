@@ -21,26 +21,7 @@
 
       <div id="home-teams" class="box-container">
         <h4> Mis equipos </h4>
-        <% if(myTeams.length > 0) { %>
-          <ul>
-            <% myTeams.forEach((team) => { %>
-              <li>
-                <a class="lilink" href="<%= getTeamPath(team) %>">
-                  <img class="small-logo" src="<%= team.logo %>"/>
-                  <div>
-                    <%= team.name %> <%= (team.isMember.isCaptain) ? '-- Capitán' : '' %>
-                  </div>
-                  <%- include('../_buttons/delete', {
-                    deletePath: deletePlayerTeamPath(team),
-                    message: 'Abandonar equipo',
-                  }) %>
-                </a>
-              </li>
-            <% }) %>
-          </ul>
-        <% } else { %>
-          No tienes equipo.
-        <% } %>
+        <%- include('../teams/_index-small.html.ejs', { teams: myTeams, hasModifyPermission: true, noTeamMessage: 'No tienes equipos' }) %>
 
         <form action="<%= newTeamPath %>">
           <input type="submit" value="Crear Equipo"/>

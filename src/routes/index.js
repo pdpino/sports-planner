@@ -14,7 +14,7 @@ router.get('home', '', async (ctx) => {
   if (ctx.state.isPlayerLoggedIn){
     const notifications = await ctx.state.currentUser.getReceivedNotifications();
     const mySports = await ctx.state.currentPlayer.getSports();
-    const myTeams = await ctx.state.currentPlayer.getTeams();
+    const myTeams = await ctx.state.currentPlayer.getTeamsWithSport();
     const myPastMatches = await ctx.state.currentPlayer.getPastMatches();
     const myInviteMatches = await ctx.state.currentPlayer.getInviteMatches();
     const myConfirmedMatches = await ctx.state.currentPlayer.getConfirmedMatches();

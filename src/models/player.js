@@ -186,16 +186,16 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     });
   }
 
-  player.prototype.askForMatch = async function(match){
-    await this.addMatch(match, {
+  player.prototype.askForMatch = function(match){
+    return this.addMatch(match, {
       through: {
         status: 'asked' // HACK: invitation status harcoded
       }
     });
   }
 
-  player.prototype.updateMatch = async function(match, params){
-    await this.addMatch(match, {
+  player.prototype.updateMatch = function(match, params){
+    return this.addMatch(match, {
       through: {
         status: params.status || match.isPlayerInvited.status,
         isAdmin: params.isAdmin,
@@ -203,8 +203,8 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     });
   }
 
-  player.prototype.playSport = async function(sport, position){
-    await this.addSport(sport, {
+  player.prototype.playSport = function(sport, position){
+    return this.addSport(sport, {
       through: {
         position,
       }
@@ -217,6 +217,12 @@ module.exports = function defineplayer(sequelize, DataTypes) {
 
   player.prototype.getSport = function(sportId){
     return helpers.findOneAssociatedById(this, 'getSports', sportId);
+  }
+
+  player.prototype.getTeamsWithSport = function(){
+    return this.getTeams({
+      scope: 'withSport'
+    });
   }
 
   player.prototype.receiveWallComment = function(commenter, params){

@@ -51,9 +51,7 @@
             <% invitedTeams.forEach((team) => { %>
               <li>
 
-                <a href="<%= getTeamPath(team) %>">
-                  <%= team.name %>
-                </a>
+                <a href="<%= getTeamPath(team) %>"><%= team.name %></a>
 
                 --
                 <%= invitationToString(team.isTeamInvited.status) %>
@@ -69,8 +67,9 @@
             <% }) %>
           </ul>
         <% } else { %>
-          No hay equipos invitados
+          <p>No hay equipos invitados</p>
         <% } %>
+
 
         <% if (hasModifyPermission) { %>
           <form action="<%= newInvitedTeamPath %>">

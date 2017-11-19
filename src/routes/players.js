@@ -128,7 +128,7 @@ router.get('player', '/:id', async (ctx) => {
   // FIXME: sometimes the ctx.params.id is 'width="32"'
   const player = await ctx.findById(ctx.orm.player, ctx.params.id);
   const playerSports = await player.getSports();
-  const playerTeams = await player.getTeams();
+  const playerTeams = await player.getTeamsWithSport();
   const playerMatches = await player.getMatches();
   const friends = await player.getAllFriends();
 

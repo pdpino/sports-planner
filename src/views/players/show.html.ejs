@@ -129,29 +129,7 @@
 
       <div id="player-profile-teams" class="box-container">
         <h4> Equipos a los que pertenece </h4>
-        <% if(playerTeams.length > 0) { %>
-          <ul>
-            <% playerTeams.forEach((team) => { %>
-
-              <li>
-                <a class="lilink" href="<%= getTeamPath(team) %>">
-                  <img class="small-logo" src="<%= team.logo %>"/>
-                  <div>
-                    <%= team.name %> <%= (team.isMember.isCaptain) ? '-- Capitán del equipo' : '' %>
-                  </div>
-                  <% if(hasModifyPermission) { %>
-                    <%- include('../_buttons/delete', {
-                      deletePath: deletePlayerTeamPath(team),
-                      message: 'Abandonar equipo',
-                    }) %>
-                  <% } %>
-                </a>
-              </li>
-            <% }) %>
-          </ul>
-        <% } else { %>
-          No pertenece a ningún equipo
-        <% } %>
+        <%- include('../teams/_index-small.html.ejs', { teams: playerTeams, noTeamMessage: 'No pertenece a ningún equipo' }) %>
 
       </div>
 
