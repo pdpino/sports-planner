@@ -217,7 +217,7 @@ router.get('match', '/:id', async (ctx) => {
   const comments = await match.getComments();
 
   const canComment = await match.isPlayerInvited(ctx.state.currentPlayer);
-  // REVIEW: this is being called twice, once in requireSeeMatchPermission and once here
+  // HACK: this is being called twice, once in requireSeeMatchPermission and once here
 
   const reviewsEnabled = match.areReviewsEnabled();
   const pendingReviews = reviewsEnabled &&

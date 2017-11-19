@@ -1,27 +1,31 @@
-<div class="center">
-  <h1>Recintos</h1>
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container index-container">
+      <h1>Recintos</h1>
 
-  <% if (hasCreatePermission) { %>
-    <form action="<%= newCompoundPath %>">
-        <input type="submit" value="Crear recinto"/>
-    </form>
-  <% } %>
+      <% if (hasCreatePermission) { %>
+        <form action="<%= newCompoundPath %>">
+          <input type="submit" value="Crear recinto"/>
+        </form>
+      <% } %>
 
-  <% if (compounds.length > 0) { %>
-    <ul>
-      <% compounds.forEach((compound) => { %>
-        <li>
-            <a class="lilink" href=<%= getCompoundPath(compound) %>>
-            <img class="medium-logo" src="<%= compound.photo %>"/>
-            <div>
-             <%= compound.name %>
-           </div>
-         </a>
-        </li>
-      <% }) %>
-    </ul>
-  <% } else { %>
-    <p> No hay recintos </p>
-  <% } %>
+      <% if (compounds.length > 0) { %>
+        <ul>
+          <% compounds.forEach((compound) => { %>
+            <li>
+              <a class="lilink" href=<%= getCompoundPath(compound) %>>
+                <img class="medium-logo" src="<%= compound.photo %>"/>
+                <div>
+                  <%= compound.name %>
+                </div>
+              </a>
+            </li>
+          <% }) %>
+        </ul>
+      <% } else { %>
+        <p> No hay recintos </p>
+      <% } %>
 
+    </div>
+  </div>
 </div>

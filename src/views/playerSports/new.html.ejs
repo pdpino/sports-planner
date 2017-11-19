@@ -1,35 +1,39 @@
-<div class="center">
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container new-invitation-container">
 
-  <h1>Agregar deporte</h1>
+      <h1>Agregar deporte</h1>
 
-  <% if(sportsNotPlayed.length > 0) { %>
-    <form action="<%= submitPlayerSportPath %>" method="post">
-      <div>
-        <label for="sportId">Elegir deporte</label>
-        <% sportsNotPlayed.forEach( (sport) => { %>
+      <% if(sportsNotPlayed.length > 0) { %>
+        <form action="<%= submitPlayerSportPath %>" method="post">
           <div>
-            <input type="radio" name="sportId" value="<%= sport.id %>"/> <%= sport.name %>
+            <label for="sportId">Elegir deporte</label>
+            <% sportsNotPlayed.forEach( (sport) => { %>
+              <div>
+                <input type="radio" name="sportId" value="<%= sport.id %>"/> <%= sport.name %>
+              </div>
+            <% }) %>
           </div>
-        <% }) %>
-      </div>
 
-      <div>
-        <label for="position">Posición:</label>
-        <input type="text" name="position" />
-      </div>
+          <div>
+            <label for="position">Posición:</label>
+            <input type="text" name="position" />
+          </div>
 
-      <div>
-        <input type="submit" name="create" value="Añadir" />
-      </div>
+          <div>
+            <input type="submit" name="create" value="Añadir" />
+          </div>
 
-    </form>
-  <% } else { %>
-    <div>
-      <strong>
-        No quedan deportes para agregar!
-      </strong>
+        </form>
+      <% } else { %>
+        <div>
+          <strong>
+            No quedan deportes para agregar!
+          </strong>
+        </div>
+      <% } %>
+
+      <%- include('../_buttons/cancel', { cancelPath }) %>
     </div>
-  <% } %>
-
-  <%- include('../_buttons/cancel', { cancelPath }) %>
+  </div>
 </div>

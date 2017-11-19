@@ -19,5 +19,7 @@ module.exports = function definecompoundOwner(sequelize, DataTypes) {
 
   compoundOwner.afterFind(helpers.copyUserInfo);
 
+  compoundOwner.prototype.getName = function() { return helpers.getPersonName(this); }
+
   return compoundOwner;
 };

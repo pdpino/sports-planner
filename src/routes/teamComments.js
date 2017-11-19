@@ -15,7 +15,12 @@ router.post('teamCommentCreate', '/', async (ctx) => {
     await ctx.requirePlayerInTeam(ctx.state.team);
   }
 
-  await ctx.state.team.makeComment(ctx.state.currentPlayer, params);
+  try {
+    await ctx.state.team.makeComment(ctx.state.currentPlayer, params);
+  } catch (validationError) {
+    const errors = ctx.parseValidationError(validationError);
+    // TODO: show to the user
+  }
 
   switch (ctx.accepts('html', 'json')) {
     case 'html':

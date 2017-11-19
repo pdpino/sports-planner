@@ -1,15 +1,22 @@
-<div class="center">
-  <h1><%= sport.name %></h1>
-  <img class="medium-logo" src="<%= sport.logo %>" alt="logo">
-  <p>Es un deporte <%= (sport.isIndividual) ? 'individual' : 'colectivo' %>.</p>
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div id="sport-card" class="box-container">
+      <h1><%= sport.name %></h1>
+      <img class="medium-logo" src="<%= sport.logo %>" alt="logo">
+      <p>Es un deporte <%= (sport.isIndividual) ? 'individual' : 'colectivo' %>.</p>
 
-  <% if (hasModifyPermission) { %>
-    <%- include('../_buttons/edit', { editPath: editSportPath }) %>
+      <% if (hasModifyPermission) { %>
+        <%- include('../_buttons/edit', { editPath: editSportPath }) %>
 
-    <%- include('../_buttons/delete', { deletePath: deleteSportPath }) %>
+        <%- include('../_buttons/delete', { deletePath: deleteSportPath }) %>
 
-  <% } %>
+      <% } %>
 
-  <%- include('../_buttons/back', { backPath: sportsPath, message: 'Volver a todos los deportes' }) %>
+    </div>
 
+    <br>
+    <%# HACK: use css %>
+
+    <%- include('../_buttons/back', { backPath: sportsPath, message: 'Volver a todos los deportes' }) %>
+  </div>
 </div>

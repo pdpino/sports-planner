@@ -1,105 +1,32 @@
-#body-container {
-  // HACK: this div contains the home-container, so the home-container does not need to specify top property
-  // This could be used in every view (in layout.html wrap the body)
-  position: relative;
-  top: 50px;
-}
-
-#home-container {
-  position: absolute;
-  width: 100%;
-  text-align: center;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-#column-left {
-  width: 30%;
-  // border: solid 1px blue;
-}
-
-#column-right {
-  width: 70%;
-  // border: solid 1px blue;
-}
-
-.box-container {
-  border: solid 1px black;
-  padding: 0.5em;
-  margin: 0.5em;
-  background-color: #F0F0EA;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-
-}
-
-#notifications-react-app {
-
-}
-
-#reviews-container {
-
-}
-
-#teams-container {
-
-}
-
-#matches-container {
+#home-matches {
   display: flex;
   flex-flow: row wrap;
 }
 
-#matches-sup-bar {
+#home-matches-sup-bar {
   width: 100%;
   position: relative;
-}
 
-#matches-title {
-  display: inline-block;
-}
+  h3 {
+    display: inline-block;
+  }
 
-#matches-new {
-  display: inline-block;
-  position: absolute;
-  right: 0;
-  margin-right: 0.5em;
-}
-
-#matches-confirmed-container {
-  width: 50%;
-}
-
-#matches-invite-container {
-  width: 50%;
-}
-
-#matches-past-container {
-  width: 100%;
-}
-
-.match-home-li {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  margin: 0;
-  padding: 0;
-  &:hover {
-    // HACK: this needs to be done to override lilink behaviour
-    display: flex;
-    margin: 0;
-    padding: 0;
+  a {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    margin-right: 0.5em;
   }
 }
 
-.match-home-li-element {
-  display: inline-block;
+#home-matches-confirmed-container {
+  width: 50%;
 }
 
-form.match-home-li-element {
-  right: 0;
+#home-matches-invite-container {
+  width: 50%;
 }
 
-div.match-home-li-element {
-  left: 0;
+#home-matches-past-container {
+  width: 100%;
 }

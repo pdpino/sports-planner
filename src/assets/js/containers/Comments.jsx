@@ -46,9 +46,7 @@ export default class Comments extends Component {
   }
 
   renderNewCommentForm(){
-    // HACK: === 'true' because prop comes as string
-    // Be careful when using this class and passing canComment as string or boolean
-    if (this.props.canComment === 'true') {
+    if (this.props.canComment) {
       return (
         <CommentsNew
           onSubmit={this.onSubmit}

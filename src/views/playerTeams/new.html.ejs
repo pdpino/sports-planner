@@ -1,39 +1,11 @@
-<div class="center">
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container new-invitation-container">
+      <h1>Agregar Equipo</h1>
 
-  <h1>Agregar Equipo</h1>
+      <%- include('../teams/_index-radio', { teams: joinableTeams, submitPath: submitPlayerTeamPath, noTeamMessage: 'No quedan equipos para agregar' }) %>
 
-  <% if(joinableTeams.length > 0) { %>
-    <form action="<%= submitPlayerTeamPath %>" method="post">
-      <div>
-        <label for="teamId">Elegir equipo</label>
-        <% joinableTeams.forEach( (team) => { %>
-          <div>
-            <input type="radio" name="teamId" value="<%= team.id %>"/> <%= team.name %>
-          </div>
-        <% }) %>
-      </div>
-
-
-
-      <!--
-      <div>
-        <label for="isCaptain"></label>
-        <input type="checkbox" name="isCaptain" /> Capitán
-      </div>
-      -->
-
-      <div>
-        <input type="submit" name="create" value="Añadir" />
-      </div>
-
-    </form>
-  <% } else { %>
-    <div>
-      <strong>
-        No quedan equipos para agregar!
-      </strong>
+      <%- include('../_buttons/cancel', { cancelPath }) %>
     </div>
-  <% } %>
-
-  <%- include('../_buttons/cancel', { cancelPath }) %>
+  </div>
 </div>

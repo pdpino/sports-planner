@@ -1,19 +1,23 @@
-<div class="center">
-<h1>Jugadores</h1>
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container index-container">
+      <h1>Jugadores</h1>
 
-<ul>
-  <% players.forEach((player) => { %>
-    <li>
-      <a class="lilink" href="<%= getPlayerPath(player) %>">
-        <img class="medium-logo" src="<%= player.photo %>"/>
-        <div>
-          <%= player.firstName %> <%= player.lastName %>
-        </div>
-        <div>
-          <%= player.email %>
-        </div>
-      </a>
-    </li>
-  <% }) %>
-</ul>
+      <ul>
+        <% players.forEach((player) => { %>
+          <li>
+            <a class="lilink" href="<%= getPlayerPath(player) %>">
+              <img class="medium-logo" src="<%= player.photo %>"/>
+              <span>
+                <%= player.getName() %>
+              </span>
+              <span>
+                <%= player.email %>
+              </span>
+            </a>
+          </li>
+        <% }) %>
+      </ul>
+    </div>
+  </div>
 </div>

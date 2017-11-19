@@ -1,0 +1,25 @@
+#notifications-sup-bar {
+  width: 100%;
+  position: relative;
+
+  h4 {
+    display: inline-block;
+  }
+
+  form {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    margin-right: 0.5em;
+  }
+
+  input {
+    height: 2.2em;
+    width: 2.2em;
+    cursor: pointer;
+  }
+}
+
+#notifications-amount {
+  display: block;
+}

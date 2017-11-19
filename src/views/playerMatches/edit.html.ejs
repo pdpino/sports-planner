@@ -1,23 +1,28 @@
-<div class="center">
-  <h1> Editar solicitudes de partido %></h1>
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container edit-invitation-container">
 
-  <%- include('../_error/snippet', { errors: locals.errors }) %>
+      <h1> Editar invitación a partido </h1>
 
-  <div>
-    <%= match.name %> - <%= match.date %>
+      <%- include('../_error/snippet', { errors: locals.errors }) %>
 
-    <%- include('../_invitations/form', {
-      invitation: match.isPlayerInvited,
-      chooseStatuses,
-      submitPath: submitPlayerMatchPath,
-      hasAdminPermission: match.isPlayerInvited.isAdmin,
-    }) %>
+      <div>
+        <%= match.name %> - <%= prettyTimestamp(match.date) %>
 
+        <%- include('../_invitations/form', {
+          invitation: match.isPlayerInvited,
+          chooseStatuses,
+          submitPath: submitPlayerMatchPath,
+          hasAdminPermission: match.isPlayerInvited.isAdmin,
+        }) %>
+
+      </div>
+
+      <%- include('../_buttons/delete', {
+        deletePath: deletePlayerMatchPath,
+      }) %>
+
+      <%- include('../_buttons/cancel', { cancelPath }) %>
+    </div>
   </div>
-
-  <%- include('../_buttons/delete', {
-    deletePath: deletePlayerMatchPath,
-  }) %>
-
-  <%- include('../_buttons/cancel', { cancelPath }) %>
 </div>

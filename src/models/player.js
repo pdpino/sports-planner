@@ -95,16 +95,7 @@ module.exports = function defineplayer(sequelize, DataTypes) {
 
   player.getGenders = function() { return genders; }
 
-  player.prototype.getName = function() {
-    // NOTE: if the player was found using find(), firstName and lastName are copied into the player
-    // if not, then try to use the user's names
-    if (this.firstName){
-      return `${this.firstName} ${this.lastName}`;
-    } else if (this.user) {
-      return `${this.user.firstName} ${this.user.lastName}`;
-    }
-    return '';
-  }
+  player.prototype.getName = function() { return helpers.getPersonName(this); }
 
   player.canAddFriend = (status) => status === 'not';
   player.canDeleteFriend = (status) => status === 'accepted';
@@ -195,16 +186,16 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     });
   }
 
-  player.prototype.askForMatch = async function(match){
-    await this.addMatch(match, {
+  player.prototype.askForMatch = function(match){
+    return this.addMatch(match, {
       through: {
         status: 'asked' // HACK: invitation status harcoded
       }
     });
   }
 
-  player.prototype.updateMatch = async function(match, params){
-    await this.addMatch(match, {
+  player.prototype.updateMatch = function(match, params){
+    return this.addMatch(match, {
       through: {
         status: params.status || match.isPlayerInvited.status,
         isAdmin: params.isAdmin,
@@ -212,8 +203,8 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     });
   }
 
-  player.prototype.playSport = async function(sport, position){
-    await this.addSport(sport, {
+  player.prototype.playSport = function(sport, position){
+    return this.addSport(sport, {
       through: {
         position,
       }
@@ -226,6 +217,12 @@ module.exports = function defineplayer(sequelize, DataTypes) {
 
   player.prototype.getSport = function(sportId){
     return helpers.findOneAssociatedById(this, 'getSports', sportId);
+  }
+
+  player.prototype.getTeamsWithSport = function(){
+    return this.getTeams({
+      scope: 'withSport'
+    });
   }
 
   player.prototype.receiveWallComment = function(commenter, params){
@@ -246,7 +243,7 @@ module.exports = function defineplayer(sequelize, DataTypes) {
   player.prototype.getReviewsAverage = async function(){
     // NOTE: the average could be obtained with a sequelize function (there is no special reason to do it this way)
     const doneReviews = await this.getDoneReviews();
-    const ratingSum = 0;
+    let ratingSum = 0;
     doneReviews.forEach((review) => { ratingSum += review.rating; });
     return doneReviews.length && ratingSum / doneReviews.length;
   }

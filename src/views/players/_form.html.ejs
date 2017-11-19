@@ -1,48 +1,52 @@
-<div class="center">
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container form-container">
 
-  <h1> <%= (player.isNewRecord) ? 'Nuevo Jugador' : 'Editar Jugador' %></h1>
+      <h1> <%= (player.isNewRecord) ? 'Nuevo Jugador' : 'Editar Jugador' %></h1>
 
-  <%- include('../_error/snippet', { errors: locals.errors }) %>
+      <%- include('../_error/snippet', { errors: locals.errors }) %>
 
-  <div>
-    <form action="<%= submitPlayerPath %>" method="post" enctype="multipart/form-data">
+      <div>
+        <form action="<%= submitPlayerPath %>" method="post" enctype="multipart/form-data">
+          <% if(!player.isNewRecord) { %>
+            <div>
+              <input type="hidden" name="_method" value="patch"/>
+            </div>
+          <% } %>
+
+          <%- include('../_users/form', { user: player }) %>
+
+          <div>
+            <label for="birthday">Cumpleaños</label>
+            <input type="date" name="birthday" value="<%= player.birthday %>" required/>
+          </div>
+          <label for="gender">Género</label>
+          <% genders.forEach( (gender) => { %>
+            <div>
+              <input type="radio" name="gender" value="<%= gender %>" required
+              <%= (player.gender == gender) ? 'checked' : '' %>/>
+              <%= gender %>
+            </div>
+          <% }) %>
+          <div>
+            <% if(player.isNewRecord) { %>
+              <input type="submit" name="create" value="Registrarse" />
+            <% } else { %>
+              <input type="submit" name="update" value="Guardar Cambios" />
+            <% } %>
+          </div>
+        </form>
+      </div>
+
+
       <% if(!player.isNewRecord) { %>
-        <div>
-          <input type="hidden" name="_method" value="patch"/>
-        </div>
+        <%- include('../_buttons/delete', {
+          deletePath: deletePlayerPath,
+          message: 'Eliminar usuario',
+        }) %>
       <% } %>
 
-      <%- include('../_users/form', { user: player }) %>
-
-      <div>
-        <label for="birthday">Cumpleaños</label>
-        <input type="date" name="birthday" value="<%= player.birthday %>" required/>
-      </div>
-      <label for="gender">Género</label>
-      <% genders.forEach( (gender) => { %>
-        <div>
-          <input type="radio" name="gender" value="<%= gender %>" required
-          <%= (player.gender == gender) ? 'checked' : '' %>/>
-          <%= gender %>
-        </div>
-      <% }) %>
-      <div>
-        <% if(player.isNewRecord) { %>
-          <input type="submit" name="create" value="Registrarse" />
-        <% } else { %>
-          <input type="submit" name="update" value="Guardar Cambios" />
-        <% } %>
-      </div>
-    </form>
+      <%- include('../_buttons/cancel', { cancelPath }) %>
+    </div>
   </div>
-
-
-  <% if(!player.isNewRecord) { %>
-    <%- include('../_buttons/delete', {
-      deletePath: deletePlayerPath,
-      message: 'Eliminar usuario',
-    }) %>
-  <% } %>
-
-  <%- include('../_buttons/cancel', { cancelPath }) %>
 </div>

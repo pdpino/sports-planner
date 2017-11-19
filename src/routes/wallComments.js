@@ -22,7 +22,12 @@ router.post('wallCommentCreate', '/', async (ctx) => {
 
   const params = getParams(ctx.request.body);
 
-  await ctx.state.player.receiveWallComment(ctx.state.currentPlayer, params);
+  try {
+    await ctx.state.player.receiveWallComment(ctx.state.currentPlayer, params);
+  } catch (validationError) {
+    const errors = ctx.parseValidationError(validationError);
+    // TODO: show to the user
+  }
 
   switch (ctx.accepts('html', 'json')) {
     case 'html':

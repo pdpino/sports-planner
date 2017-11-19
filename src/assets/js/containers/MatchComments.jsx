@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import Comments from './Comments';
-import wallCommentsService from '../services/wallComments';
+import matchCommentsService from '../services/matchComments';
 
-export default class WallComments extends Component {
-  // REVIEW: make a GenericComments, this and MatchComments extend from that one
+export default class MatchComments extends Component {
   constructor(props) {
     super(props);
     this.state = { };
@@ -13,22 +12,22 @@ export default class WallComments extends Component {
   }
 
   fetchComments() {
-    return wallCommentsService.get(this.props.playerId);
+    return matchCommentsService.get(this.props.matchId);
   }
 
   postComment(data) {
-    return wallCommentsService.postComment(this.props.playerId, data);
+    return matchCommentsService.postComment(this.props.matchId, data);
   }
 
   deleteComment(commentId) {
-    return wallCommentsService.deleteComment(this.props.playerId, commentId);
+    return matchCommentsService.deleteComment(this.props.matchId, commentId);
   }
 
   render() {
     return (
       <Comments
         canComment={this.props.canComment}
-        title="Muro"
+        title="Comentarios"
         fetchComments={this.fetchComments}
         postComment={this.postComment}
         deleteComment={this.deleteComment}

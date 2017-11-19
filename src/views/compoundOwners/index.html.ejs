@@ -1,20 +1,24 @@
-<div class="center">
-  <h1>Dueños de recintos</h1>
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container index-container">
+      <h1>Dueños de recintos</h1>
 
-  <ul>
-    <% compoundOwners.forEach((compoundOwner) => { %>
+      <ul>
+        <% compoundOwners.forEach((compoundOwner) => { %>
 
-      <li>
-          <a class="lilink" href="<%= getCompoundOwnerPath(compoundOwner) %>">
-          <img class="medium-logo" src="<%=compoundOwner.photo%>"/>
-          <div>
-           <%= compoundOwner.firstName %> <%= compoundOwner.lastName %>
-         </div>
-         <div>
-          <%= compoundOwner.email %>
-          </div>
-        </a>
-      </li>
-    <% }) %>
-  </ul>
+          <li>
+            <a class="lilink" href="<%= getCompoundOwnerPath(compoundOwner) %>">
+              <img class="medium-logo" src="<%=compoundOwner.photo%>"/>
+              <div>
+                <%= compoundOwner.firstName %> <%= compoundOwner.lastName %>
+              </div>
+              <div>
+                <%= compoundOwner.email %>
+              </div>
+            </a>
+          </li>
+        <% }) %>
+      </ul>
+    </div>
+  </div>
 </div>
