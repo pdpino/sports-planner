@@ -125,9 +125,11 @@
         </div>
       <% } %>
 
-      <div id="match-comments" class="box-container">
-        <%- include('../comments/index', { comments }) %>
-        <%- include('../comments/new') %>
+      <div id="match-comments-react-app"
+        class="box-container"
+        data-match-id="<%= match.id %>"
+        data-can-comment="<%= canComment %>"
+        >
       </div>
 
     </div>
