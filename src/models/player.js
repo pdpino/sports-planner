@@ -293,5 +293,13 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     });
   }
 
+  player.prototype.createTeam = function(team) {
+    return this.addTeam(team, {
+      through: {
+        isCaptain: true
+      }
+    });
+  }
+
   return player;
 };

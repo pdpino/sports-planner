@@ -45,7 +45,7 @@ router.get('playerNew', '/new', async (ctx) => {
     player,
     genders: ctx.orm.player.getGenders(),
     submitPlayerPath: ctx.router.url('playerCreate'),
-    cancelPath : ctx.router.url('players'),
+    cancelPath: '/',
   });
 });
 
@@ -78,7 +78,7 @@ router.post('playerCreate', '/', async (ctx) => {
       genders: ctx.orm.player.getGenders(),
       errors: ctx.parseValidationError(validationError),
       submitPlayerPath: ctx.router.url('playerCreate'),
-      cancelPath: ctx.router.url('players'),
+      cancelPath: '/',
     });
   }
 });

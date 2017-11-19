@@ -75,6 +75,7 @@ router.use((ctx, next) => {
     compoundOwnersPath: ctx.router.url('compoundOwners'),
     compoundsPath: ctx.router.url('compounds'),
     indexPath: ctx.router.url('index'),
+    cancelPath: ctx.headers['referer'] || '/', // cancelPath by default is to go back
   });
   return next();
 });

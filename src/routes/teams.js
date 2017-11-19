@@ -24,7 +24,6 @@ router.get('teamNew', '/new', async (ctx) => {
     team,
     sports: ctx.state.allSports,
     submitTeamPath: ctx.router.url('teamCreate'),
-    cancelPath: ctx.router.url('teams'),
   });
 });
 
@@ -36,9 +35,7 @@ router.post('teamCreate', '/', async (ctx) => {
     ctx.request.body.fields.logo = FileStorage.url("team" + team.id, {})
     FileStorage.upload(ctx.request.body.files.logo, "team" + team.id);
     await team.update(ctx.request.body.fields);
-    ctx.state.currentPlayer.addTeam(team, {
-      through: { isCaptain: true }
-    });
+    await ctx.state.currentPlayer.createTeam(team);
     ctx.redirect(ctx.router.url('team', team.id));
   } catch (validationError) {
     await ctx.render('teams/new', {
