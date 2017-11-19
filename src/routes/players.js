@@ -188,6 +188,7 @@ router.get('player', '/:id', async (ctx) => {
       playerId: player.id,
       id: sport.id
     }),
+    newTeamPath: ctx.router.url('teamNew'),
   });
 });
 
