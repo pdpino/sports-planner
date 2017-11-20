@@ -124,8 +124,6 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
 });
 
 router.get('player', '/:id', async (ctx) => {
-  // console.log("PLAYER/ PARAMS ID: ", ctx.params);
-  // FIXME: sometimes the ctx.params.id is 'width="32"'
   const player = await ctx.findById(ctx.orm.player, ctx.params.id);
   const playerSports = await player.getSports();
   const playerTeams = await player.getTeamsWithSport();

@@ -83,6 +83,16 @@ module.exports = function definematch(sequelize, DataTypes) {
         }]
       };
     });
+
+    match.addScope('api', {
+      include: [{
+        model: sequelize.models.sport
+      }, {
+        model: sequelize.models.player
+      }, {
+        model: sequelize.models.team
+      }]
+    });
   };
 
   /** Boolean indicating if the player has modify permission on the match **/

@@ -87,6 +87,21 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     }, {
       override: true
     });
+
+    player.addScope('api', {
+      include: [{
+        model: sequelize.models.user
+      }, {
+        model: sequelize.models.sport,
+      }, {
+        model: sequelize.models.team,
+      }, {
+        model: sequelize.models.match,
+      }, {
+        model: sequelize.models.player,
+        as: 'friends'
+      }]
+    });
   };
 
   player.afterFind(helpers.copyUserInfo);
