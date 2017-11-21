@@ -13,6 +13,7 @@ const router = new KoaRouter();
 
 // unauthenticated endpoints
 router.use('/auth', authRoutes.routes());
+router.use('/players', playersRoutes.routes());
 
 // JWT authentication without passthrough (error if not authenticated)
 router.use(jwt({ secret: process.env.JWT_SECRET, key: 'authData' }));
@@ -24,7 +25,6 @@ router.use(async (ctx, next) => {
 });
 
 // authenticated endpoints
-router.use('/players', playersRoutes.routes());
 router.use('/teams', teamsRoutes.routes());
 router.use('/matches', matchesRoutes.routes());
 router.use('/sports', sportsRoutes.routes());

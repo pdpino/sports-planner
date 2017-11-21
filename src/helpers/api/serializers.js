@@ -1,10 +1,9 @@
 const jsonApiSerializer = require('jsonapi-serializer');
-const Sequelize = require('sequelize');
 
 // REFACTOR this whole file!!!
 // Is really not DRY :sweat_smile:
 
-module.exports = function apiHelpers(app) {
+module.exports = function serializerHelpers(app) {
   const userAttributes = ['firstName', 'lastName', 'email', 'photo'];
 
   const sportMinAttributes = ['name'];
