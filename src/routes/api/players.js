@@ -11,7 +11,7 @@ router.get('players', '/', async (ctx) => {
 });
 
 router.get('player', '/:id', async (ctx) => {
-  const player = await ctx.orm.player.scope('api').findById(ctx.params.id);
+  const player = await ctx.findById(ctx.orm.player.scope('api'), ctx.params.id);
 
   console.log("PLAYER: ", player);
 

@@ -9,7 +9,7 @@ router.get('matches', '/', async (ctx) => {
 });
 
 router.get('match', '/:id', async (ctx) => {
-  const match = await ctx.orm.match.scope('api').findById(ctx.params.id);
+  const match = await ctx.findById(ctx.orm.match.scope('api'), ctx.params.id);
 
   const includePlayers = true;
   const includeTeams = true;

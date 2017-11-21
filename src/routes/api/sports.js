@@ -9,7 +9,7 @@ router.get('sports', '/', async (ctx) => {
 });
 
 router.get('sport', '/:id', async (ctx) => {
-  const sport = await ctx.orm.sport.findById(ctx.params.id);
+  const sport = await ctx.findById(ctx.orm.sport, ctx.params.id);
 
   ctx.body = ctx.serializeSport(sport);
 });

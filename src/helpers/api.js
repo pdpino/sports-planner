@@ -1,11 +1,16 @@
 const jsonApiSerializer = require('jsonapi-serializer');
 const Sequelize = require('sequelize');
 
+// REFACTOR this whole file!!!
+// Is really not DRY :sweat_smile:
+
 module.exports = function apiHelpers(app) {
+  const userAttributes = ['firstName', 'lastName', 'email', 'photo'];
+
   const sportMinAttributes = ['name'];
   const sportAttributes = ['name', 'logo', 'isIndividual'];
 
-  const playerAttributes = ['firstName', 'lastName', 'email', 'photo', 'birthday', 'gender'];
+  const playerAttributes = userAttributes.concat(['birthday', 'gender']);
   const playerRelations = ['sports', 'teams', 'matches'];
 
   const teamAttributes = ['name', 'logo'];
@@ -16,6 +21,18 @@ module.exports = function apiHelpers(app) {
 
   const matchAttributes = ['name', 'date', 'isPublic'];
   const matchRelations = ['sport', 'players', 'teams'];
+
+  const compoundOwnerAttributes = userAttributes.concat(['phone']);
+  const compoundOwnerRelations = ['compounds'];
+
+  const compoundAttributes = ['name', 'localEmail', 'photo', 'address', 'localPhone'];
+  const compoundRelations = ['compoundOwner', 'fields', 'reviews'];
+
+  const fieldAttributes = ['name', 'openingHour', 'closingHour', 'modules', 'photo'];
+  const fieldRelations = ['sport', 'compound'];
+
+  const compoundReviewAttributes = ['content', 'createdAt'];
+  const compoundReviewRelations = ['player'];
 
   const includePlayers = function(ctx, options){
     return {
@@ -63,7 +80,59 @@ module.exports = function apiHelpers(app) {
       attributes: sportMinAttributes,
       relationshipLinks: {
         related: ctx.getFullUrl('sports'),
-      }
+      },
+      includedLinks: {
+        self: (sport) => ctx.getFullUrl('sport', sport.id),
+      },
+    };
+  }
+  const includeCompoundOwners = function(ctx, options){
+    return {
+      ref: 'id',
+      included: options.includeCompoundOwners,
+      attributes: compoundOwnerAttributes,
+      relationshipLinks: {
+        related: ctx.getFullUrl('compoundOwners'),
+      },
+      includedLinks: {
+        self: (compoundOwner) => ctx.getFullUrl('compoundOwner', compoundOwner.id),
+      },
+    };
+  }
+  const includeCompounds = function(ctx, options){
+    return {
+      ref: 'id',
+      included: options.includeCompounds,
+      attributes: compoundAttributes,
+      relationshipLinks: {
+        related: ctx.getFullUrl('compounds'),
+      },
+      includedLinks: {
+        self: (compound) => ctx.getFullUrl('compound', compound.id),
+      },
+    };
+  }
+  const includeFields = function(ctx, compound, options){
+    return {
+      ref: 'id',
+      included: options.includeFields,
+      attributes: fieldAttributes,
+      relationshipLinks: {
+        related: ctx.getFullUrl('fields'),
+      },
+      includedLinks: {
+        self: (field) => ctx.getFullUrl('field', { id: field.id, compoundId: compound.id }),
+      },
+    };
+  }
+  const includeCompoundReviews = function(ctx, options){
+    return {
+      ref: 'id',
+      included: options.includeCompoundReviews,
+      attributes: compoundReviewAttributes,
+      // relationshipLinks: {
+      //   related: ctx.getFullUrl('compoundReviews'),
+      // }
     };
   }
 
@@ -211,5 +280,84 @@ module.exports = function apiHelpers(app) {
       },
     }).serialize(teamComments);
   }
+
+
+  app.context.serializeCompoundOwners = function(compoundOwners){
+    return this.jsonSerializer('compoundOwners', {
+      attributes: compoundOwnerAttributes,
+      topLevelLinks: {
+        self: this.getFullUrl('compoundOwners'),
+      },
+      dataLinks: {
+        self: (dataset, compoundOwner) => this.getFullUrl('compoundOwner', compoundOwner.id),
+      },
+    }).serialize(compoundOwners);
+  }
+
+  app.context.serializeCompoundOwner = function(compoundOwner, options){
+    return this.jsonSerializer('compoundOwners', {
+      attributes: compoundOwnerAttributes.concat(compoundOwnerRelations),
+      compounds: includeCompounds(this, options),
+      topLevelLinks: {
+        self: this.getFullUrl('compoundOwner', compoundOwner.id),
+      },
+    }).serialize(compoundOwner);
+  }
+
+
+  app.context.serializeCompounds = function(compounds){
+    return this.jsonSerializer('compounds', {
+      attributes: compoundAttributes,
+      topLevelLinks: {
+        self: this.getFullUrl('compounds'),
+      },
+      dataLinks: {
+        self: (dataset, compound) => this.getFullUrl('compound', compound.id),
+      },
+    }).serialize(compounds);
+  }
+
+  app.context.serializeCompound = function(compound, options){
+    return this.jsonSerializer('compounds', {
+      attributes: compoundAttributes.concat(compoundRelations),
+      compoundOwner: includeCompoundOwners(this, options),
+      fields: includeFields(this, compound, options),
+      reviews: includeCompoundReviews(this, options),
+      topLevelLinks: {
+        self: this.getFullUrl('compound', compound.id),
+      },
+    }).serialize(compound);
+  }
+
+
+  app.context.serializeFields = function(fields){
+    return this.jsonSerializer('fields', {
+      attributes: fieldAttributes,
+      topLevelLinks: {
+        self: this.getFullUrl('fields'),
+      },
+      dataLinks: {
+        self: (dataset, field) => this.getFullUrl('field', {
+          id: field.id,
+          compoundId: field.compound.id
+        }),
+      },
+    }).serialize(fields);
+  }
+
+  app.context.serializeField = function(field, options){
+    return this.jsonSerializer('fields', {
+      attributes: fieldAttributes.concat(fieldRelations),
+      sport: includeSports(this, options),
+      compound: includeCompounds(this, options),
+      topLevelLinks: {
+        self: this.getFullUrl('field', {
+          id: field.id,
+          compoundId: field.compound.id
+        }),
+      },
+    }).serialize(field);
+  }
+
 
 };

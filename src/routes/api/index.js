@@ -5,6 +5,9 @@ const playersRoutes = require('./players');
 const teamsRoutes = require('./teams');
 const matchesRoutes = require('./matches');
 const sportsRoutes = require('./sports');
+const compoundOwnersRoutes = require('./compoundOwners');
+const compoundsRoutes = require('./compounds');
+const fieldsRoutes = require('./fields');
 
 const router = new KoaRouter();
 
@@ -25,5 +28,8 @@ router.use('/players', playersRoutes.routes());
 router.use('/teams', teamsRoutes.routes());
 router.use('/matches', matchesRoutes.routes());
 router.use('/sports', sportsRoutes.routes());
+router.use('/compoundOwners', compoundOwnersRoutes.routes());
+router.use('/compounds', compoundsRoutes.routes());
+router.use('/fields', fieldsRoutes.routes());
 
 module.exports = router;
