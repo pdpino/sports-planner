@@ -51,6 +51,11 @@ app.use(async (ctx, next) => {
         message: error.message,
         details: error.details
       };
+    } else if (error.name === 'UnauthorizedError') {
+      ctx.body = {
+        message: 'No tienes autorización',
+        details: error.message
+      };
     } else {
       console.log("ERROR NOT RECOGNIZED"); // DEBUG
       throw error; // Upper middleware can handle it
