@@ -13,25 +13,8 @@ const router = new KoaRouter();
  * Filter the parameters passed by the matches/_form.html.ejs (create or edit a match)
  * Assumes that there is a player logged in (ctx.state.currentPlayer is defined)
  */
-function getParams(ctx){
-  const params = ctx.request.body;
-  const filteredParams = _.pick(params, 'name', 'isPublic', 'sportId', 'dateYear', 'dateMonth', 'dateDay', 'dateHour', 'dateMinute');
-
-  // Build date
-  filteredParams.date = moment(`${params.dateYear} ${params.dateMonth} ${params.dateDay} ${params.dateHour} ${params.dateMinute}`, "YYYY MM DD H:mm");
-
-  if(!filteredParams.date.isValid()){
-    // REVIEW: shouldn't this be in the model?
-    filteredParams.date = null;
-  }
-
-  // checkbox input passes 'on' when checked and null when not-checked. Parse this to boolean
-  filteredParams.isPublic = Boolean(filteredParams.isPublic);
-
-  // Assure name (REVIEW: move this to model? hook? but the model doesnt know the currentPlayer)
-  filteredParams.name = filteredParams.name || ctx.orm.match.getDefaultName(ctx.state.currentPlayer);
-
-  return filteredParams;
+function getParams(params){
+  return _.pick(params, 'name', 'isPublic', 'sportId', 'dateYear', 'dateMonth', 'dateDay', 'dateHour', 'dateMinute');
 }
 
 router.get('matches', '/', async (ctx) => {
@@ -147,16 +130,10 @@ router.patch('addSchedule', '/:id/:compoundId/:fieldId/selectSchedule', async (c
 router.post('matchCreate', '/', async (ctx) => {
   ctx.requirePlayerLoggedIn();
 
-  const params = getParams(ctx);
+  const params = getParams(ctx.request.body);
 
   try {
-    const match = await ctx.orm.match.create(params);
-    await ctx.state.currentPlayer.addMatch(match.id, {
-      through: {
-        isAdmin: true,
-        status: 'accepted' // HACK: invitation status harcoded
-      }
-    });
+    const match = await ctx.orm.match.playerCreates(ctx.state.currentPlayer, params);
     ctx.redirect(ctx.router.url('match', match.id ));
   } catch (validationError) {
     await ctx.render('matches/new', {
@@ -190,7 +167,7 @@ router.patch('matchUpdate', '/:id', async (ctx) => {
   const match = await ctx.findById(ctx.orm.match, ctx.params.id);
   await ctx.requirePlayerModifyPermission(match);
 
-  const params = getParams(ctx);
+  const params = getParams(ctx.request.body);
   try {
     await match.update(params);
     ctx.redirect(ctx.router.url('match', { id: match.id }));
@@ -217,7 +194,7 @@ router.get('match', '/:id', async (ctx) => {
   const comments = await match.getComments();
 
   const canComment = await match.isPlayerInvited(ctx.state.currentPlayer);
-  // REVIEW: this is being called twice, once in requireSeeMatchPermission and once here
+  // HACK: this is being called twice, once in requireSeeMatchPermission and once here
 
   const reviewsEnabled = match.areReviewsEnabled();
   const pendingReviews = reviewsEnabled &&

@@ -12,34 +12,24 @@ const compound = require('./routes/compounds');
 
 const router = new KoaRouter();
 
-/** Add basic info and functions **/
+/** Add currentUser information (and currentPlayer/currentOwner) **/
 router.use(async (ctx, next) => {
-  // Load user and (player or owner)
-  const currentUser = ctx.session.userId && await ctx.orm.user.findById(ctx.session.userId);
-  let currentPlayer = null;
-  let currentOwner = null;
-  let profilePath = '/';
+  await ctx.loadCurrentUser(ctx.session);
+  return next();
+});
 
-  if (currentUser){
-    if (currentUser.isPlayer()){
-      currentPlayer = await currentUser.getPlayer();
-      profilePath = ctx.router.url('player', currentPlayer.id);
-    }
-    else if (currentUser.isCompoundOwner()){
-      currentOwner = await currentUser.getCompoundOwner();
-      profilePath = ctx.router.url('compoundOwner', currentOwner.id);
-    }
+/** Expose paths to the views **/
+router.use((ctx, next) => {
+  let profilePath;
+  if (ctx.state.isPlayerLoggedIn) {
+    profilePath = ctx.router.url('player', ctx.state.currentPlayer.id);
+  } else if (ctx.state.isOwnerLoggedIn) {
+    profilePath = ctx.router.url('compoundOwner', ctx.state.currentOwner.id);
   } else {
-    ctx.session.userId = 0; // Close session when no player found (e.g. old cookie)
+    profilePath = '/';
   }
 
   Object.assign(ctx.state, {
-    currentUser,
-    currentPlayer,
-    currentOwner,
-    isLoggedIn: Boolean(currentUser),
-    isPlayerLoggedIn: Boolean(currentPlayer),
-    isOwnerLoggedIn: Boolean(currentOwner),
     profilePath,
     newSessionPath: ctx.router.url('sessionNew'),
     signUpPlayerPath: ctx.router.url('playerNew'),
@@ -48,16 +38,6 @@ router.use(async (ctx, next) => {
     homePath: '/',
     // HACK: ctx.router.url('home') not working (returns '//' and page goes to about:blank)
     // path hardcoded
-  });
-
-  ctx.state.isAdminLoggedIn = ctx.hasAdminPermission();
-
-  return next();
-});
-
-/** Expose paths to the views **/
-router.use((ctx, next) => {
-  Object.assign(ctx.state, {
     getSportPath: (sport) => ctx.router.url('sport', sport.id),
     getPlayerPath: (player) => ctx.router.url('player', player.id),
     getCompoundOwnerPath: (compoundOwner) => ctx.router.url('compoundOwner', compoundOwner.id),
@@ -75,6 +55,7 @@ router.use((ctx, next) => {
     compoundOwnersPath: ctx.router.url('compoundOwners'),
     compoundsPath: ctx.router.url('compounds'),
     indexPath: ctx.router.url('index'),
+    cancelPath: ctx.headers['referer'] || '/', // cancelPath by default is to go back
   });
   return next();
 });

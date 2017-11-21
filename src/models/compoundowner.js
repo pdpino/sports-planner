@@ -15,9 +15,19 @@ module.exports = function definecompoundOwner(sequelize, DataTypes) {
     }, {
       override: true
     });
+
+    compoundOwner.addScope('api', {
+      include: [{
+        model: sequelize.models.user
+      }, {
+        model: sequelize.models.compound,
+      }]
+    });
   };
 
   compoundOwner.afterFind(helpers.copyUserInfo);
+
+  compoundOwner.prototype.getName = function() { return helpers.getPersonName(this); }
 
   return compoundOwner;
 };

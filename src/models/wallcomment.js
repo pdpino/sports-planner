@@ -1,6 +1,13 @@
 module.exports = function definewallComment(sequelize, DataTypes) {
   const wallComment = sequelize.define('wallComment', {
-    content: DataTypes.TEXT,
+    content: {
+      type: DataTypes.TEXT,
+      validate: {
+        notEmpty: {
+          msg: "No puede ser un comentario vacio"
+        },
+      },
+    }
   });
   wallComment.associate = function associate(models) {
     wallComment.belongsTo(models.player, {

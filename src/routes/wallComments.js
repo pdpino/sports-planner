@@ -7,19 +7,59 @@ function getParams(params){
   return _.pick(params, 'content');
 }
 
-router.post('wallCommentCreate', '/', async (ctx) => {
-  ctx.requirePlayerLoggedIn();
-
+async function requireCommentPermission(ctx){
   // REFACTOR ?
   const friendshipStatus = (ctx.state.isPlayerLoggedIn
     && await ctx.state.currentPlayer.getFriendshipStatus(ctx.state.player));
 
   ctx.assert(ctx.orm.player.hasCommentPermission(friendshipStatus), 403);
+}
+
+router.post('wallCommentCreate', '/', async (ctx) => {
+  ctx.requirePlayerLoggedIn();
+
+  await requireCommentPermission(ctx);
 
   const params = getParams(ctx.request.body);
 
-  await ctx.state.player.receiveWallComment(ctx.state.currentPlayer, params);
-  ctx.redirect(ctx.router.url('player', ctx.state.player.id));
+  try {
+    await ctx.state.player.receiveWallComment(ctx.state.currentPlayer, params);
+  } catch (validationError) {
+    const errors = ctx.parseValidationError(validationError);
+    // TODO: show to the user
+  }
+
+  switch (ctx.accepts('html', 'json')) {
+    case 'html':
+      ctx.redirect(ctx.router.url('player', ctx.state.player.id));
+      break;
+    case 'json':
+      ctx.body = { };
+      break;
+    default:
+  }
+});
+
+router.get('wallComments', '/', async (ctx) => {
+  await requireCommentPermission(ctx);
+
+  const comments = await ctx.state.player.getMyWallComments();
+
+  switch (ctx.accepts('html', 'json')) {
+    case 'html':
+      await ctx.render('comments/index', {
+        comments,
+        deleteCommentPath: (comment) => ctx.router.url('wallCommentDelete', {
+          playerId: ctx.state.player.id,
+          id: comment.id,
+        }),
+      });
+      break;
+    case 'json':
+      ctx.body = { comments: ctx.getDisplayableComments(comments) };
+      break;
+    default:
+  }
 });
 
 router.delete('wallCommentDelete', '/:id', async (ctx) => {
@@ -28,7 +68,16 @@ router.delete('wallCommentDelete', '/:id', async (ctx) => {
   ctx.requireModifyPermission(comment.commenter);
 
   await comment.destroy();
-  ctx.redirect(ctx.router.url('player', ctx.state.player.id));
+
+  switch (ctx.accepts('html', 'json')) {
+    case 'html':
+      ctx.redirect(ctx.router.url('player', ctx.state.player.id));
+      break;
+    case 'json':
+      ctx.body = { };
+      break;
+    default:
+  }
 });
 
 module.exports = router;

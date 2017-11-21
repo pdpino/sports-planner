@@ -1,74 +1,86 @@
 import React, { Component } from 'react';
-import TeamCommentsNew from '../containers/TeamCommentsNew';
-import TeamCommentsDisplay from '../components/TeamCommentsDisplay';
+import Comments from './Comments';
+import ToggleTeamComments from './ToggleTeamComments';
 import teamCommentsService from '../services/teamComments';
 
 export default class TeamComments extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      comments: [],
-      loading: false,
-      error: undefined,
+      chosenPublic: true,
     };
-    this.onSubmit = this.onSubmit.bind(this);
-    this.onDelete = this.onDelete.bind(this);
+    this.toggle = this.toggle.bind(this);
+    this.fetchComments = this.fetchComments.bind(this);
+    this.postComment = this.postComment.bind(this);
+    this.deleteComment = this.deleteComment.bind(this);
   }
 
-  componentDidMount() {
-    this.fetchComments();
+  toggle(data) {
+    this.setState({ chosenPublic: data.chosenPublic })
   }
 
-  async fetchComments() {
-    this.setState({ loading: true });
-    try {
-      const result = await teamCommentsService.get(this.props.teamId, this.props.isPublic);
-      this.setState({ comments: result.comments, loading: false });
-    } catch (error) {
-      this.setState({ error: 'No se pudieron cargar los comentarios', loading: false });
+  fetchComments(isPublic) {
+    return teamCommentsService.get(this.props.teamId, isPublic);
+  }
+
+  postComment(isPublic, data) {
+    return teamCommentsService.postComment(this.props.teamId, isPublic, data);
+  }
+
+  deleteComment (commentId) {
+    return teamCommentsService.deleteComment(this.props.teamId, commentId);
+  }
+
+  renderComments(isPublic, canComment, title){
+    // NOTE: the key is added so both components (public and private) are different ones
+    return (
+      <Comments
+        key={isPublic}
+        canComment={canComment}
+        title={title}
+        fetchComments={() => this.fetchComments(isPublic)}
+        postComment={(data) => this.postComment(isPublic, data)}
+        deleteComment={this.deleteComment}
+      />
+    );
+  }
+
+  renderPrivateComments() {
+    if (this.props.canSeePrivateComments) {
+      // NOTE: if can the user can see the private comments, then can also make private comments
+      return this.renderComments(false, true, 'Comentarios privados');
     }
   }
 
-  async onSubmit(data) {
-    this.setState({ loading: true, error: undefined });
-    try {
-      const json = await teamCommentsService.postComment(this.props.teamId, this.props.isPublic, data);
-      this.setState({ loading: false });
-    } catch (error) {
-      this.setState({ error: error.message, loading: false });
-    }
-    await this.fetchComments();
+  renderPublicComments() {
+    return this.renderComments(true, this.props.canPublicComment, 'Comentarios públicos');
   }
 
-  async onDelete(event, data) {
-    event.preventDefault();
-    const json = await teamCommentsService.deleteComment(this.props.teamId, data.id);
-    await this.fetchComments();
-  }
-
-  renderNewCommentForm(){
-    if (this.props.canComment) {
+  renderCommentSwitch() {
+    if(this.props.canSeePrivateComments){
       return (
-        <TeamCommentsNew
-          onSubmit={this.onSubmit}
-        />
+        <div>
+          <ToggleTeamComments
+            chosenPublic={this.state.chosenPublic}
+            onChange={this.toggle}
+          />
+        </div>
       );
     }
   }
 
   render() {
-    if (this.state.loading) {
-      return <p>Cargando comentarios...</p>;
+    let comments;
+    if (this.state.chosenPublic) {
+      comments = this.renderPublicComments();
+    } else {
+      comments = this.renderPrivateComments();
     }
+
     return (
       <div>
-        <h4>Comentarios { this.props.isPublic ? 'públicos' : 'privados'}</h4>
-        { this.state.error && <div className="error">Error: {this.state.error}</div>}
-        { this.renderNewCommentForm() }
-        <TeamCommentsDisplay
-          comments={this.state.comments}
-          onDelete={this.onDelete}
-        />
+        {this.renderCommentSwitch()}
+        {comments}
       </div>
     );
   }

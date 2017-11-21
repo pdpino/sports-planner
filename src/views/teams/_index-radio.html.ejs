@@ -1,0 +1,25 @@
+<%# Must exist: teams, submitPath
+
+  Optional: buttonMessage, noTeamsMessage %>
+
+<% if (teams.length > 0) { %>
+  <form action="<%= submitPath %>" method="post">
+    <div>
+      <label for="teamId">Elegir equipo</label>
+      <% teams.forEach((team) => { %>
+        <div>
+          <input type="radio" name="teamId" value="<%= team.id %>"/> <%= team.name %>
+        </div>
+      <% }) %>
+    </div>
+
+    <div>
+      <input type="submit" name="create" value="<%= locals.buttonMessage || 'Añadir' %>" />
+    </div>
+
+  </form>
+<% } else { %>
+  <p>
+    <%= locals.noTeamsMessage || 'No hay equipos' %>
+  </p>
+<% } %>

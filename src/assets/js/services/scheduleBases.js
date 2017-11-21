@@ -8,7 +8,7 @@ export default {
     commentData.isPublic = isPublic;
     return jsonRequest(`/compounds/${compoundId}/fields/${fieldId}/scheduleBases/edit`, {
       method: 'post',
-      headers: { 'Content-Type': 'application/json' },
+      sendJson: true,
       body: JSON.stringify(commentData),
     });
   },

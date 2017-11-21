@@ -33,8 +33,21 @@ async function findOneAssociatedById(entity, getter, id) {
   // to bind the 'this' element to the entity
 }
 
+/** Get the name of a player or a compoundOwner  **/
+function getPersonName(person) {
+  // NOTE: if the person was found using find(), firstName and lastName are copied into the person
+  // if not, then it tries to use the user's names
+  if (person.firstName){
+    return `${person.firstName} ${person.lastName}`;
+  } else if (person.user) {
+    return `${person.user.firstName} ${person.user.lastName}`;
+  }
+  return '';
+}
+
 module.exports = {
   getHookFunction,
   copyUserInfo,
   findOneAssociatedById,
+  getPersonName,
 }

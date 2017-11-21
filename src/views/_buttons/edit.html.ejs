@@ -1,10 +1,15 @@
 <%# Must provide: editPath
-    optional: message, formClass %>
+    optional: message, formClass, useImage %>
 
 <form
   <% if (locals.formClass) { %>
     class="<%= formClass %>"
   <% } %>
   action="<%= editPath %>">
-  <input class="edit-button" type="submit" value="<%= locals.message || 'Editar' %>"/>
+
+  <% if (locals.useImage) { %>
+    <input class="edit-button-icon" type="image" src="/assets/edit.png" alt="<%= locals.message || 'Editar' %>"/>
+  <% } else { %>
+    <input class="edit-button" type="submit" name="edit" value="<%= locals.message || 'Editar' %>"/>
+  <% } %>
 </form>

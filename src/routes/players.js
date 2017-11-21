@@ -45,7 +45,7 @@ router.get('playerNew', '/new', async (ctx) => {
     player,
     genders: ctx.orm.player.getGenders(),
     submitPlayerPath: ctx.router.url('playerCreate'),
-    cancelPath : ctx.router.url('players'),
+    cancelPath: '/',
   });
 });
 
@@ -78,7 +78,7 @@ router.post('playerCreate', '/', async (ctx) => {
       genders: ctx.orm.player.getGenders(),
       errors: ctx.parseValidationError(validationError),
       submitPlayerPath: ctx.router.url('playerCreate'),
-      cancelPath: ctx.router.url('players'),
+      cancelPath: '/',
     });
   }
 });
@@ -124,11 +124,9 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
 });
 
 router.get('player', '/:id', async (ctx) => {
-  // console.log("PLAYER/ PARAMS ID: ", ctx.params);
-  // FIXME: sometimes the ctx.params.id is 'width="32"'
   const player = await ctx.findById(ctx.orm.player, ctx.params.id);
   const playerSports = await player.getSports();
-  const playerTeams = await player.getTeams();
+  const playerTeams = await player.getTeamsWithSport();
   const playerMatches = await player.getMatches();
   const friends = await player.getAllFriends();
 
@@ -188,6 +186,7 @@ router.get('player', '/:id', async (ctx) => {
       playerId: player.id,
       id: sport.id
     }),
+    newTeamPath: ctx.router.url('teamNew'),
   });
 });
 

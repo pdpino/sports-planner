@@ -1,19 +1,23 @@
-<div class ="center">
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container index-container">
+      <h1>Seleccionar cancha</h1>
+      <ul>
+        <% fields.forEach((field) => { %>
+          <li>
+            <a class="lilink" href="<%= fieldPath(field) %>">
+              <img src="<%=field.photo%>" class="small-logo"/>
+              <div>
+                <%= field.name %>
+              </div>
+            </a>
+          </li>
+        <% }) %>
+      </ul>
 
-  <ul>
-    <% fields.forEach((field) => { %>
-      <li>
-        <a class="lilink" href="<%= fieldPath(field) %>">
-          <img src="<%=field.photo%>" class="small-logo"/>
-          <div>
-            <%= field.name %>
-          </div>
-        </a>
-      </li>
-    <% }) %>
-  </ul>
-
-  <form action="<%= cancelPath %>" method="get">
-    <input type="submit" value="Cancelar"/>
-  </form>
+      <form action="<%= cancelPath %>" method="get">
+        <input type="submit" value="Cancelar"/>
+      </form>
+    </div>
+  </div>
 </div>

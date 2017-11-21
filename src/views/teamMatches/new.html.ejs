@@ -1,29 +1,33 @@
-<div class="center">
-  <h1>Buscar partidos para unirse</h1>
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container new-invitation-container">
+      <h1>Buscar partidos para unirse</h1>
 
-  <% if (joinableMatches.length > 0) { %>
-    <form action="<%= submitTeamMatchPath %>" method="post">
-      <div>
-        <label for="playerId">Elegir un partido</label>
-        <% joinableMatches.forEach( (match) => { %>
+      <% if (joinableMatches.length > 0) { %>
+        <form action="<%= submitTeamMatchPath %>" method="post">
           <div>
-            <input type="radio" name="matchId" value="<%= match.id %>"/> <%= match.name %>
+            <label for="playerId">Elegir un partido</label>
+            <% joinableMatches.forEach( (match) => { %>
+              <div>
+                <input type="radio" name="matchId" value="<%= match.id %>"/> <%= match.name %>
+              </div>
+            <% }) %>
           </div>
-        <% }) %>
-      </div>
 
-      <div>
-        <input type="submit" name="create" value="Solicitar unirse" />
-      </div>
+          <div>
+            <input type="submit" name="create" value="Solicitar unirse" />
+          </div>
 
-    </form>
-  <% } else { %>
-    <div>
-      <strong>
-        No hay partidos para unirse
-      </strong>
+        </form>
+      <% } else { %>
+        <div>
+          <strong>
+            No hay partidos para unirse
+          </strong>
+        </div>
+      <% } %>
+
+      <%- include('../_buttons/cancel') %>
     </div>
-  <% } %>
-
-  <%- include('../_buttons/cancel', { cancelPath }) %>
+  </div>
 </div>

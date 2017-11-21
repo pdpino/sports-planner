@@ -1,64 +1,59 @@
-<div class ="center">
-  <h1><%= field.name %></h1>
-  <h2><%= schedules[0].date %></h2>
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container">
+      <h1><%= field.name %></h1>
+      <h2><%= schedules[0].date %></h2>
 
 
+      <form action="<%= submitSchedulePath %>" method="post">
+        <div>
+          <input type="hidden" name="_method" value="patch" />
+          <table>
+            <tr>
+              <th>Tiempo</th>
+              <th>Precio</th>
+              <th>Status</th>
+            </tr>
+            <% for (let i = 0; i < schedules.length; i++) {%>
+              <tr>
+                <td> <%= schedules[i].hours %> </td>
+                <td> <%= schedules[i].price %> </td>
+                <td>
+                  <% if (schedules[i].status == "Accepted" || schedules[i].status == "Solicited"){ %>
+                    <div>
+                      <input type="radio" name="schedules[<%=i%>][status]" value="Accepted" <%= (schedules[i].status=="Accepted") ? 'checked' : '' %>>
+                      Aceptar Invitación
 
-<table>
-  <tr>
-  <th>Tiempo</th>
-  <th>Precio</th>
-  <th>Status</th>
-</tr>
-<form action="<%= submitSchedulePath %>" method="post">
-  <div>
-    <input type="hidden" name="_method" value="patch" />
-<% for (i=0;i<schedules.length;i++) {%>
-  <tr>
+                      <input type="radio" name="schedules[<%=i%>][status]"  value="Available"
+                      <%= (schedules[i].status=="Available") ? 'checked' : '' %>>
+                      Rechazar Invitación
 
-    <th> <%= schedules[i].hours %> </th>
-    <td> <%= schedules[i].price %> </td>
+                      <input type="radio" name="schedules[<%=i%>][status]"  value="Solicited" <%= (schedules[i].status=="Solicited") ? 'checked' : '' %>>
+                      No responder Aún
 
-<td>
+                    </div>
+                  <% } else if (schedules[i].status == "Available"){ %>
+                    <div>
+                      <p> Disponible </p>
+                    </div>
+                  <% } else if (schedules[i].status == "Not Available"){ %>
+                    <div>
+                      <p> Cerrado  </p>
+                    </div>
+                  <% } %>
+                </td>
+              </tr>
+            <% } %>
+          </table>
+        <div>
+          <input type="submit" name="update" value="Guardar Cambios" />
+        </div>
+      </form>
 
+      <form action="<%= cancelPath %>">
+        <input type="submit" value="Ir perfil cancha" />
+      </form>
+
+    </div>
   </div>
-  <% if (schedules[i].status == "Accepted" || schedules[i].status == "Solicited"){ %>
-    <div>
-      <input type="radio" name="schedules[<%=i%>][status]" value="Accepted" <%= (schedules[i].status=="Accepted") ? 'checked' : '' %>>
-      Aceptar Invitación
-
-      <input type="radio" name="schedules[<%=i%>][status]"  value="Available"
-      <%= (schedules[i].status=="Available") ? 'checked' : '' %>>
-      Rechazar Invitación
-
-      <input type="radio" name="schedules[<%=i%>][status]"  value="Solicited" <%= (schedules[i].status=="Solicited") ? 'checked' : '' %>>
-      No responder Aún
-
-    </div>
-  <% } else if (schedules[i].status == "Available"){ %>
-    <div>
-      <p> Disponible </p>
-    </div>
-  <% } else if (schedules[i].status == "Not Available"){ %>
-    <div>
-      <p> Cerrado  </p>
-    </div>
-  <% } %>
-</td>
-</tr>
-<% } %>
-</table>
-  <div>
-    <input type="submit" name="update" value="Guardar Cambios" />
-  </div>
-</form>
-
-
-  <form action="<%= cancelPath %>">
-      <input type="submit" value="Ir perfil cancha" />
-    </form>
-
-
-
-
 </div>

@@ -1,26 +1,30 @@
-<div class="center">
-  <h1>Deportes</h1>
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container index-container">
+      <h1>Deportes</h1>
 
-  <% if (hasModifyPermission) { %>
-    <form action="<%= newSportPath %>">
-        <input type="submit" value="Crear deporte"/>
-    </form>
-  <% } %>
+      <% if (hasModifyPermission) { %>
+        <form action="<%= newSportPath %>">
+            <input type="submit" value="Crear deporte"/>
+        </form>
+      <% } %>
 
-  <% if (sports.length > 0) { %>
-    <ul>
-      <% sports.forEach((sport) => { %>
-        <li>
-            <a class="lilink sport" href="<%= getSportPath(sport) %>"%>>
-            <img class="medium-logo" src="<%= sport.logo %>" alt="logo"/>
-            <div>
-             <%= sport.name %>
-           </div>
-          </a>
-        </li>
-      <% }) %>
-    </ul>
-  <% } else { %>
-    <p> No hay deportes para mostrar </p>
-  <% } %>
+      <% if (sports.length > 0) { %>
+        <ul>
+          <% sports.forEach((sport) => { %>
+            <li>
+              <a class="lilink sport" href="<%= getSportPath(sport) %>"%>>
+                <img class="medium-logo" src="<%= sport.logo %>" alt="logo"/>
+                <div>
+                  <%= sport.name %>
+                </div>
+              </a>
+            </li>
+          <% }) %>
+        </ul>
+      <% } else { %>
+        <p> No hay deportes para mostrar </p>
+      <% } %>
+    </div>
+  </div>
 </div>

@@ -9,14 +9,13 @@ export default {
     commentData.isPublic = isPublic;
     return jsonRequest(`/teams/${teamId}/comments/`, {
       method: 'post',
-      headers: { 'Content-Type': 'application/json' },
+      sendJson: true,
       body: JSON.stringify(commentData),
     });
   },
   async deleteComment(teamId, commentId) {
     return jsonRequest(`/teams/${teamId}/comments/${commentId}`, {
       method: 'delete',
-      headers: { 'Content-Type': 'application/json' },
     });
   },
 };

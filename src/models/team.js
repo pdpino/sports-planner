@@ -25,6 +25,22 @@ module.exports = function defineteam(sequelize, DataTypes) {
         model: sequelize.models.sport
       }]
     });
+
+    team.addScope('api', {
+      include: [{
+        model: sequelize.models.sport
+      }, {
+        model: sequelize.models.player,
+        include: [{
+          model: sequelize.models.user
+        }]
+      }, {
+        model: sequelize.models.match
+      }, {
+        model: sequelize.models.teamComment,
+        as: 'comments'
+      }]
+    });
   };
 
   /** Boolean indicating if the player has modify permission on the team **/

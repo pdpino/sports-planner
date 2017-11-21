@@ -1,24 +1,25 @@
-<div class ="center">
-  <h1><%= match.isNewRecord ? 'Nuevo Partido' : 'Editar Partido' %></h1>
-  <div>
-    <%- include('../_error/snippet', { errors: locals.errors }) %>
-
-    <form action="<%= submitSchedulePath %>" method="post">
-      <input type="hidden" name="_method" value="patch" />
-      <ul>
-        <% schedules.forEach((schedule) => { %>
-          <li>
-            <input type="radio" name="scheduleId" value="<%= schedule.id %>"  'checked' : '' > <%= schedule.date %> - <%= schedule.hours %> - <%=schedule.price%>
-          </li>
-        <% }) %>
-      </ul>
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container">
+      <h1><%= match.isNewRecord ? 'Nuevo Partido' : 'Editar Partido' %></h1>
       <div>
-          <input type="submit" value="Terminar" />
+        <%- include('../_error/snippet', { errors: locals.errors }) %>
+
+        <form action="<%= submitSchedulePath %>" method="post">
+          <input type="hidden" name="_method" value="patch" />
+          <ul>
+            <% schedules.forEach((schedule) => { %>
+              <li>
+                <input type="radio" name="scheduleId" value="<%= schedule.id %>"  'checked' : '' > <%= schedule.date %> - <%= schedule.hours %> - <%=schedule.price%>
+              </li>
+            <% }) %>
+          </ul>
+          <div>
+            <input type="submit" value="Terminar" />
+          </div>
+        </form>
       </div>
-    </form>
+
+    </div>
   </div>
-
-  <form action="<%= cancelPath %>" method="get">
-
-  </form>
 </div>

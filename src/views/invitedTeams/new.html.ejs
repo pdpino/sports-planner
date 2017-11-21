@@ -1,30 +1,12 @@
-<div class="center">
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container new-invitation-container">
 
-  <h1>Agregar Equipos</h1>
+      <h1>Invitar Equipos</h1>
 
-  <% if(invitableTeams.length > 0) { %>
-    <form action="<%= submitInvitedTeamPath %>" method="post">
-      <div>
-        <label for="teamId">Elegir equipo</label>
-        <% invitableTeams.forEach( (team) => { %>
-          <div>
-            <input type="radio" name="teamId" value="<%= team.id %>"/> <%= team.name %>
-          </div>
-        <% }) %>
-      </div>
+      <%- include('../teams/_index-radio', { teams: invitableTeams, submitPath: submitInvitedTeamPath, buttonMessage: 'Invitar', noTeamsMessage: 'No quedan equipos para invitar' }) %>
 
-      <div>
-        <input type="submit" name="create" value="Invitar" />
-      </div>
-
-    </form>
-  <% } else { %>
-    <div>
-      <strong>
-        No hay equipos para invitar
-      </strong>
+      <%- include('../_buttons/cancel') %>
     </div>
-  <% } %>
-
-  <%- include('../_buttons/cancel', { cancelPath }) %>
+  </div>
 </div>

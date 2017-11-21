@@ -1,44 +1,47 @@
-<div class="center">
-  <h1><%= compoundOwner.firstName %> <%= compoundOwner.lastName %></h1>
+<div id="body-container">
+  <div class="jumbotron">
+    <div id="owner-profile-column-left" class="column-40">
 
-  <div>
-    <h4>Información personal</h4>
-    <img src="<%= compoundOwner.photo %>" height="500" width="500">
+      <div id="owner-profile-card" class="box-container">
+        <img class="medium-logo" src="<%= compoundOwner.photo %>" height="500" width="500">
+        <h3><%= compoundOwner.firstName %> <%= compoundOwner.lastName %></h3>
+        <%= compoundOwner.email %>
 
-    <p> E-mail: <%= compoundOwner.email %> </p>
+        <p> Teléfono: <%= compoundOwner.phone %> </p>
 
-    <p> Teléfono: <%= compoundOwner.phone %> </p>
+        <% if(hasModifyPermission) { %>
+          <%- include('../_buttons/edit', {
+            editPath: editCompoundOwnerPath,
+            message: 'Editar información personal',
+          }) %>
+        <% } %>
 
-    <% if(hasModifyPermission) { %>
-      <%- include('../_buttons/edit', {
-        editPath: editCompoundOwnerPath,
-        message: 'Editar información personal',
-      }) %>
-    <% } %>
+      </div>
+
+    </div>
+
+    <div id="owner-profile-column-right" class="column-60">
+      <div id="owner-compounds" class="box-container">
+        <h4>Recintos</h4>
+        <% if(compounds.length > 0) { %>
+          <ul>
+            <% compounds.forEach((compound) => { %>
+              <li>
+                <a class="lilink" href=<%= getCompoundPath(compound) %>>
+                  <img class="medium-logo" src="<%=compound.photo%>"/>
+                  <%= compound.name %>
+                  <%= compound.address %>
+                </a>
+              </li>
+            <% }) %>
+          </ul>
+        <% } else { %>
+          No tiene recintos
+        <% } %>
+      </div>
+
+
+    </div>
 
   </div>
-
-  <% if(compounds.length > 0) { %>
-    <h4>Recintos:</h4>
-    <ul>
-      <% compounds.forEach((compound) => { %>
-        <li>
-            <a class="lilink" href=<%= getCompoundPath(compound) %>>
-            <img class="large-logo" src="<%=compound.photo%>"/>
-            <div>
-             <%= compound.name %>
-           </div>
-           <div>
-            <%= compound.address %>
-            </div>
-          </a>
-        </li>
-      <% }) %>
-    </ul>
-  <% } else { %>
-    No tiene recintos.
-  <% } %>
-
-  <%- include('../_buttons/back', { backPath: compoundOwnersPath }) %>
-
 </div>

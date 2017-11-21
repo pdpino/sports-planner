@@ -1,94 +1,68 @@
-<div class="center">
+<div id="body-container">
+  <div class="jumbotron">
+    <div id="team-column-left" class="column-30">
 
-  <h1><%= team.name %></h1>
-  <p>
-    <img class="medium-logo" src="<%= team.logo %>" alt="logo">
+      <div id="team-card" class="box-container">
+        <img class="medium-logo" src="<%= team.logo %>" alt="logo">
+        <h2><%= team.name %></h2>
+        <p> <%= team.sport.name %> </p>
 
-    Deporte: <%= team.sport.name %>
-  </p>
+        <% if (hasModifyPermission) { %>
+          <%- include('../_buttons/edit', { editPath: editTeamPath }) %>
+          <%- include('../_buttons/delete', { deletePath: deleteTeamPath }) %>
+        <% } %>
+      </div>
 
-  <% if (hasModifyPermission) { %>
-    <%- include('../_buttons/edit', { editPath: editTeamPath }) %>
+    </div>
 
-    <%- include('../_buttons/delete', { deletePath: deleteTeamPath }) %>
-  <% } %>
+    <div id="team-column-center" class="column-40">
+      <div id="team-players" class="box-container">
+        <h4>Jugadores</h4>
+        <%- include('../players/_index', {
+          players: teamMembers,
+          isTeamMember: true,
+          editParticipationPath: editTeamMemberPath,
+          editParticipationMessage: 'Editar miembro de equipo'
+        }) %>
 
-  <div>
-    <% if(teamMembers.length > 0) { %>
-      <h4>Jugadores:</h4>
-      <ul>
-        <% teamMembers.forEach( (teamMember) => { %>
-          <li>
-              <a class="lilink" href="<%= getPlayerPath(teamMember) %>"%>>
-              <img class="small-logo" src="<%=teamMember.photo%>"/>
-              <div>
-               <%= teamMember.firstName %> <%= (teamMember.isMember.isCaptain ? '-- capitán del equipo' : '' )%>
-             </div>
-             <% if (hasModifyPermission) { %>
-               <%- include('../_buttons/edit', {
-                 editPath: editTeamMemberPath(teamMember),
-                 message: 'Editar miembro de equipo',
-               }) %>
-             <% } %>
-            </a>
-          </li>
-        <% }) %>
-      </ul>
-    <% } else { %>
-      <%= team.name %> no tiene jugadores.
-    <% } %>
+        <% if (hasModifyPermission) { %>
+          <form action="<%= newTeamMemberPath %>">
+            <input type="submit" value="Añadir Jugador" />
+          </form>
+        <% } %>
 
-    <% if (hasModifyPermission) { %>
-      <form action="<%= newTeamMemberPath %>">
-          <input type="submit" value="Añadir Jugador" />
-      </form>
-    <% } %>
+      </div>
 
-  </div>
+      <div id="team-matches" class="box-container">
+        <h4>Partidos</h4>
+        <%- include('../matches/_index', {
+          matches: teamMatches,
+          isPlayerMatch: false,
+          editInvitationPath: editTeamMatchPath
+        }) %>
+
+        <% if (hasModifyPermission) { %>
+          <form action="<%= newTeamMatchPath %>">
+            <input type="submit" value="Añadir partidos" />
+          </form>
+        <% } %>
+
+      </div>
+
+    </div>
+
+    <div id="team-column-right" class="column-30">
+      <div id="team-comments-react-app"
+        class="box-container"
+        data-team-id="<%= team.id %>"
+        data-can-public-comment="<%= canComment %>"
+        data-can-see-private-comments="<%= canSeePrivateComments %>"
+        >
+      </div>
 
 
+    </div>
 
-  <div>
-    <% if(teamMatches.length > 0) { %>
-      <h4>Partidos:</h4>
-      <ul>
-        <% teamMatches.forEach( (match) => { %>
-
-          <li>
-              <a class="lilink" href="<%= getMatchPath(match) %>">%>
-                <div>
-                  <%= match.name %>
-                </div>
-                <% if (hasModifyPermission) { %>
-                 <%- include('../_buttons/edit', { editPath: editTeamMatchPath(match) }) %>
-               <% } %>
-             </a>
-          </li>
-        <% }) %>
-      </ul>
-    <% } else { %>
-      <%= team.name %> no tiene partidos.
-    <% } %>
-
-    <% if (hasModifyPermission) { %>
-      <form action="<%= newTeamMatchPath %>">
-          <input type="submit" value="Añadir partidos" />
-      </form>
-    <% } %>
 
   </div>
-
-  <div
-    id="team-comments-react-app"
-    data-team-id="<%= team.id %>"
-    data-can-public-comment="<%= canComment %>"
-    data-show-private-comments="<%= canSeePrivateComments %>"
-    >
-  </div>
-
-  <%- include('../_buttons/back', {
-    backPath: teamsPath,
-    message: 'Volver a todos los equipos'
-  }) %>
-
 </div>

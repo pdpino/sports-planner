@@ -1,31 +1,35 @@
-<div class="center">
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container new-invitation-container">
 
-  <h1>Agregar Partidos</h1>
+      <h1>Agregar Partidos</h1>
 
-  <% if(invitableMatches.length > 0) { %>
-    <form action="<%= submitPlayerMatchPath %>" method="post">
-      <div>
-        <label for="matchId">Elegir partido</label>
-        <% invitableMatches.forEach( (match) => { %>
+      <% if(invitableMatches.length > 0) { %>
+        <form action="<%= submitPlayerMatchPath %>" method="post">
           <div>
-            <input type="radio" name="matchId" value="<%= match.id %>"/> <%= match.name %> - <%= match.date %>
+            <label for="matchId">Elegir partido</label>
+            <% invitableMatches.forEach( (match) => { %>
+              <div>
+                <input type="radio" name="matchId" value="<%= match.id %>"/> <%= match.name %> - <%= match.date %>
+              </div>
+            <% }) %>
           </div>
-        <% }) %>
-      </div>
 
 
-      <div>
-        <input type="submit" name="create" value="Añadir" />
-      </div>
+          <div>
+            <input type="submit" name="create" value="Añadir" />
+          </div>
 
-    </form>
-  <% } else { %>
-    <div>
-      <strong>
-        No quedan partidos para agregar!
-      </strong>
+        </form>
+      <% } else { %>
+        <div>
+          <strong>
+            No quedan partidos para agregar!
+          </strong>
+        </div>
+      <% } %>
+
+      <%- include('../_buttons/cancel') %>
     </div>
-  <% } %>
-
-  <%- include('../_buttons/cancel', { cancelPath }) %>
+  </div>
 </div>

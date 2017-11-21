@@ -1,63 +1,68 @@
-<div class="center">
+<div id="body-container">
+  <div class="jumbotron-center">
+    <div class="box-container form-container">
 
-  <h1> <%= (field.isNewRecord) ? 'Nueva Cancha' : 'Editar cancha' %></h1>
+      <h1> <%= (field.isNewRecord) ? 'Nueva Cancha' : 'Editar cancha' %></h1>
 
-  <%- include('../_error/snippet', { errors: locals.errors }) %>
+      <%- include('../_error/snippet', { errors: locals.errors }) %>
 
-  <div>
-    <form action="<%= submitFieldPath %>" method="post" enctype="multipart/form-data">
+      <div>
+        <form action="<%= submitFieldPath %>" method="post" enctype="multipart/form-data">
+          <% if(!field.isNewRecord) { %>
+            <div>
+              <input type="hidden" name="_method" value="patch" />
+            </div>
+          <% } %>
+          <div>
+            <label for="name">Nombre</label>
+            <input type="text" name="name" value="<%= field.name %>" required/>
+          </div>
+          <div>
+            <label for="photo">Foto</label>
+            <input type="file" name="photo" accept="image/*"/>
+          </div>
+          <% if(scheduleBases.length==0) {%>
+            <div>
+              <label for="openingHour">Hora de Entrada</label>
+              <input type="text" name="openingHour" value="<%= field.openingHour %>" />
+            </div>
+            <div>
+              <label for="schedule">Hora de Cierre</label>
+              <input type="text" name="closingHour" value="<%= field.closingHour %>" />
+            </div>
+            <div>
+              <label for="modules">Duracion módulos (minutos):</label>
+              <input type="text" name="modules" value="<%= field.modules %>" />
+            </div>
+          <% } %>
+
+          <div>
+            <label for="sportId">Deporte</label>
+
+            <% sports.forEach((sport) => { %>
+              <input type="radio" name="sportId" value="<%= sport.id %>" required
+              <%= (sport.id === field.sportId) ? 'checked' : '' %> >
+              <%= sport.name %>
+
+            <% }) %>
+          </div>
+          <div>
+            <% if(field.isNewRecord) { %>
+              <input type="submit" name="create" value="Crear" />
+            <% } else { %>
+              <input type="submit" name="update" value="Guardar Cambios" />
+            <% } %>
+          </div>
+        </form>
+      </div>
+
+
+
       <% if(!field.isNewRecord) { %>
-        <div>
-          <input type="hidden" name="_method" value="patch" />
-        </div>
+        <%- include('../_buttons/delete', { deletePath: deleteFieldPath }) %>
       <% } %>
-      <div>
-        <label for="name">Nombre</label>
-        <input type="text" name="name" value="<%= field.name %>" required/>
-      </div>
-      <div>
-        <label for="photo">Foto</label>
-        <input type="file" name="photo" accept="image/*"/>
-      </div>
-      <% if(scheduleBases.length==0) {%>
-        <div>
-          <label for="openingHour">Hora de Entrada</label>
-          <input type="text" name="openingHour" value="<%= field.openingHour %>" />
-        </div>
-        <div>
-          <label for="schedule">Hora de Cierre</label>
-          <input type="text" name="closingHour" value="<%= field.closingHour %>" />
-        </div>
-        <div>
-          <label for="modules">Duracion módulos (minutos):</label>
-          <input type="text" name="modules" value="<%= field.modules %>" />
-        </div>
-      <%}%>
 
-      <div>
-        <label for="sportId">Deporte</label>
-
-        <% sports.forEach((sport) => { %>
-          <input type="radio" name="sportId" value="<%= sport.id %>" required
-          <%= (sport.id === field.sportId) ? 'checked' : '' %> >
-          <%= sport.name %>
-
-        <% }) %>
-      </div>
-      <div>
-        <% if(field.isNewRecord) { %>
-          <input type="submit" name="create" value="Crear" />
-        <% } else { %>
-          <input type="submit" name="update" value="Guardar Cambios" />
-        <% } %>
-      </div>
-    </form>
-
-
-
-  <% if(!field.isNewRecord) { %>
-    <%- include('../_buttons/delete', { deletePath: deleteFieldPath }) %>
-  <% } %>
-
-  <%- include('../_buttons/cancel', { cancelPath }) %>
+      <%- include('../_buttons/cancel') %>
+    </div>
+  </div>
 </div>
