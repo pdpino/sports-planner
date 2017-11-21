@@ -4,10 +4,7 @@ const _ = require('lodash');
 
 const router = new KoaRouter();
 
-function getParams(params){
-  // REFACTOR!!!
-  return _.pick(params, 'name', 'isPublic', 'sportId', 'dateYear', 'dateMonth', 'dateDay', 'dateHour', 'dateMinute');
-}
+const matchParams = ['name', 'isPublic', 'sportId', 'dateYear', 'dateMonth', 'dateDay', 'dateHour', 'dateMinute'];
 
 router.get('matches', '/', async (ctx) => {
   const matches = await ctx.orm.match.findAll();
@@ -18,7 +15,7 @@ router.get('matches', '/', async (ctx) => {
 router.post('matchCreate', '/', async (ctx) => {
   ctx.requirePlayerLoggedIn();
 
-  const params = getParams(ctx.request.body);
+  const params = ctx.getParams(matchParams);
 
   try {
     const match = await ctx.orm.match.playerCreates(ctx.state.currentPlayer, params);
