@@ -2,25 +2,33 @@
 
   Must exist: teams (withSport), hasModifyPermission (to leave teams), deletePlayerTeamPath (if hasModifyPermission is true)
 
-  Optional: noTeamMessage %>
+  Optional: noTeamsMessage %>
 
 <% if (teams.length > 0) { %>
   <ul>
     <% teams.forEach((team) => { %>
-      <li>
+      <li class="list-item">
         <a class="lilink" href="<%= getTeamPath(team) %>">
           <img class="small-logo" src="<%= team.logo %>"/>
           <div>
-            <%= team.name %> <%= (team.isMember.isCaptain) ? '-- Capitán' : '' %>
-          </div>
-          <div>
-            <%= team.sport.name %>
+            <span>
+              <strong><%= team.name %></strong>
+            </span>
+
+            <% if (team.sport) { %>
+              <span><%= team.sport.name %></span>
+            <% } %>
+
+            <% if (team.isMember.isCaptain) { %>
+              <span>Capitán</span>
+            <% } %>
           </div>
 
           <% if (hasModifyPermission) { %>
             <%- include('../_buttons/delete', {
               deletePath: deletePlayerTeamPath(team),
               message: 'Abandonar equipo',
+              useImage: true,
             }) %>
           <% } %>
         </a>
@@ -29,6 +37,6 @@
   </ul>
 <% } else { %>
   <p>
-    <%= locals.noTeamMessage || 'No hay equipos' %>
+    <%= locals.noTeamsMessage || 'No hay equipos' %>
   </p>
 <% } %>

@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-module.exports = function matchHelpers(app) {
+module.exports = function commentHelpers(app) {
   app.context.canDeleteComment = function(comment){
     return this.state.currentPlayer && this.state.currentPlayer.id === comment.getCommenter().id;
   }

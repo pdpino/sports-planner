@@ -1,4 +1,4 @@
-module.exports = function permissions(app) {
+module.exports = function permissionHelpers(app) {
   app.context.hasAdminPermission = function(){
     return this.state.currentUser && this.state.currentUser.isAdmin();
   }

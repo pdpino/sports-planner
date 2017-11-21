@@ -19,6 +19,17 @@ module.exports = function definecompound(sequelize, DataTypes) {
     compound.belongsTo(models.compoundOwner);
     compound.hasMany(models.field);
     compound.hasMany(models.compoundReview, { as: 'reviews' });
+
+    compound.addScope('api', {
+      include: [{
+        model: sequelize.models.compoundOwner
+      }, {
+        model: sequelize.models.field,
+      }, {
+        model: sequelize.models.compoundReview,
+        as: 'reviews',
+      }]
+    });
   };
 
   compound.prototype.getPendingReview = async function(player, match){

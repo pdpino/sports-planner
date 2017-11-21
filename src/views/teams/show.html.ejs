@@ -18,28 +18,12 @@
     <div id="team-column-center" class="column-40">
       <div id="team-players" class="box-container">
         <h4>Jugadores</h4>
-        <% if(teamMembers.length > 0) { %>
-          <ul>
-            <% teamMembers.forEach( (teamMember) => { %>
-              <li>
-                <a class="lilink" href="<%= getPlayerPath(teamMember) %>"%>>
-                  <img class="small-logo" src="<%=teamMember.photo%>"/>
-                  <div>
-                    <%= teamMember.firstName %> <%= (teamMember.isMember.isCaptain ? '-- capitán del equipo' : '' )%>
-                  </div>
-                  <% if (hasModifyPermission) { %>
-                    <%- include('../_buttons/edit', {
-                      editPath: editTeamMemberPath(teamMember),
-                      message: 'Editar miembro de equipo',
-                    }) %>
-                  <% } %>
-                </a>
-              </li>
-            <% }) %>
-          </ul>
-        <% } else { %>
-          <%= team.name %> no tiene jugadores
-        <% } %>
+        <%- include('../players/_index', {
+          players: teamMembers,
+          isTeamMember: true,
+          editParticipationPath: editTeamMemberPath,
+          editParticipationMessage: 'Editar miembro de equipo'
+        }) %>
 
         <% if (hasModifyPermission) { %>
           <form action="<%= newTeamMemberPath %>">

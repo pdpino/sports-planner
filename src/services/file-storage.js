@@ -9,8 +9,12 @@ class FileStorage {
     });
   }
   upload(fileData, name) {
+    if (!fileData) {
+      // HACK
+      return;
+    }
     cloudinary.uploader.upload(fileData.path, function(result) {
-      console.log(result);
+      console.log("RESULT: ", result);
     }, {
       public_id: name,
       invalidate: true

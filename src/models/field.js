@@ -36,6 +36,19 @@ module.exports = function definefield(sequelize, DataTypes) {
     field.belongsTo(models.compound);
     field.hasMany(models.scheduleBase);
     field.hasMany(models.schedule);
+
+    field.addScope('api', {
+      include: [{
+        model: sequelize.models.sport
+      }, {
+        model: sequelize.models.compound,
+      }]
+    });
+    field.addScope('withCompound', {
+      include: [{
+        model: sequelize.models.compound,
+      }]
+    });
   };
 
   return field;

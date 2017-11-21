@@ -83,7 +83,48 @@ module.exports = function definematch(sequelize, DataTypes) {
         }]
       };
     });
+
+    match.addScope('api', {
+      include: [{
+        model: sequelize.models.sport
+      }, {
+        model: sequelize.models.player
+      }, {
+        model: sequelize.models.team
+      }]
+    });
   };
+
+  match.afterCreate(unWrapDate); // FIXME: not working for build()
+  match.afterFind(unWrapDate);
+
+  /** A player creates a match **/
+  match.playerCreates = async function(player, params) {
+    // Prepare parameters
+    params.name = params.name || match.getDefaultName(player);
+    params.isPublic = Boolean(params.isPublic);
+
+    if (params.dateYear) {
+      params.date = moment(`${params.dateYear} ${params.dateMonth} ${params.dateDay} ${params.dateHour} ${params.dateMinute}`, "YYYY MM DD H:mm");
+    }
+
+    if(!params.date.isValid()){
+      params.date = null;
+    }
+
+    const matchInstance = await match.create(params);
+    await player.addMatch(matchInstance.id, {
+      through: {
+        isAdmin: true,
+        status: 'accepted' // HACK: invitation status harcoded
+      }
+    });
+    return matchInstance;
+  }
+
+  match.getDefaultName = function(player){
+    return (player.firstName) ? `Partido de ${player.firstName}` : 'Partido';
+  }
 
   /** Boolean indicating if the player has modify permission on the match **/
   match.prototype.hasModifyPermission = async function(player){
@@ -136,13 +177,6 @@ module.exports = function definematch(sequelize, DataTypes) {
         status: newStatus || team.isTeamInvited.status
       }
     });
-  }
-
-  match.afterCreate(unWrapDate); // FIXME: not working for build()
-  match.afterFind(unWrapDate);
-
-  match.getDefaultName = function(player){
-    return (player.firstName) ? `Partido de ${player.firstName}` : 'Partido';
   }
 
   match.prototype.getAdmins = async function(){
