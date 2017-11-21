@@ -2,7 +2,7 @@ const KoaRouter = require('koa-router');
 const teamMembersRouter = require('./teamMembers');
 const teamMatchesRouter = require('./teamMatches');
 const teamCommentsRouter = require('./teamComments');
-const FileStorage= require('../services/file-storage');
+const FileStorage = require('../services/file-storage');
 
 const router = new KoaRouter();
 
