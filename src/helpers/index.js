@@ -22,6 +22,35 @@ module.exports = function helpers(app) {
     return false;
   }
 
+  app.context.loadCurrentUser = async function(sessionObject) {
+    // Load user and (player or owner)
+    const currentUser = sessionObject.userId && await this.orm.user.findById(sessionObject.userId);
+    let currentPlayer;
+    let currentOwner;
+
+    if (currentUser){
+      if (currentUser.isPlayer()){
+        currentPlayer = await currentUser.getPlayer();
+      }
+      else if (currentUser.isCompoundOwner()){
+        currentOwner = await currentUser.getCompoundOwner();
+      }
+    } else {
+      sessionObject.userId = 0; // Close session when no player found (e.g. old cookie)
+    }
+
+    Object.assign(this.state, {
+      currentUser,
+      currentPlayer,
+      currentOwner,
+      isLoggedIn: Boolean(currentUser),
+      isPlayerLoggedIn: Boolean(currentPlayer),
+      isOwnerLoggedIn: Boolean(currentOwner),
+      isAdminLoggedIn: this.hasAdminPermission(),
+    });
+  }
+
+
   /**
    * Get the url like: 'http(s)://host(:port)/path/to/resource'
    * Used to display links in the emails
