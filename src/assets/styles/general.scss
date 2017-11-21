@@ -122,6 +122,20 @@ li {
   }
 }
 
+.generator{
+  display:inline-block;
+  border-width: 2px;
+  margin: 25px;
+  padding: 8px;
+  border-style: solid;
+
+
+}
+
+.scheduleBase{
+margin: 50px;
+}
+
 img {
   &.small-logo {
     width: 3em;

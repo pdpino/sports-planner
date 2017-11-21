@@ -10,9 +10,9 @@ export default class ScheduleBaseForm extends React.Component {
     this.state = {
       days:["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"],
       scheduleBases: [],
-      latitude:null,
-      longitude:null,
-      error: null,
+      latitude: 0,
+      longitude:0,
+      error:null,
       generics:[{done:false,hours:'00:00-00:00',day:1,price:0,duration:5},{done:false,hours:'00:00-00:00',day:2,price:0,duration:5},{done:false,hours:'00:00-00:00',day:3,price:0,duration:5},{done:false,hours:'00:00-00:00',day:4,price:0,duration:5},{done:false,hours:'00:00-00:00',day:5,price:0,duration:5},{done:false,hours:'00:00-00:00',day:6,price:0,duration:5},{done:false,hours:'00:00-00:00',day:0,price:0,duration:5}],
     };
     //this.arrayOfHours=this.arrayOfHours.bind(this);
@@ -42,7 +42,6 @@ export default class ScheduleBaseForm extends React.Component {
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
     );
 }
-
 
  floatToStringHour(float){
 
@@ -217,8 +216,6 @@ generateScheduleBase(idx){
   render() {
     return (
       <div className="center">
-      <h1> {this.state.latitude} </h1>
-      <h1> {this.state.error} </h1>
 
         <form onSubmit={this.handleSubmit}>
         <h4>ScheduleBases</h4>
