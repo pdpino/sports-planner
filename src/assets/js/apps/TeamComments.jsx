@@ -6,5 +6,6 @@ export default function App(props) {
   return <TeamComments
           {...props}
           canSeePrivateComments={props.canSeePrivateComments === 'true'}
+          canPublicComment={props.canPublicComment === 'true'}
           />;
 }
