@@ -12,6 +12,13 @@ function displayDeleteButton(comment, onDelete){
 }
 
 function displayCommentList(comments, onDelete){
+  if (comments.length == 0){
+    return (
+      <p>
+        No hay comentarios
+      </p>
+    );
+  }
   const displayedComments = [];
   comments.forEach((comment, index) => {
     displayedComments.push(
