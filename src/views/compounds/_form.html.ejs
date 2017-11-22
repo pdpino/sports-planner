@@ -1,62 +1,11 @@
-<div
-  id="use-api-react-app"
-  data-compound-owner-id="1"
-  >
-</div>
-
 <div id="body-container">
   <div class="jumbotron-center">
-    <div class="box-container form-container">
-      <h1> <%= (compound.isNewRecord) ? 'Nuevo recinto' : 'Editar recinto' %></h1>
 
-      <%- include('../_error/snippet', { errors: locals.errors }) %>
-
-      <div>
-        <form action="<%= submitCompoundPath %>" method="post" enctype="multipart/form-data">
-          <% if(!compound.isNewRecord) { %>
-            <div>
-              <input type="hidden" name="_method" value="patch" />
-            </div>
-          <% } %>
-          <div>
-            <label for="name">Nombre</label>
-            <input type="text" name="name" value="<%= compound.name %>" required/>
-          </div>
-          <div>
-            <label for="localEmail">E-Mail</label>
-            <input type="text" name="localEmail" value="<%= compound.localEmail %>" />
-          </div>
-          <div>
-            <label for="photo">Foto</label>
-            <input type="file" name="photo"/>
-          </div>
-          <div>
-            <label for="address">Dirección</label>
-            <input type="text" name="address" value="<%= compound.address %>" />
-          </div>
-          <div>
-            <label for="localPhone">Teléfono</label>
-            <input type="text" name="localPhone" value="<%= compound.localPhone %>" />
-          </div>
-          <div>
-            <% if(compound.isNewRecord) { %>
-              <input type="submit" name="create" value="Crear" />
-            <% } else { %>
-              <input type="submit" name="update" value="Guardar Cambios" />
-            <% } %>
-          </div>
-        </form>
-      </div>
-
-
-      <% if(!compound.isNewRecord) { %>
-        <%- include('../_buttons/delete', {
-          deletePath: deleteCompoundPath,
-          message: 'Eliminar recinto',
-        }) %>
-      <% } %>
-
-      <%- include('../_buttons/cancel') %>
+    <div id="use-api-react-app"
+      class="box-container"
+      data-compound-owner-id="1"
+      >
     </div>
+
   </div>
 </div>
