@@ -58,18 +58,6 @@
         </form>
       </div>
 
-      <% if (!match.isNewRecord) { %>
-        <% if (schedule){ %>
-          <form action="<%= removeSchedulePath %>" method="post">
-            <input type="submit" value="Anular Reserva" />
-          </form>
-        <% } else { %>
-          <form action="<%= selectCompoundPath %>" method="get">
-            <input type="submit" value="Pedir Cancha" />
-          </form>
-        <% } %>
-      <% } %>
-
       <%- include('../_buttons/cancel') %>
 
     </div>

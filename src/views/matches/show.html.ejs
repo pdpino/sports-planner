@@ -30,15 +30,30 @@
       <div id="match-field" class="box-container">
         <h4> Cancha para el partido </h4>
         <% if(schedule && field) { %>
-          <%= field.name %>
-          <%= schedule.status %>
-          <%= schedule.hours %>
-          <%= prettyTimestamp(schedule.date) %>
+          <div>
+            <span>
+              <strong>
+                <a href="<%= getFieldPath(field) %>"><%= field.name %></a>
+              </strong>
+            </span>
+            <span><%= schedule.status %></span>
+            <span><%= prettyDatestamp(schedule.date) %></span>
+            <span><%= schedule.hours %></span>
+          </div>
+
+          <form action="<%= removeSchedulePath %>" method="post">
+            <input type="submit" value="Anular Reserva" />
+          </form>
         <% } else { %>
-          No hay canchas pedidas
+          <p>No hay canchas pedidas</p>
+
+          <form action="<%= selectCompoundPath %>" method="get">
+            <input type="submit" value="Pedir Cancha" />
+          </form>
         <% } %>
 
       </div>
+
 
     </div>
 
@@ -113,12 +128,14 @@
         </div>
       <% } %>
 
-      <div id="match-comments-react-app"
-        class="box-container"
-        data-match-id="<%= match.id %>"
-        data-can-comment="<%= canComment %>"
-        >
-      </div>
+      <% if (hasCommentPermission) { %>
+        <div id="match-comments-react-app"
+          class="box-container"
+          data-match-id="<%= match.id %>"
+          data-can-comment="<%= hasCommentPermission %>"
+          >
+        </div>
+      <% } %>
 
     </div>
 

@@ -13,7 +13,7 @@ async function getFriendAndStatus(ctx){
 router.post('friendCreate', '/:friendId', async (ctx) => {
   const { friend, friendshipStatus } = await getFriendAndStatus(ctx);
 
-  ctx.assert(ctx.orm.player.canAddFriend(friendshipStatus), 400, 'No se puede añadir amigo');
+  ctx.assert(ctx.orm.player.canAddFriend(friendshipStatus), 409, 'No se puede añadir amigo');
 
   try {
     await ctx.state.player.askFriend(friend);
@@ -21,13 +21,13 @@ router.post('friendCreate', '/:friendId', async (ctx) => {
     ctx.redirect(ctx.router.url('player', friend.id));
   } catch (validationError) {
     const error = ctx.parseValidationError(validationError);
-    ctx.throw(400, `No se pudo agregar amigo: ${error}`);
+    ctx.throw(409, `No se pudo agregar amigo: ${error}`);
   }
 });
 
 router.patch('friendAccept', '/:friendId', async (ctx) => {
   const { friend, friendshipStatus } = await getFriendAndStatus(ctx);
-  ctx.assert(ctx.orm.player.canAcceptFriend(friendshipStatus), 400, 'No se puede aceptar amigo');
+  ctx.assert(ctx.orm.player.canAcceptFriend(friendshipStatus), 409, 'No se puede aceptar amigo');
 
   try {
     ctx.state.player.acceptFriend(friend);
@@ -36,13 +36,13 @@ router.patch('friendAccept', '/:friendId', async (ctx) => {
     ctx.redirect(ctx.router.url('player', friend.id));
   } catch (validationError) {
     const error = ctx.parseValidationError(validationError);
-    ctx.throw(400, `No se pudo aceptar amigo: ${error}`);
+    ctx.throw(409, `No se pudo aceptar amigo: ${error}`);
   }
 });
 
 router.delete('friendDelete', '/:friendId', async (ctx) => {
   const { friend, friendshipStatus } = await getFriendAndStatus(ctx);
-  ctx.assert(ctx.orm.player.canDeleteFriend(friendshipStatus), 400, 'No se puede eliminar amigo');
+  ctx.assert(ctx.orm.player.canDeleteFriend(friendshipStatus), 409, 'No se puede eliminar amigo');
 
   // OPTIMIZE: avoid 2 queries (2 queries ensure to delete the relation)
   await ctx.state.player.removeFriend(friend);

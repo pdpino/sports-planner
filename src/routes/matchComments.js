@@ -10,7 +10,7 @@ function getParams(params){
 async function requireCommentPermission(ctx){
   // REFACTOR ?
   const hasCommentPermission = await ctx.state.match.isPlayerInvited(ctx.state.currentPlayer);
-  ctx.assert(hasCommentPermission, 403);
+  ctx.assert(hasCommentPermission, 403, 'No tienes permisos para los comentarios del partido');
 }
 
 
