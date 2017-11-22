@@ -113,14 +113,23 @@ module.exports = function helpers(app) {
     return _.differenceBy(collection1, collection2, (element) => element.id);
   }
 
-  app.context.prettyTimestamp = function(date){
+  app.context.parseDate = function(date){
     const parsedDate = moment(date);
     if (!parsedDate.isValid()){
       // DEBUG
-      console.log("WARNING: prettyTimestamp got invalid date: ", date);
+      console.log("WARNING: parseDate got invalid date: ", date);
     }
-    return parsedDate.isValid() ? parsedDate.format('YYYY-MMM-D H:mm') : '';
+    return parsedDate.isValid() ? parsedDate : '';
   }
+
+  app.context.prettyTimestamp = function(date){
+    return this.parseDate(date).format('YYYY-MMM-D H:mm');
+  }
+
+  app.context.prettyDatestamp = function(date){
+    return this.parseDate(date).format('YYYY-MMM-D');
+  }
+
 
   /** Wrappers to get a pretty timestamp **/
   app.context.createdAtTimestamp = function(element){
