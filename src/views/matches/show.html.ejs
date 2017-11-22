@@ -128,12 +128,14 @@
         </div>
       <% } %>
 
-      <div id="match-comments-react-app"
-        class="box-container"
-        data-match-id="<%= match.id %>"
-        data-can-comment="<%= canComment %>"
-        >
-      </div>
+      <% if (hasCommentPermission) { %>
+        <div id="match-comments-react-app"
+          class="box-container"
+          data-match-id="<%= match.id %>"
+          data-can-comment="<%= canComment %>"
+          >
+        </div>
+      <% } %>
 
     </div>
 

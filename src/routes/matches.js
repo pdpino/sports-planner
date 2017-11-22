@@ -188,7 +188,7 @@ router.get('match', '/:id', async (ctx) => {
   const field = schedule && await ctx.orm.field.findById(schedule.fieldId);
   const comments = await match.getComments();
 
-  const canComment = await match.isPlayerInvited(ctx.state.currentPlayer);
+  const hasCommentPermission = await match.isPlayerInvited(ctx.state.currentPlayer);
   // HACK: this is being called twice, once in requireSeeMatchPermission and once here
 
   const reviewsEnabled = match.areReviewsEnabled();
@@ -222,7 +222,7 @@ router.get('match', '/:id', async (ctx) => {
       matchId: match.id,
       playerId: player.id,
     }),
-    canComment,
+    hasCommentPermission,
     comments,
     createCommentPath: ctx.router.url('matchCommentCreate', { matchId: match.id }),
     deleteCommentPath: (comment) => ctx.router.url('matchCommentDelete', {
