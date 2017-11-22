@@ -86,7 +86,9 @@ router.get('scheduleBaseNew', '/new', async (ctx) => {
     arrayOfHour,
     scheduleBase,
     daysOfWeek,
+    hey:"",
     field: ctx.state.field,
+    compound: ctx.state.compound,
     modules: modules(ctx.state.field),
     submitScheduleBasePath: ctx.router.url('scheduleBaseCreate',{compoundId:ctx.state.compound.id,fieldId:ctx.state.field.id}),
     cancelPath: ctx.router.url('field',{id:ctx.state.field.id, compoundId:ctx.state.compound.id}),
@@ -94,10 +96,12 @@ router.get('scheduleBaseNew', '/new', async (ctx) => {
 });
 
 router.post('scheduleBaseCreate', '/', async (ctx) => {
+  console.log(ctx.body)
+
 
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
   ctx.requireOwnerModifyPermission(compoundOwner);
-  console.log("HOLAAA");
+  console.log(ctx.body);
   try {
     for (i=0; i<7*modules(ctx.state.field);i++){
       console.log(ctx.request.body.scheduleBases[i]);
@@ -112,10 +116,13 @@ router.post('scheduleBaseCreate', '/', async (ctx) => {
       const scheduleBase = ctx.orm.scheduleBase.create(ctx.request.body.scheduleBases[i]);
       scheduleBases.push(scheduleBase);
     }
+    console.log(ctx.body)
     await ctx.render('scheduleBases/new', {
       field: ctx.state.field,
       arrayOfHour,
       daysOfWeek,
+      hey:ctx.request.body,
+        compound: ctx.state.compound,
       scheduleBase: ctx.orm.scheduleBase.build(),
       scheduleBases,
       errors: validationError.errors,
@@ -217,8 +224,9 @@ router.delete('scheduleBaseDelete', '/', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
   ctx.requireOwnerModifyPermission(compoundOwner);
   const scheduleBases = await ctx.state.field.getScheduleBases();
+  const howmany=scheduleBases.length;
   console.log(scheduleBases);
-  for (i=0; i<7*modules(ctx.state.field);i++){
+  for (i=0; i<howmany;i++){
     console.log(scheduleBases[i]);
     await scheduleBases[i].destroy();
   }
