@@ -45,21 +45,12 @@ app.use(async (ctx, next) => {
   try{
     await next();
   } catch(error) {
-    console.log("ERROR RECEIVED IN API: ", error); // DEBUG
-    if (error.name === 'NotFoundError') {
-      ctx.body = {
-        message: error.message,
-        details: error.details
-      };
-    } else if (error.name === 'UnauthorizedError') {
-      ctx.body = {
-        message: 'No tienes autorización',
-        details: error.message
-      };
-    } else {
-      console.log("ERROR NOT RECOGNIZED"); // DEBUG
-      throw error; // Upper middleware can handle it
-    }
+    ctx.body = {
+      errors: {
+        status: error.status,
+        detail: error.message
+      }
+    };
 
   }
 });
