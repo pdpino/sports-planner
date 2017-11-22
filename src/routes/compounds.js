@@ -29,17 +29,23 @@ router.get('compoundNew', '/new', async (ctx) => {
 
 router.post('compoundCreate', '/', async (ctx) => {
   ctx.requireOwnerLoggedIn();
-
+  console.log("hello");
+  if(ctx.request.body.fields){
   const params = ctx.request.body.fields; // TODO: parse, permit and require
   params.compoundOwnerId = ctx.state.currentOwner.id;
-
+}
   try {
+    if(ctx.request.body.fields){
     const compound = await ctx.orm.compound.create(params);
 
     params.photo = FileStorage.url("compound" + compound.id,{});
     await compound.update(params);
     FileStorage.upload(ctx.request.body.files.photo, "compound" + compound.id);
-
+}
+else{
+  ctx.request.body.compoundOwnerId=ctx.state.currentOwner.id;
+  const compound = await ctx.orm.compound.create(ctx.request.body);
+}
     ctx.redirect(ctx.router.url('compound', { id: compound.id }));
   } catch (validationError) {
     await ctx.render('compounds/new', {
