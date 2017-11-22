@@ -99,27 +99,13 @@ app.use(async (ctx, next) => {
     await next();
   } catch(error) {
     console.log("ERROR RECEIVED: ", error); // DEBUG
-    if (error.name === 'NotFoundError') {
-      await ctx.render('_error/page', {
-        message: error.message,
-        details: error.details,
-      });
-    } else if (error.name === 'ForbiddenError') {
-      // TODO: Render home or same page where the user was, but with errors
-      await ctx.render('_error/page', {
-        message: error.message,
-        details: error.details,
-      });
-    } else if (error.name === 'BadRequestError') {
-      // TODO: Render home or same page where the user was, but with errors
-      await ctx.render('_error/page', {
-        message: error.message,
-        details: error.details,
-      });
-    } else {
-      console.log("ERROR NOT RECOGNIZED"); // DEBUG
-      throw error; // Upper middleware can handle it
-    }
+
+    // TODO: render/redirect home or same page where the user was, but with errors
+    await ctx.render('_error/page', {
+      // name: error.name,
+      status: error.status,
+      message: error.message,
+    });
 
   }
 });

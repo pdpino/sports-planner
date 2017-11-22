@@ -45,13 +45,14 @@ app.use(async (ctx, next) => {
   try{
     await next();
   } catch(error) {
+    console.log("ERROR RECEIVED: ", error); // DEBUG
     ctx.body = {
       errors: {
         status: error.status,
+        // title: error.name,
         detail: error.message
       }
     };
-
   }
 });
 
