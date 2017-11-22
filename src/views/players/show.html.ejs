@@ -37,7 +37,7 @@
         <div id="player-profile-info">
           <p>
             Fecha de nacimiento: <%= player.birthday %>
-            <br>
+            <br> <%# HACK %>
             <%= player.age %> años
           </p>
 
@@ -53,21 +53,11 @@
 
       <div id="player-profile-friends" class="box-container">
         <h4>Amigos</h4>
-        <% if(friends.length > 0) { %>
-          <ul>
-            <% friends.forEach((friend) => { %>
-              <li>
-                <a class="lilink" href="<%= getPlayerPath(friend) %>">
-                  <div>
-                    <%= friend.getName() %>
-                  </div>
-                </a>
-              </li>
-            <% }) %>
-          </ul>
-        <% } else { %>
-          No tiene amigos
-        <% } %>
+        <%- include('../players/_index', {
+          players: friends,
+          showEmail: true,
+          noPlayersMessage: 'No tiene amigos'
+        }) %>
       </div>
 
 
@@ -96,27 +86,34 @@
         <% if(playerSports.length > 0) { %>
           <ul>
             <% playerSports.forEach((sport) => { %>
-              <li>
+              <li class="list-item">
                 <a class="lilink" href="<%= getSportPath(sport) %>">
                   <img class="small-logo" src="<%= sport.logo %>"/>
                   <div>
-                    <%= sport.name %>
-                  </div>
-                  <div class="position">
-                    posición (es): <%= sport.plays.position %>
-                    <% if(hasModifyPermission) { %>
-                      <%- include('../_buttons/edit', {
-                        editPath: editPlayerSportPath(sport),
-                        message: 'Editar deporte'
-                      }) %>
+                    <span>
+                      <%= sport.name %>
+                    </span>
+                    <% if (sport.plays.position) { %>
+                      <span>
+                        <%= sport.plays.position %>
+                      </span>
                     <% } %>
                   </div>
+                  <% if(hasModifyPermission) { %>
+                    <%- include('../_buttons/edit', {
+                      editPath: editPlayerSportPath(sport),
+                      message: 'Editar deporte',
+                      useImage: true,
+                    }) %>
+                  <% } %>
                 </a>
               </li>
             <% }) %>
           </ul>
         <% } else { %>
-          No practica ningún deporte
+          <p>
+            No practica ningún deporte
+          </p>
         <% } %>
 
         <% if(hasModifyPermission) { %>
@@ -128,8 +125,17 @@
       </div>
 
       <div id="player-profile-teams" class="box-container">
-        <h4> Equipos a los que pertenece </h4>
-        <%- include('../teams/_index-small.html.ejs', { teams: playerTeams, noTeamMessage: 'No pertenece a ningún equipo' }) %>
+        <h4> Equipos </h4>
+        <%- include('../teams/_index-small.html.ejs', {
+          teams: playerTeams,
+          noTeamsMessage: 'No pertenece a ningún equipo'
+        }) %>
+
+        <% if(hasModifyPermission) { %>
+          <form action="<%= newTeamPath %>">
+            <input type="submit" value="Crear Equipo"/>
+          </form>
+        <% } %>
 
       </div>
 
@@ -143,7 +149,7 @@
 
         <% if(hasModifyPermission) { %>
           <form action="<%= newPlayerMatchPath %>">
-              <input type="submit" value="Añadir Partido" />
+            <input type="submit" value="Añadir Partido" />
           </form>
         <% } %>
 

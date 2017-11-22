@@ -70,47 +70,6 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
   cursor: pointer;
 }
 
-ul {
-  list-style-type: none;
-}
-
-li {
-  padding: 10px;
-  overflow: auto;
-  &:hover {
-    background: #d2d2d2; // TODO: choose good color
-    cursor: pointer;
-  }
-  img {
-    float: left;
-    margin: 0 15px 0 0;
-  }
-  p {
-    font: 200 12px/1.5 Georgia, Times New Roman, serif;
-  }
-}
-
-.lilink {
-  display: block;
-  font-family: 'Helvetica Neue', sans-serif;
-  font-size: 14px;
-  line-height: 24px;
-  margin: 0 0 24px;
-  text-justify: inter-word;
-  color: black;
-  text-decoration: none;
-  &:hover {
-    display: block;
-    font-family: 'Helvetica Neue', sans-serif;
-    font-size: 14px;
-    line-height: 24px;
-    margin: 0 0 24px;
-    text-justify: inter-word;
-    color: black;
-    text-decoration: none;
-  }
-}
-
 img {
   &.small-logo {
     width: 3em;

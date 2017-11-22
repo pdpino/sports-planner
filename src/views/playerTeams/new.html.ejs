@@ -3,9 +3,9 @@
     <div class="box-container new-invitation-container">
       <h1>Agregar Equipo</h1>
 
-      <%- include('../teams/_index-radio', { teams: joinableTeams, submitPath: submitPlayerTeamPath, noTeamMessage: 'No quedan equipos para agregar' }) %>
+      <%- include('../teams/_index-radio', { teams: joinableTeams, submitPath: submitPlayerTeamPath, noTeamsMessage: 'No quedan equipos para agregar' }) %>
 
-      <%- include('../_buttons/cancel', { cancelPath }) %>
+      <%- include('../_buttons/cancel') %>
     </div>
   </div>
 </div>

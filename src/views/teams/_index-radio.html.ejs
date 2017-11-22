@@ -1,6 +1,6 @@
 <%# Must exist: teams, submitPath
 
-  Optional: buttonMessage, noTeamMessage %>
+  Optional: buttonMessage, noTeamsMessage %>
 
 <% if (teams.length > 0) { %>
   <form action="<%= submitPath %>" method="post">
@@ -20,6 +20,6 @@
   </form>
 <% } else { %>
   <p>
-    <%= locals.noTeamMessage || 'No hay equipos' %>
+    <%= locals.noTeamsMessage || 'No hay equipos' %>
   </p>
 <% } %>

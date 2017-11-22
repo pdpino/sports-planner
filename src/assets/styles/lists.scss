@@ -1,0 +1,86 @@
+ul {
+  list-style-type: none;
+}
+
+li {
+  padding: 10px;
+  overflow: auto;
+  &:hover {
+    background: #d2d2d2; // TODO: choose good color
+    cursor: pointer;
+  }
+  img {
+    float: left;
+    margin: 0 15px 0 0;
+  }
+  p {
+    font: 200 12px/1.5 Georgia, Times New Roman, serif;
+  }
+}
+
+.lilink {
+  display: block;
+  font-family: 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  line-height: 24px;
+  margin: 0;
+  text-justify: inter-word;
+  color: black;
+  text-decoration: none;
+  &:hover {
+    display: block;
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 14px;
+    line-height: 24px;
+    margin: 0;
+    text-justify: inter-word;
+    color: black;
+    text-decoration: none;
+  }
+}
+
+.list-item {
+  // This class is used to list matches, teams, players, etc
+  // The photo is in the left (if any), the text is in the middle (stacked text)
+  // and the button(s) is in the right (if any)
+  // See usage examples by searching class="list-item"
+
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  position: relative;
+  margin: 0;
+  padding: 0.8em 0;
+  height: 100%;
+
+  border-bottom: 1px gray solid;
+
+  &:hover {
+    // HACK: this needs to be done to override lilink behaviour
+    display: flex;
+    margin: 0;
+    // padding: 0 2em;
+  }
+
+  img, div, form {
+    display: inline-block;
+  }
+
+  img {
+    left: 0;
+    position: absolute;
+  }
+
+  div {
+    // left: 0;
+    top: 0;
+  }
+
+  form {
+    right: 0;
+  }
+
+  span {
+    display: block;
+  }
+}

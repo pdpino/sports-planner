@@ -22,6 +22,48 @@ module.exports = function helpers(app) {
     return false;
   }
 
+  app.context.loadCurrentUser = async function(sessionObject) {
+    // Load user and (player or owner)
+    const currentUser = sessionObject.userId && await this.orm.user.findById(sessionObject.userId);
+    let currentPlayer;
+    let currentOwner;
+
+    if (currentUser){
+      if (currentUser.isPlayer()){
+        currentPlayer = await currentUser.getPlayer();
+      }
+      else if (currentUser.isCompoundOwner()){
+        currentOwner = await currentUser.getCompoundOwner();
+      }
+    } else {
+      sessionObject.userId = 0; // Close session when no player found (e.g. old cookie)
+    }
+
+    Object.assign(this.state, {
+      currentUser,
+      currentPlayer,
+      currentOwner,
+      isLoggedIn: Boolean(currentUser),
+      isPlayerLoggedIn: Boolean(currentPlayer),
+      isOwnerLoggedIn: Boolean(currentOwner),
+      isAdminLoggedIn: this.hasAdminPermission(),
+    });
+  }
+
+  /** Filter params on ctx.request.body (or fields or files, according to content-type) with whiteList **/
+  app.context.getParams = function(whiteList){
+    let paramsObject = {};
+
+    if (this.request.headers['content-type'].startsWith('multipart')) {
+      Object.assign(paramsObject, this.request.body.fields, this.request.body.files);
+      // NOTE: it is assumed that this does not copy the files
+    } else {
+      Object.assign(paramsObject, this.request.body);
+    }
+
+    return _.pick(paramsObject, ...whiteList);
+  }
+
   /**
    * Get the url like: 'http(s)://host(:port)/path/to/resource'
    * Used to display links in the emails
@@ -42,7 +84,7 @@ module.exports = function helpers(app) {
 
   /** FUTURE: Wrapper to accept html and json **/
   // app.context.acceptFormats = function(callbackHtml, callbackJson){
-  //   switch (ctx.accepts('html', 'json')) {
+  //   switch (this.accepts('html', 'json')) {
   //     case 'html':
   //       callbackHtml();
   //       break;
@@ -71,14 +113,23 @@ module.exports = function helpers(app) {
     return _.differenceBy(collection1, collection2, (element) => element.id);
   }
 
-  app.context.prettyTimestamp = function(date){
+  app.context.parseDate = function(date){
     const parsedDate = moment(date);
     if (!parsedDate.isValid()){
       // DEBUG
-      console.log("WARNING: prettyTimestamp got invalid date: ", date);
+      console.log("WARNING: parseDate got invalid date: ", date);
     }
-    return parsedDate.isValid() ? parsedDate.format('YYYY-MMM-D H:mm') : '';
+    return parsedDate.isValid() ? parsedDate : '';
   }
+
+  app.context.prettyTimestamp = function(date){
+    return this.parseDate(date).format('YYYY-MMM-D H:mm');
+  }
+
+  app.context.prettyDatestamp = function(date){
+    return this.parseDate(date).format('YYYY-MMM-D');
+  }
+
 
   /** Wrappers to get a pretty timestamp **/
   app.context.createdAtTimestamp = function(element){
