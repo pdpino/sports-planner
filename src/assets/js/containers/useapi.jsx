@@ -12,7 +12,7 @@ export default class UseAPIForm extends React.Component {
       latitude:null,
       longitude:null,
       error: null,
-      compound: {name:"",localEmail:"",photo:"",address:"",localPhone:"",compoundOwnerId:this.props.compoundOwnerId},
+      compound: {name:"",localEmail:"",photo:"",address:"",localPhone:""},
     }
     this.handleSubmit=this.handleSubmit.bind(this);
   }
@@ -91,7 +91,9 @@ handleCompoundSelection(e){
   }
 
 handleSubmit(e){
+  alert(Object.keys(this.state.compound));
   useAPIService.postCompound(this.state.compound);
+  alert("DONE");
 }
 
 
