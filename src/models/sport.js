@@ -17,6 +17,8 @@ module.exports = function definesport(sequelize, DataTypes) {
   });
   sport.associate = function associate(models) {
     sport.hasMany(models.team);
+    sport.hasMany(models.match);
+    sport.hasMany(models.field);
     sport.belongsToMany(models.player, { through: models.plays });
   };
 
