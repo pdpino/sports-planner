@@ -12,10 +12,14 @@
       }
     ],
     "react"
+
   ],
   "plugins": [
+    "transform-class-properties",
     "react-hot-loader/babel",
     "transform-object-rest-spread",
-    "transform-runtime"
+    "transform-runtime",
+
+
   ]
 }
