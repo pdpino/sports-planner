@@ -24,6 +24,6 @@ module.exports = function matchHelpers(app) {
   app.context.requireSeeMatchPermission = async function(match){
     const hasSeePermission = match.isPublic
       || await match.isPlayerInvited(this.state.currentPlayer);
-    this.assert(hasSeePermission, 403, "No tienes permisos");
+    this.assert(hasSeePermission, 401, 'No tienes permisos');
   }
 };
