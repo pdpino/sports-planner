@@ -10,9 +10,8 @@ export default class ScheduleBaseForm extends React.Component {
     this.state = {
       days:["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"],
       scheduleBases: [],
-      latitude:null,
-      longitude:null,
-      error: null,
+
+
       generics:[{done:false,hours:'00:00-00:00',day:1,price:0,duration:5},{done:false,hours:'00:00-00:00',day:2,price:0,duration:5},{done:false,hours:'00:00-00:00',day:3,price:0,duration:5},{done:false,hours:'00:00-00:00',day:4,price:0,duration:5},{done:false,hours:'00:00-00:00',day:5,price:0,duration:5},{done:false,hours:'00:00-00:00',day:6,price:0,duration:5},{done:false,hours:'00:00-00:00',day:0,price:0,duration:5}],
     };
     //this.arrayOfHours=this.arrayOfHours.bind(this);
@@ -23,25 +22,12 @@ export default class ScheduleBaseForm extends React.Component {
     //this.handleGenericDurationChange=this.handleGenericDurationChange.bind(this);
     //this.handleScheduleBasePriceChange=this.handleScheduleBasePriceChange.bind(this);
     //this.handleScheduleBaseDayChange=this.handleScheduleBaseDayChange.bind(this);
-    //this.handleSubmit=this.handleSubmit.bind(this);
+    this.handleSubmit=this.handleSubmit.bind(this);
     //this.handleAddScheduleBase=this.handleAddScheduleBase.bind(this);
     //this.handleRemoveScheduleBase=this.handleRemoveScheduleBase.bind(this);
     //this.generateScheduleBase=this.generateScheduleBase.bind(this);
   }
 
-  componentDidMount() {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        this.setState({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          error: null,
-        });
-      },
-      (error) => this.setState({ error: error.message }),
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
-    );
-}
 
 
  floatToStringHour(float){
@@ -72,6 +58,21 @@ export default class ScheduleBaseForm extends React.Component {
 }
 
 
+componentDidMount(){
+
+
+this.hello();
+
+
+
+}
+
+async hello(){
+  const lel = await scheduleBasesService.get(this.props.compoundId, this.props.fieldId);
+  alert(Object.keys(lel.scheduleBases[0]));
+  alert(lel.scheduleBases[0].weekday);
+  this.setState({scheduleBases:lel.scheduleBases});
+}
 
  modules(generic){
 
@@ -191,10 +192,12 @@ handleScheduleBaseDayChange(idx,e){
 
 handleSubmit(e){
 
+  console.log("HELLLOOOOO!!")
+  scheduleBasesService.postBases(this.props.compoundId, this.props.fieldId, this.state);
   }
 
 handleAddScheduleBase(didx,e){
-    this.setState({ scheduleBases: this.state.scheduleBases.concat([{ hours:'00:00 - 00:00',price: 0,weekday:this.state.generics[didx].day }]) });
+    this.setState({ scheduleBases: this.state.scheduleBases.concat([{ hours:'00:00 - 00:00',price: 0,weekday:this.state.generics[didx].day,fieldId:this.props.fieldId }]) });
   }
 
 handleRemoveScheduleBase(idx){
@@ -202,13 +205,14 @@ handleRemoveScheduleBase(idx){
   }
 
 generateScheduleBase(idx){
+
     const arrayhours= this.arrayOfHours(this.state.generics[idx]);
 
     const modules= this.modules(this.state.generics[idx]);
     var cachar=this.state.scheduleBases;
 
         for (var i = 0; i < modules; i++) {
-          cachar.push({ hours:arrayhours[i],price: this.state.generics[idx].price,weekday:this.state.generics[idx].day }) ;
+          cachar.push({ hours:arrayhours[i],price: this.state.generics[idx].price,weekday:this.state.generics[idx].day,fieldId:this.props.fieldId }) ;
         }
         this.setState({scheduleBases: cachar});
   }
@@ -217,11 +221,11 @@ generateScheduleBase(idx){
   render() {
     return (
       <div className="center">
-      <h1> {this.state.latitude} </h1>
-      <h1> {this.state.error} </h1>
+
 
         <form onSubmit={this.handleSubmit}>
         <h4>ScheduleBases</h4>
+
         {this.state.generics.map((generic, idx) => (
         <div class="generator">
           <p> {this.state.days[generic.day]} </p>

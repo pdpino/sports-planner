@@ -2,72 +2,18 @@
 
   <h1> <%= (scheduleBase.isNewRecord) ? 'Nuevo Horario Base' : 'Editar Horario Base' %></h1>
   <%- include('../_error/snippet', { errors: locals.errors }) %>
+
+  
+
   <div
     id="schedule-bases-react-app"
+    data-field-id="<%= field.id %>"
+    data-compound-id="<%= compound.id %>"
     >
   </div>
 
 
-  <form action="<%= submitScheduleBasePath %>" method="post">
-    <% if(!scheduleBase.isNewRecord) { %>
-      <div>
-        <input type="hidden" name="_method" value="patch" />
-      </div>
-    <% } %>
-    <table>
-      <tr>
-        <th>Tiempo</th>
-        <th>Domingo</th>
-        <th>Lunes</th>
-        <th>Martes</th>
-        <th>Miércoles</th>
-        <th>Jueves</th>
-        <th>Viernes</th>
-        <th>Sábado</th>
-      </tr>
-      <% for (let j=0;j<modules;j++) { %>
-          <tr>
-            <th>
-              <label for="hours"><%=arrayOfHour[j]%> </label>
-            </th>
-            <% for (let i=0;i<7;i++) { %>
-              <td>
-                <div>
-                  <input type="hidden" name="scheduleBases[<%= modules*i + j %>][weekday]" value="<%=i%>" />
-                </div>
 
-                <div>
-                  <input type="hidden" name="scheduleBases[<%= modules*i + j %>][hours]" value="<%= arrayOfHour[j]%>" />
-                </div>
-
-                <div>
-                  <input type="hidden" name="scheduleBases[<%= modules*i + j %>][priority]" value="<%= 1 %>" />
-                </div>
-
-                <div>
-                  <label for="open">Disponible?</label>
-                  <input type="checkbox" name="scheduleBases[<%= modules*i + j %>][open]"  <%= scheduleBases[modules*i + j].open ? 'checked' : '' %> ></input>
-                </div>
-
-                <div>
-                  <input type="hidden" name="scheduleBases[<%= modules*i + j %>][fieldId]" value="<%= field.id %>" />
-                </div>
-                  <div id="price">
-                  <input type="number" class="price" name="scheduleBases[<%= modules*i + j %>][price]" value="<%=scheduleBases[modules*i + j].price %>"
-                </div>
-              </td>
-            <% } %>
-          </tr>
-      <% } %>
-    </table>
-    <div>
-      <% if(scheduleBase.isNewRecord) { %>
-        <input type="submit" name="create" value="Crear" />
-      <% } else { %>
-        <input type="submit" name="update" value="Guardar Cambios" />
-      <% } %>
-    </div>
-  </form>
 
   <% if(!scheduleBase.isNewRecord) { %>
     <form action="<%= deleteScheduleBasePath %>" method="post">

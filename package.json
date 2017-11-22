@@ -68,6 +68,7 @@
     "sequelize": "^4.13.0",
     "sequelize-cli": "https://github.com/IIC2513-2017-2/sequelize-cli#iic2513-version",
     "style-loader": "^0.18.2",
+    "superagent": "^3.8.1",
     "webpack": "^3.6.0"
   },
   "engines": {
