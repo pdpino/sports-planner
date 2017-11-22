@@ -149,16 +149,11 @@ router.post('matchCreate', '/', async (ctx) => {
 router.get('matchEdit', '/:id/edit', async (ctx) => {
   const match = await ctx.findById(ctx.orm.match, ctx.params.id);
   await ctx.requirePlayerModifyPermission(match);
-  const schedule = await match.getSchedule();
 
   await ctx.render('matches/edit', {
     match,
-    schedule,
     sports: ctx.state.allSports,
     submitMatchPath: ctx.router.url('matchUpdate', match.id),
-    selectCompoundPath: ctx.router.url('selectCompound', {id: ctx.params.id}),
-    removeSchedulePath: ctx.router.url('removeSchedule', match.id),
-
     cancelPath: ctx.router.url('match', { id: ctx.params.id }),
   });
 });
@@ -245,6 +240,8 @@ router.get('match', '/:id', async (ctx) => {
       matchId: match.id,
       id: team.id
     }),
+    selectCompoundPath: ctx.router.url('selectCompound', {id: ctx.params.id}),
+    removeSchedulePath: ctx.router.url('removeSchedule', match.id),
     deleteMatchPath: ctx.router.url('matchDelete', match.id),
   });
 });

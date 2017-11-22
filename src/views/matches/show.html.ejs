@@ -34,11 +34,20 @@
           <%= schedule.status %>
           <%= schedule.hours %>
           <%= prettyTimestamp(schedule.date) %>
+
+          <form action="<%= removeSchedulePath %>" method="post">
+            <input type="submit" value="Anular Reserva" />
+          </form>
         <% } else { %>
-          No hay canchas pedidas
+          <p>No hay canchas pedidas</p>
+
+          <form action="<%= selectCompoundPath %>" method="get">
+            <input type="submit" value="Pedir Cancha" />
+          </form>
         <% } %>
 
       </div>
+
 
     </div>
 

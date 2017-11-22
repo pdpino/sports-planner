@@ -108,7 +108,7 @@ module.exports = function definematch(sequelize, DataTypes) {
       params.date = moment(`${params.dateYear} ${params.dateMonth} ${params.dateDay} ${params.dateHour} ${params.dateMinute}`, "YYYY MM DD H:mm");
     }
 
-    if(!params.date.isValid()){
+    if (params.date && !params.date.isValid()){
       params.date = null;
     }
 
