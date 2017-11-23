@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 export default class GenericForm extends Component {
+  // NOTE: use this form as a guide, prefer composition over inheritance
   constructor(props) {
     super(props);
     this.onSubmit = this.onSubmit.bind(this);
