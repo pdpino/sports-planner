@@ -33,9 +33,9 @@ router.post('compoundCreate', '/', async (ctx) => {
   params.compoundOwnerId = ctx.state.currentOwner.id;
   const photoFile = params.photo;
   const anyPhoto = photoFile.name;
-
   params.photo = '';
 
+  let errors;
   try {
     const compound = await ctx.orm.compound.create(params);
     if (anyPhoto) {
@@ -43,14 +43,27 @@ router.post('compoundCreate', '/', async (ctx) => {
       params.photo = FileStorage.url("compound" + compound.id,{});
       await compound.update(params);
     }
-    ctx.redirect(ctx.router.url('compound', { id: compound.id }));
   } catch (validationError) {
-    await ctx.render('compounds/new', {
-      compound: ctx.orm.compound.build(ctx.request.body),
-      errors: ctx.parseValidationError(validationError),
-      submitCompoundPath: ctx.router.url('compoundCreate'),
-      cancelPath: ctx.router.url('compounds'),
-    });
+    errors = ctx.parseValidationError(validationError);
+  }
+
+  switch (ctx.accepts('html', 'json')) {
+    case 'html':
+      if (errors) {
+        await ctx.render('compounds/new', {
+          compound: ctx.orm.compound.build(ctx.request.body),
+          errors,
+          submitCompoundPath: ctx.router.url('compoundCreate'),
+          cancelPath: ctx.router.url('compounds'),
+        });
+      } else {
+        ctx.redirect(ctx.router.url('compound', { id: compound.id }));
+      }
+      break;
+    case 'json':
+      ctx.body = { errors };
+      break;
+    default:
   }
 });
 
