@@ -12,6 +12,7 @@ export default class Comments extends Component {
     };
     this.onSubmit = this.onSubmit.bind(this);
     this.onDelete = this.onDelete.bind(this);
+    this.refresh = this.refresh.bind(this);
   }
 
   componentDidMount() {
@@ -45,6 +46,11 @@ export default class Comments extends Component {
     await this.fetchComments();
   }
 
+  refresh(event){
+    event.preventDefault();
+    this.fetchComments();
+  }
+
   renderNewCommentForm(){
     if (this.props.canComment) {
       return (
@@ -71,6 +77,9 @@ export default class Comments extends Component {
     return (
       <div>
         <h4>{ this.props.title }</h4>
+        <form onSubmit={this.refresh}>
+          <input className="refresh-button" src="/assets/refresh.png" type="image" alt="Recargar" />
+        </form>
         { this.state.error && <div className="error">Error: {this.state.error}</div>}
         { this.renderNewCommentForm() }
         { this.renderComments() }
