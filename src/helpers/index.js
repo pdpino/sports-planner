@@ -113,23 +113,23 @@ module.exports = function helpers(app) {
     return _.differenceBy(collection1, collection2, (element) => element.id);
   }
 
-  app.context.parseDate = function(date){
+  app.context.parseDate = function(date, format){
     const parsedDate = moment(date);
     if (!parsedDate.isValid()){
       // DEBUG
       console.log("WARNING: parseDate got invalid date: ", date);
+      return '';
     }
-    return parsedDate.isValid() ? parsedDate : '';
+    return format ? parsedDate.format(format) : parsedDate;
   }
 
   app.context.prettyTimestamp = function(date){
-    return this.parseDate(date).format('YYYY-MMM-D H:mm');
+    return this.parseDate(date, 'YYYY-MMM-D H:mm');
   }
 
   app.context.prettyDatestamp = function(date){
-    return this.parseDate(date).format('YYYY-MMM-D');
+    return this.parseDate(date, 'YYYY-MMM-D');
   }
-
 
   /** Wrappers to get a pretty timestamp **/
   app.context.createdAtTimestamp = function(element){
