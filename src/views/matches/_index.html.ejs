@@ -23,11 +23,13 @@
               </strong>
             </span>
             <% if (match.date) { %>
-              <span>Fecha: <%= prettyTimestamp(match.date) %></span>
-            <% } %>
-            <% if (isPlayerMatch) { %>
               <span>
-                <%= (match.isPlayerInvited.isAdmin) ? 'Admin del partido' : '' %>
+                Fecha: <%= prettyTimestamp(match.date) %>
+              </span>
+            <% } %>
+            <% if (isPlayerMatch && match.isPlayerInvited.isAdmin) { %>
+              <span>
+                Admin del partido
               </span>
             <% } %>
           </div>

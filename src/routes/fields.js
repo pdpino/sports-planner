@@ -45,11 +45,17 @@ router.get('fieldNew', '/new', async (ctx) => {
 router.post('fieldCreate', '/', async (ctx) => {
   ctx.requireOwnerModifyPermission(ctx.state.compoundOwner);
   ctx.request.body.fields.compoundId = ctx.state.compound.id;
+  const photoFile = ctx.request.body.files.photo;
+  const anyPhoto = photoFile.name;
+
   try {
     const field = await ctx.orm.field.create(ctx.request.body.fields);
-    ctx.request.body.fields.photo = FileStorage.url('field' + field.id,{});
-    await field.update(ctx.request.body.fields);
-    FileStorage.upload(ctx.request.body.files.photo, 'field' + field.id);
+    if (anyPhoto) {
+      await field.update({
+        photo: FileStorage.url('field' + field.id,{}),
+      });
+      FileStorage.upload(photoFile, 'field' + field.id);
+    }
 
     ctx.redirect(ctx.router.url('field', { compoundId: ctx.state.compound.id, id: field.id }));
   } catch (validationError) {
@@ -93,8 +99,14 @@ router.get('fieldEdit', '/:id/edit', async (ctx) => {
 router.patch('fieldUpdate', '/:id', async (ctx) => {
   ctx.requireOwnerModifyPermission(ctx.state.compoundOwner);
   const field = await ctx.findById(ctx.orm.field, ctx.params.id);
+  const photoFile = ctx.request.body.files.photo;
+  const anyPhoto = photoFile.name;
+
   try {
-    FileStorage.upload(ctx.request.body.files.photo, "field"+field.id);
+    if (anyPhoto) {
+      FileStorage.upload(photoFile, "field"+field.id);
+      ctx.request.body.fields = FileStorage.url('field' + field.id,{});
+    }
     await field.update(ctx.request.body.fields);
 
     ctx.redirect(ctx.router.url('field', {

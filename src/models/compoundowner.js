@@ -25,6 +25,10 @@ module.exports = function definecompoundOwner(sequelize, DataTypes) {
     });
   };
 
+  compoundOwner.prototype.getPhoto = function() {
+    return this.photo || '/assets/defaultPerson.png';
+  }
+
   compoundOwner.afterFind(helpers.copyUserInfo);
 
   compoundOwner.prototype.getName = function() { return helpers.getPersonName(this); }
