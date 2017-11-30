@@ -46,6 +46,13 @@ module.exports = {
         userId: id++,
         createdAt: new Date(),
         updatedAt: new Date(),
+      }, {
+        // 'pdpinog@gmail.com',
+        gender: 'masculino',
+        birthday: '1995-03-11',
+        userId: id++,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       }
     ];
 
