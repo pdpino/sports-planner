@@ -91,19 +91,19 @@ router.post('scheduleCreate', '/', async (ctx) => {
     if (exist.length!=0){
       continue;
     }
-    for(j=0;j<modules(ctx.state.field);j++){
-        let scheduleBase= await ctx.state.field.getScheduleBases({
-          where:{
-            weekday: tomorrow.getDay(),
-            hours: arrayOfHour[j],
-            fieldId: ctx.state.field.id,
-          }
-        });
+    let scheduleBase= await ctx.state.field.getScheduleBases({
+      where:{
+        weekday: tomorrow.getDay(),
+        fieldId: ctx.state.field.id,
+      }
+    });
+
+    let modulesofday= scheduleBase.length;
+    for(j=0;j<modulesofday;j++){
+
         let state="Available";
-        if (!scheduleBase[0].open){
-          state="Not Available";
-        }
-        await ctx.orm.schedule.create({price:scheduleBase[0].price,hours:arrayOfHour[j],date:tomorrow,fieldId:ctx.state.field.id,open:scheduleBase[0].open,status:state});
+
+        await ctx.orm.schedule.create({price:scheduleBase[j].price,hours:scheduleBase[j].hours,date:tomorrow,fieldId:ctx.state.field.id,status:state});
       }
     }
   ctx.redirect(ctx.router.url('field',{id: ctx.state.field.id, compoundId: ctx.state.compound.id}));
@@ -118,7 +118,7 @@ router.get('scheduleEdit', '/:date/edit', async (ctx) => {
   realDate.setMinutes(0);
   realDate.setSeconds(0);
   realDate.setMilliseconds(0);
-  realDate.setDate(realDate.getDate() + 1);
+  realDate.setDate(realDate.getDate());
   const schedules = await field.getSchedules({where:{date:realDate}});
   schedules.sort(function(a, b) {
     return a.id - b.id;

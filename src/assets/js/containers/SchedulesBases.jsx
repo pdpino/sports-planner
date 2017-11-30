@@ -69,8 +69,7 @@ this.hello();
 
 async hello(){
   const lel = await scheduleBasesService.get(this.props.compoundId, this.props.fieldId);
-  alert(Object.keys(lel.scheduleBases[0]));
-  alert(lel.scheduleBases[0].weekday);
+
   this.setState({scheduleBases:lel.scheduleBases});
 }
 
@@ -192,8 +191,12 @@ handleScheduleBaseDayChange(idx,e){
 
 handleSubmit(e){
 
-  console.log("HELLLOOOOO!!")
+
   scheduleBasesService.postBases(this.props.compoundId, this.props.fieldId, this.state);
+  window.location.assign("/compounds/"+this.props.compoundId+"/fields/"+this.props.fieldId);
+  e.preventDefault();
+
+
   }
 
 handleAddScheduleBase(didx,e){

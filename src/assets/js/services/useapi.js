@@ -12,8 +12,8 @@ export default {
   },
 
   async postCompound(compoundData) {
-
-    return jsonRequest(`/compounds/`, {
+    console.log("HOLAAAAAAAAAAAAAAAAAAAA",compoundData);
+    return jsonRequest(`/compounds`, {
       method: 'post',
       sendJson: true,
       body: JSON.stringify(compoundData),
