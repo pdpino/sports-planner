@@ -71,7 +71,7 @@
                       <strong><%= team.name %></strong>
                     </span>
                     <span>
-                      <%= invitationToString(team.isTeamInvited.status) %>
+                      <%= invitationToString(team.isTeamInvited.status, { editing: false }) %>
                     </span>
                   </div>
                 </a>

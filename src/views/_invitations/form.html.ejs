@@ -8,7 +8,7 @@
       <% chooseStatuses.forEach((status) => { %>
         <input type="radio" name="status" value="<%= status %>"
         <%= (invitation.status == status) ? 'checked' : '' %>
-        > <%= invitationToString(status) %>
+        > <%= invitationToString(status, { editing: true }) %>
       <% }); %>
     </div>
 
@@ -26,6 +26,6 @@
   </form>
 <% } else { %>
   <div>
-    <p> <%= invitationToString(invitation.status) %> </p>
+    <p> <%= invitationToString(invitation.status, { editing: true }) %> </p>
   </div>
 <% } %>
