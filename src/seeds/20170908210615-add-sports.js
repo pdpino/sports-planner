@@ -3,31 +3,25 @@ module.exports = {
     const sports = [{
       name: 'Futbol',
       isIndividual: false,
+      logo: '/assets/futbol.png',
       createdAt: new Date(),
       updatedAt: new Date(),
     }, {
       name: 'Basquetbol',
       isIndividual: false,
+      logo: '/assets/basketbol.png',
       createdAt: new Date(),
       updatedAt: new Date(),
     }, {
       name: 'Tenis',
       isIndividual: true,
+      logo: '/assets/tenis-ball.png',
       createdAt: new Date(),
       updatedAt: new Date(),
     }, {
-      name: 'Golf',
-      isIndividual: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }, {
-      name: 'Ciclismo',
-      isIndividual: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }, {
-      name: 'Natación',
-      isIndividual: true,
+      name: 'Rugby',
+      isIndividual: false,
+      logo: '/assets/rugby.png',
       createdAt: new Date(),
       updatedAt: new Date(),
     }];
