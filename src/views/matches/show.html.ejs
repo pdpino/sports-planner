@@ -121,7 +121,10 @@
 
       <% if(reviewsEnabled) { %>
         <div id="match-reviews" class="box-container">
+          <h4>Reviews pendientes:</h4>
           <%- include('../playerReviews/index-pending', { pendingReviews }) %>
+
+          <h4>Reviews hechas</h4>
           <%- include('../playerReviews/index-done', { doneReviews, showReviewer: false }) %>
 
           <%- include('../compoundReviews/show') %>

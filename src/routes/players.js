@@ -129,6 +129,7 @@ router.get('player', '/:id', async (ctx) => {
   const playerTeams = await player.getTeamsWithSport();
   const playerMatches = await player.getMatches();
   const friends = await player.getAllFriends();
+  const reviewsAverage = await player.getReviewsAverage();
 
   const friendshipStatus = (ctx.state.isPlayerLoggedIn
     && await ctx.state.currentPlayer.getFriendshipStatus(player));
@@ -141,6 +142,7 @@ router.get('player', '/:id', async (ctx) => {
   await ctx.render('players/show', {
     hasModifyPermission: ctx.hasModifyPermission(player),
     player,
+    reviewsAverage,
     playerSports,
     playerTeams,
     playerMatches,

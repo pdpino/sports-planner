@@ -65,7 +65,20 @@
 
     <div id="player-profile-column-center" class="column-40">
       <div id="player-profile-reviews" class="box-container">
-        <%- include('../playerReviews/index-done', { doneReviews: reviews, showReviewer: true }) %>
+        <h3>Reviews</h3>
+
+        <p>
+          <% if(reviewsAverage !== 0) { %>
+            Tienes un promedio de reviews <%= reviewsAverage %>
+          <% } %>
+        </p>
+
+        <h4>Últimas recibidas</h4>
+        <%- include('../playerReviews/index-done', {
+          doneReviews: reviews,
+          showReviewer: true,
+          noReviewsMessage: 'No ha recibido reviews'
+        }) %>
       </div>
 
       <% if (canSeeComments) { %>

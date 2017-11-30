@@ -1,10 +1,8 @@
-<%# Provide:
-  doneReviews,
-  showReviewer
+<%# Provide: doneReviews, showReviewer
+  Optional: noReviewsMessage
   %>
 
 <div>
-  <h4>Reviews hechas</h4>
   <% if(doneReviews.length > 0) { %>
     <ul>
       <% doneReviews.forEach((review) => { %>
@@ -24,7 +22,7 @@
       <% }) %>
     </ul>
   <% } else { %>
-    <p>No hay reviews hechas</p>
+    <p><%= locals.noReviewsMessage || 'No hay reviews hechas' %></p>
   <% } %>
 
 </div>
