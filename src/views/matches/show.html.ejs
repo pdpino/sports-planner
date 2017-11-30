@@ -64,7 +64,7 @@
           <ul>
             <% invitedTeams.forEach((team) => { %>
               <li class="list-item">
-                <img class="small-logo" src="<%= team.logo %>"/>
+                <img class="small-logo" src="<%= team.getLogo() %>"/>
                 <a class="lilink" href="<%= getTeamPath(team) %>">
                   <div>
                     <span>

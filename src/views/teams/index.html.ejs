@@ -14,7 +14,7 @@
           <% teams.forEach((team) => { %>
             <li>
               <a class="lilink" href="<%= getTeamPath(team) %>"%>>
-                <img class="medium-logo" src="<%= team.logo %>"/>
+                <img class="medium-logo" src="<%= team.getLogo() %>"/>
                 <div>
                   <%= team.name %>
                 </div>

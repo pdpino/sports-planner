@@ -30,12 +30,15 @@ router.get('teamNew', '/new', async (ctx) => {
 router.post('teamCreate', '/', async (ctx) => {
   ctx.requirePlayerLoggedIn();
 
+  const anyPhoto = ctx.request.body.files.photo.name;
+
   try {
     const team = await ctx.orm.team.create(ctx.request.body.fields);
-    ctx.request.body.fields.logo = FileStorage.url("team" + team.id, {})
-    FileStorage.upload(ctx.request.body.files.logo, "team" + team.id);
-    await team.update(ctx.request.body.fields);
     await ctx.state.currentPlayer.createTeam(team);
+    if (anyPhoto) {
+      await team.update({ logo: FileStorage.url("team" + team.id, {}) });
+      FileStorage.upload(ctx.request.body.files.logo, "team" + team.id);
+    }
     ctx.redirect(ctx.router.url('team', team.id));
   } catch (validationError) {
     await ctx.render('teams/new', {
@@ -66,9 +69,14 @@ router.patch('teamUpdate', '/:id', async (ctx) => {
 
   await ctx.requirePlayerModifyPermission(team);
 
+  const anyPhoto = ctx.request.body.files.photo.name;
+
   try {
     await team.update(ctx.request.body.fields);
-    FileStorage.upload(ctx.request.body.files.logo,"team"+team.id);
+    if (anyPhoto) {
+      await team.update({ logo: FileStorage.url("team" + team.id, {}) });
+      FileStorage.upload(ctx.request.body.files.logo, "team" + team.id);
+    }
     ctx.redirect(ctx.router.url('team', { id: team.id }));
   } catch (validationError) {
     await ctx.render('teams/edit', {
