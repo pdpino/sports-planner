@@ -137,25 +137,25 @@ module.exports = function definematch(sequelize, DataTypes) {
     });
   }
 
-  match.prototype.invitePlayer = async function(player){
-    await this.addPlayer(player, {
+  match.prototype.invitePlayer = function(player){
+    return this.addPlayer(player, {
       through: {
         status: 'sent' // HACK: invitation status harcoded
       }
     });
   }
 
-  match.prototype.invitePlayers = async function(players){
+  match.prototype.invitePlayers = function(players){
     // TODO: merge with invitePlayer function (use duck typing)
-    await this.addPlayers(players, {
+    return this.addPlayers(players, {
       through: {
         status: 'sent' // HACK: invitation status harcoded
       }
     });
   }
 
-  match.prototype.updatePlayerInvitation = async function(player, status, isAdmin){
-    await this.addPlayer(player, {
+  match.prototype.updatePlayerInvitation = function(player, status, isAdmin){
+    return this.addPlayer(player, {
       through: {
         status: status || player.isPlayerInvited.status,
         isAdmin,
@@ -163,16 +163,16 @@ module.exports = function definematch(sequelize, DataTypes) {
     });
   }
 
-  match.prototype.inviteTeam = async function(team){
-    await this.addTeam(team, {
+  match.prototype.inviteTeam = function(team){
+    return this.addTeam(team, {
       through: {
         status: 'sent' // HACK: invitation status harcoded
       }
     });
   }
 
-  match.prototype.updateTeamInvitation = async function(team, newStatus){
-    await this.addTeam(team, {
+  match.prototype.updateTeamInvitation = function(team, newStatus){
+    return this.addTeam(team, {
       through: {
         status: newStatus || team.isTeamInvited.status
       }

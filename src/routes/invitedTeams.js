@@ -54,9 +54,19 @@ router.get('invitedTeamEdit', '/:id/edit', async (ctx) => {
 
 router.patch('invitedTeamUpdate', '/:id', async (ctx) => {
   const invitedTeam = await ctx.state.match.getTeam(ctx.params.id);
+  const newStatus = ctx.request.body.status;
+  const statusChanged = newStatus !== invitedTeam.isTeamInvited.status;
+  const teamMembers = await invitedTeam.getPlayers();
 
   try {
-    await ctx.state.match.updateTeamInvitation(invitedTeam, ctx.request.body.status);
+    await ctx.state.match.updateTeamInvitation(invitedTeam, newStatus);
+
+    // HACK: this is copied from teamMatches
+    if(statusChanged && newStatus == 'accepted'){ // HACK: status hardcoded
+      // Invite all of its players to the game
+      await ctx.state.match.invitePlayers(teamMembers);
+    }
+
     ctx.redirect(ctx.router.url('match', { id: ctx.state.match.id }));
   } catch (validationError) {
     await ctx.render('invitedTeams/edit', {
