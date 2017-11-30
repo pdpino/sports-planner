@@ -29,23 +29,20 @@ router.get('compoundNew', '/new', async (ctx) => {
 
 router.post('compoundCreate', '/', async (ctx) => {
   ctx.requireOwnerLoggedIn();
-  console.log("hello");
-  if(ctx.request.body.fields){
-  const params = ctx.request.body.fields; // TODO: parse, permit and require
+  const params = ctx.getParams();
   params.compoundOwnerId = ctx.state.currentOwner.id;
-}
-  try {
-    if(ctx.request.body.fields){
-    const compound = await ctx.orm.compound.create(params);
+  const photoFile = params.photo;
+  const anyPhoto = photoFile.name;
 
-    params.photo = FileStorage.url("compound" + compound.id,{});
-    await compound.update(params);
-    FileStorage.upload(ctx.request.body.files.photo, "compound" + compound.id);
-}
-else{
-  ctx.request.body.compoundOwnerId=ctx.state.currentOwner.id;
-  const compound = await ctx.orm.compound.create(ctx.request.body);
-}
+  params.photo = '';
+
+  try {
+    const compound = await ctx.orm.compound.create(params);
+    if (anyPhoto) {
+      FileStorage.upload(photoFile, "compound" + compound.id);
+      params.photo = FileStorage.url("compound" + compound.id,{});
+      await compound.update(params);
+    }
     ctx.redirect(ctx.router.url('compound', { id: compound.id }));
   } catch (validationError) {
     await ctx.render('compounds/new', {
@@ -77,9 +74,18 @@ router.patch('compoundUpdate', '/:id', async (ctx) => {
 
   ctx.requireOwnerModifyPermission(compoundOwner);
 
+  const params = ctx.getParams();
+  const photoFile = params.photo;
+  const anyPhoto = photoFile.name;
+
   try {
-    await compound.update(ctx.request.body.fields);
-    FileStorage.upload(ctx.request.body.files.photo, "compound" + compound.id);
+    if (anyPhoto) {
+      params.photo = FileStorage.url("compound" + compound.id,{});
+    } else {
+      params.photo = '';
+    }
+    await compound.update(params);
+    FileStorage.upload(photoFile, "compound" + compound.id);
     ctx.redirect(ctx.router.url('compound', { id: compound.id }));
   } catch (validationError) {
     await ctx.render('compounds/edit', {

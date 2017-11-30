@@ -32,6 +32,10 @@ module.exports = function definecompound(sequelize, DataTypes) {
     });
   };
 
+  compound.prototype.getPhoto = function() {
+    return this.photo || '/assets/compound-logo.png';
+  }
+
   compound.prototype.getPendingReview = async function(player, match){
     if (!player || !match) {
       return null;

@@ -110,13 +110,17 @@ module.exports = function defineplayer(sequelize, DataTypes) {
 
   player.getGenders = function() { return genders; }
 
-  player.prototype.getName = function() { return helpers.getPersonName(this); }
-
   player.canAddFriend = (status) => status === 'not';
   player.canDeleteFriend = (status) => status === 'accepted';
   player.canAcceptFriend = (status) => status === 'sent';
   player.waitingFriend = (status) => status === 'waiting';
   player.hasCommentPermission = (status) => status === 'self' || status === 'accepted';
+
+  player.prototype.getName = function() { return helpers.getPersonName(this); }
+
+  player.prototype.getPhoto = function() {
+    return this.photo || '/assets/defaultPerson.png';
+  }
 
   player.prototype.getFriendshipStatus = async function(friend){
     if (this.id === friend.id){

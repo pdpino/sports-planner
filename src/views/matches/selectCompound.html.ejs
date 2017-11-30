@@ -7,7 +7,7 @@
         <% compounds.forEach((compound) => { %>
           <li>
             <a class="lilink" href="<%= compoundPath(compound) %>">
-              <img src="<%= compound.photo %>" class="small-logo"/>
+              <img src="<%= compound.getPhoto() %>" class="small-logo"/>
               <div>
                 <%= compound.name %>
               </div>

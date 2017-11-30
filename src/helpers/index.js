@@ -61,7 +61,7 @@ module.exports = function helpers(app) {
       Object.assign(paramsObject, this.request.body);
     }
 
-    return _.pick(paramsObject, ...whiteList);
+    return whiteList ? _.pick(paramsObject, ...whiteList) : paramsObject;
   }
 
   /**

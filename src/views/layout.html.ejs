@@ -31,7 +31,7 @@
 
             <a id="profile-button" href="<%= profilePath %>">
               <div id="profile-picture">
-                <img class="small-logo" src="<%= currentUser.photo %>"/>
+                <img class="small-logo" src="<%= currentUser.getPhoto() %>"/>
               </div>
               <span id="profile-name">
                 Hola <%= currentUser.firstName %>

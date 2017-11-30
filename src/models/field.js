@@ -51,5 +51,9 @@ module.exports = function definefield(sequelize, DataTypes) {
     });
   };
 
+  field.prototype.getPhoto = function() {
+    return this.photo || '/assets/pencil.png';
+  }
+
   return field;
 };

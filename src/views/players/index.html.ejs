@@ -7,7 +7,7 @@
         <% players.forEach((player) => { %>
           <li>
             <a class="lilink" href="<%= getPlayerPath(player) %>">
-              <img class="medium-logo" src="<%= player.photo %>"/>
+              <img class="medium-logo" src="<%= player.getPhoto() %>"/>
               <div>
                 <span>
                   <%= player.getName() %>

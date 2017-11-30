@@ -72,6 +72,10 @@ module.exports = function defineuser(sequelize, DataTypes) {
   user.beforeUpdate(buildPasswordHash);
   user.beforeCreate(buildPasswordHash);
 
+  user.prototype.getPhoto = function() {
+    return this.photo || '/assets/defaultPerson.png';
+  }
+
   user.prototype.checkPassword = function checkPassword(password) {
     return bcrypt.compare(password, this.password);
   };
