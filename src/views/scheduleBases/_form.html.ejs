@@ -3,12 +3,13 @@
   <h1> <%= (scheduleBase.isNewRecord) ? 'Nuevo Horario Base' : 'Editar Horario Base' %></h1>
   <%- include('../_error/snippet', { errors: locals.errors }) %>
 
-  
 
-  <div
+
+  <div class="box-container"
     id="schedule-bases-react-app"
     data-field-id="<%= field.id %>"
     data-compound-id="<%= compound.id %>"
+    data-submit="<%=submitScheduleBasePath %>"
     >
   </div>
 

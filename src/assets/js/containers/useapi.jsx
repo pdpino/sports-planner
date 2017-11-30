@@ -91,15 +91,17 @@ handleCompoundSelection(e){
   }
 
 handleSubmit(e){
-  alert(Object.keys(this.state.compound));
+
   useAPIService.postCompound(this.state.compound);
-  alert("DONE");
+
+  window.location.assign("/compounds/");
+  e.preventDefault();
 }
 
 
   render() {
     return (
-      <div className="center">
+      <div>
 
 
         <form onSubmit={this.handleSubmit}>
