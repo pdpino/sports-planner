@@ -3,25 +3,39 @@ const bcrypt = require('bcrypt');
 module.exports = {
   up(queryInterface, Sequelize) {
     const role = 'owner';
-    const userOwners = [
-      {
+    const userOwners = [{
         role,
-        email: 'tomas@perez.cl',
+        email: 'emilio91@gmail.com',
+        password: bcrypt.hashSync('emilio', 10),
+        firstName: 'Emilio',
+        lastName: 'Sagredo',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }, {
+        role,
+        email: 'diegorodriguez@gmail.com',
+        password: bcrypt.hashSync('diego', 10),
+        firstName: 'Diego',
+        lastName: 'Rodriguez',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }, {
+        role,
+        email: 'esalas@gmail.com',
+        password: bcrypt.hashSync('Esteban', 10),
+        firstName: 'Esteban',
+        lastName: 'Salas',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }, {
+        role,
+        email: 'tiborchers@uc.cl',
         password: bcrypt.hashSync('tomas', 10),
         firstName: 'Tomas',
-        lastName: 'Perez',
+        lastName: 'Borchers',
         createdAt: new Date(),
         updatedAt: new Date(),
-      },
-      {
-        role,
-        email: 'matias@perez.cl',
-        password: bcrypt.hashSync('matias', 10),
-        firstName: 'Matias',
-        lastName: 'Perez',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
+      }
     ];
 
     return queryInterface.bulkInsert('users', userOwners);

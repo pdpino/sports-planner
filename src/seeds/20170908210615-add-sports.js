@@ -5,16 +5,29 @@ module.exports = {
       isIndividual: false,
       createdAt: new Date(),
       updatedAt: new Date(),
-    },
-    {
+    }, {
       name: 'Basquetbol',
       isIndividual: false,
       createdAt: new Date(),
       updatedAt: new Date(),
-    },
-    {
+    }, {
       name: 'Tenis',
-      isIndividual: false,
+      isIndividual: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }, {
+      name: 'Golf',
+      isIndividual: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }, {
+      name: 'Ciclismo',
+      isIndividual: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }, {
+      name: 'Natación',
+      isIndividual: true,
       createdAt: new Date(),
       updatedAt: new Date(),
     }];
