@@ -46,16 +46,20 @@ router.post('compoundOwnerCreate', '/', async (ctx) => {
 
   const userParams = getUserParams(ctx.request.body.fields);
   const compoundOwnerParams = getCompoundOwnerParams(ctx.request.body.fields);
+  const anyPhoto = ctx.request.body.files.photo.name;
 
-  let user = null;
+  let user;
   try {
     user = await ctx.orm.user.create(userParams);
-    userParams.photo = FileStorage.url("user" + user.id, {});
-    await user.update(userParams);
+    if (anyPhoto) {
+      await user.update({ photo: FileStorage.url("user" + user.id, {}) });
+    }
     compoundOwnerParams.userId = user.id;
-    // REVIEW: create compoundOwner before saving the picture to validate params ?
-    FileStorage.upload(ctx.request.body.files.photo, "user" + user.id);
     const compoundOwner = await ctx.orm.compoundOwner.create(compoundOwnerParams);
+
+    if (anyPhoto) {
+      FileStorage.upload(ctx.request.body.files.photo, "user" + user.id);
+    }
 
     await ctx.login(user.email, userParams.password);
   } catch (validationError) {
@@ -92,12 +96,15 @@ router.patch('compoundOwnerUpdate', '/:id', async (ctx) => {
 
   const userParams = getUserParams(ctx.request.body.fields);
   const compoundOwnerParams = getCompoundOwnerParams(ctx.request.body.fields);
+  const anyPhoto = ctx.request.body.files.photo.name;
 
   try {
-    userParams.photo = FileStorage.url('user' + compoundOwner.user.id,{});
-    await compoundOwner.user.update(userParams);
-    FileStorage.upload(ctx.request.body.files.photo, 'user' + compoundOwner.user.id);
     await compoundOwner.update(compoundOwnerParams);
+    if (anyPhoto) {
+      userParams.photo = FileStorage.url('user' + compoundOwner.user.id,{});
+      FileStorage.upload(ctx.request.body.files.photo, 'user' + compoundOwner.user.id);
+    }
+    await compoundOwner.user.update(userParams);
     ctx.redirect(ctx.router.url('compoundOwner', { id: compoundOwner.id }));
   } catch (validationError) {
     await ctx.render('compoundOwners/edit', {

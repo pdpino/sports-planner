@@ -30,7 +30,7 @@ router.get('teamNew', '/new', async (ctx) => {
 router.post('teamCreate', '/', async (ctx) => {
   ctx.requirePlayerLoggedIn();
 
-  const anyPhoto = ctx.request.body.files.photo.name;
+  const anyPhoto = ctx.request.body.files.logo.name;
 
   try {
     const team = await ctx.orm.team.create(ctx.request.body.fields);
@@ -69,7 +69,7 @@ router.patch('teamUpdate', '/:id', async (ctx) => {
 
   await ctx.requirePlayerModifyPermission(team);
 
-  const anyPhoto = ctx.request.body.files.photo.name;
+  const anyPhoto = ctx.request.body.files.logo.name;
 
   try {
     await team.update(ctx.request.body.fields);
