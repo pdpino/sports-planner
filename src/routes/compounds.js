@@ -12,6 +12,7 @@ router.get('compounds', '/', async (ctx) => {
     compounds,
     hasCreatePermission: ctx.state.isOwnerLoggedIn,
     newCompoundPath: ctx.router.url('compoundNew'),
+    newCompoundFoursquarePath: ctx.router.url('compoundNewFoursquare'),
   });
 });
 
@@ -27,15 +28,17 @@ router.get('compoundNew', '/new', async (ctx) => {
   });
 });
 
-router.post('compoundCreate', '/', async (ctx) => {
+router.get('compoundNewFoursquare', '/new_foursquare', async (ctx) => {
   ctx.requireOwnerLoggedIn();
-  const params = ctx.getParams();
-  params.compoundOwnerId = ctx.state.currentOwner.id;
-  const photoFile = params.photo;
-  const anyPhoto = photoFile.name;
-  params.photo = '';
+  await ctx.render('compounds/new_foursquare', { });
+});
 
-  let errors;
+router.post('compoundCreateFoursquare', '/foursquare', async (ctx) => {
+  ctx.requireOwnerLoggedIn();
+
+  const params = ctx.request.body;
+  params.compoundOwnerId = ctx.state.currentOwner.id;
+
   try {
     const compound = await ctx.orm.compound.create(params);
     if (anyPhoto) {
@@ -43,27 +46,38 @@ router.post('compoundCreate', '/', async (ctx) => {
       params.photo = FileStorage.url("compound" + compound.id,{});
       await compound.update(params);
     }
+    ctx.body = { };
   } catch (validationError) {
-    errors = ctx.parseValidationError(validationError);
+    ctx.body = { errors: ctx.parseValidationError(validationError) };
   }
 
-  switch (ctx.accepts('html', 'json')) {
-    case 'html':
-      if (errors) {
-        await ctx.render('compounds/new', {
-          compound: ctx.orm.compound.build(ctx.request.body),
-          errors,
-          submitCompoundPath: ctx.router.url('compoundCreate'),
-          cancelPath: ctx.router.url('compounds'),
-        });
-      } else {
-        ctx.redirect(ctx.router.url('compound', { id: compound.id }));
-      }
-      break;
-    case 'json':
-      ctx.body = { errors };
-      break;
-    default:
+});
+
+router.post('compoundCreate', '/', async (ctx) => {
+  ctx.requireOwnerLoggedIn();
+  const params = ctx.getParams();
+  params.compoundOwnerId = ctx.state.currentOwner.id;
+  console.log("PARAMS: ", params);
+  const photoFile = params.photo;
+  const anyPhoto = photoFile.name;
+  params.photo = '';
+
+  try {
+    const compound = await ctx.orm.compound.create(params);
+    if (anyPhoto) {
+      FileStorage.upload(photoFile, "compound" + compound.id);
+      params.photo = FileStorage.url("compound" + compound.id,{});
+      console.log("PARAMS 222: ", params);
+      await compound.update(params);
+    }
+    ctx.redirect(ctx.router.url('compound', { id: compound.id }));
+  } catch (validationError) {
+    await ctx.render('compounds/new', {
+      compound: ctx.orm.compound.build(ctx.request.body),
+      errors: ctx.parseValidationError(validationError),
+      submitCompoundPath: ctx.router.url('compoundCreate'),
+      cancelPath: ctx.router.url('compounds'),
+    });
   }
 });
 
