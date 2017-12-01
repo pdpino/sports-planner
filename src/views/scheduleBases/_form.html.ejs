@@ -1,11 +1,12 @@
-<div class="schedule">
+<div id="body-container">
 
+  <div class="jumbotron">
   <h1> <%= (scheduleBase.isNewRecord) ? 'Nuevo Horario Base' : 'Editar Horario Base' %></h1>
   <%- include('../_error/snippet', { errors: locals.errors }) %>
 
 
 
-  <div class="box-container"
+  <div
     id="schedule-bases-react-app"
     data-field-id="<%= field.id %>"
     data-compound-id="<%= compound.id %>"
@@ -30,4 +31,6 @@
   <form action="<%= cancelPath %>" method="get">
       <input type="submit" value="Cancelar"/>
   </form>
+
+</div>
 </div>

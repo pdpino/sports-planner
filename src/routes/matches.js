@@ -110,19 +110,32 @@ router.patch('addSchedule', '/:id/:compoundId/:fieldId/selectSchedule', async (c
   // REVIEW: necesario poner id: schedule.id, y otros que se mantienen igual???
   // necesario updatedAt ?
   await schedule.update({
-    id: schedule.id,
-    price: schedule.price,
-    fieldId: schedule.fieldId,
     matchId: match.id,
-    hours: schedule.hours,
-    date: schedule.date,
-    open: schedule.open,
-    status: 'Solicited',
-    createdAt: schedule.createdAt,
-    updatedAt: new Date()
+    status: 'Solicited'
   });
 
   await ctx.reserveField(ctx.state.currentPlayer, compoundOwner, compound, field);
+
+  ctx.redirect(ctx.router.url('match', match.id));
+});
+
+router.patch('removeSchedule', '/:id/removeSchedule', async (ctx) => {
+  console.log("hello");
+  ctx.requirePlayerLoggedIn();
+  const match = await ctx.findById(ctx.orm.match, ctx.params.id);
+
+
+  const schedule = await match.getSchedule();
+  const field = await schedule.getField();
+  ctx.assert(schedule && field, 404);
+
+  // REVIEW: necesario poner id: schedule.id, y otros que se mantienen igual???
+  // necesario updatedAt ?
+  await schedule.update({
+    matchId: null,
+    status: 'Available'
+  });
+
 
   ctx.redirect(ctx.router.url('match', match.id));
 });

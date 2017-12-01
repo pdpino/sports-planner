@@ -96,18 +96,27 @@ router.get('scheduleBaseNew', '/new', async (ctx) => {
 });
 
 router.post('scheduleBaseCreate', '/', async (ctx) => {
-  console.log(ctx.body)
+
 
 
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
   ctx.requireOwnerModifyPermission(compoundOwner);
-  console.log(ctx.body);
+  console.log(ctx.request.body);
   try {
-    for (i=0; i<7*modules(ctx.state.field);i++){
+    for (i=0; i<ctx.request.body.scheduleBases.length;i++){
       console.log(ctx.request.body.scheduleBases[i]);
       const scheduleBase = await ctx.orm.scheduleBase.create(ctx.request.body.scheduleBases[i]);
     }
-    ctx.redirect(ctx.router.url('field',{id: ctx.state.field.id, compoundId: ctx.state.compound.id}));
+    switch (ctx.accepts('html', 'json')) {
+      case 'html':
+        ctx.redirect(ctx.router.url('field',{id: ctx.state.field.id, compoundId: ctx.state.compound.id}));
+        break;
+      case 'json':
+        ctx.body = { };
+        break;
+      default:
+    }
+
   } catch (validationError) {
     const arrayOfHour= arrayOfHours(ctx.state.field);
     const daysOfWeek=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
@@ -177,7 +186,6 @@ router.patch('scheduleBaseUpdate', '/', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
   ctx.requireOwnerModifyPermission(compoundOwner);
   const scheduleBases = await ctx.state.field.getScheduleBases();
-  console.log("LALALA");
   scheduleBases.sort(function(a, b) {
     return a.id - b.id;
 });
@@ -185,7 +193,7 @@ router.patch('scheduleBaseUpdate', '/', async (ctx) => {
   const arrayOfHour= arrayOfHours(ctx.state.field);
   const daysOfWeek=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
   try {
-    for (i=0; i<7*modules(ctx.state.field);i++){
+    for (i=0; i<ctx.request.body.scheduleBases.length;i++){
       console.log(ctx.request.body.scheduleBases[i]);
       await scheduleBases[i].update(ctx.request.body.scheduleBases[i]);
     }

@@ -35,6 +35,7 @@
                   <% } else if (schedules[i].status == "Available"){ %>
                     <div>
                       <p> Disponible </p>
+                      <input type="hidden" name="schedules[<%=i%>][status]" value="Solicited">
                     </div>
                   <% } else if (schedules[i].status == "Not Available"){ %>
                     <div>

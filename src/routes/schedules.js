@@ -58,7 +58,7 @@ function arrayOfHours (field){
 }
 
 router.get('schedules', '/', async (ctx) => {
-  console.log("WHY");
+
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
   const schedules= await ctx.state.field.getSchedules();
   await ctx.render('schedules/index', {
@@ -69,7 +69,7 @@ router.get('schedules', '/', async (ctx) => {
 });
 
 router.post('scheduleCreate', '/', async (ctx) => {
-  console.log("HOLAAA");
+
 
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
   ctx.requireOwnerModifyPermission(compoundOwner);
@@ -143,22 +143,21 @@ router.get('scheduleEdit', '/:date/edit', async (ctx) => {
 });
 
 router.patch('scheduleUpdate', '/:date', async (ctx) => {
+
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
   ctx.requireOwnerModifyPermission(compoundOwner);
   const realDate= new Date(ctx.params.date);
-  realDate.setHours(0);
-  realDate.setMinutes(0);
-  realDate.setSeconds(0);
-  realDate.setMilliseconds(0);
-  realDate.setDate(realDate.getDate() + 1);
+  
   const schedules = await ctx.state.field.getSchedules({ where: { date: realDate }});
+  console.log(schedules);
   schedules.sort(function(a, b) {
     return a.id - b.id;
   });
   const arrayOfHour= arrayOfHours(ctx.state.field);
   const daysOfWeek=["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
   try {
-    for (let i=0; i < ctx.state.field.modules; i++){
+    for (let i=0; i < schedules.length; i++){
+
       const params = ctx.request.body.schedules[i];
       await schedules[i].update(params);
 
