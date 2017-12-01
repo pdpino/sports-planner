@@ -76,10 +76,12 @@ export default class Comments extends Component {
   render() {
     return (
       <div>
-        <h4>{ this.props.title }</h4>
-        <form onSubmit={this.refresh}>
-          <input className="refresh-button" src="/assets/refresh.png" type="image" alt="Recargar" />
-        </form>
+        <div id="comments-sup-bar">
+          <h4>{ this.props.title }</h4>
+          <form onSubmit={this.refresh}>
+            <input className="refresh-button" src="/assets/refresh.png" type="image" alt="Recargar" />
+          </form>
+        </div>
         { this.state.error && <div className="error">Error: {this.state.error}</div>}
         { this.renderNewCommentForm() }
         { this.renderComments() }
