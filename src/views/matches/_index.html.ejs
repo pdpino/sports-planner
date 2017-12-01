@@ -1,6 +1,7 @@
 <%# Must exist:
     matches,
     isPlayerMatch,
+    isTeamMatch,
     getMatchPath,
     hasModifyPermission
     editInvitationPath (function that receives a match, only needed if hasModifyPermission is true),
@@ -30,6 +31,10 @@
             <% if (isPlayerMatch && match.isPlayerInvited.isAdmin) { %>
               <span>
                 Admin del partido
+              </span>
+            <% } else if (locals.isTeamMatch) { %>
+              <span>
+                <%= invitationToString(match.isTeamInvited.status, { editing: false }) %>
               </span>
             <% } %>
           </div>
