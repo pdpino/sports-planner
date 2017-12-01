@@ -9,6 +9,7 @@ module.exports = {
         password: bcrypt.hashSync('juan', 10),
         firstName: 'Juan',
         lastName: 'Rodriguez',
+        photo: 'https://s3.amazonaws.com/uifaces/faces/twitter/joeymurdah/128.jpg',
         createdAt: new Date(),
         updatedAt: new Date(),
       }, {
@@ -17,6 +18,7 @@ module.exports = {
         password: bcrypt.hashSync('pedro', 10),
         firstName: 'Pedro',
         lastName: 'Martinez',
+        photo: 'https://s3.amazonaws.com/uifaces/faces/twitter/richardgarretts/128.jpg',
         createdAt: new Date(),
         updatedAt: new Date(),
       }, {
@@ -41,6 +43,7 @@ module.exports = {
         password: bcrypt.hashSync('antonio', 10),
         firstName: 'Antonio',
         lastName: 'Soto',
+        photo: 'https://s3.amazonaws.com/uifaces/faces/twitter/thiagovernetti/128.jpg',
         createdAt: new Date(),
         updatedAt: new Date(),
       }, {
@@ -49,6 +52,7 @@ module.exports = {
         password: bcrypt.hashSync('nicolas', 10),
         firstName: 'Nicolas',
         lastName: 'Maldonado',
+        photo: 'https://s3.amazonaws.com/uifaces/faces/twitter/elliotnolten/128.jpg',
         createdAt: new Date(),
         updatedAt: new Date(),
       }, {
