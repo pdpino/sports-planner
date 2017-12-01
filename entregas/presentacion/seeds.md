@@ -15,5 +15,5 @@ P2 = Partido del domingo
 
 ### FALTA:
 
-* Elegir recinto R1 para crear con foursquare. Puede ser uno cercano a san joaquín para usar lo de la ubicación
 * Tomás tiene un recinto R2 con una cancha creada con horarios (pocos) disponibles
+* Elegir recinto R1 para crear con foursquare. Puede ser uno cercano a san joaquín para usar lo de la ubicación

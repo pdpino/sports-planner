@@ -2,9 +2,9 @@ const faker = require('faker');
 
 module.exports = {
   up(queryInterface, Sequelize) {
-    let id = 9;  // HACK: starting id hardcoded
+    let id = 11;  // HACK: starting id hardcoded
     // 1 is the admin
-    // 2-8 are the basic players
+    // 2-10 are the basic players
     const owners = [{
         // email: 'emilio91@gmail.com',
         phone: '+569 5555 1234',
