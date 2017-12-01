@@ -2,6 +2,7 @@ const KoaRouter = require('koa-router');
 const router = new KoaRouter();
 
 
+
 function floatToStringHour(float){
 
   let hoursTwoDigits=false;
@@ -75,10 +76,7 @@ router.post('scheduleCreate', '/', async (ctx) => {
   ctx.requireOwnerModifyPermission(compoundOwner);
   let arrayOfHour = arrayOfHours(ctx.state.field);
   let tomorrow= new Date();
-  tomorrow.setHours(0);
-  tomorrow.setMinutes(0);
-  tomorrow.setSeconds(0);
-  tomorrow.setMilliseconds(0);
+
   console.log("HolAAAAAAAAAAAAAAAAAAA");
   for (i=0;i<14;i++){
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -114,14 +112,24 @@ router.get('scheduleEdit', '/:date/edit', async (ctx) => {
   ctx.requireOwnerModifyPermission(compoundOwner);
   const realDate= new Date(ctx.params.date);
 
-  const field= ctx.state.field;
-  realDate.setHours(0);
-  realDate.setMinutes(0);
-  realDate.setSeconds(0);
-  realDate.setMilliseconds(0);
+
+  const newDate= new Date(ctx.params.date);
+
   realDate.setDate(realDate.getDate()+1);
-    console.log("FIONAAAAAAAAAAAAAA");
-  const schedules = await field.getSchedules({where:{date:realDate}});
+
+
+
+  console.log(realDate)
+  const schedules = await ctx.state.field.getSchedules({
+    where:{
+      date: {$between:[newDate,
+        realDate
+        ]
+      },
+      fieldId: ctx.state.field.id
+    }
+  });
+
   schedules.sort(function(a, b) {
     return a.id - b.id;
   });
@@ -149,14 +157,19 @@ router.patch('scheduleUpdate', '/:date', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
   ctx.requireOwnerModifyPermission(compoundOwner);
   const realDate= new Date(ctx.params.date);
-  realDate.setHours(0);
-  realDate.setMinutes(0);
-  realDate.setSeconds(0);
-  realDate.setMilliseconds(0);
+  const newDate=new Date(ctx.params.date);
   realDate.setDate(realDate.getDate()+1);
 
-  const schedules = await ctx.state.field.getSchedules({ where: { date: realDate }});
-
+  const schedules = await ctx.state.field.getSchedules({
+    where:{
+      date: {$between:[newDate,
+        realDate
+        ]
+      },
+      fieldId: ctx.state.field.id
+    }
+  });
+  console.log(schedules);
   schedules.sort(function(a, b) {
     return a.id - b.id;
   });
@@ -209,19 +222,22 @@ router.patch('scheduleUpdate', '/:date', async (ctx) => {
 router.get('schedule', '/:date', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
   const realDate= new Date(ctx.params.date);
-  const newDate= realDate;
-  console.log(realDate)
-  const field= ctx.state.field;
 
-  newDate.setHours(0);
-  newDate.setMinutes(0);
-  newDate.setSeconds(0);
-  newDate.setMilliseconds(0);
-  newDate.setDate(realDate.getDate()+1);
+
+  const newDate= new Date(ctx.params.date);
+
+  realDate.setDate(realDate.getDate()+1);
+
+
+
+  console.log(realDate)
   const schedules = await ctx.state.field.getSchedules({
     where:{
-      date:realDate,
-      fieldId:ctx.state.field.id
+      date: {$between:[newDate,
+        realDate
+        ]
+      },
+      fieldId: ctx.state.field.id
     }
   });
   schedules.sort(function(a, b) {
@@ -235,7 +251,7 @@ router.get('schedule', '/:date', async (ctx) => {
       fieldId:ctx.state.field.id,
       compoundId:ctx.state.compound.id,
     }),
-    field,
+
   });
 });
 

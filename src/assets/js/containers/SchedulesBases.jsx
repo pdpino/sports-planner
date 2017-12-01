@@ -12,7 +12,13 @@ export default class ScheduleBaseForm extends React.Component {
       scheduleBases: [],
 
 
-      generics:[{done:false,hours:'00:00-00:00',day:1,price:0,duration:60},{done:false,hours:'00:00-00:00',day:2,price:0,duration:60},{done:false,hours:'00:00-00:00',day:3,price:0,duration:60},{done:false,hours:'00:00-00:00',day:4,price:0,duration:60},{done:false,hours:'00:00-00:00',day:5,price:0,duration:60},{done:false,hours:'00:00-00:00',day:6,price:0,duration:60},{done:false,hours:'00:00-00:00',day:0,price:0,duration:60}],
+      generics:[{done:false,hours:this.props.openingHour+ " - "+this.props.closingHour,day:1,price:0,duration:this.props.modules},
+      {done:false,hours:this.props.openingHour+ " - "+this.props.closingHour,day:2,price:0,duration:60},
+      {done:false,hours:this.props.openingHour+ " - "+this.props.closingHour,day:3,price:0,duration:this.props.modules},
+      {done:false,hours:this.props.openingHour+ " - "+this.props.closingHour,day:4,price:0,duration:this.props.modules},
+      {done:false,hours:this.props.openingHour+ " - "+this.props.closingHour,day:5,price:0,duration:this.props.modules},
+      {done:false,hours:this.props.openingHour+ " - "+this.props.closingHour,day:6,price:0,duration:this.props.modules},
+      {done:false,hours:this.props.openingHour+ " - "+this.props.closingHour,day:0,price:0,duration:this.props.modules}],
     };
     //this.arrayOfHours=this.arrayOfHours.bind(this);
     //this.handleScheduleBaseHoursChange=this.handleScheduleBaseHoursChange.bind(this);
@@ -223,25 +229,25 @@ generateScheduleBase(idx){
 
   render() {
     return (
-      <div>
+      <div id="body-container">
 
 
         <form onSubmit={this.handleSubmit}>
 
-        <div className="box-container column-50">
+        <div className="box-container">
         {this.state.generics.map((generic, idx) => (
         <div class="generator">
           <p> {this.state.days[generic.day]} </p>
           <h4> {generic.hours} </h4>
           <div className="subgenerator">
         <p>Hora inicio:  </p>
-   <select className="ghours1"  onChange={this.handleGenericHourDDChange.bind(this,idx)}>
+   <select className="ghours1"  onChange={this.handleGenericHourDDChange.bind(this,idx)} value={generic.hours.substr(0,1)}>
   <option value="0">0</option>
   <option value="1">1</option>
   <option value="2">2</option>
   </select>
 
-<select className="ghours2" onChange={this.handleGenericHourDDChange.bind(this,idx)}>
+<select className="ghours2" onChange={this.handleGenericHourDDChange.bind(this,idx)} value={generic.hours.substr(1,1)}>
   <option value="0">0</option>
   <option value="1">1</option>
   <option value="2">2</option>
@@ -254,7 +260,7 @@ generateScheduleBase(idx){
 <option value="9">9</option>
   </select>
 :
-<select className="gminutes1" onChange={this.handleGenericHourDDChange.bind(this,idx)}>
+<select className="gminutes1" onChange={this.handleGenericHourDDChange.bind(this,idx)} value={generic.hours.substr(3,1)}>
   <option value="0">0</option>
   <option value="1">1</option>
   <option value="2">2</option>
@@ -263,7 +269,7 @@ generateScheduleBase(idx){
 <option value="5">5</option>
   </select>
 
-<select className="gminutes2" onChange={this.handleGenericHourDDChange.bind(this,idx)}>
+<select className="gminutes2" onChange={this.handleGenericHourDDChange.bind(this,idx)} value={generic.hours.substr(4,1)}>
   <option value="0">0</option>
   <option value="1">1</option>
   <option value="2">2</option>
@@ -280,13 +286,13 @@ generateScheduleBase(idx){
 
 <div className="subgenerator">
 <p>Hora fin:  </p>
-   <select className="ghours3"  onChange={this.handleGenericHourDDChange.bind(this,idx)}>
+   <select className="ghours3"  onChange={this.handleGenericHourDDChange.bind(this,idx)} value={generic.hours.substr(8,1)}>
   <option value="0">0</option>
   <option value="1">1</option>
   <option value="2">2</option>
   </select>
 
-<select className="ghours4" onChange={this.handleGenericHourDDChange.bind(this,idx)}>
+<select className="ghours4" onChange={this.handleGenericHourDDChange.bind(this,idx)} value={generic.hours.substr(9,1)}>
   <option value="0">0</option>
   <option value="1">1</option>
   <option value="2">2</option>
@@ -299,7 +305,7 @@ generateScheduleBase(idx){
 <option value="9">9</option>
   </select>
 :
-<select className="gminutes3" onChange={this.handleGenericHourDDChange.bind(this,idx)}>
+<select className="gminutes3" onChange={this.handleGenericHourDDChange.bind(this,idx)} value={generic.hours.substr(11,1)}>
   <option value="0">0</option>
   <option value="1">1</option>
   <option value="2">2</option>
@@ -308,7 +314,7 @@ generateScheduleBase(idx){
 <option value="5">5</option>
   </select>
 
-<select className="gminutes4" onChange={this.handleGenericHourDDChange.bind(this,idx)}>
+<select className="gminutes4" onChange={this.handleGenericHourDDChange.bind(this,idx)} value={generic.hours.substr(12,1)}>
   <option value="0">0</option>
   <option value="1">1</option>
   <option value="2">2</option>
@@ -330,6 +336,7 @@ generateScheduleBase(idx){
   onChange={this.handleGenericPriceChange.bind(this,idx)}
  />
 </div>
+<div className="subgenerator">
 <p> Duración modulo (en minutos) </p>
 
 <input
@@ -339,6 +346,7 @@ generateScheduleBase(idx){
   value={generic.duration}
   onChange={this.handleGenericDurationChange.bind(this,idx)}
  />
+</div>
 
 <div>
 <button type="button" onClick={this.generateScheduleBase.bind(this,idx)}>Generar Horario Base</button>
@@ -351,7 +359,7 @@ generateScheduleBase(idx){
 </div>
 
 
-<div className="box-container column-50">
+<div className="box-container">
 {this.state.days.map((currentday,didx)=>(
   <div className="scheduleBase">
   <h3> {this.state.days[this.state.generics[didx].day]} </h3>
@@ -499,8 +507,9 @@ generateScheduleBase(idx){
 
 
       </div>
+      <div>
         <input type="submit" value="Listo!"/>
-
+        </div>
       </form>
 
       </div>
