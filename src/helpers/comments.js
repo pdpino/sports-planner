@@ -10,8 +10,8 @@ module.exports = function commentHelpers(app) {
       return {
         id: comment.id,
         content: comment.content,
-        // commenterName: comment.getCommenter().getName(),
-        commenterImage: comment.getCommenter().photo,
+        commenterName: comment.getCommenter().getName(),
+        // commenterImage: comment.getCommenter().photo,
         timestamp: this.createdAtTimestamp(comment),
         canDelete: this.canDeleteComment(comment),
       };
