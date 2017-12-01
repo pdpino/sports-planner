@@ -22,7 +22,7 @@ module.exports = function definefield(sequelize, DataTypes) {
     modules:{
       type:DataTypes.INTEGER,
       allowNull:false,
-      defaultValue:1,
+      defaultValue:60,
       validate:{
         min:5,
         max: 1440,

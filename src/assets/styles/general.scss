@@ -173,9 +173,32 @@ img {
     font-size: 1.5em;
   }
 }
+.generator p{
+  margin: 0px;
+}
+
+.subgenerator {
+  margin: 25px;
+}
 
 .edit-invitation-container {
   h1 {
     font-size: 1.5em;
   }
+}
+
+.scheduleBase table{
+  width:70%;
+   margin-left:20%;
+   margin-right:15%;
+}
+
+
+.scheduleBase table td {
+    width: 100px;
+
+}
+.small{
+  margin-left:10%;
+  margin-right:15%;
 }

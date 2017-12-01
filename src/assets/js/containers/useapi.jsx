@@ -8,7 +8,7 @@ export default class UseAPIForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      venues:[{name:"JAJA"},{name:"NOOO"}],
+      venues:[{name:"Cargando..."}],
       latitude:null,
       longitude:null,
       error: null,
@@ -110,7 +110,7 @@ async handleSubmit(e){
 
         <form onSubmit={this.handleSubmit}>
 
-        <h4>{this.state.error}</h4>
+        
         <select onChange={this.handleCompoundSelection.bind(this)}>
         <option> Seleccione un recinto </option>
         {this.state.venues.map((venue, sidx) => {
