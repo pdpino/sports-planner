@@ -18,6 +18,7 @@ module.exports = {
         password: bcrypt.hashSync('diego', 10),
         firstName: 'Diego',
         lastName: 'Rodriguez',
+        photo: '/assets/defaultPerson.png',
         createdAt: new Date(),
         updatedAt: new Date(),
       }, {
@@ -35,6 +36,7 @@ module.exports = {
         password: bcrypt.hashSync('tomas', 10),
         firstName: 'Tomas',
         lastName: 'Borchers',
+        photo: '/assets/defaultPerson.png',
         createdAt: new Date(),
         updatedAt: new Date(),
       }
