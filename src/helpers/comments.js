@@ -11,6 +11,7 @@ module.exports = function commentHelpers(app) {
         id: comment.id,
         content: comment.content,
         commenterName: comment.getCommenter().getName(),
+        // commenterImage: comment.getCommenter().photo,
         timestamp: this.createdAtTimestamp(comment),
         canDelete: this.canDeleteComment(comment),
       };

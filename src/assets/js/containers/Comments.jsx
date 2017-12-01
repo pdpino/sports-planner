@@ -7,11 +7,12 @@ export default class Comments extends Component {
     super(props);
     this.state = {
       comments: [],
-      loading: false,
+      loadingComments: false,
       error: undefined,
     };
     this.onSubmit = this.onSubmit.bind(this);
     this.onDelete = this.onDelete.bind(this);
+    this.refresh = this.refresh.bind(this);
   }
 
   componentDidMount() {
@@ -19,22 +20,22 @@ export default class Comments extends Component {
   }
 
   async fetchComments() {
-    this.setState({ loading: true });
+    this.setState({ loadingComments: true });
     try {
       const result = await this.props.fetchComments();
-      this.setState({ comments: result.comments, loading: false });
+      this.setState({ comments: result.comments, loadingComments: false });
     } catch (error) {
-      this.setState({ error: 'No se pudieron cargar los comentarios', loading: false });
+      console.log('No se pudieron cargar los comentarios: ', error);
+      this.setState({ error: 'No se pudieron cargar los comentarios', loadingComments: false });
     }
   }
 
   async onSubmit(data) {
-    this.setState({ loading: true, error: undefined });
+    this.setState({ error: undefined });
     try {
       const json = await this.props.postComment(data);
-      this.setState({ loading: false });
     } catch (error) {
-      this.setState({ error: error.message, loading: false });
+      this.setState({ error: error.message });
     }
     await this.fetchComments();
   }
@@ -43,6 +44,11 @@ export default class Comments extends Component {
     event.preventDefault();
     const json = await this.props.deleteComment(data.id);
     await this.fetchComments();
+  }
+
+  refresh(event){
+    event.preventDefault();
+    this.fetchComments();
   }
 
   renderNewCommentForm(){
@@ -55,19 +61,30 @@ export default class Comments extends Component {
     }
   }
 
-  render() {
-    if (this.state.loading) {
+  renderComments(){
+    if (this.state.loadingComments) {
       return <p>Cargando comentarios...</p>;
     }
     return (
+      <CommentsDisplay
+        comments={this.state.comments}
+        onDelete={this.onDelete}
+      />
+    );
+  }
+
+  render() {
+    return (
       <div>
-        <h4>{ this.props.title }</h4>
+        <div id="comments-sup-bar">
+          <h4>{ this.props.title }</h4>
+          <form onSubmit={this.refresh}>
+            <input className="refresh-button" src="/assets/refresh.png" type="image" alt="Recargar" />
+          </form>
+        </div>
         { this.state.error && <div className="error">Error: {this.state.error}</div>}
         { this.renderNewCommentForm() }
-        <CommentsDisplay
-          comments={this.state.comments}
-          onDelete={this.onDelete}
-        />
+        { this.renderComments() }
       </div>
     );
   }

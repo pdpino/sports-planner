@@ -3,7 +3,7 @@
     <div id="team-column-left" class="column-30">
 
       <div id="team-card" class="box-container">
-        <img class="medium-logo" src="<%= team.logo %>" alt="logo">
+        <img class="medium-logo" src="<%= team.getLogo() %>" alt="logo">
         <h2><%= team.name %></h2>
         <p> <%= team.sport.name %> </p>
 
@@ -38,6 +38,7 @@
         <%- include('../matches/_index', {
           matches: teamMatches,
           isPlayerMatch: false,
+          isTeamMatch: true,
           editInvitationPath: editTeamMatchPath
         }) %>
 

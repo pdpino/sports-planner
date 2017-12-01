@@ -13,43 +13,52 @@
         </p>
 
         <% if (hasModifyPermission) { %>
-          <%- include('../_buttons/edit', { editPath: editMatchPath }) %>
+          <% if(!match.isDone) { %>
+            <%- include('../_buttons/edit', { editPath: editMatchPath }) %>
+          <% } %>
 
           <%- include('../_buttons/delete', { deletePath: deleteMatchPath }) %>
         <% } %>
 
         <% if(canEnableReviews) { %>
           <form action="<%= enableReviews %>" method="post">
-            <input type="submit" value="Activar reviews"/>
+            <input type="submit" value="Terminar partido"/>
           </form>
         <% } %>
 
 
       </div>
 
+
       <div id="match-field" class="box-container">
         <h4> Cancha para el partido </h4>
         <% if(schedule && field) { %>
-          <div>
-            <span>
-              <strong>
-                <a href="<%= getFieldPath(field) %>"><%= field.name %></a>
-              </strong>
-            </span>
-            <span><%= schedule.status %></span>
-            <span><%= prettyDatestamp(schedule.date) %></span>
-            <span><%= schedule.hours %></span>
+          <div class="list-item">
+            <a class="lilink" href="<%= getFieldPath(field) %>">
+              <div>
+                <span>
+                  <strong>
+                    <%= field.name %>
+                  </strong>
+                </span>
+                <span><%= schedule.status %></span>
+                <span><%= prettyDatestamp(schedule.date) %></span>
+                <span><%= schedule.hours %></span>
+              </div>
+            </a>
           </div>
-
           <form action="<%= removeSchedulePath %>" method="post">
+            <input type="hidden" name="_method" value="patch" />
             <input type="submit" value="Anular Reserva" />
           </form>
         <% } else { %>
           <p>No hay canchas pedidas</p>
 
-          <form action="<%= selectCompoundPath %>" method="get">
-            <input type="submit" value="Pedir Cancha" />
-          </form>
+          <% if(!match.isDone) { %>
+            <form action="<%= selectCompoundPath %>" method="get">
+              <input type="submit" value="Pedir Cancha" />
+            </form>
+          <% } %>
         <% } %>
 
       </div>
@@ -64,19 +73,19 @@
           <ul>
             <% invitedTeams.forEach((team) => { %>
               <li class="list-item">
-                <img class="small-logo" src="<%= team.logo %>"/>
+                <img class="small-logo" src="<%= team.getLogo() %>"/>
                 <a class="lilink" href="<%= getTeamPath(team) %>">
                   <div>
                     <span>
                       <strong><%= team.name %></strong>
                     </span>
                     <span>
-                      <%= invitationToString(team.isTeamInvited.status) %>
+                      <%= invitationToString(team.isTeamInvited.status, { editing: false }) %>
                     </span>
                   </div>
                 </a>
 
-                <% if(hasModifyPermission) { %>
+                <% if(hasModifyPermission && !match.isDone) { %>
                   <%- include('../_buttons/edit', {
                     editPath: editInvitedTeamPath(team),
                     message: 'Editar invitación',
@@ -92,9 +101,9 @@
         <% } %>
 
 
-        <% if (hasModifyPermission) { %>
+        <% if (hasModifyPermission && !match.isDone) { %>
           <form action="<%= newInvitedTeamPath %>">
-              <input type="submit" value="Invitar equipo" />
+            <input type="submit" value="Invitar equipo" />
           </form>
         <% } %>
       </div>
@@ -104,10 +113,11 @@
         <%- include('../players/_index', {
           players: invitedPlayers,
           isInvitedToMatch: true,
+          hasModifyPermission: hasModifyPermission && !match.isDone,
           editParticipationPath: editInvitedPlayerPath,
         }) %>
 
-        <% if (hasModifyPermission) { %>
+        <% if (hasModifyPermission && !match.isDone) { %>
           <form action="<%= newInvitedPlayerPath %>">
             <input type="submit" value="Añadir Jugador" />
           </form>
@@ -121,7 +131,10 @@
 
       <% if(reviewsEnabled) { %>
         <div id="match-reviews" class="box-container">
+          <h4>Reviews pendientes</h4>
           <%- include('../playerReviews/index-pending', { pendingReviews }) %>
+
+          <h4>Reviews hechas</h4>
           <%- include('../playerReviews/index-done', { doneReviews, showReviewer: false }) %>
 
           <%- include('../compoundReviews/show') %>

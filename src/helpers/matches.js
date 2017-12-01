@@ -26,4 +26,9 @@ module.exports = function matchHelpers(app) {
       || await match.isPlayerInvited(this.state.currentPlayer);
     this.assert(hasSeePermission, 401, 'No tienes permisos');
   }
+
+  app.context.requireMatchNotDone = function(match) {
+    this.assert(!match.isDone, 403, 'El partido ya fue cerrado!');
+  }
+
 };

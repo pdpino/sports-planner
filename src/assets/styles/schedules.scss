@@ -25,10 +25,22 @@ td:hover {
   background-color: #f5f5f5
 }
 
-.schedule {
-  background-color: #fff;
-  margin: 0 auto;
-  width: 93%;
-  text-align: center;
-  min-height:100%;
+//.schedule {
+//  background-color: #fff;
+//  margin: 0 auto;
+//  width: 93%;
+//  text-align: center;
+//  min-height:100%;
+//}
+
+.generator {
+  display:inline-block;
+  border-width: 2px;
+  margin: 25px;
+  padding: 8px;
+  border-style: solid;
 }
+
+//.generator p{
+//  margin: 0;
+//}

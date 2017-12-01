@@ -54,15 +54,22 @@ router.post('playerCreate', '/', async (ctx) => {
 
   const userParams = getUserParams(ctx.request.body.fields);
   const playerParams = getPlayerParams(ctx.request.body.fields);
+  const photoFile = ctx.request.body.files.photo;
+  const anyPhoto = photoFile.name;
 
   let user;
   try {
     user = await ctx.orm.user.create(userParams);
-    userParams.photo = FileStorage.url("user" + user.id,{});
-    await user.update(userParams);
+    if (anyPhoto) {
+      userParams.photo = FileStorage.url("user" + user.id,{});
+      await user.update(userParams);
+    }
     playerParams.userId = user.id;
     const player = await ctx.orm.player.create(playerParams);
-    FileStorage.upload(ctx.request.body.files.photo, "user" + user.id);
+
+    if (anyPhoto) {
+      FileStorage.upload(photoFile, "user" + user.id);
+    }
 
     await ctx.login(user.email, userParams.password);
   } catch (validationError) {
@@ -104,12 +111,18 @@ router.patch('playerUpdate', '/:id', async (ctx) => {
 
   const userParams = getUserParams(ctx.request.body.fields);
   const playerParams = getPlayerParams(ctx.request.body.fields);
+  const photoFile = ctx.request.body.files.photo;
+  const anyPhoto = photoFile.name;
 
   try {
-    userParams.photo=FileStorage.url("user"+player.user.id,{});
-    await player.user.update(userParams);
-    FileStorage.upload(ctx.request.body.files.photo, "user"+player.user.id);
+    if (anyPhoto) {
+      userParams.photo = FileStorage.url("user"+player.user.id,{});
+      await player.user.update(userParams);
+    }
     await player.update(playerParams);
+    if (anyPhoto) {
+      FileStorage.upload(photoFile, "user"+player.user.id);
+    }
     ctx.redirect(ctx.router.url('player', { id: player.id }));
   } catch (validationError) {
     await ctx.render('players/edit', {
@@ -129,6 +142,7 @@ router.get('player', '/:id', async (ctx) => {
   const playerTeams = await player.getTeamsWithSport();
   const playerMatches = await player.getMatches();
   const friends = await player.getAllFriends();
+  const reviewsAverage = await player.getReviewsAverage();
 
   const friendshipStatus = (ctx.state.isPlayerLoggedIn
     && await ctx.state.currentPlayer.getFriendshipStatus(player));
@@ -141,6 +155,7 @@ router.get('player', '/:id', async (ctx) => {
   await ctx.render('players/show', {
     hasModifyPermission: ctx.hasModifyPermission(player),
     player,
+    reviewsAverage,
     playerSports,
     playerTeams,
     playerMatches,

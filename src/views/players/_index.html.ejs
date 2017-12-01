@@ -16,7 +16,7 @@
     <% players.forEach((player) => { %>
       <li class="list-item">
         <a class="lilink" href="<%= getPlayerPath(player) %>"%>>
-          <img class="small-logo" src="<%= player.photo %>"/>
+          <img class="small-logo" src="<%= player.getPhoto() %>"/>
           <div>
             <span>
               <strong>
@@ -43,7 +43,7 @@
                 </span>
               <% } %>
               <span>
-                <%= invitationToString(player.isPlayerInvited.status) %>
+                <%= invitationToString(player.isPlayerInvited.status, { editing: false }) %>
               </span>
             <% } %>
 

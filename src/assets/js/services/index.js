@@ -8,7 +8,7 @@ export default async function jsonRequest(path, options = {}) {
     headers,
     credentials: 'include',
   });
-  if (result.status !== 200) {
+  if (result.status !== 200) { // REVIEW: use result.ok ??
     throw Object.assign(new Error(), result);
   }
   return result.json();

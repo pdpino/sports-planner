@@ -40,12 +40,12 @@ module.exports = function notificationButtonsHelpers(app) {
   // FIXME: fieldURL needs both fieldId and compoundId, and is not being saved
   const fieldBaseButton = { method: 'get', message: 'Ver cancha' };
   const fieldButtonAsEvent = {
-    url: (ctx, entityId, eventId) => '/', // ctx.router.url('field', eventId),
+    url: (ctx, entityId, eventId) => ctx.router.url('fieldAlone', eventId),
     ...fieldBaseButton,
     prescindEntity: true,
   };
   const fieldButtonAsEntity = {
-    url: (ctx, entityId, eventId) => '/', // ctx.router.url('field', entityId),
+    url: (ctx, entityId, eventId) => ctx.router.url('fieldAlone', entityId),
     ...fieldBaseButton,
     prescindEvent: true,
   };

@@ -9,7 +9,7 @@
           <% if(locals.logoClassName) { %>
             class="<%= logoClassName %>"
           <% } %>
-          src="<%= field.photo %>" />
+          src="<%= field.getPhoto() %>" />
         <div>
           <%= field.name %>
           <br />

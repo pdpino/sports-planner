@@ -23,6 +23,8 @@ module.exports = function definecompoundReview(sequelize, DataTypes) {
       ],
       include: [{
         model: sequelize.models.player,
+      }, {
+        model: sequelize.models.compound,
       }]
     }, {
       override: true

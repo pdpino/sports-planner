@@ -10,7 +10,12 @@
           <ul>
             <% schedules.forEach((schedule) => { %>
               <li>
-                <input type="radio" name="scheduleId" value="<%= schedule.id %>"  'checked' : '' > <%= schedule.date %> - <%= schedule.hours %> - <%=schedule.price%>
+                <input type="radio" name="scheduleId" value="<%= schedule.id %>"  'checked' : '' >
+                <%= prettyDatestamp(schedule.date) %>
+                -
+                <%= schedule.hours %>
+                -
+                $<%=schedule.price%>
               </li>
             <% }) %>
           </ul>

@@ -43,6 +43,10 @@ module.exports = function defineteam(sequelize, DataTypes) {
     });
   };
 
+  team.prototype.getLogo = function() {
+    return this.logo || '/assets/team-logo.png';
+  }
+
   /** Boolean indicating if the player has modify permission on the team **/
   team.prototype.hasModifyPermission = async function(player){
     return player && await this.hasPlayer(player, {

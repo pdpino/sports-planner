@@ -7,6 +7,10 @@
         <form action="<%= newCompoundPath %>">
           <input type="submit" value="Crear recinto"/>
         </form>
+
+        <form action="<%= newCompoundFoursquarePath %>">
+          <input type="submit" value="Crear recinto con foursquare"/>
+        </form>
       <% } %>
 
       <% if (compounds.length > 0) { %>
@@ -14,7 +18,7 @@
           <% compounds.forEach((compound) => { %>
             <li>
               <a class="lilink" href=<%= getCompoundPath(compound) %>>
-                <img class="medium-logo" src="<%= compound.photo %>"/>
+                <img class="medium-logo" src="<%= compound.getPhoto() %>"/>
                 <div>
                   <%= compound.name %>
                 </div>

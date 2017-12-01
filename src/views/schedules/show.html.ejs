@@ -2,7 +2,7 @@
   <div class="jumbotron-center">
     <div class="box-container">
       <h1><%= field.name %></h1>
-      <h2><%= schedules[0] && schedules[0].date %></h2>
+      <h2><%= schedules[0] && prettyDatestamp(schedules[0].date) %></h2>
 
       <table>
         <tr>

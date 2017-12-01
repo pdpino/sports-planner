@@ -110,13 +110,17 @@ module.exports = function defineplayer(sequelize, DataTypes) {
 
   player.getGenders = function() { return genders; }
 
-  player.prototype.getName = function() { return helpers.getPersonName(this); }
-
   player.canAddFriend = (status) => status === 'not';
   player.canDeleteFriend = (status) => status === 'accepted';
   player.canAcceptFriend = (status) => status === 'sent';
   player.waitingFriend = (status) => status === 'waiting';
   player.hasCommentPermission = (status) => status === 'self' || status === 'accepted';
+
+  player.prototype.getName = function() { return helpers.getPersonName(this); }
+
+  player.prototype.getPhoto = function() {
+    return this.photo || '/assets/defaultPerson.png';
+  }
 
   player.prototype.getFriendshipStatus = async function(friend){
     if (this.id === friend.id){
@@ -247,12 +251,17 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     });
   }
 
-  player.prototype.getDoneReviews = function(){
-    return this.getReviews({
+  player.prototype.getDoneReviews = async function(){
+    const reviews = await this.getReviews({
       where: {
         isPending: false,
       }
     });
+    // HACK: this is copied in matches
+    for(let i=0; i < reviews.length; i++){
+      reviews[i].reviewerPlayer = await reviews[i].reviewer.getPlayer();
+    }
+    return reviews;
   }
 
   player.prototype.getReviewsAverage = async function(){

@@ -7,6 +7,7 @@
     <% if (env !== 'development') { %>
        <link rel="stylesheet" href="/assets/styles.css">
      <% } %>
+     <link rel="shortcut icon" type="image/png" href="/assets/favicon.png"/>
   </head>
 
   <body>
@@ -19,11 +20,11 @@
         </div>
 
         <div id="buttons-bar">
-          <a class="nav-bar-button" href="<%= indexPath %>"> Información </a>
           <a class="nav-bar-button" href="<%= playersPath %>"> Jugadores </a>
           <a class="nav-bar-button" href="<%= teamsPath %>"> Equipos </a>
           <a class="nav-bar-button" href="<%= matchesPath %>"> Partidos </a>
           <a class="nav-bar-button" href="<%= compoundsPath %>"> Recintos </a>
+          <a class="nav-bar-button" href="<%= indexPath %>"> Ver más </a>
         </div>
 
         <div id="user-bar">
@@ -31,7 +32,7 @@
 
             <a id="profile-button" href="<%= profilePath %>">
               <div id="profile-picture">
-                <img class="small-logo" src="<%= currentUser.photo %>"/>
+                <img class="small-logo" src="<%= currentUser.getPhoto() %>"/>
               </div>
               <span id="profile-name">
                 Hola <%= currentUser.firstName %>

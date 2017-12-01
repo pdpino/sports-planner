@@ -90,16 +90,22 @@ handleCompoundSelection(e){
 
   }
 
-handleSubmit(e){
-  alert(Object.keys(this.state.compound));
-  useAPIService.postCompound(this.state.compound);
-  alert("DONE");
+async handleSubmit(e){
+
+  e.preventDefault();
+  let a=await useAPIService.postCompound(this.state.compound);
+  console.log("HAAAAA",this.state.compound);
+  window.location.assign("/compounds/");
+
+
+
+
 }
 
 
   render() {
     return (
-      <div className="center">
+      <div>
 
 
         <form onSubmit={this.handleSubmit}>

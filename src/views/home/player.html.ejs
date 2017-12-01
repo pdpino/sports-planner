@@ -9,16 +9,6 @@
         >
       </div>
 
-      <div id="home-reviews" class="box-container">
-        <p>
-          <% if(reviewsAverage === 0) { %>
-            No has recibido reviews
-          <% } else { %>
-            Tienes un promedio de reviews <%= reviewsAverage %>
-          <% } %>
-        </p>
-      </div>
-
       <div id="home-teams" class="box-container">
         <h4> Mis equipos </h4>
         <%- include('../teams/_index-small.html.ejs', {
@@ -41,7 +31,7 @@
           <h3>Partidos</h3>
 
           <a href="<%= newMatchPath %>">
-            <img class="small-button" src="/assets/plus_green.png" alt="Crear partido" title="Crear partido"/>
+            <img class="small-button" src="/assets/plus_blue.png" alt="Crear partido" title="Crear partido"/>
           </a>
         </nav>
 

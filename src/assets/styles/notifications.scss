@@ -13,13 +13,14 @@
     margin-right: 0.5em;
   }
 
-  input {
-    height: 2.2em;
-    width: 2.2em;
-    cursor: pointer;
-  }
 }
 
 #notifications-amount {
   display: block;
+}
+
+.refresh-button {
+  height: 3em;
+  width: 3em;
+  cursor: pointer;
 }

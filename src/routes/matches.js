@@ -45,6 +45,7 @@ router.get('selectCompound', '/:id/selectCompound', async (ctx) => {
   ctx.requirePlayerLoggedIn();
 
   const match = await ctx.orm.match.findById(ctx.params.id);
+  ctx.requireMatchNotDone(match);
   const compounds = await ctx.orm.compound.findAll();
 
   await ctx.render('matches/selectCompound', {
@@ -60,6 +61,7 @@ router.get('selectField', '/:id/:compoundId/selectField', async (ctx) => {
   ctx.requirePlayerLoggedIn();
 
   const match = await ctx.orm.match.findById(ctx.params.id);
+  ctx.requireMatchNotDone(match);
   const compound = await ctx.orm.compound.findById(ctx.params.compoundId);
   const fields= await compound.getFields();
 
@@ -77,6 +79,7 @@ router.get('selectSchedule', '/:id/:compoundId/:fieldId/selectSchedule', async (
   ctx.requirePlayerLoggedIn();
 
   const match = await ctx.orm.match.findById(ctx.params.id);
+  ctx.requireMatchNotDone(match);
   const compound = await ctx.orm.compound.findById(ctx.params.compoundId);
   const fields= await compound.getFields({id:ctx.params.fieldId});
   const field= fields[0];
@@ -98,6 +101,7 @@ router.get('selectSchedule', '/:id/:compoundId/:fieldId/selectSchedule', async (
 router.patch('addSchedule', '/:id/:compoundId/:fieldId/selectSchedule', async (ctx) => {
   ctx.requirePlayerLoggedIn();
   const match = await ctx.findById(ctx.orm.match, ctx.params.id);
+  ctx.requireMatchNotDone(match);
   const sport = await ctx.findById(ctx.orm.sport, match.sportId);
   const compound = await ctx.findById(ctx.orm.compound, ctx.params.compoundId);
   const compoundOwner = await ctx.findById(ctx.orm.compoundOwner, compound.compoundOwnerId);
@@ -107,22 +111,33 @@ router.patch('addSchedule', '/:id/:compoundId/:fieldId/selectSchedule', async (c
   const schedule = schedules[0];
   ctx.assert(schedule && field, 404);
 
-  // REVIEW: necesario poner id: schedule.id, y otros que se mantienen igual???
-  // necesario updatedAt ?
   await schedule.update({
-    id: schedule.id,
-    price: schedule.price,
-    fieldId: schedule.fieldId,
     matchId: match.id,
-    hours: schedule.hours,
-    date: schedule.date,
-    open: schedule.open,
-    status: 'Solicited',
-    createdAt: schedule.createdAt,
-    updatedAt: new Date()
+    status: 'Solicited'
   });
 
   await ctx.reserveField(ctx.state.currentPlayer, compoundOwner, compound, field);
+
+  ctx.redirect(ctx.router.url('match', match.id));
+});
+
+router.patch('removeSchedule', '/:id/removeSchedule', async (ctx) => {
+  console.log("hello");
+  ctx.requirePlayerLoggedIn();
+  const match = await ctx.findById(ctx.orm.match, ctx.params.id);
+
+
+  const schedule = await match.getSchedule();
+  const field = await schedule.getField();
+  ctx.assert(schedule && field, 404);
+
+  // REVIEW: necesario poner id: schedule.id, y otros que se mantienen igual???
+  // necesario updatedAt ?
+  await schedule.update({
+    matchId: null,
+    status: 'Available'
+  });
+
 
   ctx.redirect(ctx.router.url('match', match.id));
 });
@@ -148,6 +163,7 @@ router.post('matchCreate', '/', async (ctx) => {
 
 router.get('matchEdit', '/:id/edit', async (ctx) => {
   const match = await ctx.findById(ctx.orm.match, ctx.params.id);
+  ctx.requireMatchNotDone(match);
   await ctx.requirePlayerModifyPermission(match);
 
   await ctx.render('matches/edit', {
@@ -161,8 +177,10 @@ router.get('matchEdit', '/:id/edit', async (ctx) => {
 router.patch('matchUpdate', '/:id', async (ctx) => {
   const match = await ctx.findById(ctx.orm.match, ctx.params.id);
   await ctx.requirePlayerModifyPermission(match);
+  ctx.requireMatchNotDone(match);
 
-  const params = getParams(ctx.request.body);
+  const params = ctx.orm.match.parseParams(getParams(ctx.request.body), ctx.state.currentPlayer);
+
   try {
     await match.update(params);
     ctx.redirect(ctx.router.url('match', { id: match.id }));

@@ -27,6 +27,7 @@ function renderApp(App, AppDivId){
 
   // Webpack Hot Module Replacement API
   if (module.hot) {
+    // FIXME: components/App?? see wican
     module.hot.accept('./components/App', () => { render(App); });
   }
 }

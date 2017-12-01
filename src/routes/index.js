@@ -18,7 +18,6 @@ router.get('home', '', async (ctx) => {
     const myPastMatches = await ctx.state.currentPlayer.getPastMatches();
     const myInviteMatches = await ctx.state.currentPlayer.getInviteMatches();
     const myConfirmedMatches = await ctx.state.currentPlayer.getConfirmedMatches();
-    const reviewsAverage = await ctx.state.currentPlayer.getReviewsAverage();
 
     await ctx.render('home/player', {
       notifications,
@@ -27,7 +26,6 @@ router.get('home', '', async (ctx) => {
       myPastMatches,
       myInviteMatches,
       myConfirmedMatches,
-      reviewsAverage,
       newMatchPath: ctx.router.url('matchNew'),
       newTeamPath: ctx.router.url('teamNew'),
       deletePlayerTeamPath: (team) => ctx.router.url('playerTeamDelete', {

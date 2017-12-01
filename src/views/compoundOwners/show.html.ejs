@@ -3,7 +3,7 @@
     <div id="owner-profile-column-left" class="column-40">
 
       <div id="owner-profile-card" class="box-container">
-        <img class="medium-logo" src="<%= compoundOwner.photo %>" height="500" width="500">
+        <img class="medium-logo" src="<%= compoundOwner.getPhoto() %>" height="500" width="500">
         <h3><%= compoundOwner.firstName %> <%= compoundOwner.lastName %></h3>
         <%= compoundOwner.email %>
 
@@ -28,9 +28,16 @@
             <% compounds.forEach((compound) => { %>
               <li>
                 <a class="lilink" href=<%= getCompoundPath(compound) %>>
-                  <img class="medium-logo" src="<%=compound.photo%>"/>
-                  <%= compound.name %>
-                  <%= compound.address %>
+                  <img class="medium-logo" src="<%=compound.getPhoto()%>"/>
+                  <div>
+                    <span>
+                      <%= compound.name %>
+                    </span>
+                    <br/>
+                    <span>
+                      <%= compound.address %>
+                    </span>
+                  </div>
                 </a>
               </li>
             <% }) %>

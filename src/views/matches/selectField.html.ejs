@@ -6,7 +6,7 @@
         <% fields.forEach((field) => { %>
           <li>
             <a class="lilink" href="<%= fieldPath(field) %>">
-              <img src="<%=field.photo%>" class="small-logo"/>
+              <img src="<%=field.getPhoto()%>" class="small-logo"/>
               <div>
                 <%= field.name %>
               </div>

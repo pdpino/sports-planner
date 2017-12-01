@@ -1,9 +1,8 @@
-<%# Provide:
-  pendingReviews,
+<%# Provide: pendingReviews,
+  Optional: noReviewsMessage
   %>
 
 <div>
-  <h4>Reviews pendientes:</h4>
   <% if(pendingReviews.length > 0) { %>
     <ul>
       <% pendingReviews.forEach((review) => { %>
@@ -16,7 +15,7 @@
       <% }) %>
     </ul>
   <% } else { %>
-    No hay reviews pendientes
+    <p><%= locals.noReviewsMessage || 'No hay reviews pendientes' %></p>
   <% } %>
 
 </div>

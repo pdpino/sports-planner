@@ -1,16 +1,25 @@
 module.exports = function invitationHelpers(app) {
   // TODO: adecuate message considering if is an invitation for me or I am deciding (see matchesShow and matchesPlayerEdit)
-  const statusMessages = {
-    'sent': 'No responder aún',
-    'asked': 'Esperando confirmación del administrador del partido',
-    'rejectedByUser': 'Rechazar invitación',
-    'rejectedByAdmin': 'Solicitud rechazada',
-    'accepted': 'Aceptar invitación'
+  const editingStatusMessages = {
+    sent: 'No responder aún',
+    asked: 'Esperando confirmación',
+    rejectedByUser: 'Rechazar invitación',
+    rejectedByAdmin: 'Solicitud rechazada',
+    accepted: 'Aceptar invitación'
+  };
+
+  const staticStatusMessages = {
+    sent: 'No ha confirmado',
+    asked: 'Esperando confirmación',
+    rejectedByUser: 'Rechazado',
+    rejectedByAdmin: 'Rechazado',
+    accepted: 'Confirmado'
   };
 
   /** Transform an isPlayerInvited status to a message for the user **/
-  app.context.invitationToString = function(status){
-    return statusMessages[status] || status;
+  app.context.invitationToString = function(status, opts){
+    const message = (opts.editing) ? editingStatusMessages[status] : staticStatusMessages[status];
+    return message || status;
   }
 
   const userStatusList = ['accepted', 'rejectedByUser', 'sent'];

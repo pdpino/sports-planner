@@ -12,8 +12,7 @@ export default {
   },
 
   async postCompound(compoundData) {
-
-    return jsonRequest(`/compounds/`, {
+    return jsonRequest(`/compounds/foursquare`, {
       method: 'post',
       sendJson: true,
       body: JSON.stringify(compoundData),

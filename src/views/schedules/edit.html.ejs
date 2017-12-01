@@ -2,7 +2,7 @@
   <div class="jumbotron-center">
     <div class="box-container">
       <h1><%= field.name %></h1>
-      <h2><%= schedules[0].date %></h2>
+      <h2><%= schedules[0] && schedules[0].date %></h2>
 
 
       <form action="<%= submitSchedulePath %>" method="post">
@@ -35,6 +35,7 @@
                   <% } else if (schedules[i].status == "Available"){ %>
                     <div>
                       <p> Disponible </p>
+                      <input type="hidden" name="schedules[<%=i%>][status]" value="Available">
                     </div>
                   <% } else if (schedules[i].status == "Not Available"){ %>
                     <div>

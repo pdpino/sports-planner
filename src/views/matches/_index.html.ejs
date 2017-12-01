@@ -1,6 +1,7 @@
 <%# Must exist:
     matches,
     isPlayerMatch,
+    isTeamMatch,
     getMatchPath,
     hasModifyPermission
     editInvitationPath (function that receives a match, only needed if hasModifyPermission is true),
@@ -23,11 +24,17 @@
               </strong>
             </span>
             <% if (match.date) { %>
-              <span>Fecha: <%= prettyTimestamp(match.date) %></span>
-            <% } %>
-            <% if (isPlayerMatch) { %>
               <span>
-                <%= (match.isPlayerInvited.isAdmin) ? 'Admin del partido' : '' %>
+                Fecha: <%= prettyTimestamp(match.date) %>
+              </span>
+            <% } %>
+            <% if (isPlayerMatch && match.isPlayerInvited.isAdmin) { %>
+              <span>
+                Admin del partido
+              </span>
+            <% } else if (locals.isTeamMatch) { %>
+              <span>
+                <%= invitationToString(match.isTeamInvited.status, { editing: false }) %>
               </span>
             <% } %>
           </div>
