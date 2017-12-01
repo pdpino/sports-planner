@@ -11,6 +11,7 @@ function getParams(params){
 }
 
 router.get('invitedPlayerNew', '/new', async (ctx) => {
+  ctx.requireMatchNotDone(ctx.state.match);
   await ctx.render('invitedPlayers/new', {
     match: ctx.state.match,
     // invitablePlayers: ctx.state.invitablePlayers,
@@ -22,6 +23,7 @@ router.get('invitedPlayerNew', '/new', async (ctx) => {
 });
 
 router.post('invitedPlayerCreate', '/', async (ctx) => {
+  ctx.requireMatchNotDone(ctx.state.match);
   const player = await ctx.findById(ctx.orm.player, ctx.request.body.playerId);
   try {
     await ctx.state.match.invitePlayer(player);
@@ -39,6 +41,7 @@ router.post('invitedPlayerCreate', '/', async (ctx) => {
 });
 
 router.get('invitedPlayerEdit', '/:id/edit', async (ctx) => {
+  ctx.requireMatchNotDone(ctx.state.match);
   const invitedPlayer = await ctx.state.match.getPlayer(ctx.params.id);
   const chooseStatuses = ctx.eligibleStatuses(invitedPlayer.isPlayerInvited.status, true);
 
@@ -59,6 +62,7 @@ router.get('invitedPlayerEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('invitedPlayerUpdate', '/:id', async (ctx) => {
+  ctx.requireMatchNotDone(ctx.state.match);
   const invitedPlayer = await ctx.state.match.getPlayer(ctx.params.id);
 
   const chooseStatuses = ctx.eligibleStatuses(invitedPlayer.isPlayerInvited.status, true);

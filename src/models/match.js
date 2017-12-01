@@ -98,21 +98,28 @@ module.exports = function definematch(sequelize, DataTypes) {
   match.afterCreate(unWrapDate); // FIXME: not working for build()
   match.afterFind(unWrapDate);
 
-  /** A player creates a match **/
-  match.playerCreates = async function(player, params) {
-    // Prepare parameters
-    params.name = params.name || match.getDefaultName(player);
-    params.isPublic = Boolean(params.isPublic);
+  match.parseParams = function(params, player){
+    const parsedParams = {};
+
+    parsedParams.name = params.name || match.getDefaultName(player);
+    parsedParams.isPublic = Boolean(params.isPublic);
 
     if (params.dateYear) {
-      params.date = moment(`${params.dateYear} ${params.dateMonth} ${params.dateDay} ${params.dateHour} ${params.dateMinute}`, "YYYY MM DD H:mm");
+      parsedParams.date = moment(`${params.dateYear} ${params.dateMonth} ${params.dateDay} ${params.dateHour} ${params.dateMinute}`, "YYYY MM DD H:mm");
     }
 
-    if (params.date && !params.date.isValid()){
-      params.date = null;
+    if (parsedParams.date && !parsedParams.date.isValid()){
+      parsedParams.date = null;
     }
 
-    const matchInstance = await match.create(params);
+    return parsedParams;
+  }
+
+  /** A player creates a match **/
+  match.playerCreates = async function(player, params) {
+    const parsedParams = match.parseParams(params, player);
+
+    const matchInstance = await match.create(parsedParams);
     await player.addMatch(matchInstance.id, {
       through: {
         isAdmin: true,
@@ -231,13 +238,17 @@ module.exports = function definematch(sequelize, DataTypes) {
     return this.isDone && this.isInThePast();
   }
 
-  function getReviewsFromUser(match, reviewerUser, isPending){
-    return match.getPlayerReviews({
+  async function getReviewsFromUser(match, reviewerUser, isPending){
+    const reviews = await match.getPlayerReviews({
       where: {
         isPending,
         reviewerId: reviewerUser.id,
       }
     });
+    for(let i=0; i < reviews.length; i++){
+      reviews[i].reviewerPlayer = await reviews[i].reviewer.getPlayer();
+    }
+    return reviews;
   }
 
   match.prototype.getPendingReviewsFromUser = function(reviewerUser){

@@ -1,9 +1,10 @@
 const KoaRouter = require('koa-router');
 
-
 const router = new KoaRouter();
 
 router.get('invitedTeamNew', '/new', async (ctx) => {
+  ctx.requireMatchNotDone(ctx.state.match);
+
   await ctx.render('invitedTeams/new', {
     match: ctx.state.match,
     // invitableTeams: ctx.state.invitableTeams,
@@ -13,6 +14,8 @@ router.get('invitedTeamNew', '/new', async (ctx) => {
 });
 
 router.post('invitedTeamCreate', '/', async (ctx) => {
+  ctx.requireMatchNotDone(ctx.state.match);
+
   const team = await ctx.findById(ctx.orm.team, ctx.request.body.teamId);
   const teamCaptain = await team.getCaptain();
 
@@ -34,6 +37,7 @@ router.post('invitedTeamCreate', '/', async (ctx) => {
 });
 
 router.get('invitedTeamEdit', '/:id/edit', async (ctx) => {
+  ctx.requireMatchNotDone(ctx.state.match);
   const invitedTeam = await ctx.state.match.getTeam(ctx.params.id);
 
   await ctx.render('invitedTeams/edit', {
@@ -53,6 +57,7 @@ router.get('invitedTeamEdit', '/:id/edit', async (ctx) => {
 });
 
 router.patch('invitedTeamUpdate', '/:id', async (ctx) => {
+  ctx.requireMatchNotDone(ctx.state.match);
   const invitedTeam = await ctx.state.match.getTeam(ctx.params.id);
   const newStatus = ctx.request.body.status;
   const statusChanged = newStatus !== invitedTeam.isTeamInvited.status;

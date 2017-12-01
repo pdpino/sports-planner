@@ -251,12 +251,17 @@ module.exports = function defineplayer(sequelize, DataTypes) {
     });
   }
 
-  player.prototype.getDoneReviews = function(){
-    return this.getReviews({
+  player.prototype.getDoneReviews = async function(){
+    const reviews = await this.getReviews({
       where: {
         isPending: false,
       }
     });
+    // HACK: this is copied in matches
+    for(let i=0; i < reviews.length; i++){
+      reviews[i].reviewerPlayer = await reviews[i].reviewer.getPlayer();
+    }
+    return reviews;
   }
 
   player.prototype.getReviewsAverage = async function(){

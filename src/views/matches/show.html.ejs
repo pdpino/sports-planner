@@ -13,7 +13,9 @@
         </p>
 
         <% if (hasModifyPermission) { %>
-          <%- include('../_buttons/edit', { editPath: editMatchPath }) %>
+          <% if(!match.isDone) { %>
+            <%- include('../_buttons/edit', { editPath: editMatchPath }) %>
+          <% } %>
 
           <%- include('../_buttons/delete', { deletePath: deleteMatchPath }) %>
         <% } %>
@@ -48,9 +50,11 @@
         <% } else { %>
           <p>No hay canchas pedidas</p>
 
-          <form action="<%= selectCompoundPath %>" method="get">
-            <input type="submit" value="Pedir Cancha" />
-          </form>
+          <% if(!match.isDone) { %>
+            <form action="<%= selectCompoundPath %>" method="get">
+              <input type="submit" value="Pedir Cancha" />
+            </form>
+          <% } %>
         <% } %>
 
       </div>
@@ -77,7 +81,7 @@
                   </div>
                 </a>
 
-                <% if(hasModifyPermission) { %>
+                <% if(hasModifyPermission && !match.isDone) { %>
                   <%- include('../_buttons/edit', {
                     editPath: editInvitedTeamPath(team),
                     message: 'Editar invitación',
@@ -93,9 +97,9 @@
         <% } %>
 
 
-        <% if (hasModifyPermission) { %>
+        <% if (hasModifyPermission && !match.isDone) { %>
           <form action="<%= newInvitedTeamPath %>">
-              <input type="submit" value="Invitar equipo" />
+            <input type="submit" value="Invitar equipo" />
           </form>
         <% } %>
       </div>
@@ -105,10 +109,11 @@
         <%- include('../players/_index', {
           players: invitedPlayers,
           isInvitedToMatch: true,
+          hasModifyPermission: hasModifyPermission && !match.isDone,
           editParticipationPath: editInvitedPlayerPath,
         }) %>
 
-        <% if (hasModifyPermission) { %>
+        <% if (hasModifyPermission && !match.isDone) { %>
           <form action="<%= newInvitedPlayerPath %>">
             <input type="submit" value="Añadir Jugador" />
           </form>

@@ -6,18 +6,28 @@
   <% if(doneReviews.length > 0) { %>
     <ul>
       <% doneReviews.forEach((review) => { %>
-        <li>
-          <% if (showReviewer) { %>
-            <%= review.reviewer.getName() %>,
-          <% } else { %>
-            <%= review.reviewed.getName() %>,
-          <% } %>
-
-          <%= updatedAtTimestamp(review) %>:
-          <br>
-          <%= review.rating %>
-          --
-          <%= review.content %>
+        <li class="list-item">
+          <a class="lilink" href="<%= getPlayerPath(showReviewer ? review.reviewerPlayer : review.reviewed) %>">
+            <div>
+              <span>
+                <strong>
+                  <% if (showReviewer) { %>
+                    <%= review.reviewer.getName() %>
+                  <% } else { %>
+                    <%= review.reviewed.getName() %>
+                  <% } %>
+                </strong>
+              </span>
+              <span>
+                <%= review.rating %> de 5
+              </span>
+              <% if (review.content) { %>
+                <span>
+                  <%= review.content %>
+                </span>
+              <% } %>
+            </div>
+          </a>
         </li>
       <% }) %>
     </ul>
