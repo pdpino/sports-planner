@@ -28,12 +28,11 @@ export default class CommentsNew extends Component {
         { this.state.error && <div className="error">{this.state.error}</div>}
         <form onSubmit={this.onSubmit}>
           <label htmlFor="content">
-            <span>Escribe un comentario</span>
-            <br/>
             <textarea
               cols="30"
               rows="5"
               name="content"
+              placeholder="Escribe un comentario..."
               id="content"
               value={this.state.content}
               onChange={this.onInputChange}
