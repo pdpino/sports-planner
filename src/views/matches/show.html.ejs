@@ -22,7 +22,7 @@
 
         <% if(canEnableReviews) { %>
           <form action="<%= enableReviews %>" method="post">
-            <input type="submit" value="Activar reviews"/>
+            <input type="submit" value="Terminar partido"/>
           </form>
         <% } %>
 
@@ -131,7 +131,7 @@
 
       <% if(reviewsEnabled) { %>
         <div id="match-reviews" class="box-container">
-          <h4>Reviews pendientes:</h4>
+          <h4>Reviews pendientes</h4>
           <%- include('../playerReviews/index-pending', { pendingReviews }) %>
 
           <h4>Reviews hechas</h4>

@@ -29,8 +29,15 @@
               <li>
                 <a class="lilink" href=<%= getCompoundPath(compound) %>>
                   <img class="medium-logo" src="<%=compound.getPhoto()%>"/>
-                  <%= compound.name %>
-                  <%= compound.address %>
+                  <div>
+                    <span>
+                      <%= compound.name %>
+                    </span>
+                    <br/>
+                    <span>
+                      <%= compound.address %>
+                    </span>
+                  </div>
                 </a>
               </li>
             <% }) %>
