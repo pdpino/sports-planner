@@ -113,12 +113,14 @@ router.get('scheduleEdit', '/:date/edit', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
   ctx.requireOwnerModifyPermission(compoundOwner);
   const realDate= new Date(ctx.params.date);
+
   const field= ctx.state.field;
   realDate.setHours(0);
   realDate.setMinutes(0);
   realDate.setSeconds(0);
   realDate.setMilliseconds(0);
-  realDate.setDate(realDate.getDate());
+  realDate.setDate(realDate.getDate()+1);
+    console.log("FIONAAAAAAAAAAAAAA");
   const schedules = await field.getSchedules({where:{date:realDate}});
   schedules.sort(function(a, b) {
     return a.id - b.id;
@@ -147,9 +149,14 @@ router.patch('scheduleUpdate', '/:date', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
   ctx.requireOwnerModifyPermission(compoundOwner);
   const realDate= new Date(ctx.params.date);
-  
+  realDate.setHours(0);
+  realDate.setMinutes(0);
+  realDate.setSeconds(0);
+  realDate.setMilliseconds(0);
+  realDate.setDate(realDate.getDate()+1);
+
   const schedules = await ctx.state.field.getSchedules({ where: { date: realDate }});
-  console.log(schedules);
+
   schedules.sort(function(a, b) {
     return a.id - b.id;
   });
@@ -202,18 +209,23 @@ router.patch('scheduleUpdate', '/:date', async (ctx) => {
 router.get('schedule', '/:date', async (ctx) => {
   const compoundOwner= await ctx.state.compound.getCompoundOwner();
   const realDate= new Date(ctx.params.date);
+  const newDate= realDate;
+  console.log(realDate)
   const field= ctx.state.field;
 
-  realDate.setHours(0);
-  realDate.setMinutes(0);
-  realDate.setSeconds(0);
-  realDate.setMilliseconds(0);
-  realDate.setDate(realDate.getDate());
+  newDate.setHours(0);
+  newDate.setMinutes(0);
+  newDate.setSeconds(0);
+  newDate.setMilliseconds(0);
+  newDate.setDate(realDate.getDate()+1);
   const schedules = await ctx.state.field.getSchedules({
     where:{
       date:realDate,
       fieldId:ctx.state.field.id
     }
+  });
+  schedules.sort(function(a, b) {
+    return a.id - b.id;
   });
   await ctx.render('schedules/show', {
     hasModifyPermission: ctx.hasModifyPermission(compoundOwner),
