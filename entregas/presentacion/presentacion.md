@@ -1,18 +1,18 @@
 # Presentacion
 
 ### Introducción
-* Buenos días, somos ...
-* Bueno, no sé si les ha ocurrido, pero a veces uno intenta juntar gente para un partido, por ejemplo de futbol, y es super dificil, hay gente que no puede, gente que se baja a ultima hora, etc. Nosotros quisimos hacer una aplicación que ayudara con el proceso, además de aportar más cosas entretenidas a esto.
+* Buenos días, somos Tomas Borchers y Pablo Pino, y les vamos a presentar nuestra aplicación del proyecto semestral.
+* Bueno, no sé si les ha ocurrido, pero a veces uno intenta juntar gente para un partido, por ejemplo de futbol, y se encuentra con muchas dificultades, hay gente que no puede, gente que se baja a ultima hora, etc. Nosotros quisimos hacer una aplicación que ayudara con el proceso, además de aportar más cosas entretenidas a esto.
 
-* Como estrctura general, la aplicación está pensada para dos tipos de usuarios: jugadores y dueños de recintos, además de un usuario extra que es administrador. Los jugadores organizarán sus partidos, y los dueños ofrecerán sus canchas para arrendar. Además, otras entidades que iremos viendo en la aplicación son equipos, partidos, recintos y canchas.
+* Como estructura general de la app, la aplicación está pensada para dos tipos de usuarios: jugadores y dueños de recintos; además hay un usuario extra que es administrador. Los jugadores organizarán sus partidos, y los dueños ofrecerán sus canchas para arrendar. Además, otras entidades que iremos viendo en la aplicación son equipos, partidos, recintos y canchas.
 
-* Ahora pasaremos a la demo, les traemos la historia de un usuario jugador que quiere utilizar nuestra aplicación.
+* Ahora pasaremos a la demo, les vamos a mostrar la historia de un usuario jugador que quiere utilizar nuestra aplicación.
 
 ```
-Mostrar perfil del usuario (o home? o index para no spoilear home?)
+Partir en perfil del usuario de Pablo, con login
 ```
 ### Historia
-* Yo como jugador quiero utilizar la aplicación, para eso creo un jugador. En este caso ya creamos la cuenta, y ya estoy loggeado. Aquí estamos en el perfil del usuario, donde hay hartas cosas que iremos viendo durante la demo.
+* Una persona que quiere usar la aplicación como jugador se crea un usuario. En este caso ya creamos la cuenta, y ya estamos loggeados. Aquí estamos en el perfil del usuario, donde hay hartas cosas que iremos viendo durante la demo.
 
 ```
 Mostrar que está loggeado en barra
@@ -21,24 +21,20 @@ Mostrar que está loggeado en barra
 #### Agregar deporte
 * Bueno, ‎yo juego fútbol, asi que vamos a agregar que juego este deporte
 ```
-Seleccionar agregar deporte a jugar
-```
-* Los deportes que aparecen aquí son creados y manejados por el usuario administrador
-```
-Seleccionar futbol
+Seleccionar agregar deporte a jugar, futbol + delantero
 ```
 ... se puede indicar la posición, para que otras personas tengan una idea.
-
+* Los deportes que aparecen aquí son creados y manejados por el usuario administrador
 ```
-Agregar deporte y volver a perfil
+Volver a perfil
 ```
 
-* Se pueden agregar todos los deportes que yo quiera
+* Se pueden agregar todos los deportes que uno quiera
 
 #### Agregar amigo
 * Ahora, los usuarios necesitan interactuar con sus amigos para los partidos. Para esto, vamos a jugadores a buscar a nuestros amigos
 ```
-Ir a jugadores, buscar amigo X e ir a su perfil
+Ir a jugadores, buscar amigo Pedro e ir a su perfil
 ```
 * Aquí lo podemos agregar como amigo, y necesitamos de su confirmación.
 ```
@@ -46,7 +42,7 @@ Agregar amigo
 ```
 * Tenemos su cuenta abierta en otra parte
 ```
-Cambiar a usuario X
+Cambiar a usuario Pedro
 ```
 * Estamos en el home de usuario. Arriba a la izquierda vemos sus notificaciones. Estas están mostradas con una aplicación react. Puede poner recargar, y aparece la nueva notificación de que lo agregaron como amigo.
 ```
@@ -58,9 +54,11 @@ Aceptar solicitud
 ```
 * ‎Volvemos al usuario anterior, recargamos la página y aparece su muro y le podemos escribir
 ```
-Señalar muro y escribir un mensaje: Juguemos un partido!!
+Señalar muro y escribir un mensaje: Hola Pedro!
 ```
 * Los comentarios en el muro están hechos con una aplicación en react, que se encarga de dejar un nuevo comentario, y cargarlos
+
+* Los amigos van a apareciendo al costado
 
 #### Crear un equipo
 * Digamos que ahora quiero crear un equipo. Podemos ir a equipos y crear equipo
@@ -70,17 +68,18 @@ Ir a equipos y seleccionar crear
 * Aquí indicamos un nombre, podemos subir un logo y debemos indicar el deporte
 ```
 Rellenar formulario:
-  <nombre de equipo>
+  kame-house
   sin logo,
   futbol
 ```
-* Ahora, este es el perfil de equipo. Cada equipo tiene uno o más capitanes, que pueden editar su información. Al crear un partido yo quedo automáticamente agregado como capitán.
+* Ahora, este es el perfil de equipo. Cada equipo va a tener uno o más capitanes, que son los que pueden editar la información del equipo. Al crear un equipo yo quedo automáticamente agregado como capitán.
 * Podemos invitar a algún amigo, seleccionarlo como capitán si queremos
 ```
-Invitar a un amigo y volver al muro
+Invitar a un amigo AAA y volver al muro
 ```
 * Como es amigo nuestro, queda automáticamente agregado al equipo sin tener que aceptar una invitación
-* Un equipo cuenta con dos tipos de muro, privado y público
+
+* Además, un equipo cuenta con dos tipos de muro, público y privado
 ```
 Mostrar sección de muro, indicar switch entre ambos
 ```
@@ -96,26 +95,28 @@ Escribir en muro público: 'qué gran equipo!!'
 ```
 Ir a partidos, crear
 ```
-* Por defecto tiene ese nombre, lo podemos cambiar. Le podemos poner fecha, lo dejaremos en blanco por ahora. Tenemos que seleccionar el deporte
+* Por defecto tiene ese nombre, aunque lo podríamos cambiar. Podemos elegir si es publico o privado, le podemos poner fecha, lo dejaremos en blanco por ahora. Tenemos que seleccionar el deporte
 ```
-Crear partido: 'Partido de Pablo', futbol
+Crear partido: 'Partido de Pablo', publico, futbol
 ```
-* Este es el perfil de partido. Cada partido tiene uno o más admins, que manejan las invitaciones principalmente.
-* Aquí puedo invitar a mis amigos al partido, invitaremos a Y
+* Este es el perfil de partido. Al crear el partido quedo automáticamente confirmado a este
+
+* Aquí puedo invitar a mis amigos al partido, invitaremos a _Lucas_
 ```
-Invitar a jugador Y a partido
+Invitar a jugador Lucas a partido
 ```
-* A Y le llegará una notificación que tiene que aceptar, por eso aparece como "no confirmado"
-* También podemos invitar a equipos completos al partido. Cuando el capitán de equipo acepta la invitación eso invita automáticamente a todos sus miembros
-  - vamos a invitar al equipo T, que es del amigo X que ya invitamos
+* A _Lucas_ le llegará una notificación que tiene que aceptar, por eso aparece como "no confirmado"
+
+* También podemos invitar a equipos completos al partido. Eso le envía una notificación al capitán para que acepte. Cuando acepta, se invita automáticamente a todos sus miembros
+  - vamos a invitar al equipo 'joga bonito', que es del amigo Pedro que ya invitamos
 ```
-Invitar a equipo T
+Invitar a equipo 'joga bonito'
 ```
-* Vamos al usuario X, a su equipo, y aceptamos la invitación al partido.
+* Vamos al usuario Pedro, a su equipo, y aceptamos la invitación al partido.
 ```
-Ir a pantalla con usuario X (abajo), su equipo y aceptar invitación
+Ir a pantalla con usuario Pedro (abajo), su equipo y aceptar invitación
 ```
-* Volvemos al partido de Pablo, y vemos que el jugador Z también fue invitado pq está en el equipo T.
+* Volvemos al partido de Pablo, y vemos que los jugadores Pedro y Antonio también fueron invitados pq están en el equipo 'joga bonito'.
 
 * Además, el partido tiene un muro. Sólo la gente invitada al partido puede ver los comentarios y comentar, incluso para los partidos públicos. Estos comentarios también están hechos en react reusando la misma aplicación que ya hemos visto.
 ```
@@ -123,7 +124,7 @@ Hacer un comentario: 'se viene el partido!!' o 'yo llevo la pelota!'
 ```
 * Por último, podemos pedir una cancha. Para eso, vamos a mostrarles cómo un dueño pone a disposición sus canchas
 
-#### crear recinto
+#### Crear recinto
 ```
 Ir a pantalla de Tomas (derecha)
 ```
@@ -138,15 +139,15 @@ Seleccionar recinto R1 con foursquare
 * ‎Luego de esto debe crear una cancha y asignarle un horario a esta
 * ‎Tomas ya tiene otra recinto con una cancha ya creada, que se muestra acá
 ```
-Ir a recinto R2 de tomas
+Ir a recinto El Sausalito de tomas
 ```
 
 #### Volviendo al partido...
 * Ahora, volvemos al partido para pedir la cancha
 ```
 Hacer click en pedir cancha,
-seleccionar recinto R2 de Tomas,
-seleccionar cancha C1,
+seleccionar recinto El Sausalito de Tomas,
+seleccionar cancha Cancha 1,
 seleccionar horario
 ```
 * Seleccionamos uno de los horarios disponibles y la pedimos. Esto también le manda una notificación al dueño
@@ -160,9 +161,9 @@ Volver a partido
 ```
 
 #### Jugador termina partido
-* Bueno, ¿qué pasa cuando termina el partido? Les vamos a mostrar este otro partido que tengo creado, con varios amigos y dos equipos invitados
+* Bueno, ¿qué pasa cuando termina el partido? Vamos a ir a este otro partido que tengo creado, con varios amigos y dos equipos invitados
 ```
-Ir a partido P2
+Ir a partido 'Partido del domingo'
 ```
 * Ya paso la fecha de este partido, por lo que puedo darlo por terminado
 ```
@@ -178,5 +179,14 @@ Mostrar que aparecen reviews
 Volver a mostrar perfil de jugador
 ```
 
+#### Home de usuario
+* Por último mostrarles el home del usuario de manera completa.
+```
+Ir al home de Pablo
+```
+* Ya vimos las notificaciones, pero ahora también les muestro que están organizados los partidos del usuario en confirmados, por confirmar y los pasados.
+
 #### Cierre
-* ...
+* Bueno con todo lo anterior esperamos los jugadores disfruten armando sus partidos y se les facilite la organización de estos.
+
+Muchas gracias.

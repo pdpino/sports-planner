@@ -12,8 +12,7 @@ P2 = Partido del domingo
 * Jugador Matias es amigo de Pedro y está en equipo joga bonito
 * Jugador antonio está en equipo joga bonito
 * Pablo tiene partido P2 creado, con varios amigos y equipos invitados (es partido pasado)
+* Tomás tiene un recinto R2 con una cancha creada con horarios (pocos) disponibles
+* Nombre para nuevo equipo!
 
 ### FALTA:
-
-* Tomás tiene un recinto R2 con una cancha creada con horarios (pocos) disponibles
-* Elegir recinto R1 para crear con foursquare. Puede ser uno cercano a san joaquín para usar lo de la ubicación
