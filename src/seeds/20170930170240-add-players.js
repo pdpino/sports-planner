@@ -53,6 +53,20 @@ module.exports = {
         userId: id++,
         createdAt: new Date(),
         updatedAt: new Date(),
+      }, {
+        // 'alberto1993@gmail.com',
+        gender: 'masculino',
+        birthday: '1999-03-21',
+        userId: id++,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }, {
+        // 'lbarrios@gmail.com',
+        gender: 'masculino',
+        birthday: '1984-11-13',
+        userId: id++,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       }
     ];
 
