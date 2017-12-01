@@ -24,6 +24,12 @@ module.exports = {
       isAccepted: true,
       createdAt: new Date(),
       updatedAt: new Date(),
+    }, {
+      playerId: 9, // lucas
+      friendId: 7, // pablo
+      isAccepted: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }];
 
     return queryInterface.bulkInsert('friendships', friendships);
