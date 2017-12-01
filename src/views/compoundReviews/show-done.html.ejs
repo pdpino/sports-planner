@@ -1,9 +1,21 @@
 <%# Provide:
-  review, (compoundReview)
+  review (compoundReview), showPlayer
   %>
 
-<%= review.player.getName() %>, <%= updatedAtTimestamp(review) %>:
-<br>
-Calificación <%= review.rating %> de 5.
-<br>
-<%= review.content %>
+<div class="list-item">
+  <a class="lilink" href="<%= showPlayer ? getPlayerPath(review.player) : getCompoundPath(review.compound) %>">
+    <div>
+      <strong>
+        <span>
+          <% if (showPlayer) { %>
+            <%= review.player.getName() %>
+          <% } else { %>
+            <%= review.compound.name %>
+          <% } %>
+        </span>
+      </strong>
+      <span><%= review.rating %> de 5</span>
+      <span><%= review.content %></span>
+    </div>
+  </a>
+</div>

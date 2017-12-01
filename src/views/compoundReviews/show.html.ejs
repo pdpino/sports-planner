@@ -8,7 +8,7 @@
     <% if(compoundReview.isPending) { %>
       <%- include('../_reviews/new', { createReviewPath: createCompoundReviewPath }) %>
     <% } else { %>
-      <%- include('./show-done', { review: compoundReview }) %>
+      <%- include('./show-done', { review: compoundReview, showPlayer: false }) %>
     <% } %>
 
   <% } else { %>

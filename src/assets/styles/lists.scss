@@ -60,6 +60,10 @@ li {
     display: flex;
     margin: 0;
     // padding: 0 2em;
+    
+    // HACK: copied from li
+    background: #d2d2d2; // TODO: choose good color
+    cursor: pointer;
   }
 
   img, div, form {

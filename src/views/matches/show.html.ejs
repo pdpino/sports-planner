@@ -29,20 +29,24 @@
 
       </div>
 
+
       <div id="match-field" class="box-container">
         <h4> Cancha para el partido </h4>
         <% if(schedule && field) { %>
-          <div>
-            <span>
-              <strong>
-                <a href="<%= getFieldPath(field) %>"><%= field.name %></a>
-              </strong>
-            </span>
-            <span><%= schedule.status %></span>
-            <span><%= prettyDatestamp(schedule.date) %></span>
-            <span><%= schedule.hours %></span>
+          <div class="list-item">
+            <a class="lilink" href="<%= getFieldPath(field) %>">
+              <div>
+                <span>
+                  <strong>
+                    <%= field.name %>
+                  </strong>
+                </span>
+                <span><%= schedule.status %></span>
+                <span><%= prettyDatestamp(schedule.date) %></span>
+                <span><%= schedule.hours %></span>
+              </div>
+            </a>
           </div>
-
           <form action="<%= removeSchedulePath %>" method="post">
             <input type="hidden" name="_method" value="patch" />
             <input type="submit" value="Anular Reserva" />

@@ -99,7 +99,7 @@ module.exports = function definematch(sequelize, DataTypes) {
   match.afterFind(unWrapDate);
 
   match.parseParams = function(params, player){
-    const parsedParams = {};
+    const parsedParams = Object.assign(params);
 
     parsedParams.name = params.name || match.getDefaultName(player);
     parsedParams.isPublic = Boolean(params.isPublic);
